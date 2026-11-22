@@ -1,0 +1,382 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{D加群のde Rham複体と解函手}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，代数的de Rham複体，Weyl代数，導関数．
+本稿の具体的な到達課題は，多項式のde Rham複体のコホモロジーを計算する．
+
+\section{de Rham複体の代数的定義}
+$k$ は標数零の体とし，$A_n$ は $x_i,\partial_i$ のWeyl代数とする．
+$M$ を左 $A_n$-加群とする．
+\begin{definition}
+$\Omega_k^p=\bigwedge^p k^n$ の基底を $dx_i$ の外積で表し，
+$\operatorname{DR}^p(M)=M\otimes_k\Omega_k^p$ とする．
+微分を
+\[
+ d(m\otimes\omega)=\sum_{i=1}^n\partial_i m\otimes(dx_i\wedge\omega)
+\]
+で定める．
+\end{definition}
+\begin{proposition}
+$d^2=0$ である．従って $(\operatorname{DR}^{\bullet}(M),d)$ は複体である．
+\end{proposition}
+\begin{proof}
+$\partial_i\partial_j=\partial_j\partial_i$ に対し
+$dx_i\wedge dx_j=-dx_j\wedge dx_i$ である．
+$d^2$ の二重和は添字 $i,j$ を入れ替えると符号が変わり，対ごとに消える．
+\end{proof}
+\section{多項式環のPoincar\'e補題}
+\begin{theorem}
+$M=k[x_1,\ldots,x_n]$ を標準 $A_n$-加群とする．
+このとき，そのde Rhamコホモロジーは
+\[
+ H^p(\operatorname{DR}(M))=
+ \begin{cases}k&(p=0),\\0&(p>0)\end{cases}
+\]
+である．
+\end{theorem}
+\begin{proof}
+多項式係数の微分形式に総次数
+$N=$(係数の多項式次数)+(微分形式次数) を与える．
+Eulerベクトル場 $E=\sum_i x_i\partial_i$ による内部積 $\iota_E$ を用いる．
+同次数 $N$ の斉次形式に対し，直接各単項式で確かめると
+\[
+ d\iota_E+\iota_Ed=N\operatorname{id}
+\]
+となる．$N>0$ で $d\omega=0$ なら
+$\omega=d(N^{-1}\iota_E\omega)$ である．
+標数零なので $N$ で割れる．$N=0$ の形式は定数の零次形式のみであり，
+これは正確に $H^0=k$ に寄与する．
+\end{proof}
+\section{解函手と具体例}
+\begin{definition}
+微分方程式 $P\cdot u=0$ の解を $A_1$-線形写像
+$A_1/A_1P\to\mathcal O(U)$ として扱う．
+ここで $U\subset\mathbb C$ は開集合，$\mathcal O(U)$ は正則関数で
+通常の微分作用を持つものとする．
+\end{definition}
+\begin{proposition}
+$U$ を連結開集合，$\lambda\in\mathbb C$ とする．
+$P=\partial-\lambda$ に対する上記の解空間は一次元であり，
+$e^{\lambda z}$ を基底とする．
+\end{proposition}
+\begin{proof}
+準同型は $1+A_1P$ の像 $u\in\mathcal O(U)$ で決まり，
+$u'=\lambda u$ を満たす．積の微分により
+$(e^{-\lambda z}u)'=0$ であり，連結性からこれは定数である．
+逆に任意の定数倍は条件を満たす．
+\end{proof}
+\begin{remark}
+解層の導来函手とRiemann--Hilbert対応は本稿では構成していない．
+ここまでの複体および具体例は，そのための初等的準備である．
+\end{remark}
+
+
+\section{正則特異点の一次元モデルとモノドロミー}
+\begin{proposition}[一次方程式の局所解とモノドロミー]
+$\lambda\in\mathbb C$ とする．$U=\mathbb C^*$ 上の方程式
+\[
+ z\frac{du}{dz}=\lambda u
+\]
+は各単連結開部分集合 $V\subset U$ 上で一次元の正則解空間を持つ．
+解を原点の周りに一周解析接続すると $e^{2\pi i\lambda}$ 倍になる．
+\end{proposition}
+\begin{proof}
+単連結 $V\subset\mathbb C^*$ には正則な対数 $\ell(z)$ が存在する．
+$u(z)=c\exp(\lambda\ell(z))$ は表示した方程式を満たす．
+逆に任意の解 $u$ について
+$\frac{d}{dz}(e^{-\lambda\ell(z)}u(z))=0$ であるから定数倍以外の解はない．
+対数を原点の周りに一周解析接続すると $\ell$ が $2\pi i$ 増加するため，
+解は指定された因子だけ変化する．
+\end{proof}
+\begin{theorem}[一次元局所系の分類]
+$\mathbb C^*$ 上の複素数一次元局所系の同型類は
+$\mathbb C^*$ の元 $c\ne0$ と一対一に対応する．
+前命題の方程式の解局所系は $c=e^{2\pi i\lambda}$ に対応する．
+\end{theorem}
+\begin{proof}
+$\mathbb C^*$ の普遍被覆を $p:\mathbb C\to\mathbb C^*$，
+$p(w)=e^w$ とする．局所系を引き戻すと，単連結な $\mathbb C$ 上では
+一つの一次元ベクトル空間 $V$ に定値な局所系になる．
+被覆変換 $w\mapsto w+2\pi i$ は $V$ 上の可逆線形写像を与える．
+一次元なのでこれは非零スカラー $c$ である．
+逆に，任意の $c\in\mathbb C^*$ に対し
+$\mathbb C\times\mathbb C$ を
+$(w,v)\sim(w+2\pi i,c^{-1}v)$ で割ると局所系が得られる．
+二つの対応は互いに逆であり，前命題から最後の記述が従う．
+\end{proof}
+\begin{remark}
+この分類は $\mathbb C^*$ 上の階数1の場合に限ったものであり，
+一般のRiemann--Hilbert対応の証明を代用するものではない．
+\end{remark}
+\section{一定係数の正則特異接続}
+\begin{theorem}
+$A\in M_r(\mathbb C)$ を固定する．$\mathbb C^*$ 上の連立方程式
+$z\,u'(z)=Au(z)$ の局所正則解空間は常に $r$ 次元である．
+原点を一周するモノドロミーは，基底の選択を除いて
+$e^{2\pi iA}$ に等しい．
+\end{theorem}
+\begin{proof}
+単連結な開集合 $V\subset\mathbb C^*$ 上で対数 $\ell$ を選び，
+$Y(z)=\exp(A\ell(z))$ と置く．
+行列 $A$ と $\exp(A\ell)$ は可換なので
+$Y'(z)=z^{-1}AY(z)$ が成り立つ．
+$\det Y(z)=\exp(\operatorname{tr}A\,\ell(z))\ne0$ だから，
+$Y$ は基本解行列である．任意の解について
+$(Y^{-1}u)'=0$ となるので，局所解は $u(z)=Y(z)c$（$c\in\mathbb C^r$）に限られる．
+対数を原点の周りに一周解析接続すると $\ell$ は $2\pi i$ 増すので
+$Y$ は右から $e^{2\pi iA}$ を掛けたものに移る．
+従って基底を $Y$ の列とすればモノドロミーはその行列で表される．
+\end{proof}
+
+\section{非特異な平坦接続と局所系の同値}
+この節では $X$ を複素多様体とし，有限階数の正則ベクトル束
+$E\to X$ に正則接続 $\nabla$ が与えられた状況を考える．
+平坦とは $\nabla^2=0$，すなわち曲率が零であることをいう．
+\begin{lemma}[正則なFrobenius型可積分系]\label{lem:flatmatrix}
+原点を含む小さい多重円板 $U\subset\mathbb C^n$ で，
+$A_1,\ldots,A_n:U\to M_r(\mathbb C)$ を正則とする．
+\[
+ \partial_iA_j-\partial_jA_i=[A_i,A_j]
+ \qquad(1\le i,j\le n)
+\]
+を満たすなら，原点の近傍に正則行列関数
+$Y$ が一意に存在して
+\[
+ \partial_iY=A_iY,\qquad Y(0)=I_r
+\]
+を満たす．しかも $\det Y$ は零にならない．
+\end{lemma}
+\begin{proof}
+座標を一つずつ増やして構成する．
+まず直線 $z_2=\cdots=z_n=0$ 上で
+$\partial_1Y=A_1Y$，$Y(0)=I_r$ を解く．
+存在一意性と初期値・係数に関する正則性は，線形常微分方程式の
+Picard逐次近似を小さい円板上で行えば従う．
+次に $z_1,z_2$ に関する部分空間へ延長する．
+既に決めた $Y(z_1,0)$ を初期値として
+$\partial_2Y=A_2Y$ を解けば，$Y$ は二変数について正則になる．
+$E_1=\partial_1Y-A_1Y$ と置くと，交換関係から
+\[
+ \begin{aligned}
+ \partial_2E_1
+ &=\partial_1(A_2Y)-(\partial_2A_1)Y-A_1A_2Y\\
+ &=A_2E_1+
+ (\partial_1A_2-\partial_2A_1+A_2A_1-A_1A_2)Y
+ =A_2E_1.
+ \end{aligned}
+\]
+$z_2=0$ 上では $E_1=0$ だから，線形常微分方程式の
+一意性により $E_1$ は恒等的に零となる．
+同様に $z_3,\ldots,z_n$ の方向へ順に延長する．
+既に満たしていた $\partial_jY=A_jY$ は，新しい方向の
+初期値問題の一意性と上記の計算によって保存される．
+これで存在が得られ，同じ一意性の議論を各座標方向に適用すれば
+$Y(0)=I_r$ からの一意性も従う．
+$Y$ の各列は微分系の解である．行列式については
+$\partial_i\det Y=(\operatorname{tr}A_i)\det Y$ だから，
+原点で $\det Y=1$ であることと各方向の一意性から
+$\det Y\ne0$ が近傍で成立する．
+\end{proof}
+\begin{theorem}[非特異なRiemann--Hilbert対応]
+複素多様体 $X$ 上の有限階数正則ベクトル束で平坦な正則接続を持つものの
+圏と，有限階数の複素局所系の圏は同値である．
+対応は，平坦接続からその水平切断の局所系を作る操作と，
+局所系 $\mathcal L$ から
+$E=\mathcal O_X\otimes_{\mathbb C}\mathcal L$ を作って
+微分を接続とする操作で与えられる．
+\end{theorem}
+\begin{proof}
+平坦接続 $(E,\nabla)$ を局所自明化し，
+$\nabla_i=\partial_i-A_i$ と書く．
+平坦性は前補題の交換関係に等しい．従って小さい多重円板上で
+可逆な正則基本解行列 $Y$ が存在する．
+その水平切断は $Y(z)c$（$c\in\mathbb C^r$）に限られるから，
+水平切断の層 $\mathcal L=\ker\nabla$ は局所的に定数層である．
+評価写像
+\[
+ \mathcal O_X\otimes_{\mathbb C}\mathcal L
+ \longrightarrow E,\qquad f\otimes s\longmapsto fs
+\]
+は小さい多重円板で $Y$ を用いた自明化に一致するため，
+正則ベクトル束と平坦接続の同型を与える．
+
+逆に局所系 $\mathcal L$ の局所定値基底を取ると，
+$\mathcal O_X\otimes_{\mathbb C}\mathcal L$ は
+正則ベクトル束となり，$\nabla(f\otimes s)=df\otimes s$ と定められる．
+異なる局所定値基底の遷移行列は局所定数だから，この接続の定義は
+重なり上で一致する．$d^2=0$ より接続は平坦であり，
+水平切断はちょうど $\mathcal L$ である．
+束と接続を保つ射は水平切断を保ち，
+局所系の射はテンソル積に拡張される．
+両構成に伴う自然な同型を上に構成したので，圏同値が従う．
+\end{proof}
+\begin{remark}
+本節では特異点のない有限階数接続に対する対応を証明した．
+正則ホロノミック $D$-加群と構成可能複体の導来圏との一般の
+Riemann--Hilbert対応には，特異点での延長と中間拡張，
+perverse t-構造，双対性など別の論証が必要である．
+\end{remark}
+
+\section{任意の有限次元モノドロミーの対数接続による実現}
+\begin{lemma}[可逆複素行列の対数]
+任意の $M\in\operatorname{GL}_r(\mathbb C)$ に対し，
+ある $B\in M_r(\mathbb C)$ が存在して
+$e^{2\pi iB}=M$ を満たす．
+\end{lemma}
+\begin{proof}
+$M$ をJordan標準形 $M=PJP^{-1}$ に移す．
+各Jordanブロックは $J_\lambda=\lambda(I+N)$
+（$\lambda\ne0$，$N$ は冪零）と書ける．
+$e^{\ell_\lambda}=\lambda$ を満たす対数
+$\ell_\lambda\in\mathbb C$ を選び，
+\[
+ L_\lambda=\ell_\lambda I
+ +\sum_{j=1}^{r-1}\frac{(-1)^{j+1}}jN^j
+\]
+と置く．$N^r=0$ なので和は有限である．
+形式的冪級数の恒等式
+$\exp(\log(1+z))=1+z$ を冪零行列 $N$ に代入すると
+$e^{L_\lambda}=\lambda(I+N)=J_\lambda$ を得る．
+各ブロックの $L_\lambda$ を直和した行列を $L$ とすると
+$B=(2\pi i)^{-1}PLP^{-1}$ は $e^{2\pi iB}=M$ を満たす．
+\end{proof}
+\begin{theorem}[対数型接続によるモノドロミーの実現]
+穴あき円板 $\Delta^*=\{z\in\mathbb C:0<|z|<1\}$ とし，
+$M\in\operatorname{GL}_r(\mathbb C)$ を任意とする．
+このとき $\Delta^*$ 上の階数 $r$ の正則平坦接続で，
+$z=0$ に高々一次極を持つ対数型接続が存在して，
+その正向き一周のモノドロミーが $M$ に共役となる．
+\end{theorem}
+\begin{proof}
+前補題により $e^{2\pi iB}=M$ を満たす行列 $B$ を取る．
+自明束 $\Delta^*\times\mathbb C^r$ 上の接続を
+\[
+ \nabla=d-B\frac{dz}{z}
+\]
+と定義する．係数行列 $B\,dz/z$ は $z=0$ で一次極を持つ．
+基底空間が複素一次元なので曲率
+$d(B\,dz/z)-(B\,dz/z)\wedge(B\,dz/z)$ は零であり，
+この接続は平坦である．
+単連結な小領域で対数の枝 $\operatorname{Log}z$ を固定すると，
+水平切断の基本行列は
+$Y(z)=\exp(B\operatorname{Log}z)$ である．
+実際 $dY=(B\,dz/z)Y$ が成立する．
+原点を正向きに一周すると
+$\operatorname{Log}z$ は $2\pi i$ 増えるから，
+$Y$ は $Y\,e^{2\pi iB}=YM$ に変わる．
+基点での基底の選び方によって共役が生じるので，
+モノドロミーの共役類が $M$ のそれに一致する．
+\end{proof}
+\begin{remark}
+任意の有限次元モノドロミー表現
+$\pi_1(\Delta^*)\simeq\mathbb Z\to\operatorname{GL}_r(\mathbb C)$
+を対数型接続で実現できることは示した．
+正則ホロノミックD加群全体の導来Riemann--Hilbert対応および
+perverse sheafの理論はこの主張よりはるかに一般的であり，
+本節では証明していない．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{一次元の代数的Poincaré補題．}
+\begin{proposition}
+標数零の体 $k$ 上のアフィン直線における
+代数的de Rham複体
+\[
+0\longrightarrow k[x]
+\xrightarrow{d}k[x]\,dx\longrightarrow0
+\]
+のコホモロジーは
+\[
+H^0_{\mathrm{dR}}(\mathbb A^1_k)=k,\qquad
+H^1_{\mathrm{dR}}(\mathbb A^1_k)=0
+\]
+である．
+\end{proposition}
+\begin{proof}
+$d(f)=f'(x)\,dx$ なので核は定数多項式である．
+また任意の $g(x)=\sum_{j=0}^ma_jx^j$ に対し
+\[
+F(x)=\sum_{j=0}^m\frac{a_j}{j+1}x^{j+1}
+\]
+は $F'=g$ を満たす．
+標数零なので各 $j+1$ は $k$ で可逆である．
+よって $d$ は一次形式全体へ全射であり，
+一次コホモロジーは零である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$g(x)=3x^2+2$ の原始関数と対応する
+一次形式のコホモロジー類を求めよ．
+\par\noindent\textbf{解答．}
+$F(x)=x^3+2x$ で $dF=g\,dx$．
+従って $g\,dx$ の一次コホモロジー類は零である．
+\end{document}

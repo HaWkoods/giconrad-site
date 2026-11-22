@@ -1,0 +1,516 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{偏微分方程式の基本理論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，熱方程式，部分積分，Dirichlet境界条件．
+本稿の具体的な到達課題は，方程式の解に対するエネルギー恒等式と一意性を証明する．
+
+\section{熱方程式と最大値原理}
+$\Omega=(0,L)$，$T>0$，$\kappa>0$ とする．
+$u\in C^{2,1}((0,L)\times(0,T])\cap C([0,L]\times[0,T])$ に対し
+\[ u_t=\kappa u_{xx} \]
+を考える．
+\begin{theorem}[弱最大値原理]
+$u_t-\kappa u_{xx}\le0$ なら
+\[
+ \max_{[0,L]\times[0,T]}u
+ \le \max\{u(x,0),u(0,t),u(L,t):0\le x\le L,0\le t\le T\}.
+\]
+\end{theorem}
+\begin{proof}
+$\varepsilon>0$ に対し $v=u-\varepsilon t$ と置く．
+$v_t-\kappa v_{xx}\le-\varepsilon<0$ である．
+$v$ が内部の $t>0$ の点で最大値を取るとき，
+時刻方向の片側微分は $v_t\ge0$，空間方向の二階微分は
+$v_{xx}\le0$ となり矛盾する．
+従って $v$ の最大値は放物型境界上に存在する．
+$\varepsilon\downarrow0$ とすると主張が従う．
+\end{proof}
+\begin{corollary}
+連続な初期値とDirichlet境界値をもつ古典解は存在するなら一意である．
+\end{corollary}
+\begin{proof}
+二解の差に最大値原理を適用し，その負にも適用する．
+初期値と境界値が零だから差は恒等的に零である．
+\end{proof}
+\section{熱方程式のエネルギー}
+\begin{proposition}
+$u_t=\kappa u_{xx}$ を満たす十分滑らかな実数値関数について，
+$u(0,t)=u(L,t)=0$ と仮定すると
+\[
+ \frac{d}{dt}\frac12\int_0^L u(x,t)^2\,dx
+ =-\kappa\int_0^L u_x(x,t)^2\,dx.
+\]
+\end{proposition}
+\begin{proof}
+微分と積分を交換し，方程式と部分積分を用いる．
+境界項 $\kappa[u u_x]_0^L$ は零である．
+\end{proof}
+\section{波動方程式のエネルギー}
+\begin{theorem}
+$u_{tt}=c^2u_{xx}$（$c>0$），$u(0,t)=u(L,t)=0$ とし，
+$u$ は二階まで連続微分可能とする．このとき
+\[
+ E(t)=\frac12\int_0^L\bigl(u_t^2+c^2u_x^2\bigr)\,dx
+\]
+は時間によらず一定である．
+\end{theorem}
+\begin{proof}
+\[
+ E'(t)=\int_0^L(u_tu_{tt}+c^2u_xu_{xt})dx
+ =c^2[u_tu_x]_0^L.
+\]
+境界条件を時間微分すると $u_t(0,t)=u_t(L,t)=0$ となるから
+右辺は零である．
+\end{proof}
+\begin{corollary}
+上記のDirichlet問題で初期変位と初期速度を指定すると，古典解は一意である．
+\end{corollary}
+\begin{proof}
+二解の差 $w$ の初期エネルギーは零なので，
+保存則から $w_t=w_x=0$ が全時刻で成立する．
+$w$ は定数であり，零境界条件から $w=0$．
+\end{proof}
+\begin{remark}
+ここまでに示した一意性は古典解に関するものである．
+後続節では全空間の熱核とFourier変換による解の構成を扱うが，
+一般の分布解と有界領域の完全な初期境界値問題は扱わない．
+\end{remark}
+
+
+\section{熱核による全空間での存在と一意性}
+\begin{definition}
+$t>0$ と $x\in\mathbb R$ に対し
+\[
+ G_t(x)=\frac1{\sqrt{4\pi\kappa t}}
+ \exp\!\left(-\frac{x^2}{4\kappa t}\right)
+\]
+を一次元熱核という．
+\end{definition}
+\begin{theorem}[熱核による解の構成]
+$f:\mathbb R\to\mathbb R$ を有界かつ一様連続とし
+$u(x,t)=\int_{\mathbb R}G_t(x-y)f(y)\,dy$（$t>0$）と置く．
+このとき $u$ は $t>0$ で滑らかで $u_t=\kappa u_{xx}$ を満たす．
+さらに $\sup_x|u(x,t)-f(x)|\to0$（$t\downarrow0$）が成立する．
+\end{theorem}
+\begin{proof}
+Gauss積分を変数変換すると $\int G_t(x)dx=1$ であり，
+直接微分により $(G_t)_t=\kappa(G_t)_{xx}$ を得る．
+$t\ge\varepsilon>0$ 上では熱核の任意階の偏導関数が
+積分可能な関数で一様に抑えられるので，優収束定理から
+積分記号の下で微分でき，方程式が成り立つ．
+初期値への収束を示す．$\eta>0$ を取り，$|h|<\delta$ なら
+$|f(x-h)-f(x)|<\eta$ となる $\delta>0$ を選ぶ．
+$u(x,t)=\int G_t(h)f(x-h)dh$ と書けば
+\[
+ |u(x,t)-f(x)|\le\eta+
+ 2\norm f_\infty\int_{|h|\ge\delta}G_t(h)dh.
+\]
+後半は $h=\sqrt t z$ の変数変換で $t\downarrow0$ に零へ収束する．
+この評価は $x$ に依存しないため一様収束である．
+\end{proof}
+\begin{theorem}[有界古典解の一意性]
+$w\in C(\mathbb R\times[0,T])\cap C^{2,1}(\mathbb R\times(0,T])$ が
+全体で有界，$w_t=\kappa w_{xx}$，$w(x,0)=0$ を満たすなら $w=0$ である．
+\end{theorem}
+\begin{proof}
+$\varepsilon>0$ として
+$v(x,t)=w(x,t)-\varepsilon(1+x^2+(2\kappa+1)t)$ と置くと
+$v_t-\kappa v_{xx}=-\varepsilon<0$ である．
+$w$ は有界だから十分大きい $R$ では
+$|x|=R$ 上の $v$ は負であり，$v(x,0)\le0$ である．
+有界長方形 $[-R,R]\times[0,T]$ に弱最大値原理を適用すると $v\le0$．
+$R$ を大きく取って任意の $(x,t)$ を含め，
+続いて $\varepsilon\downarrow0$ とすると $w(x,t)\le0$．
+$-w$ についても同様に議論して結論を得る．
+\end{proof}
+
+
+\section{全空間における高次元波動方程式}
+$\mathcal S(\mathbb R^n)$ をSchwartz空間とし，
+Fourier変換を
+$\widehat f(\xi)=\int_{\mathbb R^n}e^{-ix\cdot\xi}f(x)\,dx$
+で定義する．
+\begin{theorem}[Fourier変換による解の構成]
+$c>0$，$f,g\in\mathcal S(\mathbb R^n)$ とする．
+全空間での初期値問題
+\[
+ u_{tt}-c^2\Delta u=0,\qquad u(0,x)=f(x),\quad u_t(0,x)=g(x)
+\]
+は次の公式で定まる古典解を持つ．
+\[
+ u(t,x)=(2\pi)^{-n}\int_{\mathbb R^n}
+ e^{ix\cdot\xi}\left(
+ \cos(ct|\xi|)\widehat f(\xi)
+ +\frac{\sin(ct|\xi|)}{c|\xi|}\widehat g(\xi)
+ \right)d\xi.
+\]
+$\xi=0$ では第二の乗数を $t$ と定義する．
+さらに，$u(t)\in H^1$，$u_t(t)\in L^2$ を満たし，
+これらが時間について十分滑らかな有限エネルギー解の範囲で一意である．
+エネルギー
+\[
+ E(t)=\frac12\int_{\mathbb R^n}
+ \bigl(|u_t(t,x)|^2+c^2|\nabla_xu(t,x)|^2\bigr)\,dx
+\]
+は時間に依存しない．
+\end{theorem}
+\begin{proof}
+$f,g$ のFourier変換は急減少であり，固定した有界な時間区間では
+表示式の被積分関数を時間・空間について任意回微分しても
+絶対可積分な優関数が取れる．
+実際 $\sin(ct|\xi|)/(c|\xi|)$ は
+$\xi=0$ でも連続で，空間・時間微分は多項式増大以下である．
+従って微分を積分の中へ移せる．
+$\widehat u$ は各 $\xi$ で
+$\widehat u_{tt}+c^2|\xi|^2\widehat u=0$ を満たすから
+Fourier逆変換により波動方程式を満たし，
+$t=0$ を代入すれば初期条件を得る．
+
+Plancherelの等式からエネルギーは
+\[
+ E(t)=\frac{1}{2(2\pi)^n}\int
+ \bigl(|\widehat u_t|^2+c^2|\xi|^2|\widehat u|^2\bigr)\,d\xi
+\]
+である．各 $\xi$ について
+$\partial_t(|\widehat u_t|^2+c^2|\xi|^2|\widehat u|^2)=0$
+なので，これを積分して $E(t)=E(0)$ を得る．
+
+二つの有限エネルギー解の差 $w$ は零初期値を持つ．
+同じエネルギー計算（十分滑らかな解に対して正当化できる）から
+$E_w(t)=0$ である．よって $\nabla w(t)=0$，$w_t(t)=0$
+がほとんど至る所成立する．$w(t)\in L^2(\mathbb R^n)$ と
+$\nabla w(t)=0$ から $w(t)=0$ なので一意性を得る．
+\end{proof}
+\begin{remark}
+ここでは全空間のSchwartz初期値に限って存在・一意性を示した．
+非滑らかな初期値や有界領域・境界条件に関する一般論は，
+Sobolev空間および弱解の理論をさらに要する．
+\end{remark}
+
+
+\section{周期波動方程式のSobolev適切性}
+非線形双曲型方程式の局所適切性を考える前提として，
+線形波動方程式の初期値問題を周期境界条件のもとで構成する．
+本稿ではFourier級数の基本的な完全性とParsevalの等式，
+Hilbert空間値積分の基本性質を既習として用いる．
+それ以外の主要な極限操作，時間正則性およびエネルギー評価は示す．
+
+$d\ge1$，$\mathbb T^d=\mathbb R^d/(2\pi\mathbb Z)^d$とする．
+函数$u\in L^2(\mathbb T^d)$のFourier係数を
+\[
+ \widehat u(k)=(2\pi)^{-d}\int_{\mathbb T^d}
+                 u(x)e^{-ik\cdot x}\,dx\quad(k\in\mathbb Z^d)
+\]
+で定める．本稿では内積とノルムに正規化された
+Lebesgue測度$(2\pi)^{-d}dx$を用いる．
+
+\begin{definition}[周期Sobolev空間]
+$s\in\mathbb R$に対し
+\[
+ H^s(\mathbb T^d)=\left\{u\in\mathcal D'(\mathbb T^d):
+ \sum_{k\in\mathbb Z^d}(1+|k|^2)^s|\widehat u(k)|^2<\infty
+ \right\}
+\]
+と定め，右辺の和の平方根を$\|u\|_{H^s}$と書く．
+Fourier係数による等長同型で$H^s$はHilbert空間となり，
+有限Fourier和は$H^s$で稠密である．
+\end{definition}
+
+\begin{lemma}[Fourier射影の収束]\label{wave:lem:projection}
+$P_Nu=\sum_{|k|\le N}\widehat u(k)e^{ik\cdot x}$とする．
+任意の$s\in\mathbb R$および$u\in H^s$に対して
+$\|u-P_Nu\|_{H^s}\to0$であり，
+$\|P_Nu\|_{H^s}\le\|u\|_{H^s}$である．
+さらに$f\in C([0,T];H^s)$なら
+\[
+ \sup_{0\le t\le T}\|(I-P_N)f(t)\|_{H^s}\longrightarrow0.
+\]
+\end{lemma}
+\begin{proof}
+最初の二つの主張は非負項級数の尾部の収束による．
+連続写像$f$の像$K=f([0,T])$は$H^s$のコンパクト集合である．
+任意の$\varepsilon>0$について$K$の有限$\varepsilon$-網
+$\{v_1,\ldots,v_m\}$を取る．$\|I-P_N\|\le1$だから，
+$\|f(t)-v_j\|<\varepsilon$なら
+\[
+ \|(I-P_N)f(t)\|
+ \le\varepsilon+\max_j\|(I-P_N)v_j\|.
+\]
+右辺の第二項は各$v_j$に対して零へ収束する．
+$\varepsilon$の任意性から一様収束を得る．
+\end{proof}
+
+\section{有限Fourier系とエネルギー等式}
+$\omega_k=(1+|k|^2)^{1/2}$とおく．まず有限個の
+Fourierモードの問題を解く．
+
+\begin{lemma}[有限次元のDuhamel公式]\label{wave:lem:duhamel}
+$a,b\in\mathbb C$，$h\in C([0,T];\mathbb C)$とする．
+\[
+ y(t)=a\cos(\omega t)+\frac b\omega\sin(\omega t)
+ +\int_0^t\frac{\sin(\omega(t-\tau))}{\omega}
+ h(\tau)\,d\tau\quad(\omega>0)
+\]
+は$C^2([0,T])$に属し，
+$y''+\omega^2y=h$，$y(0)=a$，$y'(0)=b$を満たす．
+この解は一意である．
+\end{lemma}
+\begin{proof}
+積分内の核が滑らかで$h$が連続なので，
+Leibnizの積分微分法則を二回適用できる．
+最初の微分では積分の上端からの境界項は零であり，
+二回目では境界項$h(t)$を得る．
+初期値は式に$t=0$を代入して求める．
+同次方程式の解の差$z$について
+$\frac d{dt}(|z'|^2+\omega^2|z|^2)=0$であり，
+零初期値なら全時刻で零となる．
+\end{proof}
+
+\begin{lemma}[有限系のエネルギー評価]\label{wave:lem:energy}
+$u_N$を有限Fourier和で，
+\[
+ (u_N)_{tt}-\Delta u_N+u_N=P_Nf
+\]
+とする．$E_{s,N}(t)=\|(u_N)_t(t)\|_{H^s}^2+
+\|u_N(t)\|_{H^{s+1}}^2$とおくと，
+\[
+ E_{s,N}(t)^{1/2}\le
+ E_{s,N}(0)^{1/2}+\int_0^t\|P_Nf(\tau)\|_{H^s}\,d\tau.
+\]
+\end{lemma}
+\begin{proof}
+$\widehat u_N(k,t)=y_k(t)$，
+$\widehat f(k,t)=h_k(t)$とおく．
+有限和なので項別微分して
+\[
+ \frac d{dt} E_{s,N}(t)
+ =2\operatorname{Re}\sum_{|k|\le N}
+ (1+|k|^2)^s\,\overline{y_k'(t)}h_k(t)
+ \le2 E_{s,N}(t)^{1/2}\|P_N f(t)\|_{H^s}
+\]
+を得る．$E_{s,N}$が零となる時刻での除算を避けるため
+$\sqrt{E_{s,N}+\delta}$を微分すると，
+\[
+ \frac d{dt}\sqrt{E_{s,N}(t)+\delta}
+ \le\|P_N f(t)\|_{H^s}
+\]
+となる．積分して$\delta\downarrow0$とすれば結論を得る．
+\end{proof}
+
+\section{周期線形波動方程式の適切性}
+\begin{theorem}[Sobolev空間での大域的適切性]\label{wave:thm:wellposed}
+$s\in\mathbb R$，$T>0$とする．
+$u_0\in H^{s+1}(\mathbb T^d)$，
+$u_1\in H^s(\mathbb T^d)$，
+$f\in C([0,T];H^s(\mathbb T^d))$を与える．
+このとき次の初期値問題
+\[
+ \begin{cases}
+ u_{tt}-\Delta u+u=f &(t,x)\in[0,T]\times\mathbb T^d,\\
+ u(0)=u_0,\quad u_t(0)=u_1
+ \end{cases}
+\]
+には，
+\[
+ u\in C([0,T];H^{s+1})\cap C^1([0,T];H^s)
+       \cap C^2([0,T];H^{s-1})
+\]
+に属する解がただ一つ存在する．等式は$H^{s-1}$の意味で成立する．
+さらに
+\[
+ \bigl(\|u_t(t)\|_{H^s}^2+\|u(t)\|_{H^{s+1}}^2\bigr)^{1/2}
+ \le
+ \bigl(\|u_1\|_{H^s}^2+\|u_0\|_{H^{s+1}}^2\bigr)^{1/2}
+ +\int_0^t\|f(\tau)\|_{H^s}\,d\tau
+\]
+が$0\le t\le T$で成立する．解は初期値と右辺に連続に依存する．
+\end{theorem}
+\begin{proof}
+補題\ref{wave:lem:duhamel}を各$k$に適用し，
+$P_Nu_0,P_Nu_1,P_Nf$を初期値・右辺とする
+有限Fourier和$u_N$を構成する．
+$N>M$とすると$w=u_N-u_M$は有限Fourier系の解で，
+初期値は$(P_N-P_M)u_0,(P_N-P_M)u_1$，右辺は
+$(P_N-P_M)f$である．補題\ref{wave:lem:energy}から
+\[
+ \begin{aligned}
+ &\sup_{0\le t\le T}
+ \bigl(\|w_t(t)\|_{H^s}^2+\|w(t)\|_{H^{s+1}}^2\bigr)^{1/2}\\
+ &\quad\le
+ \bigl(\|(P_N-P_M)u_1\|_{H^s}^2
+ +\|(P_N-P_M)u_0\|_{H^{s+1}}^2\bigr)^{1/2}\\
+ &\qquad+\int_0^T\|(P_N-P_M)f(\tau)\|_{H^s}\,d\tau.
+ \end{aligned}
+\]
+右辺の初期値の部分はFourier射影の収束によって零へ向かい，
+積分項は補題\ref{wave:lem:projection}により零へ向かう．
+従って$(u_N)$は$C([0,T];H^{s+1})$でCauchy列，
+$((u_N)_t)$は$C([0,T];H^s)$でCauchy列である．
+完備性により極限$u,v$が存在する．
+$u_N(t)=u_N(0)+\int_0^t (u_N)_t(\tau)\,d\tau$に
+極限を取れば$u(t)=u_0+\int_0^t v(\tau)\,d\tau$である．
+よって$u\in C^1([0,T];H^s)$で$u_t=v$となり，
+$u\in C([0,T];H^{s+1})$でもある．
+
+有限系の方程式より
+\[
+ (u_N)_{tt}=\Delta u_N-u_N+P_Nf.
+\]
+$\Delta-1:H^{s+1}\to H^{s-1}$は有界線形なので，
+右辺は$C([0,T];H^{s-1})$で
+$\Delta u-u+f$へ一様収束する．
+$(u_N)_t(t)=(u_N)_t(0)+\int_0^t(u_N)_{tt}(\tau)d\tau$
+に極限を取ることで
+$u_t(t)=u_1+\int_0^t(\Delta u-u+f)(\tau)\,d\tau$
+を得る．従って$u\in C^2([0,T];H^{s-1})$で，
+方程式と初期条件が成立する．
+
+補題\ref{wave:lem:energy}の評価で$N\to\infty$とすると
+表示したエネルギー不等式を得る．一意性は，
+零初期値・零右辺の差についてエネルギー評価を示せばよい．
+一般の同次解$z$を有限射影すると$P_Nz$は有限系の解だから
+補題\ref{wave:lem:energy}の評価を適用でき，
+$N\to\infty$で$z=0$となる．
+二組の初期値と右辺の差に同じ評価を適用すれば
+連続依存性が従う．
+\end{proof}
+
+\begin{corollary}[任意の有限時間への延長]
+上定理のデータが$f\in C([0,\infty);H^s)$で与えられているなら，
+一意な大域解$u$が任意の有限区間$[0,T]$で上定理の
+正則性とエネルギー評価を満たす．
+\end{corollary}
+\begin{proof}
+各$T$についての解は，短い区間に制限すると
+その区間での一意な解と一致する．ゆえに解を貼り合わせられる．
+\end{proof}
+
+\section{射程と非線形方程式への接続}
+\begin{remark}
+$+u$の項は零Fourierモードの振動数も正にするために置いた．
+この項が無い純粋な波動方程式も零モードを別に扱えば
+同様の方法で証明できる．本稿は周期空間上の線形方程式を対象とし，
+一般の有界領域での境界値問題や任意の非線形双曲型方程式の
+局所適切性を結論していない．
+\end{remark}
+\begin{remark}
+Einstein方程式の初期値問題では，計量に依存する非線形係数，
+拘束方程式，ゲージ条件，微分損失の管理が別途必要となる．
+本稿の線形適切性はその一つの分析的前提を与えるが，
+Einstein方程式のCauchy問題を解決したことにはならない．
+\end{remark}
+
+
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{熱方程式のエネルギー減衰．}
+\begin{proposition}
+$u$ を $[0,T]\times[0,1]$ 上の十分滑らかな
+熱方程式
+$u_t=u_{xx}$ の解とし，
+$u(t,0)=u(t,1)=0$ を仮定する．
+このとき
+\[
+E(t)=\frac12\int_0^1u(t,x)^2\,dx
+\]
+は非増加であり，
+\[
+E'(t)=-\int_0^1u_x(t,x)^2\,dx\le0.
+\]
+\end{proposition}
+\begin{proof}
+時間微分と積分を交換して方程式を代入すると
+\[
+E'(t)=\int_0^1uu_t\,dx
+=\int_0^1uu_{xx}\,dx.
+\]
+部分積分すると
+$[uu_x]_0^1-\int_0^1u_x^2dx$ であり，
+境界条件から境界項は零となる．
+\end{proof}
+\begin{corollary}
+同じ初期値と零境界条件を持つ
+二つの十分滑らかな熱方程式の解は一致する．
+\end{corollary}
+\begin{proof}
+解の差 $w$ に上命題を適用すると
+$E_w(0)=0$ かつ $0\le E_w(t)\le0$．
+よって全ての $t$ で $w(t,\cdot)=0$．
+\end{proof}
+\noindent\textbf{到達確認．}
+$u(t,x)=e^{-\pi^2t}\sin(\pi x)$ が
+熱方程式と境界条件を満たすか確かめよ．
+\par\noindent\textbf{解答．}
+$u_t=-\pi^2u$，$u_{xx}=-\pi^2u$，
+境界では正弦が零となるので満たす．
+\end{document}

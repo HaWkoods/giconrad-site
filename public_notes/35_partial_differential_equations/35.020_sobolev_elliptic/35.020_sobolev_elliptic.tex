@@ -1,0 +1,1705 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Sobolev空間と楕円型方程式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Lebesgue積分，弱微分の定義，実Hilbert空間のRiesz表現定理，Fourier変換の基本事項である．
+Lax--Milgramの定理と必要な弱解の存在定理は本稿で証明する．
+本稿の具体的な到達課題は，一次元Poisson方程式の弱解を厳密に構成する．
+
+\section{弱微分とHilbert空間}
+$\Omega\subset\mathbb R^n$ を有界開集合とする．
+$H^1(\Omega)$ は $u\in L^2(\Omega)$ とその各弱偏微分
+$\partial_i u\in L^2(\Omega)$ からなる空間とする．
+\begin{proposition}
+$H^1(\Omega)$ は
+\[
+ (u,v)_{H^1}=\int_\Omega uv+\sum_{i=1}^n\int_\Omega\partial_i u\partial_i v
+\]
+によって実Hilbert空間になる．
+\end{proposition}
+\begin{proof}
+$u_j$ をCauchy列とすると $L^2$ の完備性より
+$u_j\to u$，$\partial_i u_j\to g_i$ が $L^2$ で成立する．
+$\varphi\in C_c^\infty(\Omega)$ に対して
+$\int u_j\partial_i\varphi=-\int\partial_i u_j\varphi$ に極限を取れば
+$\int u\partial_i\varphi=-\int g_i\varphi$．
+従って $g_i$ は $u$ の弱偏微分であり $u_j\to u$ は $H^1$ で成立する．
+\end{proof}
+\section{Lax--Milgramの定理}
+\begin{theorem}[Lax--Milgram]\label{thm:LM}
+$H$ を実Hilbert空間，$a:H\times H\to\mathbb R$ を双線形形式とし，
+$|a(u,v)|\le C\norm u\norm v$，$a(u,u)\ge\alpha\norm u^2$（$\alpha>0$）を仮定する．
+任意の有界線形汎関数 $F\in H^*$ に対して
+$ a(u,v)=F(v)$（すべての $v\in H$）を満たす $u\in H$ がただ一つ存在し，
+$\norm u\le\norm F/\alpha$．
+\end{theorem}
+\begin{proof}
+Rieszの表現定理により有界線形作用素 $T:H\to H$ と $f\in H$ が存在して
+$a(u,v)=(Tu,v)$，$F(v)=(f,v)$ となる．
+$(Tu,u)\ge\alpha\norm u^2$ から $\norm{Tu}\ge\alpha\norm u$ であり，
+$T$ は単射で，像は閉じている．
+また $w\in(\operatorname{Ran}T)^\perp$ なら $T^*w=0$．
+$0=(T^*w,w)=(w,Tw)=a(w,w)\ge\alpha\norm w^2$ より $w=0$．
+従って像は稠密かつ閉，すなわち全空間である．
+$Tu=f$ に唯一の解があり，
+$\alpha\norm u^2\le a(u,u)=F(u)\le\norm F\norm u$ から評価を得る．
+\end{proof}
+\section{Poisson方程式の弱解}
+$\Omega=(0,L)$ とし，$H_0^1(0,L)$ は $C_c^\infty(0,L)$ の
+$H^1$-閉包とする．
+\begin{lemma}[Poincar\'e不等式]
+$u\in H_0^1(0,L)$ に対し
+$\norm{u}_{L^2}\le L\norm{u'}_{L^2}$ が成立する．
+\end{lemma}
+\begin{proof}
+$u\in C_c^\infty$ なら
+$u(x)=\int_0^x u'(s)ds$ から
+$|u(x)|^2\le L\int_0^L|u'|^2$ が成立する．
+$x$ で積分して $\norm u_{L^2}^2\le L^2\norm{u'}_{L^2}^2$．
+密度により $H_0^1$ の全元へ拡張する．
+\end{proof}
+\begin{corollary}
+$f\in L^2(0,L)$ に対し，$u\in H_0^1(0,L)$ で
+\[
+ \int_0^L u'v'\,dx=\int_0^L fv\,dx
+ \quad(v\in H_0^1(0,L))
+\]
+を満たすものが一意に存在する．
+\end{corollary}
+\begin{proof}
+$\norm u_H=\norm{u'}_{L^2}$ は補題により $H_0^1$ の完備なノルムである．
+$a(u,v)=\int u'v'$ はこのノルムで有界・強圧的である．
+$F(v)=\int fv$ はPoincar\'e不等式により有界であるから，
+定理\ref{thm:LM}を適用する．
+\end{proof}
+\begin{remark}
+区間の場合の弱解の可解性を示した．有界Lipschitz領域の一般トレース定理は後続の補遺で証明する．
+\end{remark}
+
+
+\section{任意次元のDirichlet問題}
+\begin{lemma}[有界領域のPoincar\'e不等式]
+$\Omega\subset\mathbb R^n$ を有界開集合とする．
+ある $C_\Omega>0$ が存在して
+\[
+ \norm u_{L^2(\Omega)}\le C_\Omega
+ \norm{\nabla u}_{L^2(\Omega)}\qquad
+ (u\in H_0^1(\Omega))
+\]
+が成立する．
+\end{lemma}
+\begin{proof}
+$\Omega\subset(a,b)\times\mathbb R^{n-1}$ となる $a<b$ を取る．
+$u\in C_c^\infty(\Omega)$ を零で延長して考えると，
+各 $x'=(x_2,\ldots,x_n)$ について
+$u(x_1,x')=\int_a^{x_1}\partial_1u(s,x')ds$ である．
+Cauchy--Schwarzから
+$|u(x_1,x')|^2\le(b-a)\int_a^b|\partial_1u(s,x')|^2ds$．
+$x_1,x'$ について積分して
+$\norm u_{L^2(\Omega)}\le(b-a)\norm{\partial_1u}_{L^2(\Omega)}$ を得る．
+$H_0^1(\Omega)$ は $C_c^\infty(\Omega)$ の閉包だから，密度で延長する．
+\end{proof}
+\begin{theorem}[有界領域上の楕円型弱解]
+$\Omega\subset\mathbb R^n$ を有界開集合とし，
+$A(x)=(a_{ij}(x))$ を有界可測な実行列値関数とする．
+ある $\lambda>0$ について
+$\xi^TA(x)\xi\ge\lambda|\xi|^2$（ほとんど至る所の $x$ と全 $\xi$）を仮定する．
+$c\in L^\infty(\Omega)$，$c\ge0$ とし，$f\in L^2(\Omega)$ とする．
+このときただ一つの $u\in H_0^1(\Omega)$ が存在して
+\[
+ \int_\Omega A\nabla u\cdot\nabla v+cuv\,dx
+ =\int_\Omega fv\,dx\qquad(v\in H_0^1(\Omega))
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$\norm u_H=\norm{\nabla u}_{L^2}$ は前補題により
+$H_0^1(\Omega)$ 上の完備なノルムとなる．
+左辺の双線形形式を $a(u,v)$ と書くと
+$|a(u,v)|\le(\norm A_\infty+\norm c_\infty C_\Omega^2)
+\norm u_H\norm v_H$ であり，
+$a(u,u)\ge\lambda\norm u_H^2$ が成立する．
+また右辺は
+$|\int fv|\le C_\Omega\norm f_2\norm v_H$ により有界線形汎関数である．
+Lax--Milgramの定理を適用すれば存在・一意性を得る．
+\end{proof}
+\begin{remark}
+この結果は境界の滑らかさを仮定せず弱解の存在を与える．
+一方，$H^2$-正則性やSobolev埋め込みは別の定理であり，
+後続の補遺ではトレース定理を証明するが，任意Lipschitz領域の高階楕円正則性は別問題として扱う．
+\end{remark}
+\section{全空間の楕円型正則性の一例}
+\begin{theorem}[$1-\Delta$ の$L^2$理論]
+$f\in L^2(\mathbb R^n)$ に対し
+$(1-\Delta)u=f$ を分布の意味で満たす $u\in H^1(\mathbb R^n)$ は
+ただ一つ存在する．しかも $u\in H^2(\mathbb R^n)$ で
+\[
+ \int_{\mathbb R^n}(1+|\xi|^2)^2|\widehat u(\xi)|^2d\xi
+ =\norm f_2^2
+\]
+となる（Fourier変換をPlancherelの正規化で取る）．
+\end{theorem}
+\begin{proof}
+Fourier変換で $-\Delta$ は乗数 $|\xi|^2$ に移る．
+そこで $\widehat u(\xi)=\widehat f(\xi)/(1+|\xi|^2)$ と定める．
+Plancherelの定理より表示した等式が成立し，
+$\int(1+|\xi|^2)^2|\widehat u|^2<\infty$ だから
+$u\in H^2$ である．
+$\mathcal S(\mathbb R^n)$ の試験関数を用いたFourier変換の等式から
+$(1-\Delta)u=f$ が分布として成立する．
+同次方程式の $H^1$ 解 $v$ は
+$(1+|\xi|^2)\widehat v=0$ だから零であり，一意性を得る．
+\end{proof}
+
+\section{Fourier変換によるSobolev埋め込み}
+\begin{definition}
+$s\ge0$ とし，Fourier変換を $L^2$-等長に規格化する．
+\[
+ H^s(\mathbb R^n)=\left\{u\in L^2(\mathbb R^n):
+ \int_{\mathbb R^n}(1+|\xi|^2)^s|\widehat u(\xi)|^2\,d\xi<\infty\right\}
+\]
+と置き，右辺の積分の平方根を $\norm u_{H^s}$ とする．
+\end{definition}
+\begin{theorem}[高階Sobolev空間の連続関数への埋め込み]
+$s>n/2$ とする．任意の $u\in H^s(\mathbb R^n)$ は
+ある一意の連続で無限遠において零へ収束する代表 $\widetilde u$ を持ち，
+\[
+ \norm{\widetilde u}_\infty\le C_{n,s}\norm u_{H^s}
+\]
+が成立する．さらに整数 $k\ge0$，$s>n/2+k$ なら
+$\widetilde u$ は $k$ 回連続微分可能で，$|\alpha|\le k$ について
+$\norm{\partial^\alpha\widetilde u}_\infty\le C_{n,s,k}\norm u_{H^s}$
+が成立する．
+\end{theorem}
+\begin{proof}
+極座標で積分すると
+$\int_{\mathbb R^n}(1+|\xi|^2)^{-s}d\xi<\infty$ は
+$s>n/2$ と同値である．従ってCauchy--Schwarzにより
+\[
+ \int_{\mathbb R^n}|\widehat u(\xi)|d\xi
+ \le\left(\int(1+|\xi|^2)^{-s}d\xi\right)^{1/2}
+ \norm u_{H^s}.
+\]
+右辺が有限だから逆Fourier積分は絶対かつ一様に収束し，
+連続な関数 $\widetilde u$ を定める．$L^2$ における
+Fourier反転と一致するので $u$ の代表である．
+無限遠で零へ収束することは $L^1$ 関数のFourier変換に対する
+Riemann--Lebesgueの補題による．一様ノルムの評価も上式から従う．
+$|\alpha|\le k$ なら
+$|\xi^\alpha|(1+|\xi|^2)^{-s/2}$ は二乗可積分である．
+同じ評価を $(i\xi)^\alpha\widehat u(\xi)$ に適用し，
+積分記号下の微分を優収束定理で正当化すると，
+各階の微分が連続で指定の評価を満たす．
+\end{proof}
+\begin{remark}
+これは高階の $H^s$ 空間の埋め込みを全空間で証明したものである．
+$H_0^1(\Omega)$ の臨界指数への埋め込みや不規則境界の
+トレース定理まで主張するものではない．
+\end{remark}
+
+
+\section{区間上のトレースと零境界条件}
+\begin{lemma}[一次元Sobolev関数の連続代表]
+$I=(0,L)$ とする．$u\in H^1(I)$ に対し，
+絶対連続な代表 $\widetilde u\in C([0,L])$ が一意に存在し，
+\[
+ \widetilde u(x)-\widetilde u(y)=\int_y^x u'(t)\,dt
+ \quad(0\le x,y\le L)
+\]
+となる．
+\end{lemma}
+\begin{proof}
+$u'$ を弱微分とし $F(x)=\int_0^x u'(t)\,dt$ と置く．
+$F$ は絶対連続で，部分積分によりその弱微分は $u'$ である．
+従って $w=u-F$ の分布としての微分は零である．
+零平均の任意の $\varphi\in C_c^\infty(I)$ に対し，
+$\psi(x)=\int_0^x\varphi(t)\,dt$ は $C_c^\infty(I)$ に属するので
+$\int_I w\varphi=-\langle w',\psi\rangle=0$．
+$\int_I\rho=1$ となる $\rho\in C_c^\infty(I)$ を一つ固定すれば，
+任意の試験関数 $\eta$ に対して
+$\eta-(\int\eta)\rho$ は零平均だから
+$\int w\eta=(\int w\rho)\int\eta$．
+よって $w$ はほとんど至る所定数である．
+$u=F+c$ の連続代表を取ればよい．
+二つの連続代表がほとんど至る所一致すれば至る所一致するので一意である．
+\end{proof}
+\begin{theorem}[端点トレース]
+$\operatorname{Tr}:H^1(0,L)\to\mathbb R^2$ を
+$\operatorname{Tr}(u)=(\widetilde u(0),\widetilde u(L))$ と定めると，
+これは連続な全射線形写像であり
+\[
+ \ker\operatorname{Tr}=H^1_0(0,L)
+\]
+が成り立つ．ここで $H^1_0(I)$ は $C_c^\infty(I)$ の
+$H^1(I)$ における閉包である．
+\end{theorem}
+\begin{proof}
+代表の公式から
+$u(0)=u(x)-\int_0^x u'(t)\,dt$ である．
+$x$ について平均を取ってCauchy--Schwarzを用いると
+\[
+ |u(0)|\le L^{-1/2}\norm{u}_{L^2}
+               +L^{1/2}\norm{u'}_{L^2}.
+\]
+同様の評価が $u(L)$ にも成り立つためトレースは連続である．
+任意の端点値 $(a,b)$ は一次関数
+$u(x)=a+(b-a)x/L$ で実現できるから全射である．
+$C_c^\infty(I)$ は両端で零なので，連続性により
+$H^1_0(I)\subset\ker\operatorname{Tr}$．
+
+逆に $u(0)=u(L)=0$ とする．$0<\varepsilon<L/4$ に対し
+滑らかな切断関数 $\chi_\varepsilon$ を，
+$0\le\chi_\varepsilon\le1$，端点から距離 $\varepsilon$ 以下で零，
+端点から距離 $2\varepsilon$ 以上で1，
+$|\chi_\varepsilon'|\le C/\varepsilon$ となるよう選ぶ．
+$u(x)=\int_0^x u'(t)\,dt$ より
+\[
+ \int_0^{2\varepsilon}|u(x)|^2dx
+ \le\int_0^{2\varepsilon}x\int_0^x|u'(t)|^2dt\,dx
+ \le2\varepsilon^2\int_0^{2\varepsilon}|u'(t)|^2dt.
+\]
+右端にも同様の評価がある．従って
+$\norm{\chi_\varepsilon'u}_{L^2}\to0$．
+また $(\chi_\varepsilon-1)u\to0$ および
+$(\chi_\varepsilon-1)u'\to0$ は優収束定理から従う．
+ゆえに $\chi_\varepsilon u\to u$ が $H^1(I)$ で成立する．
+$\chi_\varepsilon u$ は内部に台を持つ $H^1$ 関数だから，
+零拡張した後に十分小さい幅の標準平滑化核と畳み込めば
+$C_c^\infty(I)$ の関数で $H^1$ 近似できる．
+従って $u\in H^1_0(I)$ である．
+\end{proof}
+\begin{remark}
+ここで証明したのは区間上のトレース定理である．
+一般のLipschitz領域の境界における
+$H^1(\Omega)\to H^{1/2}(\partial\Omega)$ の有界なトレース写像は
+追加の局所座標・拡張定理を必要とする．
+\end{remark}
+
+
+\section{一般Lipschitzトレース定理の補遺}
+以下では零境界条件をトレースの核として特徴づけ，半空間のFourier解析から一般Lipschitz領域へ拡張する．
+
+\section{問題の定式化}
+本稿では，有界Lipschitz領域 $\Omega\subset\mathbb R^n$（$n\ge2$）における
+Sobolevトレース定理を証明する．
+主結果は連続な全射
+\[
+ \operatorname{Tr}:H^1(\Omega)\longrightarrow H^{1/2}(\partial\Omega)
+\]
+と，その有界な右逆作用素の構成，および
+\[
+ \ker\operatorname{Tr}=H_0^1(\Omega)
+\]
+である．必要な局所延長と稠密性を，境界の平坦化を用いて示す．
+
+前提にする基本事項は，Sobolev弱微分，Fourier変換のPlancherel定理，
+標準mollifierによる近似，Lipschitz写像のほとんど至る所での微分可能性
+（Rademacherの定理），変数変換公式，および有限分割単位の存在である．
+これらは境界トレース定理そのものを前提とするものではない．
+
+\begin{definition}[Lipschitz領域]
+有界開集合 $\Omega\subset\mathbb R^n$ がLipschitz領域であるとは，
+任意の $x_0\in\partial\Omega$ の近傍で座標を剛体運動により選び直すと，
+ある $a>0$，開球 $B\subset\mathbb R^{n-1}$，Lipschitz函数
+$\varphi:B\to\mathbb R$ が存在して，局所的に
+\[
+ \Omega=\{(x',t):x'\in B,\ t>\varphi(x')\}
+\]
+と表されることをいう．有限個のこのような境界近傍で
+$\partial\Omega$ を覆える．
+\end{definition}
+
+\begin{remark}
+各境界座標は，境界までの距離の比較に必要な余裕を持って
+少し大きい座標近傍を用意しておく．
+以下の局所的な函数は，この余裕の内側に台を置く．
+この処理により，垂直方向の平行移動や畳み込みを
+近傍の側面境界に干渉せずに行える．
+\end{remark}
+
+\section{半空間の一次元評価とFourierトレース}
+\begin{lemma}[半直線の端点値]
+$v\in H^1(0,\infty)$ は連続な代表を持ち，任意の $a>0$ に対して
+\[
+ a|v(0)|^2\le\int_0^\infty(a^2|v(t)|^2+|v'(t)|^2)\,dt
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+一次元Sobolev函数はコンパクト区間上絶対連続な代表を持つ．
+$v\in L^2(0,\infty)$ だから $t_k\to\infty$ で
+$v(t_k)\to0$ となる部分列が取れる．
+$|v|^2$ の積分公式から
+\[
+ |v(0)|^2=-2\operatorname{Re}\int_0^\infty
+     v'(t)\overline{v(t)}\,dt
+\]
+を得る．右辺はCauchy--Schwarzで絶対収束する．
+$2a|v'||v|\le|v'|^2+a^2|v|^2$ を積分すればよい．
+\end{proof}
+
+$\mathbb R^n_+=\mathbb R^{n-1}\times(0,\infty)$，$m=n-1$ と置く．
+$H^{1/2}(\mathbb R^m)$ は
+\[
+ \norm g_{H^{1/2}(\mathbb R^m)}^2
+ =\int_{\mathbb R^m}(1+|\xi|^2)^{1/2}|\widehat g(\xi)|^2\,d\xi
+\]
+をノルムとするHilbert空間として定義する．
+
+\begin{lemma}[半空間上の滑らかな函数の稠密性]
+\label{lem:halfspace-density}
+$H^1(\mathbb R^n_+)$ において
+$C_c^\infty(\overline{\mathbb R^n_+})$ は稠密である．
+ここで右辺は $\mathbb R^n$ 上の滑らかな
+コンパクト台函数の半空間への制限全体を表す．
+\end{lemma}
+\begin{proof}
+まず $u\in H^1(\mathbb R^n_+)$ とする．
+$\chi\in C_c^\infty(\mathbb R^n)$ を
+$0\le\chi\le1$，
+$\chi=1$ on $B(0,1)$，
+$\operatorname{supp}\chi\subset B(0,2)$
+となるように取り，$\chi_R(x)=\chi(x/R)$ と置く．
+積の弱微分公式から
+\[
+ \partial_j(\chi_Ru)
+ =\chi_R\partial_ju+(\partial_j\chi_R)u .
+\]
+優収束定理と
+$\norm{\nabla\chi_R}_\infty\le C/R$ により
+$\chi_Ru\to u$ が $H^1(\mathbb R^n_+)$ で成り立つ．
+よって半空間の閉包内で有界な台を持つ函数を
+近似すれば十分である．
+
+そのような函数を $v$ とする．
+$v$ および各弱導函数を $L^2$ 函数として
+全空間に零延長したものを，それぞれ
+$v^0,(\partial_jv)^0$ と書く．
+ここでは $v^0$ が全空間の $H^1$ に属するとは
+仮定しない．
+$\varepsilon>0$ とし
+\[
+ v_\varepsilon(x',t)=v(x',t+\varepsilon)
+ \qquad(t>-\varepsilon)
+\]
+と定める．これは
+$\mathbb R^{n-1}\times(-\varepsilon,\infty)$ 上の
+$H^1$ 函数であり，弱導函数は対応する
+$\partial_jv$ の平行移動に等しい．
+
+$\theta\in C^\infty(\mathbb R)$ を
+\[
+ \theta(t)=0\ (t\le-3/4),\qquad
+ \theta(t)=1\ (t\ge-1/2)
+\]
+となるように取る．
+$t>-\varepsilon$ で
+$W_\varepsilon(x',t)=\theta(t/\varepsilon)
+ v_\varepsilon(x',t)$ と置き，それ以外では零とする．
+切断函数の積の弱微分公式から，
+$W_\varepsilon\in H^1(\mathbb R^n)$ である．
+実際，$W_\varepsilon$ は
+$t\le-3\varepsilon/4$ で恒等的に零であるため，
+延長の境界に跳びは生じない．
+一方 $t>0$ では $\theta(t/\varepsilon)=1$ だから，
+\[
+ W_\varepsilon(x',t)=v(x',t+\varepsilon),\qquad
+ \partial_jW_\varepsilon(x',t)
+ =(\partial_jv)(x',t+\varepsilon)
+\]
+がほとんど至る所成り立つ．
+$L^2(\mathbb R^n)$ の平行移動連続性を
+$v^0$ と $(\partial_jv)^0$ に適用すると
+\[
+ \norm{W_\varepsilon|_{\mathbb R^n_+}-v}
+       _{H^1(\mathbb R^n_+)}
+ \longrightarrow0
+ \qquad(\varepsilon\downarrow0)
+\]
+を得る．
+
+$\varepsilon$ を固定して標準mollifierを取れば，
+$\rho_\delta*W_\varepsilon$ は
+$\mathbb R^n$ 上の滑らかなコンパクト台函数であり，
+$\delta\downarrow0$ で $W_\varepsilon$ に
+$H^1(\mathbb R^n)$ 収束する．
+その半空間への制限を取ってから，
+$\varepsilon$ と $\delta$ を順に小さくすれば，
+$v$ を $C_c^\infty(\overline{\mathbb R^n_+})$ で
+$H^1$ 近似できる．最後に $R\to\infty$ とする．
+\end{proof}
+
+\begin{theorem}[半空間のトレース不等式]
+$u\in C_c^\infty(\overline{\mathbb R^n_+})$ とし，
+$g(x')=u(x',0)$ とする．このとき
+\[
+ \norm g_{H^{1/2}(\mathbb R^m)}
+ \le\norm u_{H^1(\mathbb R^n_+)}.
+\]
+従って境界への制限は，連続作用素
+$\operatorname{Tr}_+:H^1(\mathbb R^n_+)\to H^{1/2}(\mathbb R^m)$
+へ一意に延長される．
+\end{theorem}
+\begin{proof}
+$x'$ に関するFourier変換を $\widehat u(\xi,t)$ とする．
+前補題を各 $\xi$ について
+$a=(1+|\xi|^2)^{1/2}$ で適用すると
+\[
+ (1+|\xi|^2)^{1/2}|\widehat u(\xi,0)|^2
+ \le\int_0^\infty
+ \{(1+|\xi|^2)|\widehat u(\xi,t)|^2
+                 +|\partial_t\widehat u(\xi,t)|^2\}\,dt.
+\]
+Plancherelの等式とTonelliの定理によって $\xi$ で積分すればよい．
+補題\ref{lem:halfspace-density}により
+$C_c^\infty(\overline{\mathbb R^n_+})$ は
+$H^1(\mathbb R^n_+)$ に稠密である．
+従って不等式はこの近似列に沿って極限へ移り，
+境界制限の一意な有界線形延長が得られる．
+\end{proof}
+
+\begin{lemma}[半空間の境界値と平行断面]
+\label{lem:halfspace-slice}
+任意の $w\in H^1(\mathbb R^n_+)$ は，
+$t\ge0$ に関して $L^2(\mathbb R^{n-1})$ 値連続な
+代表 $t\mapsto w_t$ を持つ．さらに
+\[
+ w_t\longrightarrow\operatorname{Tr}_+w
+ \quad\text{in }L^2(\mathbb R^{n-1})
+ \qquad(t\downarrow0)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+まず $w\in C_c^\infty(\overline{\mathbb R^n_+})$ とする．
+任意の $s,t\ge0$ に対して
+\[
+ \norm{w_t-w_s}_{L^2}
+ \le |t-s|^{1/2}\norm{\partial_tw}_{L^2(\mathbb R^n_+)}
+\]
+が微積分学の基本定理とCauchy--Schwarzから従う．
+また半直線の端点値の補題を
+$v(r)=w(x',t+r)$，$a=1$ に適用して
+$x'$ について積分すると
+\[
+ \sup_{t\ge0}\norm{w_t}_{L^2}^2
+ \le\norm{w}_{H^1(\mathbb R^n_+)}^2
+\]
+を得る．
+一般の $w$ に対して
+補題\ref{lem:halfspace-density}により
+$w^{(k)}\in C_c^\infty(\overline{\mathbb R^n_+})$，
+$w^{(k)}\to w$ in $H^1$ を取る．
+上の上限評価を差に適用すると，
+$w^{(k)}_t$ は $t\ge0$ にわたり
+$L^2$ で一様Cauchyとなる．
+従って $L^2$ 値連続な極限 $w_t$ を持ち，
+その代表はほとんど全ての $t>0$ で元の $w$ に一致する．
+トレース不等式と $H^1$ 収束から
+$w^{(k)}_0\to\operatorname{Tr}_+w$ in $L^2$ である．
+一方，断面の一様収束から
+$w^{(k)}_0\to w_0$ in $L^2$ なので，
+$w_0=\operatorname{Tr}_+w$ を得る．
+$t\mapsto w_t$ の連続性により結論が従う．
+\end{proof}
+
+\begin{theorem}[半空間のトレースの右逆]
+$g\in H^{1/2}(\mathbb R^m)$ に対し，
+$x'$ に関するFourier変換を用いて
+\[
+ \widehat{Eg}(\xi,t)=e^{-t(1+|\xi|^2)^{1/2}}\widehat g(\xi)
+ \qquad(t>0)
+\]
+と定める．このとき $Eg\in H^1(\mathbb R^n_+)$ であり，
+$\operatorname{Tr}_+(Eg)=g$，
+\[
+ \norm{Eg}_{H^1(\mathbb R^n_+)}^2
+ =\norm g_{H^{1/2}(\mathbb R^m)}^2
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+$a=(1+|\xi|^2)^{1/2}$ とする．
+PlancherelとTonelliの定理によって
+\[
+ \begin{aligned}
+ \norm{Eg}_{H^1}^2
+ &=\int_{\mathbb R^m}\int_0^\infty
+   (a^2+a^2)e^{-2at}|\widehat g(\xi)|^2\,dt\,d\xi\\
+ &=\int_{\mathbb R^m}a|\widehat g(\xi)|^2\,d\xi.
+ \end{aligned}
+\]
+さらに $Eg$ の $L^2$ 値断面について
+\[
+ \norm{(Eg)_t-g}_{L^2}^2
+ =\int_{\mathbb R^m}
+   |e^{-t(1+|\xi|^2)^{1/2}}-1|^2
+   |\widehat g(\xi)|^2\,d\xi
+ \longrightarrow0\qquad(t\downarrow0)
+\]
+となる．実際，被積分函数は
+$4|\widehat g(\xi)|^2$ 以下であり，
+優収束定理が使える．
+補題\ref{lem:halfspace-slice}により同じ極限は
+$\operatorname{Tr}_+(Eg)$ に等しいから，
+$\operatorname{Tr}_+(Eg)=g$ を得る．
+\end{proof}
+
+\section{分数階の差分による表示}
+$H^{1/2}(\mathbb R^m)$ のノルムは局所座標の変換に都合のよい
+差分積分によっても表される．
+
+\begin{lemma}[Gagliardo半ノルムとFourier乗数]
+$g\in H^{1/2}(\mathbb R^m)$ に対し
+\[
+ [g]_{1/2,\mathbb R^m}^2
+ =\iint_{\mathbb R^m\times\mathbb R^m}
+    \frac{|g(x)-g(y)|^2}{|x-y|^{m+1}}\,dx\,dy
+\]
+と定めると，ある $c_m>0$ が存在して
+\[
+ [g]_{1/2,\mathbb R^m}^2
+ =c_m\int_{\mathbb R^m}|\xi|\,|\widehat g(\xi)|^2\,d\xi.
+\]
+従って $\norm g_{L^2}^2+[g]_{1/2}^2$ は
+$H^{1/2}$ ノルムと同値である．
+\end{lemma}
+\begin{proof}
+まずSchwartz函数 $g$ を取る．$h=x-y$ と変数変換し，
+Plancherelを用いると
+\[
+ [g]_{1/2}^2
+ =\int_{\mathbb R^m}|\widehat g(\xi)|^2
+  \left(\int_{\mathbb R^m}
+      \frac{|e^{i\xi\cdot h}-1|^2}{|h|^{m+1}}\,dh\right)d\xi.
+\]
+内側の積分は回転不変性と $h\mapsto|\xi|^{-1}h$ により
+$c_m|\xi|$ に等しい．$c_m$ が正で有限なことは
+$|e^{it}-1|\le\min(2,|t|)$ を使えばよい．
+実際，原点近傍の動径積分は有界で，無限遠の動径積分は
+$\int_1^\infty r^{-2}dr<\infty$ となる．
+一般の $g\in H^{1/2}(\mathbb R^m)$ を取る．
+Schwartz函数は $H^{1/2}$ で稠密である：
+実際，Fourier側の重み付き $L^2$ 空間で
+コンパクト台の滑らかな函数を近似し，
+Fourier逆変換を取ればよい．
+従って $g_j\in\mathcal S$ で
+$g_j\to g$ in $H^{1/2}$ となる列を取れる．
+Schwartz函数に対して証明した等式を $g_j-g_k$ に適用すると
+\[
+ \iint
+ \frac{|(g_j-g_k)(x)-(g_j-g_k)(y)|^2}{|x-y|^{m+1}}
+ \,dx\,dy
+ =c_m\int|\xi|\,|\widehat g_j-\widehat g_k|^2\,d\xi
+ \longrightarrow0.
+\]
+よって
+$D_j(x,y)=(g_j(x)-g_j(y))/|x-y|^{(m+1)/2}$
+は $L^2(\mathbb R^m\times\mathbb R^m)$ のCauchy列である．
+その極限を $D$ とする．
+一方 $g_j\to g$ in $L^2$ なので，
+部分列を取れば $g_j(x)\to g(x)$ がほとんど至る所で成立する．
+さらに必要なら部分列を取り直すと
+$D_j(x,y)\to D(x,y)$ がほとんど至る所で成立する．
+従って対角集合を除くほとんど全ての $(x,y)$ について
+\[
+ D(x,y)=\frac{g(x)-g(y)}{|x-y|^{(m+1)/2}}
+\]
+である．
+よって $g$ のGagliardo半ノルムは有限で，
+$D_j\to D$ の $L^2$ 収束と
+$\widehat g_j\to\widehat g$ の重み付き $L^2$ 収束から
+求める等式を得る．
+最後に $1+|\xi|$ と $(1+|\xi|^2)^{1/2}$ の
+二側評価からノルムの同値性が従う．
+\end{proof}
+
+\section{Lipschitz座標でのSobolevノルム}
+境界を平坦化する写像を
+\[
+ \Phi(x',t)=(x',t+\varphi(x'))
+\]
+とする．ここで $\varphi$ はLipschitz函数である．
+$\Phi$ と $\Phi^{-1}$ はともにLipschitzであり，
+$\det D\Phi=1$ がほとんど至る所で成立する．
+
+\begin{lemma}[局所の座標変換]
+\label{lem:chart-H1}
+$B\subset\mathbb R^{n-1}$ を球，$h>0$ とし，
+$\varphi:B\to\mathbb R$ をLipschitz函数とする．
+\[
+ Q_\varphi=\Phi(B\times(-h,h)),\qquad
+ \Phi(x',s)=(x',s+\varphi(x'))
+\]
+が境界座標近傍であり，
+$\Omega\cap Q_\varphi=\Phi(B\times(0,h))$
+であるとする．
+$\chi\in C_c^\infty(Q_\varphi)$ を取る．
+$u\in H^1(\Omega)$ に対して
+\[
+ v(x',s)=(\chi u)(\Phi(x',s))
+ \quad ((x',s)\in B\times(0,h))
+\]
+を定め，それ以外の $\mathbb R^n_+$ で零とすると，
+$v\in H^1(\mathbb R^n_+)$ で
+\[
+ \norm v_{H^1(\mathbb R^n_+)}
+ \le C_\chi\norm u_{H^1(\Omega)}
+\]
+が成り立つ．
+逆に $w\in H^1(\mathbb R^n_+)$ について
+\[
+ Uw(x)=
+ \begin{cases}
+ \chi(x)w(\Phi^{-1}(x))&x\in\Omega\cap Q_\varphi,\\
+ 0&x\in\Omega\setminus Q_\varphi
+ \end{cases}
+\]
+とすれば $Uw\in H^1(\Omega)$ かつ
+$\norm{Uw}_{H^1(\Omega)}
+ \le C_\chi\norm w_{H^1(\mathbb R^n_+)}$ である．
+\end{lemma}
+\begin{proof}
+$\Phi$ と $\Phi^{-1}$ はbi-Lipschitzであり，
+Rademacherの定理によりほとんど至る所で
+\[
+ D\Phi=
+ \begin{pmatrix}I_{n-1}&0\\ \nabla\varphi&1\end{pmatrix},
+ \qquad
+ \det D\Phi=1
+\]
+が成り立つ．その微分と逆写像の微分は
+Lipschitz定数に応じて一様有界である．
+
+まず $u$ が $\overline\Omega$ の近傍で滑らかなとき，
+$\chi u$ は境界座標内で滑らかかつ有界な導函数を持つ．
+Lipschitz写像との合成に対する連鎖律より
+\[
+ \nabla((\chi u)\circ\Phi)
+ =D\Phi^{\,T}(\nabla(\chi u))\circ\Phi
+ \quad\text{a.e.}
+\]
+である．変数変換公式と
+$|\nabla(\chi u)|\le
+ |\chi||\nabla u|+|\nabla\chi||u|$
+から上記のノルム評価を得る．
+$\operatorname{supp}\chi\Subset Q_\varphi$ なので，
+平坦座標の側面 $x'\in\partial B$ と上面 $s=h$ の
+近傍で $v$ は零になる．従って人工的な境界を
+横断する零延長は $H^1$ に属する．
+一般の $u\in H^1(\Omega)$ は
+後掲のLipschitz領域での稠密性補題
+\ref{lem:lip-density}で滑らかな函数に近似する．
+ノルム評価から平坦化した列が $H^1$ で収束し，
+その極限は $L^2$ の同定から上記の $v$ に等しい．
+
+逆向きには，まず
+$w\in C_c^\infty(\overline{\mathbb R^n_+})$ を取る．
+$w\circ\Phi^{-1}$ は局所的にLipschitzであり，
+連鎖律と変数変換によって
+$\norm{Uw}_{H^1(\Omega)}
+ \le C_\chi\norm w_{H^1(\mathbb R^n_+)}$
+が従う．
+$\chi$ の台は $Q_\varphi$ の内部にあるから，
+$Q_\varphi$ の外への零延長で
+人工的な境界項は生じない．
+一般の $w$ については
+補題\ref{lem:halfspace-density}による近似と
+上記の評価で極限を取り，
+$L^2$ で同定すればよい．
+\end{proof}
+
+\begin{lemma}[Lipschitz領域上の滑らかな函数の稠密性]
+\label{lem:lip-density}
+有界Lipschitz領域 $\Omega$ に対して
+$C^\infty(\overline\Omega)$ は $H^1(\Omega)$ で稠密である．
+\end{lemma}
+\begin{proof}
+境界の有限個のグラフ座標近傍と内部の開集合を取り，
+それらに従属する滑らかな分割単位
+$\{\eta_j\}_{j=0}^N$ を選ぶ．
+$u_j=\eta_j u$ と置けば $u=\sum_j u_j$ であり，
+各 $u_j$ の台は対応する座標近傍の内部に
+コンパクトに含まれるように選べる．
+内部に台を持つ成分は零延長と通常のmollifierで
+$H^1$ 近似できる．以下，境界成分一つを考える．
+
+直交座標 $(x',t)$ で局所的に
+$\Omega=\{t>\varphi(x')\}$ と表し，
+$u_j$ の台と座標近傍の側面との間には
+正の距離があるものとする．十分小さい
+$\varepsilon>0$ について，
+\[
+ v_\varepsilon(x',t)=u_j(x',t+\varepsilon)
+ \qquad(t>\varphi(x')-\varepsilon)
+\]
+と定める．平行移動のもとで弱微分は
+$\partial_kv_\varepsilon
+ =(\partial_ku_j)(x',t+\varepsilon)$
+となるので，$v_\varepsilon$ は表示された領域の
+$H^1$ 函数である．
+$\theta\in C^\infty(\mathbb R)$ を
+\[
+ \theta(s)=0\quad(s\le-3/4),\qquad
+ \theta(s)=1\quad(s\ge-1/2)
+\]
+となるように取る．
+$t>\varphi(x')-\varepsilon$ で
+\[
+ W_\varepsilon(x',t)
+ =\theta\!\left(\frac{t-\varphi(x')}{\varepsilon}\right)
+  v_\varepsilon(x',t)
+\]
+と置き，それ以外では零と定める．
+$\varphi$ はLipschitz函数なので，
+$\theta((t-\varphi(x'))/\varepsilon)$ は
+$W^{1,\infty}$ 函数である．
+しかも $W_\varepsilon$ は
+$t\le\varphi(x')-3\varepsilon/4$ で零であり，
+台は座標近傍の内部に留まる．
+従って積の弱微分公式と零延長によって
+$W_\varepsilon\in H^1(\mathbb R^n)$ が得られる．
+元の領域側では切断函数が恒等的に1なので
+\[
+ W_\varepsilon|_\Omega
+ =u_j(x',t+\varepsilon),\qquad
+ \nabla W_\varepsilon|_\Omega
+ =(\nabla u_j)(x',t+\varepsilon)
+ \quad\text{a.e.}
+\]
+である．
+
+ここで $u_j$ とその各弱導函数を，
+単に $L^2$ 函数として $\mathbb R^n$ 上に零延長する．
+この零延長の弱微分が元の弱微分の零延長に等しいとは
+主張していない．$L^2(\mathbb R^n)$ における
+平行移動の連続性だけを用いれば，
+上の領域内部での微分表示から
+\[
+ \norm{W_\varepsilon|_\Omega-u_j}_{H^1(\Omega)}
+ \longrightarrow0\qquad(\varepsilon\downarrow0)
+\]
+が従う．
+
+$\varepsilon$ を固定すると
+$W_\varepsilon\in H^1(\mathbb R^n)$ だから，
+標準mollifierにより
+$\rho_\delta*W_\varepsilon\to W_\varepsilon$
+が $\delta\downarrow0$ で $H^1(\mathbb R^n)$ の意味で成り立つ．
+$\delta$ を座標近傍の台の余裕より小さく選べば，
+$\rho_\delta*W_\varepsilon$ はその近傍に台を持つ
+$C_c^\infty(\mathbb R^n)$ 函数である．
+従って三角不等式から
+\[
+ \norm{(\rho_\delta*W_\varepsilon)|_\Omega-u_j}_{H^1(\Omega)}
+ \le
+ \norm{\rho_\delta*W_\varepsilon-W_\varepsilon}_{H^1(\mathbb R^n)}
+ +\norm{W_\varepsilon|_\Omega-u_j}_{H^1(\Omega)}
+\]
+となる．最初に $\varepsilon$ を，次に $\delta$ を選び，
+右辺を任意に小さくできる．
+有限個の成分について得た滑らかな近似を足せば，
+$u$ は $\overline\Omega$ の近傍で滑らかな函数によって
+$H^1(\Omega)$ 近似される．
+\end{proof}
+
+\section{境界の分数階Sobolev空間}
+$\partial\Omega$ には各Lipschitz座標の
+$g\mapsto g\circ(x'\mapsto(x',\varphi(x')))$ という対応がある．
+境界面積測度を $dS$ とする．
+
+\begin{definition}
+$H^{1/2}(\partial\Omega)$ を $g\in L^2(\partial\Omega,dS)$ で
+\[
+ \norm g_{H^{1/2}(\partial\Omega)}^2
+ =\norm g_{L^2(\partial\Omega)}^2
+ +\iint_{\partial\Omega\times\partial\Omega}
+   \frac{|g(x)-g(y)|^2}{|x-y|^n}\,dS_x\,dS_y<\infty
+\]
+を満たすものの空間とする．
+\end{definition}
+
+\begin{lemma}[境界分数階ノルムの局所化]
+\label{lem:boundary-local}
+$\eta$ を $\partial\Omega$ 上のLipschitz函数とする．
+このとき
+\[
+ \norm{\eta g}_{H^{1/2}(\partial\Omega)}
+ \le C_\eta\norm g_{H^{1/2}(\partial\Omega)}.
+\]
+さらに，$V\subset\partial\Omega$ を
+グラフ座標 $\psi:B\to V$，
+$\psi(x')=(x',\varphi(x'))$ で表される境界部分とし，
+$K\Subset B$ をコンパクト集合とする．
+$\operatorname{supp}(\eta|_{\partial\Omega})\subset\psi(K)$
+なら，
+\[
+ T_\eta g(x')=
+ \begin{cases}
+  (\eta g)(\psi(x'))&x'\in B,\\
+  0&x'\notin B
+ \end{cases}
+\]
+は $H^{1/2}(\mathbb R^{n-1})$ に属し，
+$\norm{T_\eta g}_{H^{1/2}(\mathbb R^{n-1})}
+ \le C\norm g_{H^{1/2}(\partial\Omega)}$ を満たす．
+逆に $\operatorname{supp}h\subset K$ である
+$h\in H^{1/2}(\mathbb R^{n-1})$ を
+$V$ 上で $h\circ\psi^{-1}$，$V$ の外で零として
+得られる $\widetilde h$ は
+$H^{1/2}(\partial\Omega)$ に属し，
+\[
+ \norm{\widetilde h}_{H^{1/2}(\partial\Omega)}
+ \le C\norm h_{H^{1/2}(\mathbb R^{n-1})}
+\]
+を満たす．
+\end{lemma}
+\begin{proof}
+$m=n-1$ と置く．有界Lipschitz境界は
+有限個のLipschitzグラフで覆われるから，
+ある $r_0,C>0$ に対して
+\[
+ dS(\partial\Omega\cap B(y,r))\le Cr^m
+ \quad(y\in\partial\Omega,\ 0<r<r_0)
+\]
+が成立する．実際，各グラフ上の面積要素は
+$dx'$ の有界倍であり，グラフ上の距離が $r$ 以下なら
+射影先の距離も $r$ 以下である．有限被覆を用いれば
+同じ定数で評価できる．
+従って $2^{-k-1}r_0\le|x-y|<2^{-k}r_0$
+という環状領域で積分を見積もると
+\[
+ \sup_{y\in\partial\Omega}
+ \int_{\partial\Omega}
+ \frac{\min(1,|x-y|^2)}{|x-y|^{m+1}}\,dS_x
+ <\infty.
+ \tag{$*$}
+\]
+実際，原点近くの第 $k$ 環の積分は
+$C2^{-k}r_0$ 以下であり，
+$r_0$ より遠い部分は境界面積が有限であるため
+積分可能である．
+
+$\eta$ は有界かつLipschitzであるから
+\[
+ |\eta(x)g(x)-\eta(y)g(y)|^2
+ \le 2\norm\eta_\infty^2|g(x)-g(y)|^2
+   +C|g(y)|^2\min(1,|x-y|^2).
+\]
+これを境界上で積分し，$(*)$ を適用すると
+乗算の有界性を得る．
+
+次に $\psi$ はbi-Lipschitzであり，
+面積公式から
+\[
+ dS_{\psi(x')}=
+ J_\varphi(x')\,dx',\qquad
+ 1\le J_\varphi(x')
+ =\sqrt{1+|\nabla\varphi(x')|^2}\le C.
+\]
+従って $B\times B$ 上の差分積分は
+$V\times V$ 上の差分積分と
+上下の定数倍を除き一致する．
+また $\operatorname{supp}(T_\eta g)\subset K$ であり，
+$d=\operatorname{dist}(K,\mathbb R^m\setminus B)>0$
+だから，
+\[
+ \sup_{x'\in K}\int_{\mathbb R^m\setminus B}
+       |x'-y'|^{-m-1}\,dy'<\infty.
+\]
+ゆえに $B$ の内外を結ぶ差分積分は
+$C\norm{T_\eta g}_{L^2(B)}^2$ 以下となる．
+境界上での乗算評価と合わせて
+$T_\eta g$ のノルム評価を得る．
+
+逆向きにも $V\times V$ の差分積分は
+$B\times B$ のものと比較できる．
+$\psi(K)$ は境界の相対開集合 $V$ の内部に
+コンパクトに含まれるから
+$d'=\operatorname{dist}(\psi(K),
+ \partial\Omega\setminus V)>0$
+（$V=\partial\Omega$ なら交差積分は不要）である．
+従って $V$ と $\partial\Omega\setminus V$ の
+交差積分は $C\norm h_{L^2}^2$ 以下である．
+これで逆向きの評価も従う．
+\end{proof}
+
+\section{Lipschitz領域の一般トレース定理}
+\begin{theorem}[Sobolevトレース定理]
+$\Omega\subset\mathbb R^n$ を有界Lipschitz領域とする．
+次を満たす有界線形作用素が存在する．
+\[
+ \operatorname{Tr}:H^1(\Omega)\to H^{1/2}(\partial\Omega),
+ \qquad\operatorname{Tr}u=u|_{\partial\Omega}
+ \quad(u\in C^\infty(\overline\Omega)).
+\]
+この作用素は全射であり，有界線形右逆
+$R:H^{1/2}(\partial\Omega)\to H^1(\Omega)$ を持つ．
+\end{theorem}
+\begin{proof}
+$\partial\Omega$ の有限個のグラフ座標を
+$Q_j=\Phi_j(B_j\times(-h_j,h_j))$ とし，
+$\psi_j(x')=\Phi_j(x',0)$ と置く．
+$\operatorname{supp}\eta_j\Subset Q_j$ となる
+滑らかな非負函数 $\eta_j$ を選び，
+$\sum_j\eta_j=1$ が $\partial\Omega$ 上で
+成立するようにする．各 $\eta_j|_{\partial\Omega}$ の台は
+$\psi_j(K_j)$（$K_j\Subset B_j$）に含まれるように取る．
+
+まず $u$ が $\overline\Omega$ の近傍で
+滑らかな場合を考える．
+\[
+ v_j(x',s)=
+ \bigl(\eta_ju\bigr)(\Phi_j(x',s)),
+ \quad (x',s)\in B_j\times(0,h_j)
+\]
+と置き，半空間の残りでは零とする．
+補題\ref{lem:chart-H1}によって
+$v_j\in H^1(\mathbb R^n_+)$ で
+$\norm{v_j}_{H^1}\le C_j\norm u_{H^1(\Omega)}$
+である．
+$u$ と $\eta_j$ は境界まで連続なので，
+\[
+ v_j(\cdot,s)\longrightarrow
+ ((\eta_j u)\circ\psi_j)^0
+ \quad\text{in }L^2(\mathbb R^{n-1})
+ \qquad(s\downarrow0)
+\]
+が成り立つ．ここで上添字 $0$ は
+$B_j$ の外での零延長を意味する．
+実際，$\eta_j$ の台はチャートの内部に
+コンパクトに含まれるので，断面上での収束は
+共通のコンパクト集合上の一様収束から従う．
+補題\ref{lem:halfspace-slice}により
+\[
+ \operatorname{Tr}_+v_j=((\eta_j u)\circ\psi_j)^0.
+ \tag{$*$}
+\]
+半空間のトレース不等式と
+補題\ref{lem:boundary-local}の逆向きの評価から
+\[
+ \norm{\eta_j u|_{\partial\Omega}}_{H^{1/2}(\partial\Omega)}
+ \le C_j\norm{\operatorname{Tr}_+v_j}_{H^{1/2}(\mathbb R^{n-1})}
+ \le C_j'\norm u_{H^1(\Omega)}
+\]
+を得る．有限和 $u|_{\partial\Omega}
+=\sum_j\eta_j u|_{\partial\Omega}$ を用いると
+\[
+ \norm{u|_{\partial\Omega}}_{H^{1/2}(\partial\Omega)}
+ \le C_\Omega\norm u_{H^1(\Omega)}.
+\]
+補題\ref{lem:lip-density}による稠密性から，
+境界への制限は一意な有界線形作用素
+$\operatorname{Tr}$ に延長される．
+
+この延長の局所座標との両立性を確認する．
+任意の $u\in H^1(\Omega)$ と
+$\zeta\in C_c^\infty(Q_j)$ を取り，
+$v=((\zeta u)\circ\Phi_j)^0$ とする．
+補題\ref{lem:lip-density}により
+滑らかな $u_k\to u$ in $H^1(\Omega)$ を取る．
+局所座標変換の評価から
+$v_k=((\zeta u_k)\circ\Phi_j)^0\to v$
+in $H^1(\mathbb R^n_+)$ であり，
+$(*)$ と同じ境界断面の議論から
+\[
+ \operatorname{Tr}_+v_k
+ =((\zeta u_k)\circ\psi_j)^0.
+\]
+一方，$\operatorname{Tr}u_k\to\operatorname{Tr}u$
+in $H^{1/2}(\partial\Omega)$ であり，
+補題\ref{lem:boundary-local}により
+$\zeta\operatorname{Tr}u_k$ の平坦座標への
+零延長も $H^{1/2}$ で収束する．
+よって両辺で極限を取ると
+\[
+ \operatorname{Tr}_+
+  \bigl(((\zeta u)\circ\Phi_j)^0\bigr)
+ =((\zeta\operatorname{Tr}u)\circ\psi_j)^0
+ \tag{$**$}
+\]
+を得る．
+
+次に全射性を示す．
+$g\in H^{1/2}(\partial\Omega)$ とし，
+\[
+ g_j=((\eta_jg)\circ\psi_j)^0
+ \in H^{1/2}(\mathbb R^{n-1})
+\]
+と置く．補題\ref{lem:boundary-local}により
+$\norm{g_j}_{H^{1/2}}\le C_j\norm g_{H^{1/2}(\partial\Omega)}$
+である．半空間の右逆を用いて
+$w_j=Eg_j\in H^1(\mathbb R^n_+)$ とする．
+$\chi_j\in C_c^\infty(Q_j)$ を
+$\chi_j=1$ が
+$\operatorname{supp}(\eta_j|_{\partial\Omega})$
+の近傍で成り立つように取る．
+局所座標変換の補題によって
+\[
+ u_j(x)=
+ \begin{cases}
+ \chi_j(x)w_j(\Phi_j^{-1}(x))
+       &x\in\Omega\cap Q_j,\\
+ 0     &x\in\Omega\setminus Q_j
+ \end{cases}
+\]
+は $H^1(\Omega)$ に属し，
+\[
+ \norm{u_j}_{H^1(\Omega)}
+ \le C_j\norm{w_j}_{H^1(\mathbb R^n_+)}
+ \le C_j'\norm g_{H^{1/2}(\partial\Omega)}
+\]
+を満たす．
+
+そのトレースを同定する．
+$w_j$ の $L^2$ 値断面は
+補題\ref{lem:halfspace-slice}から
+$w_j(\cdot,s)\to g_j$ in $L^2$ である．
+$\zeta\in C_c^\infty(Q_j)$ とすると，
+$\bigl(\zeta\chi_j\bigr)\circ\Phi_j$ は
+$s\downarrow0$ で
+$\bigl(\zeta\chi_j\bigr)\circ\psi_j$ に一様収束し，
+全て一様有界なので
+\[
+ \operatorname{Tr}_+
+  \bigl(((\zeta u_j)\circ\Phi_j)^0\bigr)
+ =\bigl((\zeta\chi_j)\circ\psi_j\bigr)g_j.
+\]
+これと $(**)$ を比較すると，
+$\operatorname{Tr}u_j=\chi_j\,\eta_jg
+=\eta_jg$ が $\partial\Omega\cap Q_j$ で成り立つ．
+また $u_j$ は $Q_j$ の外の近傍では零なので，
+同じ局所恒等式を他のチャートに適用すれば
+$\operatorname{Tr}u_j=0$ が
+$\partial\Omega\setminus Q_j$ で成り立つ．
+従って全境界上で
+$\operatorname{Tr}u_j=\eta_jg$ である．
+
+最後に $Rg=\sum_j u_j$ と定めれば，
+有限和なので $R$ は線形で，
+\[
+ \norm{Rg}_{H^1(\Omega)}
+ \le C\norm g_{H^{1/2}(\partial\Omega)},\qquad
+ \operatorname{Tr}(Rg)=\sum_j\eta_jg=g
+\]
+を得る．よって $R$ は有界線形右逆であり，
+$\operatorname{Tr}$ は全射である．
+\end{proof}
+
+\section{零トレースと零境界Sobolev空間}
+\begin{lemma}[Lipschitz領域上のGauss--Green公式]
+\label{lem:lip-green}
+$u$ が $\overline\Omega$ の近傍で滑らか，
+$\phi\in C_c^\infty(\mathbb R^n)$ とする．
+$\nu$ を $\partial\Omega$ の外向き単位法線
+（ほとんど至る所で定義される）とすると，
+各 $j=1,\ldots,n$ について
+\[
+ \int_\Omega u\,\partial_j\phi\,dx
+ =-\int_\Omega(\partial_ju)\phi\,dx
+ +\int_{\partial\Omega}u\phi\,\nu_j\,dS
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+積の微分公式により，
+$\int_\Omega\partial_j(u\phi)
+=\int_{\partial\Omega}u\phi\,\nu_j\,dS$
+を示せばよい．
+境界の有限個のグラフ座標と内部の開集合に
+従属する滑らかな分割単位を用いると，
+$F=u\phi$ を有限個の局所成分に分解できる．
+内部に台を持つ成分の導函数の積分は零である．
+境界の一つの成分を再び $F$ と書き，
+その台が座標の側面と上面から離れているものとする．
+剛体運動後，$\Omega$ は
+$t>\varphi(x')$ で表され，
+$\varphi$ はLipschitzである．
+
+まず法線方向には，一変数の積分の基本定理から
+\[
+ \int_{\Omega}\partial_tF\,dx'\,dt
+ =-\int_B F(x',\varphi(x'))\,dx'
+\]
+を得る．
+接線座標 $x_i$（$1\le i<n$）については
+\[
+ G(x')=\int_{\varphi(x')}^\infty F(x',t)\,dt
+\]
+を考える．$G$ はコンパクト台を持つ
+Lipschitz函数であり，
+Rademacherの定理と積分の微分法則によって
+ほとんど至る所で
+\[
+ \partial_iG(x')
+ =\int_{\varphi(x')}^\infty\partial_iF(x',t)\,dt
+ -F(x',\varphi(x'))\partial_i\varphi(x')
+\]
+が成り立つ．$G$ の弱導函数を全空間上で
+積分すると零だから
+\[
+ \int_\Omega\partial_iF\,dx
+ =\int_BF(x',\varphi(x'))\partial_i\varphi(x')\,dx'.
+\]
+グラフの外向き単位法線は
+\[
+ \nu=\frac{(\nabla\varphi,-1)}
+           {\sqrt{1+|\nabla\varphi|^2}},
+ \qquad
+ dS=\sqrt{1+|\nabla\varphi|^2}\,dx'
+\]
+であるから，以上の二式はそれぞれ
+$\int_{\partial\Omega}F\nu_j\,dS$ に等しい．
+剛体運動前の座標に戻して有限個の成分を加えれば，
+全ての $j$ について公式が得られる．
+\end{proof}
+
+\begin{lemma}[零延長]
+$u\in H^1(\Omega)$ かつ $\operatorname{Tr}u=0$ とする．
+$u$ を $\mathbb R^n\setminus\Omega$ で零とした函数
+$\widetilde u$ は $H^1(\mathbb R^n)$ に属する．
+\end{lemma}
+\begin{proof}
+稠密性の補題から $u_k\in C^\infty(\overline\Omega)$ で
+$u_k\to u$ in $H^1(\Omega)$ となる列を選ぶ．
+境界トレースの連続性から
+$u_k|_{\partial\Omega}\to0$ in $L^2(\partial\Omega)$ である．
+$\varphi\in C_c^\infty(\mathbb R^n)$ に対し，
+補題\ref{lem:lip-green}を $u_k$ に適用すると
+\[
+ \int_\Omega u_k\partial_j\varphi
+ =-\int_\Omega (\partial_j u_k)\varphi
+   +\int_{\partial\Omega}u_k\varphi\,\nu_j\,dS
+\]
+が成立する．
+$k\to\infty$ で境界積分はCauchy--Schwarzによって0となる．
+したがって
+\[
+ \int_{\mathbb R^n}\widetilde u\partial_j\varphi
+ =-\int_{\mathbb R^n}
+   \widetilde{\partial_j u}\,\varphi
+\]
+が成り立ち，零延長の弱微分は弱微分の零延長に等しい．
+双方 $L^2$ に属するから $\widetilde u\in H^1(\mathbb R^n)$ である．
+\end{proof}
+
+\begin{theorem}[トレースの核]
+有界Lipschitz領域 $\Omega$ について
+\[
+ \ker\operatorname{Tr}=H_0^1(\Omega)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$H_0^1(\Omega)$ は $C_c^\infty(\Omega)$ の
+$H^1$ 閉包であり，
+$C_c^\infty(\Omega)$ の函数は境界近傍で零である．
+トレースの連続性から
+$H_0^1(\Omega)\subset\ker\operatorname{Tr}$ である．
+
+逆向きに $\operatorname{Tr}u=0$ とし，
+前補題によって得られた
+零延長 $\widetilde u\in H^1(\mathbb R^n)$ を取る．
+$\overline\Omega$ を覆う内部の開集合と有限個の
+境界グラフ座標近傍に従属する滑らかな分割単位を取り，
+$\widetilde u=\sum_{j=0}^N v_j$，
+$v_j=\eta_j\widetilde u$ とする．
+各 $v_j$ は $H^1(\mathbb R^n)$ に属し，
+$\operatorname{supp}v_j$ は対応する近傍の内部に
+コンパクトに含まれる．
+内部成分 $v_0$ は $\Omega$ の内部に台を持つから，
+通常のmollifierとの畳み込みで
+$C_c^\infty(\Omega)$ 函数に近似できる．
+
+境界近傍の一つを考え，
+剛体運動後の座標を $(x',t)$ とする．
+そこでは $\Omega=\{t>\varphi(x')\}$ であり，
+$v_j$ は $t\le\varphi(x')$ で
+ほとんど至る所零である．
+$\varepsilon>0$ に対して，全空間上で
+\[
+ v_j^\varepsilon(x',t)
+  =v_j(x',t-\varepsilon)
+\]
+と定める．全空間 $H^1$ の平行移動連続性から
+\[
+ \norm{v_j^\varepsilon-v_j}_{H^1(\mathbb R^n)}
+ \longrightarrow0\qquad(\varepsilon\downarrow0).
+\]
+また $v_j^\varepsilon$ の本質的な台は
+局所座標内で
+$t\ge\varphi(x')+\varepsilon$ に含まれる．
+$\varphi$ のLipschitz定数を $L$ とし，
+\[
+ 0<\delta<\frac{\varepsilon}{2(1+L)}
+\]
+を満たす $\delta$ のmollifierを取る．
+$\rho_\delta*v_j^\varepsilon$ が点 $(x',t)$ で
+零でないなら，ある $(y',s)$，
+$|(y',s)|<\delta$ に対して
+\[
+ t-s\ge\varphi(x'-y')+\varepsilon
+ \ge\varphi(x')-L\delta+\varepsilon
+\]
+である．従って
+\[
+ t-\varphi(x')\ge\varepsilon-(1+L)\delta
+ >\varepsilon/2.
+\]
+この評価により畳み込みの台は
+境界から正の距離を持って $\Omega$ 内に含まれる．
+$\varepsilon,\delta$ をチャートの台の余裕よりも
+十分小さく取れば，側面・上面に達することもない．
+従って
+$\rho_\delta*v_j^\varepsilon\in C_c^\infty(\Omega)$
+であり，
+\[
+ \norm{\rho_\delta*v_j^\varepsilon-v_j}_{H^1(\mathbb R^n)}
+ \le
+ \norm{\rho_\delta*v_j^\varepsilon-v_j^\varepsilon}_{H^1(\mathbb R^n)}
+ +\norm{v_j^\varepsilon-v_j}_{H^1(\mathbb R^n)}
+\]
+となる．最初に $\varepsilon$，次に $\delta$ を
+十分小さくすればこの右辺は任意に小さくなる．
+
+有限個の局所成分をそれぞれ近似して加えると，
+$C_c^\infty(\Omega)$ 函数列で $\widetilde u$ を
+全空間 $H^1$ 近似できる．$\Omega$ に制限すれば
+$u\in H_0^1(\Omega)$ を得る．
+\end{proof}
+
+\section{零境界条件の解釈}
+\begin{corollary}
+有界Lipschitz領域 $\Omega$ 上で $u\in H^1(\Omega)$ に対し，
+$u\in H_0^1(\Omega)$ であることと
+$\operatorname{Tr}u=0$ であることは同値である．
+特に $u$ が $\overline\Omega$ 上で連続な代表を持つ場合，
+$u\in H_0^1(\Omega)$ であることは，その連続代表の
+境界値が $\partial\Omega$ の各点で零であることと同値である．
+\end{corollary}
+\begin{proof}
+前定理から第一の同値性は直ちに従う．
+$u$ が境界まで連続なら，グラフ座標での
+$u(x',\varphi(x')+t)$ の $t\downarrow0$ における
+$L^2$ 極限は境界値に等しい．一方，一次元の端点値評価と
+局所化によってこの極限は $\operatorname{Tr}u$ に等しい．
+従って境界値が $L^2(\partial\Omega)$ で零なら，
+連続性と各開境界部分の正の面積から境界上の全点で零となる．
+\end{proof}
+
+\begin{remark}
+本稿は $H^1$ の境界トレースの完全な構成を与える．
+高階の $H^s$ トレースの一般形，角点における
+高階微分の境界条件，任意Lipschitz領域での楕円方程式の
+$H^2$ 正則性は別の問題であり，本稿からは従わない．
+\end{remark}
+
+
+\section{凹角領域の弱解と\texorpdfstring{$H^2$}{H2}正則性の反例}
+本稿では，境界のLipschitz性だけからPoisson方程式の弱解の
+$H^2$ 正則性は従わないことを，具体的な函数と右辺を構成して証明する．
+この事実は，有限要素法の誤差評価で厳密解の$H^2$ 正則性を
+独立した仮定として置く必要があることを示す．
+
+\begin{definition}[弱解]
+有界開集合$\Omega\subset\mathbb R^2$と$f\in L^2(\Omega)$に対し，
+$u\in H_0^1(\Omega)$が
+\[
+ \int_\Omega\nabla u\cdot\nabla v\,dx
+   =\int_\Omega fv\,dx
+ \qquad(v\in H_0^1(\Omega))
+\]
+を満たすとき，$-\Delta u=f$の零Dirichlet境界条件に対する弱解という．
+ここで$H_0^1(\Omega)$は$C_c^\infty(\Omega)$の$H^1$閉包である．
+\end{definition}
+
+\begin{theorem}[凹角領域における$H^2$正則性の破綻]\label{corner:thm:corner}
+$\pi<\omega<2\pi$とし，
+\[
+ \Omega_\omega=
+ \{(r\cos\theta,r\sin\theta):0<r<1,\ 0<\theta<\omega\}
+\]
+と定める．$\Omega_\omega$は有界Lipschitz領域である．
+ある$f\in C^\infty(\overline{\Omega_\omega})$が存在し，
+零Dirichlet境界条件を持つ$-\Delta u=f$の弱解は
+ただ一つ存在するが，その解は$H^2(\Omega_\omega)$に属さない．
+$f$は原点の近傍で恒等的に零となるように選べる．
+\end{theorem}
+
+この定理における$C^\infty(\overline\Omega)$は，
+閉包の各点の近傍で滑らかな函数へ延長できることを意味する．
+
+\section{領域の形状と角点函数}
+$\lambda=\pi/\omega$とおく．$1/2<\lambda<1$である．
+
+\begin{lemma}[扇形のLipschitz境界]\label{corner:lem:lipschitz}
+$\Omega_\omega$は有界Lipschitz領域である．
+\end{lemma}
+\begin{proof}
+原点以外の境界は，二本の直線の一部と半径1の円弧からなり，
+それらの交点では二つの滑らかな曲線が零でない角度で交わる．
+従って各点の近傍で適切な直交座標を取れば，境界はLipschitz函数の
+グラフで，領域はその一方の側として表される．
+原点について確認する．領域の補集合が占める角度を
+$\beta=2\pi-\omega\in(0,\pi)$とする．欠損角の二等分線を
+負の$t$軸とする直交座標$(s,t)$を取る．十分小さい原点近傍では，
+領域は
+\[
+ t>-\cot(\beta/2)|s|
+\]
+で表される．右辺はLipschitz函数である．
+境界のコンパクト性から有限個のグラフ近傍で覆える．
+\end{proof}
+
+\begin{lemma}[角点の調和函数]\label{corner:lem:harmonic}
+$0<r<1$, $0<\theta<\omega$で
+\[
+ w(r,\theta)=r^\lambda\sin(\lambda\theta)
+\]
+と置くと，$w$は滑らかで$\Delta w=0$となる．さらに
+$w(r,0)=w(r,\omega)=0$である．
+\end{lemma}
+\begin{proof}
+極座標におけるLaplacianは
+\[
+ \Delta=\partial_{rr}+r^{-1}\partial_r+r^{-2}\partial_{\theta\theta}
+\]
+である．これに$w$を代入すると
+\[
+ \Delta w=(\lambda(\lambda-1)+\lambda-\lambda^2)
+ r^{\lambda-2}\sin(\lambda\theta)=0.
+\]
+境界値については$\sin0=\sin(\lambda\omega)=\sin\pi=0$
+を用いればよい．
+\end{proof}
+
+\section{弱解の構成と零境界条件}
+$\chi\in C^\infty([0,\infty))$を
+\[
+ 0\le\chi\le1,\quad
+ \chi(r)=1\ (0\le r\le1/3),\qquad
+ \chi(r)=0\ (r\ge2/3)
+\]
+となるように取る．以後
+\[
+ u(r,\theta)=\chi(r)r^\lambda\sin(\lambda\theta)
+\]
+と定める．
+
+\begin{lemma}[エネルギー有限性]\label{corner:lem:H1}
+$u\in H^1(\Omega_\omega)$であり，原点近傍では
+\[
+ \int_{\Omega_\omega\cap\{r<\varepsilon\}}|u|^2\,dx
+      \le C\varepsilon^{2\lambda+2},\qquad
+ \int_{\Omega_\omega\cap\{r<\varepsilon\}}|\nabla u|^2\,dx
+      \le C\varepsilon^{2\lambda}
+\]
+が$0<\varepsilon<1/3$について成立する．
+\end{lemma}
+\begin{proof}
+$r<1/3$では
+\[
+ |u|\le r^\lambda,\qquad
+ |\nabla u|^2=(\partial_r u)^2+r^{-2}(\partial_\theta u)^2
+             =\lambda^2r^{2\lambda-2}.
+\]
+極座標の面積要素$r\,dr\,d\theta$を用いて積分すると
+\[
+ \int_{r<\varepsilon}|u|^2\,dx
+   \le\omega\int_0^\varepsilon r^{2\lambda+1}\,dr,
+ \qquad
+ \int_{r<\varepsilon}|\nabla u|^2\,dx
+   =\omega\lambda^2\int_0^\varepsilon r^{2\lambda-1}\,dr.
+\]
+$\lambda>0$なので両積分は有限であり，記載した評価を得る．
+$r\ge1/3$で$u$とその導函数は有界で，$r\ge2/3$では零である．
+原点は領域の境界点であるから，領域内部での古典的な微分は
+弱微分と一致し，$u\in H^1(\Omega_\omega)$を得る．
+\end{proof}
+
+\begin{lemma}[零境界条件]\label{corner:lem:H0}
+$u\in H_0^1(\Omega_\omega)$である．
+\end{lemma}
+\begin{proof}
+$\eta\in C^\infty([0,\infty))$を
+$0\le\eta\le1$，$\eta(t)=0$（$t\le1$），
+$\eta(t)=1$（$t\ge2$）となるように取る．
+$u_\varepsilon=\eta(r/\varepsilon)u$と置く．
+前補題の評価と
+$|\nabla\eta(r/\varepsilon)|\le C/\varepsilon$から
+\[
+ \|u-u_\varepsilon\|_{H^1(\Omega_\omega)}
+       \longrightarrow0\qquad(\varepsilon\downarrow0)
+\]
+を得る．実際，$\nabla(u-u_\varepsilon)$の第一項は
+$r<2\varepsilon$上の$\nabla u$で抑えられ，第二項は
+$\varepsilon<r<2\varepsilon$上で
+$C\varepsilon^{-1}|u|\le C\varepsilon^{\lambda-1}$
+と抑えられるので，それぞれの$L^2$ノルムは
+$O(\varepsilon^\lambda)$である．
+
+$\varepsilon>0$を固定する．滑らかな角度切断函数
+$\zeta_\delta(\theta)$を
+$\theta\in(0,\delta)\cup(\omega-\delta,\omega)$では0，
+$\theta\in(2\delta,\omega-2\delta)$では1，
+$|\zeta_\delta'|\le C/\delta$となるように取る．
+$u_{\varepsilon,\delta}=\zeta_\delta(\theta)u_\varepsilon$
+は，$0<\delta<\omega/4$について$C_c^\infty(\Omega_\omega)$に属する．
+$u_\varepsilon$の台は$r\ge\varepsilon$にあり，
+$\sin(\lambda\theta)$は両端角の近くで
+$C\min(\theta,\omega-\theta)$以下である．
+従って$\zeta_\delta'$を含む項
+$r^{-1}\zeta_\delta' u_\varepsilon$の絶対値は
+$r\ge\varepsilon$上で$C_\varepsilon$以下である．
+その台の角度方向の幅は$O(\delta)$であるため，
+この項の$L^2$ノルムは$O_\varepsilon(\sqrt\delta)$となる．
+他の項は有界収束定理で収束する．ゆえに
+\[
+ \|u_{\varepsilon,\delta}-u_\varepsilon\|_{H^1}
+   \longrightarrow0\qquad(\delta\downarrow0).
+\]
+対角列を選べば$u$を$C_c^\infty(\Omega_\omega)$で
+$H^1$近似できる．従って$u\in H_0^1(\Omega_\omega)$である．
+\end{proof}
+
+\section{滑らかな右辺と弱解の一意性}
+\begin{lemma}[右辺の正則性]\label{corner:lem:rhs}
+$f=-\Delta u$を$\Omega_\omega$上で古典的に定めると，
+$f$は閉包の近傍に滑らかに延長でき，
+原点近傍で零となる．さらに
+\[
+ f(r,\theta)=-\bigl(\chi''(r)r^\lambda
+      +(2\lambda+1)\chi'(r)r^{\lambda-1}\bigr)
+      \sin(\lambda\theta)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+積の微分公式と補題\ref{corner:lem:harmonic}から
+\[
+ \Delta(\chi w)=(\chi''+r^{-1}\chi')w
+                +2\chi'\partial_rw
+\]
+となる．$\partial_rw=\lambda r^{\lambda-1}\sin(\lambda\theta)$を
+代入して表示式を得る．$\chi',\chi''$は
+$1/3\le r\le2/3$に台を持つため，$f$も同じ帯に台を持つ．
+この帯では極座標表示が境界上を含めて滑らかであり，
+$f$は$C^\infty(\overline{\Omega_\omega})$に属する．
+\end{proof}
+
+\begin{lemma}[弱形式と一意性]\label{corner:lem:weak}
+上で構成した$u$は，$f=-\Delta u$の零Dirichlet弱解であり，
+そのような弱解はただ一つである．
+\end{lemma}
+\begin{proof}
+$u$は領域内部で滑らかで，$f=-\Delta u$が成立する．
+任意の$v\in C_c^\infty(\Omega_\omega)$に対し
+通常の部分積分で
+\[
+ \int_{\Omega_\omega}\nabla u\cdot\nabla v\,dx
+   =\int_{\Omega_\omega}fv\,dx
+\]
+を得る．左辺は$H_0^1$，右辺は$L^2$ノルムに関して連続である．
+$C_c^\infty(\Omega_\omega)$の$H_0^1$稠密性から
+全ての$v\in H_0^1(\Omega_\omega)$へ等式が拡張される．
+
+一意性を示す．同じ$f$に対する弱解$u_1,u_2$を取り，
+$w=u_1-u_2$と置くと，$v=w$を代入して
+$\|\nabla w\|_2^2=0$を得る．
+$H_0^1(\Omega_\omega)$上のPoincar\'e不等式により
+$\|w\|_2=0$となる．この不等式は領域を含む長方形で
+$C_c^\infty(\Omega_\omega)$を零延長し，一変数の
+Newton--Leibniz公式とCauchy--Schwarzを適用して導ける．
+従って$u_1=u_2$である．
+\end{proof}
+
+\section{二階微分の非可積分性}
+\begin{lemma}[角点特異性の強さ]\label{corner:lem:notH2}
+構成した$u$は$H^2(\Omega_\omega)$に属さない．
+\end{lemma}
+\begin{proof}
+$r<1/3$では$\chi=1$であり，
+\[
+ \partial_{rr}u
+   =\lambda(\lambda-1)r^{\lambda-2}\sin(\lambda\theta).
+\]
+$\lambda\in(1/2,1)$なので$\lambda(\lambda-1)\ne0$である．
+$\omega/4\le\theta\le3\omega/4$では
+$\sin(\lambda\theta)\ge1/\sqrt2$である．従って
+\[
+ \int_{\Omega_\omega\cap\{r<1/3\}}
+       |\partial_{rr}u|^2\,dx
+ \ge C\int_0^{1/3}r^{2\lambda-3}\,dr=+\infty,
+\]
+最後の発散は$\lambda<1$から従う．
+
+もし$u\in H^2(\Omega_\omega)$なら，領域内部での古典的な
+二階微分は弱二階微分と一致し，
+\[
+ \partial_{rr}u
+ =\cos^2\theta\,\partial_{xx}u
+  +2\sin\theta\cos\theta\,\partial_{xy}u
+  +\sin^2\theta\,\partial_{yy}u
+\]
+であるから$\partial_{rr}u\in L^2(\Omega_\omega)$となる．
+これは前の発散に矛盾する．
+\end{proof}
+
+\begin{proof}[定理\ref{corner:thm:corner}の証明]
+補題\ref{corner:lem:lipschitz}によって領域は有界Lipschitzである．
+補題\ref{corner:lem:H0}により構成した$u$は零境界条件を持つ．
+補題\ref{corner:lem:rhs}により$f$は滑らかであり，
+補題\ref{corner:lem:weak}から弱解の存在と一意性を得る．
+補題\ref{corner:lem:notH2}からその解は$H^2$に属さない．
+\end{proof}
+
+\section{正則性定理と有限要素法への帰結}
+\begin{corollary}[Lipschitz境界だけでは不十分]
+すべての有界Lipschitz領域$\Omega$と全ての
+$f\in L^2(\Omega)$について，零Dirichlet問題の弱解が
+$H^2(\Omega)$に属するという命題は偽である．
+また，一般のLipschitz領域で
+\[
+ \|u\|_{H^2(\Omega)}\le C_\Omega\|f\|_{L^2(\Omega)}
+\]
+というアプリオリ評価を主張することもできない．
+\end{corollary}
+\begin{proof}
+定理\ref{corner:thm:corner}の領域と滑らかな$f$を選べば，
+左辺は有限値ではないので両命題の反例となる．
+\end{proof}
+
+\begin{remark}[有限要素法への適用]
+形状正則三角形分割に対する一次有限要素補間評価
+\[
+ \|u-I_hu\|_{H^1(\Omega)}\le Ch|u|_{H^2(\Omega)}
+\]
+は，$u\in H^2(\Omega)$という仮定の下で成立する評価である．
+本稿の$u$には右辺が有限でないため，この評価を適用できない．
+ここから直ちに有限要素解が収束しないという結論は出ない．
+より弱い正則性を仮定した誤差評価は別途検討を要する．
+\end{remark}
+
+\begin{remark}[論理的な結論]
+Poisson方程式の$H_0^1$弱解の存在一意性と$H^2$正則性は
+異なる主張である．前者はこの反例上でも成立するが後者は失敗する．
+「一般Lipschitz領域での$H^2$正則性」を完成させる代わりに，
+正則性定理には境界形状，係数および右辺について
+実際に十分な仮定を付ける必要がある．
+\end{remark}
+
+
+
+\begin{thebibliography}{9}
+\bibitem{adams} R. A. Adams and J. J. F. Fournier,
+ \emph{Sobolev Spaces}, 2nd ed., Academic Press, 2003.
+\bibitem{leoni} G. Leoni, \emph{A First Course in Sobolev Spaces},
+ 2nd ed., AMS, 2017.
+\bibitem{mclean} W. McLean,
+ \emph{Strongly Elliptic Systems and Boundary Integral Equations},
+ Cambridge University Press, 2000.
+\end{thebibliography}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Poisson方程式の弱解を求める．}
+\begin{proposition}
+区間 $(0,1)$ における問題
+\[
+-u''=1,\qquad u(0)=u(1)=0
+\]
+の $H_0^1(0,1)$-弱解は一意で，
+\[
+u(x)=\frac12x(1-x)
+\]
+である．
+\end{proposition}
+\begin{proof}
+表示した $u$ は端点で零となる滑らかな関数で，
+$-u''=1$ を満たす．任意の
+$v\in H_0^1(0,1)$ に対して部分積分により
+\[
+\int_0^1u'v'\,dx=\int_0^1v\,dx
+\]
+となるから弱解である．
+二つの弱解の差を $w$ とすると
+$\int_0^1w'v'\,dx=0$ が全ての
+$v\in H_0^1$ に対して成立する．
+$v=w$ と置けば $\int|w'|^2=0$，
+従って $w$ は定数関数の同値類である．
+零境界トレースからその定数は零である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$-u''=2$，零Dirichlet境界条件の弱解を求めよ．
+\par\noindent\textbf{解答．}
+$u=x(1-x)$ である．
+強解として方程式を満たすので弱解でもあり，
+同じエネルギー論法で一意である．
+\end{document}
