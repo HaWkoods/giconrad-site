@@ -41,6 +41,7 @@
     "22.020": "https://github.com/HaWkoods/giconrad/blob/main/notes/22_topological_lie_groups/22.020_lie_groups_algebras/22.020_lie_groups_algebras.pdf",
     "22.030": "https://github.com/HaWkoods/giconrad/blob/main/notes/22_topological_lie_groups/22.030_haar_measure/22.030_haar_measure.pdf",
     "28.010": "https://github.com/HaWkoods/giconrad/blob/main/notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.pdf",
+    "28.020": "https://github.com/HaWkoods/giconrad/blob/main/notes/28_measure_theory/28.020_change_of_variables/28.020_change_of_variables.pdf",
     "30.010": "https://github.com/HaWkoods/giconrad/blob/main/notes/30_complex_analysis/30.010_complex_differential_geometry/30.010_complex_differential_geometry.pdf",
     "30.020": "https://github.com/HaWkoods/giconrad/blob/main/notes/30_complex_analysis/30.020_cauchy_integral_theorem/30.020_cauchy_integral_theorem.pdf",
     "30.030": "https://github.com/HaWkoods/giconrad/blob/main/notes/30_complex_analysis/30.030_argument_principle_rouche/30.030_argument_principle_rouche.pdf",
@@ -152,6 +153,11 @@
     "94.010": "https://github.com/HaWkoods/giconrad/blob/main/notes/94_information_cryptography/94.010_source_coding_information/94.010_source_coding_information.pdf",
     "94.100": "https://github.com/HaWkoods/giconrad/blob/main/notes/94_information_cryptography/94.100_rsa_public_key/94.100_rsa_public_key.pdf",
     "94.110": "https://github.com/HaWkoods/giconrad/blob/main/notes/94_information_cryptography/94.110_elliptic_curves_cryptography/94.110_elliptic_curves_cryptography.pdf",
-    "28.020": "https://github.com/HaWkoods/giconrad/blob/main/notes/28_measure_theory/28.020_change_of_variables/28.020_change_of_variables.pdf"
+    "97.030": "https://github.com/HaWkoods/giconrad/blob/main/notes/97_entrance_math/97.030_integral_limits/97.030_integral_limits.pdf",
+    "97.050": "https://github.com/HaWkoods/giconrad/blob/main/notes/97_entrance_math/97.050_quadratic_extrema/97.050_quadratic_extrema.pdf",
+    "97.120": "https://github.com/HaWkoods/giconrad/blob/main/notes/97_entrance_math/97.120_divisor_orbits/97.120_divisor_orbits.pdf",
+    "97.130": "https://github.com/HaWkoods/giconrad/blob/main/notes/97_entrance_math/97.130_mobius_circles/97.130_mobius_circles.pdf",
+    "97.170": "https://github.com/HaWkoods/giconrad/blob/main/notes/97_entrance_math/97.170_finite_fourier/97.170_finite_fourier.pdf",
+    "97.200": "https://github.com/HaWkoods/giconrad/blob/main/notes/97_entrance_math/97.200_hecke_sorting/97.200_hecke_sorting.pdf"
   }
 }
