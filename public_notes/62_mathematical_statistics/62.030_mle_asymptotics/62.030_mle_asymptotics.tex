@@ -1,0 +1,409 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{最尤推定と漸近理論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+本稿の到達目標は，具体的な確率分布族について
+標本尤度を最大化して最尤推定量を構成し，
+その一致性と漸近分散の条件を確認できるようになることである．
+さらに正則性が失われるときに
+漸近正規性の結論がどう変わるかを説明する．
+前提は確率分布，中心極限定理，微分法，
+確率収束と分布収束の基本事項である．
+
+\section{尤度と最尤推定}
+密度族 $p_\theta(x)$ を考え，独立標本 $X_1,\ldots,X_n$ の
+対数尤度を $\ell_n(\theta)=\sum_i\log p_\theta(X_i)$ とする．
+\begin{definition}
+$\ell_n$ を最大にするパラメータを最尤推定量という．
+最大値が達成されないときは最尤推定量が存在するとは限らない．
+\end{definition}
+\begin{proposition}[Bernoulli標本]
+$X_i\sim\operatorname{Bernoulli}(p)$，$0\le p\le1$ とする．
+最尤推定量は $\widehat p_n=n^{-1}\sum_i X_i$ である．
+\end{proposition}
+\begin{proof}
+$S=\sum_iX_i$ とすると尤度は $p^S(1-p)^{n-S}$ である．
+$0<S<n$ では対数の二階微分が負で，
+一階微分 $S/p-(n-S)/(1-p)=0$ の唯一解は $p=S/n$．
+$S=0,n$ の場合も端点で最大になる．
+\end{proof}
+\section{一致性と漸近正規性}
+\begin{theorem}
+独立Bernoulli$(p)$ 標本で $0<p<1$ とする．
+このとき
+\[
+ \widehat p_n\xrightarrow{P}p,\qquad
+ \sqrt n(\widehat p_n-p)\xrightarrow{\mathcal D}N(0,p(1-p)).
+\]
+\end{theorem}
+\begin{proof}
+期待値と分散は $\mathbb E\widehat p_n=p$，
+$\operatorname{Var}(\widehat p_n)=p(1-p)/n$．
+Chebyshevの不等式から一致性が従い，
+中心極限定理を $X_i-p$ に適用して第二式を得る．
+\end{proof}
+\begin{proposition}[Fisher情報]
+Bernoulli$(p)$ の一観測当たりFisher情報は
+$I(p)=1/[p(1-p)]$ である．
+上の最尤推定量の漸近分散は $I(p)^{-1}$ に等しい．
+\end{proposition}
+\begin{proof}
+scoreは $s_p(X)=X/p-(1-X)/(1-p)=(X-p)/[p(1-p)]$．
+その二乗の期待値は $p(1-p)/[p^2(1-p)^2]=1/[p(1-p)]$．
+漸近正規性の分散と一致する．
+\end{proof}
+\section{一般の正則モデルでのTaylor展開}
+\begin{proposition}
+$\theta_0$ を内部点とし，$\widehat\theta_n\xrightarrow{P}\theta_0$，
+$\ell_n'(\widehat\theta_n)=0$ が確率1に近づく事象で成立するとする．
+ある $I>0$ について
+$n^{-1/2}\ell_n'(\theta_0)\xrightarrow{\mathcal D}N(0,I)$，
+および $\theta_0$ と $\widehat\theta_n$ の間の任意の点 $\xi_n$ に対し
+$n^{-1}\ell_n''(\xi_n)\xrightarrow{P}-I$ と仮定する．
+このとき $\sqrt n(\widehat\theta_n-\theta_0)\xrightarrow{\mathcal D}N(0,I^{-1})$．
+\end{proposition}
+\begin{proof}
+平均値の定理から
+$0=\ell_n'(\widehat\theta_n)=\ell_n'(\theta_0)+
+\ell_n''(\xi_n)(\widehat\theta_n-\theta_0)$．
+従って $\sqrt n(\widehat\theta_n-\theta_0)=
+-[n^{-1}\ell_n''(\xi_n)]^{-1}[n^{-1/2}\ell_n'(\theta_0)]$．
+Slutskyの定理により結論を得る．
+\end{proof}
+\begin{remark}
+一般モデルにおいて上記の仮定を保証する同定可能性・一様大数の法則は
+別途必要である．その証明を省略して普遍的な漸近正規性を主張しない．
+\end{remark}
+
+
+\section{コンパクトなパラメータ空間での一致性}
+\begin{theorem}[最尤推定の一致性を保証する十分条件]
+$\Theta$ をコンパクト距離空間とする．$X_i$ は独立同分布で
+真の密度 $p_{\theta_0}$ を持つとし，$m_\theta(x)=\log p_\theta(x)$ と置く．
+各 $x$ で $m_\theta(x)$ が $\theta$ に関して連続で，
+ある $F\in L^1(P_{\theta_0})$ があって
+$|m_\theta(x)|\le F(x)$ が全 $\theta$ で成立すると仮定する．
+さらに $M(\theta)=\mathbb E_{\theta_0}m_\theta(X_1)$ が
+$\theta_0$ のみで最大になるとする．
+このとき任意の標本最大化点 $\widehat\theta_n$ は
+$\theta_0$ にほとんど確実に収束する．
+\end{theorem}
+\begin{proof}
+$\Theta$ のコンパクト性と連続性より各 $n$ について
+標本対数尤度には最大化点が存在する．
+$P_nh=n^{-1}\sum_i h(X_i)$，$Ph=\mathbb E_{\theta_0}h(X_1)$ と書く．
+$\delta>0$ に対して
+$V_\delta(x)=\sup_{d(\theta,\eta)\le\delta}
+|m_\theta(x)-m_\eta(x)|$ と置く．
+各 $x$ での一様連続性と $V_\delta\le2F$ より，
+優収束定理から $PV_\delta\downarrow0$（$\delta\downarrow0$）となる．
+$\Theta$ の有限 $\delta$-網 $\theta_1,\ldots,\theta_N$ を取れば
+\[
+ \sup_{\theta\in\Theta}|P_nm_\theta-Pm_\theta|
+ \le\max_j|P_nm_{\theta_j}-Pm_{\theta_j}|
+      +P_nV_\delta+PV_\delta.
+\]
+強大数の法則を右辺の有限個の関数と $V_\delta$ に適用し，
+$n\to\infty$，次いで $\delta\downarrow0$ とすれば
+左辺は零へほとんど確実に収束する．
+任意の $\varepsilon>0$ に対しコンパクト集合
+$K_\varepsilon=\{\theta:d(\theta,\theta_0)\ge\varepsilon\}$ では，
+$M$ の連続性と一意最大性により
+$\sup_{K_\varepsilon}M<M(\theta_0)$ である．
+一様収束によって十分大きい $n$ の最大化点は
+$K_\varepsilon$ に属し得ない．
+$\varepsilon$ は任意だから結論を得る．
+\end{proof}
+\begin{remark}
+この定理の仮定は強く，境界を含む一般モデルに自動的に成立するとは限らない．
+漸近正規性にはさらに微分・score・情報量の仮定が必要である．
+\end{remark}
+
+\section{正則な多次元モデルにおける漸近正規性}
+\begin{lemma}[scoreの平均と情報量の等式]
+$\Theta\subset\mathbb R^d$ を開集合，$p_\theta$ を共通の台上で
+正となる確率密度とする．$p_\theta(x)$ が $\theta$ について
+二回連続微分可能で，その微分と積分の交換が各成分について
+二階まで正当化されるとする．$s_\theta=\nabla_\theta\log p_\theta$
+と置くと，
+\[
+ \mathbb E_\theta s_\theta=0,\qquad
+ -\mathbb E_\theta\nabla^2_\theta\log p_\theta
+ =\mathbb E_\theta[s_\theta s_\theta^T]
+\]
+が成立する（右辺の期待値が有限であると仮定する）．
+\end{lemma}
+\begin{proof}
+$\int p_\theta(x)d\mu(x)=1$ を一階微分して
+$\int \partial_jp_\theta\,d\mu=0$ を得る．
+$\partial_jp_\theta=p_\theta\partial_j\log p_\theta$
+だから $\mathbb E_\theta s_{\theta,j}=0$ である．
+次に二階微分して
+\[
+ 0=\int \partial_i\partial_jp_\theta\,d\mu
+ =\int p_\theta\bigl(
+ \partial_i\partial_j\log p_\theta+
+ (\partial_i\log p_\theta)(\partial_j\log p_\theta)
+ \bigr)d\mu.
+\]
+各成分について整理すれば行列等式を得る．
+\end{proof}
+\begin{theorem}[最尤推定量の多次元漸近正規性]\label{thm:regular_MLE}
+真のパラメータを開集合 $\Theta\subset\mathbb R^d$ の内部点
+$\theta_0$ とする．各観測における対数密度
+$m_\theta(X)$ が $\theta_0$ のある近傍で二回連続微分可能とする．
+次の条件を仮定する．
+\begin{enumerate}
+\item $s(X)=\nabla m_{\theta_0}(X)$ は平均零，有限二次モーメントを持ち，
+共分散行列 $I$ は正定値である．
+\item $H_n(\theta)=n^{-1}\sum_{j=1}^n\nabla^2m_\theta(X_j)$ と置く．
+ある閉球 $B(\theta_0,r)\subset\Theta$ に対し
+$\sup_{\theta\in B}\norm{H_n(\theta)+I}\xrightarrow{P}0$ である．
+\item 最尤推定量 $\widehat\theta_n$ は $\theta_0$ に確率収束し，
+確率が1に近づく事象上で内部最大化点となる．
+\end{enumerate}
+このとき
+\[
+ \sqrt n(\widehat\theta_n-\theta_0)
+ \xrightarrow{\mathcal D}N_d(0,I^{-1}).
+\]
+\end{theorem}
+\begin{proof}
+$\widehat\theta_n$ が球内の内部最大化点である事象を考える．
+その確率は1に収束し，$\nabla\ell_n(\widehat\theta_n)=0$ である．
+$h_n=\widehat\theta_n-\theta_0$ と置き，微積分学の基本定理を
+ベクトル値の勾配に適用すると
+\[
+ 0=\nabla\ell_n(\theta_0)+
+ n\left(\int_0^1H_n(\theta_0+th_n)dt\right)h_n.
+\]
+積分内の行列を $J_n$ と書けば第二条件から
+$J_n\xrightarrow{P}-I$ である．従って高確率で可逆であり，
+\[
+ \sqrt n h_n=-J_n^{-1}\frac1{\sqrt n}
+ \sum_{j=1}^ns(X_j).
+\]
+第一条件と多次元中心極限定理により右辺の和は
+$N_d(0,I)$ に分布収束する．$-J_n^{-1}\xrightarrow{P}I^{-1}$
+とSlutskyの定理により，結論の共分散は
+$I^{-1}I(I^{-1})^T=I^{-1}$ となる．
+\end{proof}
+\begin{remark}
+上の一致性は前節のコンパクトパラメータに関する定理などで，
+Hessianの一様収束は一様大数の法則で，それぞれ独立に保証できる．
+正則性が欠ける境界点や混合モデルに結論を無条件に適用してはならない．
+\end{remark}
+
+\section{非正則モデルの最尤推定と非正規極限}
+\begin{theorem}[一様分布の端点推定]
+$X_1,\ldots,X_n$ を独立な一様分布 $U(0,\theta)$ に従う標本とし，
+$\theta>0$ とする．このモデルの最尤推定量は
+$\widehat\theta_n=M_n=\max_iX_i$ であり，
+$M_n\to\theta$ がほとんど確実に成立する．さらに
+\[
+ n\left(1-\frac{M_n}{\theta}\right)
+ \ \xrightarrow{\ d\ }\ \operatorname{Exp}(1)
+\]
+となる．従ってこの最尤推定量には，通常の $\sqrt n$ 倍での
+漸近正規性とは異なる $n$ 倍の極限分布が現れる．
+\end{theorem}
+\begin{proof}
+尤度は $L_n(t)=t^{-n}\mathbf1_{\{t\ge M_n\}}$ であり，
+$M_n>0$ は確率1で成立する．$t\ge M_n$ では $t^{-n}$ は減少するので
+最大化点は $M_n$ である．
+$0<x<\theta$ に対して
+\[
+ P_\theta(M_n\le x)=(x/\theta)^n
+\]
+である．任意の $0<\varepsilon<\theta$ に対して
+$P_\theta(M_n\le\theta-\varepsilon)
+ =(1-\varepsilon/\theta)^n$ は $n$ について総和可能である．Borel--Cantelliの補題から
+$M_n\to\theta$ がほとんど確実に従う．
+
+$x\ge0$ を固定すると，十分大きい $n$ で
+\begin{align*}
+ P_\theta\left(n\left(1-\frac{M_n}{\theta}\right)>x\right)
+ &=P_\theta\left(M_n<\theta(1-x/n)\right)\\
+ &=(1-x/n)^n\longrightarrow e^{-x}.
+\end{align*}
+これが指数分布の生存関数であるから分布収束が従う．
+\end{proof}
+\begin{remark}
+この例では確率密度の台がパラメータ $\theta$ に依存する．
+通常の最尤推定量の漸近正規性で使う，積分と微分の交換や
+共通台の仮定が破れるため，正則モデルの結論を適用できない．
+\end{remark}
+
+
+\section{指数分布の最尤推定を実行する}
+\begin{proposition}[指数分布の最尤推定量と漸近分布]\label{prop:exp-mle}
+$X_1,\ldots,X_n$ を独立な率 $\lambda>0$ の指数分布
+$p_\lambda(x)=\lambda e^{-\lambda x}\mathbf1_{\{x\ge0\}}$
+に従う標本とする．このとき，確率1で
+最尤推定量は
+\[
+ \widehat\lambda_n=\frac n{\sum_{i=1}^nX_i}
+                    =\frac1{\overline X_n}
+\]
+となる．さらに $\widehat\lambda_n\to\lambda$
+ほとんど確実に成立し，
+\[
+ \sqrt n(\widehat\lambda_n-\lambda)
+ \xrightarrow{\mathcal D}N(0,\lambda^2).
+\]
+一観測当たりのFisher情報は $I(\lambda)=\lambda^{-2}$ である．
+\end{proposition}
+\begin{proof}
+対数尤度は
+\[
+ \ell_n(\lambda)
+ =n\log\lambda-\lambda\sum_iX_i
+\]
+であり，導関数は
+$\ell_n'(\lambda)=n/\lambda-\sum_iX_i$，
+二階導関数は
+$\ell_n''(\lambda)=-n/\lambda^2<0$ である．
+$\sum_iX_i>0$ は確率1なので，
+唯一の最大点は表示した推定量である．
+指数分布の平均は $1/\lambda$，
+分散は $1/\lambda^2$ だから，
+強大数の法則によって
+$\overline X_n\to1/\lambda$，従って
+$\widehat\lambda_n\to\lambda$ となる．
+中心極限定理より
+\[
+ \sqrt n(\overline X_n-1/\lambda)
+ \xrightarrow{\mathcal D}N(0,1/\lambda^2).
+\]
+$g(x)=1/x$ と置くと $g'(1/\lambda)=-\lambda^2$ なので，
+デルタ法により上記の極限分布を得る．
+scoreは $s_\lambda(X)=1/\lambda-X$ で，
+その分散は $1/\lambda^2$ だから
+Fisher情報も表示した値となる．
+\end{proof}
+\begin{example}[4つの観測からの実際の計算]\label{ex:exp-data}
+観測データが $1,2,1,2$ のとき，
+$n=4$，$\sum_iX_i=6$ だから
+\[
+ \widehat\lambda_4=\frac46=\frac23.
+\]
+漸近分布に基づく標準誤差の推定値は
+$\widehat\lambda_4/\sqrt4=1/3$ である．
+この標準誤差は大標本近似であり，
+4個しかない今回の標本で精度が保証されるものではない．
+\end{example}
+\begin{proposition}[有限標本での偏り]\label{prop:exp-bias}
+$n\ge2$ では
+\[
+ E_\lambda\widehat\lambda_n=\frac n{n-1}\lambda
+\]
+であり，最尤推定量は有限標本では正の偏りを持つ．
+ただし $n=1$ のとき期待値は発散する．
+\end{proposition}
+\begin{proof}
+$S=\sum_iX_i$ は形状 $n$，率 $\lambda$ の
+Gamma分布で，密度は
+$\lambda^ns^{n-1}e^{-\lambda s}/(n-1)!$（$s>0$）である．
+$n\ge2$ なら
+\[
+ E_\lambda\frac1S
+ =\frac{\lambda^n}{(n-1)!}
+   \int_0^\infty s^{n-2}e^{-\lambda s}\,ds
+ =\frac{\lambda}{n-1}.
+\]
+従って $E_\lambda(n/S)=n\lambda/(n-1)$．
+$n=1$ では $s^{-1}$ による原点近傍の積分が発散する．
+\end{proof}
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題．}
+率 $\lambda$ の指数分布から得た
+観測値 $2,2,4$ に基づいて最尤推定値を求めよ．
+有限標本での推定量の期待値と，
+漸近分散の推定値を求めよ．
+
+\medskip\noindent\textbf{解答．}
+$n=3$，総和は8だから
+$\widehat\lambda_3=3/8$ である．
+標本サイズ3における推定量の期待値は
+$E_\lambda\widehat\lambda_3=3\lambda/2$ となる．
+この式は観測値から計算する数ではなく，
+真の未知母数 $\lambda$ に依存する理論的な値である．
+漸近分散は $\lambda^2/3$ なので，
+これに最尤推定値を代入した推定値は
+$(3/8)^2/3=3/64$ である．
+\section*{正則性の限界}
+上の指数分布では台が母数に依存せず，
+一方本稿の $U(0,\theta)$ では台が母数に依存する．
+この違いによって最大化点の収束の速さや
+極限分布が変わり得るため，
+通常の漸近正規性の仮定を検査する必要がある．
+
+\end{document}

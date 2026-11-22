@@ -1,0 +1,456 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{統計モデルと推定理論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，不偏推定量，分散，Fisher情報とCramér--Rao不等式．
+本稿の具体的な到達課題は，Bernoulli模型の標本平均が分散下界を達成することを検証する．
+
+\section{統計モデルの定義}
+\begin{definition}
+測定可能空間 $(\mathcal X,\mathcal A)$ とパラメータ集合
+$\Theta$ に対し，
+確率測度族 $\mathcal P=\{P_\theta:\theta\in\Theta\}$ を
+統計モデルという．
+観測を確率変数 $X$ とし，
+その分布が未知の $P_\theta$ に等しいと仮定する．
+\end{definition}
+\begin{definition}
+$X$ の可測関数 $T(X)$ で未知パラメータの関数
+$\tau(\theta)$ を推定するものを推定量という．
+期待値が存在するとき
+$b_\theta(T)=E_\theta[T]-\tau(\theta)$ を偏りという．
+全ての $\theta$ に対して偏りが零なら不偏推定量という．
+\end{definition}
+\begin{proposition}[分布の識別可能性]
+異なる $\theta,\theta'$ について
+$P_\theta=P_{\theta'}$ となるモデルで，
+$\tau(\theta)\ne\tau(\theta')$ と仮定する．
+このとき $\tau$ の不偏推定量は存在しない．
+\end{proposition}
+\begin{proof}
+もし不偏推定量 $T$ が存在すれば，
+$P_\theta=P_{\theta'}$ により
+$E_\theta[T]=E_{\theta'}[T]$ である．
+一方不偏性から左辺は $\tau(\theta)$，
+右辺は $\tau(\theta')$ となり矛盾する．
+\end{proof}
+\section{損失関数とリスク}
+\begin{definition}
+作用集合 $\mathcal D$ と非負可測関数
+$L:\Theta\times\mathcal D\to[0,\infty]$ を損失関数という．
+決定規則 $\delta:\mathcal X\to\mathcal D$ のリスクを
+\[
+ R(\theta,\delta)=E_\theta[L(\theta,\delta(X))]
+\]
+と定める．
+\end{definition}
+\begin{proposition}[二乗損失の偏り・分散分解]\label{prop:biasvar}
+$\tau(\theta)\in\mathbb R$ とし，
+$T$ は二乗可積分な推定量とする．
+このとき
+\[
+ E_\theta[(T-\tau(\theta))^2]
+ =\operatorname{Var}_\theta(T)+b_\theta(T)^2.
+\]
+\end{proposition}
+\begin{proof}
+$\mu=E_\theta[T]$ と置けば
+$T-\tau=(T-\mu)+(\mu-\tau)$ である．
+二乗を展開して期待値を取ると，
+交差項は $E_\theta[T-\mu]=0$ により消える．
+残る二項は分散と偏りの二乗である．
+\end{proof}
+\begin{example}[定数推定量]
+$T(X)\equiv c$ の二乗損失リスクは
+$(c-\tau(\theta))^2$ である．
+\end{example}
+\begin{proof}
+確率変数 $T$ は定数なので分散が零で，
+偏りは $c-\tau(\theta)$ となる．
+命題\ref{prop:biasvar}を用いればよい．
+\end{proof}
+
+\section{独立標本と基本的推定量}
+$X_1,\dots,X_n$ が同一分布に従い相互に独立である場合を考える．
+\begin{proposition}[標本平均]\label{prop:mean}
+$E[X_1]=\mu$，$\operatorname{Var}(X_1)=\sigma^2<\infty$
+と仮定する．
+$\overline X=n^{-1}\sum_{i=1}^nX_i$ について
+\[
+ E[\overline X]=\mu,\qquad
+ \operatorname{Var}(\overline X)={\sigma^2\over n}.
+\]
+特に $\overline X$ は $\mu$ の不偏推定量であり，
+その二乗平均誤差は $\sigma^2/n$ である．
+\end{proposition}
+\begin{proof}
+期待値の線形性から
+$E[\overline X]=n^{-1}\sum_i\mu=\mu$．
+独立性によって異なる標本間の共分散が零なので
+\[
+ \operatorname{Var}(\overline X)
+ ={1\over n^2}\sum_{i=1}^n\operatorname{Var}(X_i)
+ ={\sigma^2\over n}.
+\]
+偏りが零なので二乗平均誤差は分散に等しい．
+\end{proof}
+\begin{definition}
+$n\ge2$ のとき標本分散を
+\[
+ S^2={1\over n-1}\sum_{i=1}^n(X_i-\overline X)^2
+\]
+と定める．
+\end{definition}
+\begin{theorem}[標本分散の不偏性]\label{thm:samplevariance}
+$X_i$ が独立同分布で分散 $\sigma^2<\infty$ を持つなら
+$E[S^2]=\sigma^2$ である．
+\end{theorem}
+\begin{proof}
+$\mu=E[X_1]$ として
+\[
+ \sum_i(X_i-\overline X)^2
+ =\sum_i(X_i-\mu)^2-n(\overline X-\mu)^2
+\]
+が恒等的に成立する．
+右辺の期待値は命題\ref{prop:mean}から
+$n\sigma^2-n(\sigma^2/n)=(n-1)\sigma^2$ である．
+両辺を $n-1$ で割ればよい．
+\end{proof}
+\begin{theorem}[Chebyshevによる標本平均の一致性]
+$X_i$ が独立同分布で有限の分散を持つなら，
+任意の $\varepsilon>0$ に対して
+\[
+ P(|\overline X-\mu|\ge\varepsilon)
+ \le{\sigma^2\over n\varepsilon^2}\longrightarrow0.
+\]
+従って $\overline X$ は母平均に確率収束する．
+\end{theorem}
+\begin{proof}
+非負確率変数 $Y$ と $a>0$ について
+$Y\ge a\mathbf1_{\{Y\ge a\}}$ だから
+$P(Y\ge a)\le E[Y]/a$ が成り立つ．
+これを $Y=(\overline X-\mu)^2$，
+$a=\varepsilon^2$ に適用し，
+命題\ref{prop:mean}の分散公式を使う．
+\end{proof}
+\section{推定量の変換}
+\begin{proposition}[偏りの変換]
+$T$ が $\theta$ の不偏推定量であっても，
+非線形関数 $h$ に対し $h(T)$ が
+$h(\theta)$ の不偏推定量とは限らない．
+特に $E_\theta[T^2]=\theta^2+\operatorname{Var}_\theta(T)$ である．
+\end{proposition}
+\begin{proof}
+$\operatorname{Var}_\theta(T)
+ =E_\theta[T^2]-(E_\theta[T])^2$ と
+$E_\theta[T]=\theta$ を用いれば等式を得る．
+分散が正なら $E_\theta[T^2]\ne\theta^2$ なので
+二乗変換は不偏ではない．
+\end{proof}
+\begin{remark}
+パラメータの変換は推定量の変換と別問題である．
+例えば $\theta^2$ を推定するときには，
+$T^2$ に分散の推定量による補正を加える場合がある．
+その補正の不偏性は期待値の恒等式によって検証しなければならない．
+\end{remark}
+
+\section{Fisher情報量と情報不等式}
+本節では $\Theta\subset\mathbb R$ を開区間，
+$\mu$ を $\mathcal X$ 上の $\sigma$-有限測度とする．
+全ての $P_\theta$ が共通の支持集合上で
+正の密度 $p_\theta$ を持つと仮定する．
+また，密度の微分，積分記号との交換および以下の二乗可積分性が
+成立するような正則性条件を課す．
+具体的には
+\[
+ \frac d{d\theta}\int p_\theta\,d\mu
+ =\int\partial_\theta p_\theta\,d\mu,\qquad
+ \frac d{d\theta}E_\theta[T]
+ =\int T\,\partial_\theta q_\theta\,d\mu^{\otimes n}
+\]
+を要求する．ここで $q_\theta$ は独立標本の同時密度である．
+\begin{definition}
+一観測のスコア関数とFisher情報量を
+\[
+ s_\theta(x)=\partial_\theta\log p_\theta(x),\qquad
+ I(\theta)=E_\theta[s_\theta(X_1)^2]
+\]
+で定める．以下 $0<I(\theta)<\infty$ とする．
+独立標本の総スコアを
+$S_\theta=\sum_{i=1}^ns_\theta(X_i)$ と書く．
+\end{definition}
+\begin{lemma}[スコアの期待値と分散]\label{lem:score}
+上の正則性条件のもとで
+\[
+ E_\theta[S_\theta]=0,\qquad
+ \operatorname{Var}_\theta(S_\theta)=nI(\theta)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$p_\theta>0$ の領域で
+$s_\theta p_\theta=\partial_\theta p_\theta$ だから
+\[
+ E_\theta[s_\theta(X_1)]
+ =\int\partial_\theta p_\theta\,d\mu
+ =\partial_\theta1=0.
+\]
+独立性と期待値が零であることから，
+総スコアの分散は個々の分散の和となる．
+各分散は $I(\theta)$ なので結論を得る．
+\end{proof}
+\begin{lemma}[スコアと推定量の共分散]\label{lem:covscore}
+$E_\theta[T]=\tau(\theta)$ とし，$\tau$ が微分可能で，
+正則性条件が成立するとする．
+このとき
+\[
+ \operatorname{Cov}_\theta(T,S_\theta)=\tau'(\theta).
+\]
+\end{lemma}
+\begin{proof}
+独立標本の同時密度は
+$q_\theta(x_1,\ldots,x_n)=\prod_{i=1}^np_\theta(x_i)$ なので
+$\partial_\theta q_\theta=q_\theta S_\theta$ である．
+従って
+\[
+ \tau'(\theta)=\partial_\theta E_\theta[T]
+ =\int T\partial_\theta q_\theta\,d\mu^{\otimes n}
+ =E_\theta[TS_\theta].
+\]
+補題\ref{lem:score}から $E_\theta[S_\theta]=0$ だから
+最後の期待値は共分散に等しい．
+\end{proof}
+\begin{theorem}[Cram\'er--Raoの情報不等式]\label{thm:cr}
+上記の正則性条件と $E_\theta[T^2]<\infty$ のもとで，
+$E_\theta[T]=\tau(\theta)$ とする．
+このとき
+\[
+ \operatorname{Var}_\theta(T)
+ \ge {(\tau'(\theta))^2\over nI(\theta)}.
+ \tag{1}
+\]
+$\tau'(\theta)\ne0$ の場合の等号成立条件は，
+$T-\tau(\theta)$ が $S_\theta$ の実数倍であること
+（$P_\theta$-ほとんど確実に）である．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:covscore}とCauchy--Schwarzの不等式から
+\[
+ (\tau'(\theta))^2
+ =\bigl(E_\theta[(T-E_\theta T)S_\theta]\bigr)^2
+ \le\operatorname{Var}_\theta(T)
+       \operatorname{Var}_\theta(S_\theta).
+\]
+補題\ref{lem:score}によって右辺の第2因子は
+$nI(\theta)$ である．これは正なので割り算して (1) を得る．
+Cauchy--Schwarzの等号条件は
+二乗可積分確率変数 $T-E_\theta T$ と $S_\theta$ の
+線形従属性であり，それが記述した条件である．
+\end{proof}
+\begin{corollary}[偏った推定量の場合]
+$E_\theta[T]=\theta+b(\theta)$ が微分可能なら
+\[
+ \operatorname{Var}_\theta(T)
+ \ge {(1+b'(\theta))^2\over nI(\theta)}.
+\]
+従って二乗平均誤差は少なくとも
+$(1+b'(\theta))^2/(nI(\theta))+b(\theta)^2$ である．
+\end{corollary}
+\begin{proof}
+定理\ref{thm:cr}で
+$\tau(\theta)=\theta+b(\theta)$ と置き，
+命題\ref{prop:biasvar}を適用する．
+\end{proof}
+
+\section{Bernoulli模型の推定}
+\begin{theorem}[Bernoulli標本平均の情報効率]
+$X_1,\ldots,X_n$ を独立なBernoulli確率変数とし，
+$P_\theta(X_i=1)=\theta$，$0<\theta<1$ とする．
+このとき一観測のFisher情報量は
+\[
+ I(\theta)={1\over\theta(1-\theta)}
+\]
+であり，$\overline X$ は $\theta$ の不偏推定量で
+\[
+ \operatorname{Var}_\theta(\overline X)
+ ={\theta(1-\theta)\over n}
+ ={1\over nI(\theta)}
+\]
+となる．従ってCram\'er--Raoの不等式で等号が成立する．
+\end{theorem}
+\begin{proof}
+Bernoulli密度は
+$p_\theta(x)=\theta^x(1-\theta)^{1-x}$（$x=0,1$）だから
+\[
+ s_\theta(x)={x\over\theta}-{1-x\over1-\theta}
+ ={x-\theta\over\theta(1-\theta)}.
+\]
+よって
+\[
+ I(\theta)
+ ={E_\theta[(X_1-\theta)^2]\over
+   \theta^2(1-\theta)^2}
+ ={\theta(1-\theta)\over
+   \theta^2(1-\theta)^2}
+ ={1\over\theta(1-\theta)}.
+\]
+標本平均の不偏性と分散は命題\ref{prop:mean}による．
+また総スコアは
+$S_\theta=n(\overline X-\theta)/
+ (\theta(1-\theta))$ だから，
+定理\ref{thm:cr}の等号条件も直接確認できる．
+\end{proof}
+\section{正規模型と信頼区間}
+\begin{theorem}[既知分散の正規模型]\label{thm:normal}
+$X_i$ を独立な $N(\theta,\sigma^2)$ に従う標本とし，
+$\sigma^2>0$ を既知とする．
+このとき $I(\theta)=\sigma^{-2}$ であり，
+$\overline X$ は不偏推定量として情報不等式の下限を達成する．
+\end{theorem}
+\begin{proof}
+密度
+\[
+ p_\theta(x)={1\over\sqrt{2\pi\sigma^2}}
+ \exp\left(-{(x-\theta)^2\over2\sigma^2}\right)
+\]
+を微分すると $s_\theta(x)=(x-\theta)/\sigma^2$．
+従って
+$I(\theta)=E_\theta[(X-\theta)^2]/\sigma^4=\sigma^{-2}$．
+$E_\theta[\overline X]=\theta$，
+$\operatorname{Var}_\theta(\overline X)=\sigma^2/n$
+であり，これは $1/(nI(\theta))$ に等しい．
+\end{proof}
+\begin{definition}
+$0<\alpha<1$ に対し
+標準正規分布 $N(0,1)$ の分布関数を $\Phi$ とし，
+$\Phi(z_{1-\alpha/2})=1-\alpha/2$ によって
+$z_{1-\alpha/2}$ を定める．
+\end{definition}
+\begin{theorem}[母平均の正確な信頼区間]
+定理\ref{thm:normal}の仮定のもとで
+\[
+ C(X)=\left[
+ \overline X-z_{1-\alpha/2}{\sigma\over\sqrt n},
+ \overline X+z_{1-\alpha/2}{\sigma\over\sqrt n}
+ \right]
+\]
+と置くと
+$P_\theta(\theta\in C(X))=1-\alpha$ が
+全ての $\theta\in\mathbb R$ で成立する．
+\end{theorem}
+\begin{proof}
+独立な正規確率変数の和は正規分布に従うので，
+$Z=\sqrt n(\overline X-\theta)/\sigma$ は
+$N(0,1)$ に従う．
+$\theta\in C(X)$ と $|Z|\le z_{1-\alpha/2}$ は同値である．
+標準正規分布は原点対称だから
+\[
+ P(|Z|\le z_{1-\alpha/2})
+ =\Phi(z_{1-\alpha/2})-\Phi(-z_{1-\alpha/2})
+ =1-\alpha.
+\]
+これが所望の被覆確率である．
+\end{proof}
+\begin{remark}
+ここで示した被覆確率は，未知の $\theta$ を固定し，
+確率変数である区間 $C(X)$ がそれを含む確率である．
+未知パラメータそのものを確率変数とする
+Bayes的な信用区間とは意味が異なる．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{推定分散と情報下界を比較する．}
+\begin{proposition}
+$X_1,\dots,X_n$ を独立なBernoulli$(p)$ 標本
+（$0<p<1$）とすると
+$\widehat p=n^{-1}\sum_iX_i$ は不偏で
+\[
+\operatorname{Var}(\widehat p)=\frac{p(1-p)}n.
+\]
+これはCramér--Rao下界に等しい．
+\end{proposition}
+\begin{proof}
+期待値の線形性から $E\widehat p=p$．
+独立性から
+$\operatorname{Var}(\widehat p)
+=n^{-2}\sum_i p(1-p)=p(1-p)/n$．
+一観測当たりのscoreは
+$(X-p)/(p(1-p))$ なので
+Fisher情報は $1/(p(1-p))$．
+$n$ 観測では情報が $n/(p(1-p))$ だから
+下界はその逆数であり，
+表示された分散に一致する．
+\end{proof}
+\noindent\textbf{到達確認．}
+$n=25$，$p=1/2$ のとき分散を求めよ．
+\par\noindent\textbf{解答．}
+$\frac{(1/2)(1/2)}{25}=1/100$ である．
+\end{document}

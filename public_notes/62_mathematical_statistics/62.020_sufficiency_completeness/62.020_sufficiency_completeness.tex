@@ -1,0 +1,389 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{十分統計量と完備統計量}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+本稿では，標本から十分統計量を見つけ，
+条件付き期待値を具体的に計算して
+不偏推定量の分散を改善する．さらに完備性を確認して
+Lehmann--Scheff\'eの定理から最小分散不偏推定量を構成する．
+前提は離散条件付き確率，独立性，期待値・分散の基本公式である．
+
+\section{十分統計量と因子分解}
+標本空間 $\mathcal X$ を有限または可算集合，
+$\{p_\theta:\theta\in\Theta\}$ を共通の正の台を持つ確率質量関数族とする．
+\begin{definition}
+統計量 $T:\mathcal X\to\mathcal T$ が十分であるとは，
+条件付き確率 $\mathbb P_\theta(X=x\mid T(X)=t)$ が
+$\theta$ に依存しないことをいう（分母が正の場合）．
+\end{definition}
+\begin{theorem}[因子分解定理（離散型）]
+$T$ が十分であるための必要十分条件は，
+$p_\theta(x)=g_\theta(T(x))h(x)$ となる非負関数 $g_\theta,h$ が存在することである．
+\end{theorem}
+\begin{proof}
+因子分解されるとき，$T(X)=t$ に条件付けると
+\[
+ \mathbb P_\theta(X=x\mid T=t)
+ =\frac{h(x)}{\sum_{y:T(y)=t}h(y)}
+\]
+となり $\theta$ に依存しない．
+逆に十分であるとする．固定した $\theta_0$ に対し $h(x)=p_{\theta_0}(x)$ と置く．
+十分性より同じ $t$ の上で $p_\theta(x)/p_{\theta_0}(x)$ は
+$\mathbb P_\theta(T=t)/\mathbb P_{\theta_0}(T=t)$ と等しい．
+これを $g_\theta(t)$ とすれば因子分解を得る．
+共通の正の台の仮定により分母は零でない．
+\end{proof}
+\section{条件付き期待値による改善}
+\begin{theorem}[Rao--Blackwell]
+$U$ を $\tau(\theta)$ の不偏推定量，$T$ を十分統計量とする．
+$U\in L^2(P_\theta)$ と仮定し，$V=\mathbb E_\theta(U\mid T)$ と定める．
+この $V$ は $\theta$ に依存しない $T$ の関数として選べ，
+不偏で，$\operatorname{Var}_\theta(V)\le\operatorname{Var}_\theta(U)$ を満たす．
+\end{theorem}
+\begin{proof}
+十分性により $T=t$ の条件付き分布は $\theta$ に依存しないため，
+$V(t)$ の表示も独立に選べる．全期待値の公式から
+$\mathbb E_\theta V=\mathbb E_\theta U=\tau(\theta)$．
+また条件付き分散の分解
+$\operatorname{Var}(U)=\mathbb E\operatorname{Var}(U\mid T)+
+\operatorname{Var}(\mathbb E(U\mid T))$ から不等式を得る．
+\end{proof}
+\section{完備統計量}
+\begin{definition}
+統計量 $T$ が完備であるとは，すべての $\theta$ で可積分な $a(T)$ が
+$\mathbb E_\theta a(T)=0$（すべての $\theta$）を満たすなら
+$a(T)=0$ が各 $P_\theta$ の下でほとんど確実に成り立つことをいう．
+\end{definition}
+\begin{theorem}[Lehmann--Scheff\'e]
+$T$ を十分かつ完備とする．
+$T$ の関数 $\delta(T)$ が $\tau(\theta)$ の二乗可積分な不偏推定量なら，
+それはすべての二乗可積分な不偏推定量のうち一意な最小分散不偏推定量である．
+\end{theorem}
+\begin{proof}
+任意の不偏推定量 $U$ をRao--Blackwell化して $V(T)$ を得る．
+$\delta(T)-V(T)$ は全ての $\theta$ で期待値零なので，
+完備性より両者は各 $P_\theta$ の下で等しい．
+従って $\operatorname{Var}_\theta\delta\le\operatorname{Var}_\theta U$．
+同じ性質を持つ別の推定量もRao--Blackwell化後に $\delta$ と一致する．
+\end{proof}
+\begin{example}
+独立なBernoulli$(p)$ 標本では $T=\sum X_i$ は十分統計量である．
+$\mathbb E_p a(T)=\sum_{t=0}^n a(t){n\choose t}p^t(1-p)^{n-t}$ が
+全 $0<p<1$ で零なら，各Bernstein基底の係数が零なので $a(t)=0$．
+従って $T$ は完備であり，$T/n$ は $p$ の最小分散不偏推定量である．
+\end{example}
+
+
+\section{支配されたモデルの因子分解}
+\begin{theorem}[可算値統計量に対する因子分解]
+$(\mathcal X,\mathcal A,\mu)$ を $\sigma$-有限測度空間とし，
+$P_\theta$ は $\mu$ に関して密度 $p_\theta>0$ を
+共通の台上に持つとする．$T:\mathcal X\to\mathbb N$ を可測とする．
+$T$ の各値での条件付き分布が $\theta$ に依存しないことと，
+$\mu$-ほとんど至る所で
+$p_\theta(x)=g_\theta(T(x))h(x)$ と因子分解できることは同値である．
+\end{theorem}
+\begin{proof}
+$q_\theta(t)=P_\theta(T=t)$ と置く．$q_\theta(t)>0$ の値について，
+$T=t$ での条件付き密度は
+$\mathbf1_{T=t}p_\theta(x)/q_\theta(t)$ である．
+因子分解を仮定すれば，この比に現れる $g_\theta(t)$ は
+正規化の際に約され，$\theta$ に依存しない．
+逆に十分性を仮定する．ある固定した $\theta_0$ を選び
+$h=p_{\theta_0}$ とする．
+同一の条件付き密度を比較すると，$T=t$ の上で
+$p_\theta(x)/h(x)=q_\theta(t)/q_{\theta_0}(t)$ が
+$\mu$-ほとんど至る所成立する．
+右辺を $g_\theta(t)$ と置くと所要の因子分解を得る．
+条件付き確率零の値は全モデル共通の台の仮定により無視できる．
+\end{proof}
+\section{Poisson族の完備性}
+\begin{theorem}
+$X_1,\ldots,X_n$ が独立にPoisson$(\lambda)$ に従うとする
+（$\lambda>0$）．$T=\sum_iX_i$ は十分かつ完備である．
+\end{theorem}
+\begin{proof}
+同時質量関数は
+$e^{-n\lambda}\lambda^{\sum x_i}/\prod_i x_i!$ なので
+因子分解定理から十分性を得る．
+$T$ はPoisson$(n\lambda)$ に従う．
+全 $\lambda>0$ で可積分な $a(T)$ が期待値零なら
+\[
+ 0=e^{n\lambda}\mathbb E_\lambda a(T)
+ =\sum_{j=0}^\infty a(j)\frac{(n\lambda)^j}{j!}.
+\]
+全ての正の $\lambda$ で絶対収束するので，右辺の冪級数の
+収束半径は無限大である．これは正の実軸上で恒等的に零だから，
+冪級数の一意性により $a(j)=0$（全 $j$）である．
+従って $T$ は完備である．
+\end{proof}
+
+\section{任意の実数値統計量の因子分解定理}
+\begin{theorem}[共通の正の密度を持つモデルの因子分解]
+$\{P_\theta:\theta\in\Theta\}$ を同じ可測空間 $(\mathcal X,\mathcal A)$ 上の
+確率分布族とし，ある $\theta_0$ について
+$P_\theta$ がすべて $P_{\theta_0}$ と同値であるとする．
+$T:\mathcal X\to\mathbb R$ を実数値可測統計量とする．
+このとき次は同値である．
+\begin{enumerate}
+\item $T$ は十分統計量である，すなわち全ての有界可測 $f$ に対して
+$\mathbb E_\theta[f\mid\sigma(T)]$ を $\theta$ によらない形に選べる．
+\item 全ての $\theta$ に対し，あるBorel可測関数 $g_\theta$ が存在して
+$\displaystyle \frac{dP_\theta}{dP_{\theta_0}}=g_\theta(T)$ が
+$P_{\theta_0}$-ほとんど確実に成立する．
+\end{enumerate}
+特に共通の支配測度 $\mu$ に関する正の密度 $p_\theta$ がある場合，
+(2)は $p_\theta(x)=g_\theta(T(x))p_{\theta_0}(x)$ という
+因子分解と同値である．
+\end{theorem}
+\begin{proof}
+$\mathcal G=\sigma(T)$，$L_\theta=dP_\theta/dP_{\theta_0}$ と書く．
+Radon--Nikodymの定理から $L_\theta>0$ は $P_{\theta_0}$-ほとんど確実に成り立つ．
+Bayesの条件付き期待値公式は
+\[
+ \mathbb E_\theta[f\mid\mathcal G]
+ =\frac{\mathbb E_{\theta_0}[L_\theta f\mid\mathcal G]}
+ {\mathbb E_{\theta_0}[L_\theta\mid\mathcal G]}
+\]
+である．分母は正である．この公式を確かめるには，右辺を
+$\mathcal G$-可測な任意の事象上で積分すればよい．
+
+(2)が成り立つなら $L_\theta$ は $\mathcal G$-可測であるため
+$\mathbb E_{\theta_0}[L_\theta f\mid\mathcal G]
+=L_\theta\mathbb E_{\theta_0}[f\mid\mathcal G]$．
+従って上の比は $\mathbb E_{\theta_0}[f\mid\mathcal G]$ に等しく，
+$\theta$ に依存しないので十分性を得る．
+
+逆に(1)を仮定する．同値性から条件付き期待値の等式は
+$P_{\theta_0}$-ほとんど確実に成り立つ．
+よって全ての有界可測 $f$ について
+\[
+ \mathbb E_{\theta_0}[L_\theta f\mid\mathcal G]
+ =\mathbb E_{\theta_0}[L_\theta\mid\mathcal G]
+ \mathbb E_{\theta_0}[f\mid\mathcal G].
+\]
+両辺の期待値を取ると
+$\mathbb E_{\theta_0}[L_\theta f]
+=\mathbb E_{\theta_0}[\mathbb E_{\theta_0}(L_\theta\mid\mathcal G)f]$．
+$f$ をすべての事象の指示関数に取れば
+$L_\theta=\mathbb E_{\theta_0}[L_\theta\mid\mathcal G]$ が
+$P_{\theta_0}$-ほとんど確実に成り立つ．
+従って $L_\theta$ は $\mathcal G$-可測であり，
+実数値統計量に対するDoob--Dynkinの補題から
+$L_\theta=g_\theta(T)$ と表せる．
+\end{proof}
+\begin{remark}
+上の定理は統計量の値が非可算でも成立する．
+ただし全モデルが一つの $P_{\theta_0}$ と同値という仮定を置いている．
+台がパラメータで変わる分布族では，この証明をそのまま使うことはできない．
+\end{remark}
+
+
+\section{完備十分統計量と付随統計量}
+\begin{definition}
+統計量 $A$ が\emph{付随統計量}（ancillary statistic）であるとは，
+その分布 $P_\theta\circ A^{-1}$ がパラメータ $\theta$ に依存しないことをいう．
+\end{definition}
+\begin{theorem}[Basuの定理]
+$T$ は十分かつ完備な統計量とし，$A$ は付随統計量とする．
+十分性は，有界可測関数 $h(X)$ に対する
+$\mathbb E_\theta[h(X)\mid\sigma(T)]$ を
+$\theta$ に依存しない $T$ の可測関数として選べることを意味するとする．
+このとき各 $\theta$ の下で $T$ と $A$ は独立である．
+\end{theorem}
+\begin{proof}
+$A$ の値域の任意の可測集合 $B$ を固定し，
+$h(X)=\mathbf1_{\{A\in B\}}$ と置く．
+$T$ の十分性から，$\theta$ に依存しない可測関数 $q_B$ で
+\[
+ \mathbb E_\theta[\mathbf1_{\{A\in B\}}\mid\sigma(T)]
+ =q_B(T)\quad P_\theta\text{-a.s.}
+\]
+となるものが取れる．付随性から $c_B=P_\theta(A\in B)$ は
+$\theta$ に依存しない．全期待値の公式を使うと
+\[
+ \mathbb E_\theta\bigl[q_B(T)-c_B\bigr]=0
+ \qquad(\forall\theta).
+\]
+$q_B$ は $0\le q_B\le1$ の版を選べるため可積分であり，
+$T$ の完備性から $q_B(T)=c_B$ が各 $P_\theta$ の下でほとんど確実に成り立つ．
+従って $T$ の値域の任意の可測集合 $C$ に対して
+\begin{align*}
+ P_\theta(T\in C,\,A\in B)
+ &=\mathbb E_\theta[\mathbf1_{\{T\in C\}}q_B(T)]\\
+ &=c_B P_\theta(T\in C)
+ =P_\theta(A\in B)P_\theta(T\in C).
+\end{align*}
+これは独立性の定義である．
+\end{proof}
+\begin{example}[正規標本]
+$X_1,\ldots,X_n$ は独立に $N(\mu,\sigma^2)$ に従い，
+$\sigma^2>0$ は既知，$\mu\in\mathbb R$ は未知とする．
+このとき $\bar X$ は十分かつ完備である．
+十分性は正規密度の因子分解から従う．
+完備性は次のように示せる．$\tau^2=\sigma^2/n$ とし，
+全ての $\mu$ に対して $E_\mu|a(\bar X)|<\infty$，
+$E_\mu a(\bar X)=0$ を仮定する．
+$g(x)=a(x)e^{-x^2/(2\tau^2)}$ と置けば
+$\int|g(x)|e^{cx}\,dx<\infty$ が全ての実数 $c$ で成立する．
+ゆえに $F(z)=\int g(x)e^{zx}\,dx$ は $z\in\mathbb C$ の整関数となる．
+実際，任意のコンパクト集合上では $\Re z$ の上下界を使って
+導関数の差商を可積分関数で優収束できる．
+正規密度を展開すると
+$E_\mu a(\bar X)=0$ は $F(\mu/\tau^2)=0$ と同値である．
+恒等定理から $F\equiv0$ となり，特に $F(i\xi)=0$ が全ての
+$\xi\in\mathbb R$ で成立する．Fourier変換の $L^1$ 一意性から
+$g=0$ がほとんど至る所成立する．従って $a(\bar X)=0$ であり，
+$\bar X$ は完備である．
+従って残差の分布のみで定まる付随統計量は $\bar X$ と独立である．
+\end{example}
+
+
+\section{条件付き期待値を計算してUMVU推定量を作る}
+\begin{lemma}[Bernoulli標本の条件付き一様性]\label{lem:rb-uniform}
+$X_1,\ldots,X_n$ を独立なBernoulli$(p)$ 標本
+（$0<p<1$）とし，$T=\sum_iX_i$ とする．
+$T=t$ が与えられたとき，
+成功がちょうど $t$ 個である各0--1列の条件付き確率は
+$1/\binom nt$ に等しい．
+\end{lemma}
+\begin{proof}
+$t$ 個の1を持つ任意の列 $x=(x_1,\ldots,x_n)$ には
+$P_p(X=x)=p^t(1-p)^{n-t}$ が割り当てられる．
+一方
+$P_p(T=t)=\binom ntp^t(1-p)^{n-t}>0$
+である．条件付き確率の定義で割れば，
+全ての該当列について $1/\binom nt$ となる．
+\end{proof}
+\begin{proposition}[成功確率とその二乗のUMVU推定量]
+$n\ge2$ とする．上のモデルで
+\[
+ \delta_1(T)=\frac Tn,\qquad
+ \delta_2(T)=\frac{T(T-1)}{n(n-1)}
+\]
+はそれぞれ $p$ と $p^2$ の
+一意な最小分散不偏推定量である．
+\end{proposition}
+\begin{proof}
+$X_1$ は $p$ の不偏推定量であり，
+$X_1X_2$ は独立性から $p^2$ の不偏推定量である．
+補題\ref{lem:rb-uniform}により，
+$T=t$ の条件下で第一座標が1である確率は
+$t/n$ なので
+\[
+ E_p[X_1\mid T]=\frac Tn.
+\]
+同じく最初の二座標が1である確率は
+\[
+ \frac{\binom{n-2}{t-2}}{\binom nt}
+ =\frac{t(t-1)}{n(n-1)}
+\]
+である（$t<2$ では零とする）．
+従って
+$E_p[X_1X_2\mid T]=\delta_2(T)$．
+すでに本稿で示したように
+$T$ は十分かつ完備である．
+Rao--Blackwellの定理で
+二つの条件付き期待値は不偏推定量となり，
+Lehmann--Scheff\'eの定理により
+いずれも対応する対象の一意な最小分散不偏推定量となる．
+\end{proof}
+\begin{example}[観測順序に依存しない推定]
+$n=4$ で観測が $(1,0,1,1)$ だったとする．
+$T=3$ なので
+\[
+ \widehat p_{\mathrm{UMVU}}=\frac34,\qquad
+ \widehat{p^2}_{\mathrm{UMVU}}
+ =\frac{3\cdot2}{4\cdot3}=\frac12.
+\]
+後者は $(3/4)^2=9/16$ とは異なる．
+推定量に非線形変換を施しても
+一般に不偏性は保存されないことが分かる．
+\end{example}
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題．}
+$n=5$ のBernoulli標本について
+観測の成功回数が2だったとする．
+成功確率 $p$ と二乗 $p^2$ のUMVU推定値を求めよ．
+またなぜ推定量が観測順序に依存しないか述べよ．
+
+\medskip\noindent\textbf{解答．}
+$T=2$ を代入すると
+\[
+ \delta_1(2)=\frac25,\qquad
+ \delta_2(2)=\frac{2\cdot1}{5\cdot4}=\frac1{10}.
+\]
+十分統計量 $T$ を条件にしたとき，
+同じ成功回数を持つ標本列は一様に分布するから，
+条件付き期待値は成功回数だけの関数になる．
+従って各試行の順序を入れ替えても値は変わらない．
+
+\end{document}
