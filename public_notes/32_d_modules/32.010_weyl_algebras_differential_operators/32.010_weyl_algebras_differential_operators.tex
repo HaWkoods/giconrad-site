@@ -1,0 +1,531 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Weyl代数と微分作用素環}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，非可換環，微分作用素，交換子．
+本稿の具体的な到達課題は，Weyl代数で微分演算子を正規形へ並べ替える．
+
+\section{Weyl代数の定義}
+本稿では $k$ を標数零の体とする．
+\begin{definition}
+$n$ 次Weyl代数 $A_n(k)$ とは，単位元を持つ結合的
+$k$-代数で，生成元
+$x_1,\ldots,x_n,\partial_1,\ldots,\partial_n$ が
+\[
+ x_ix_j=x_jx_i,\qquad
+ \partial_i\partial_j=\partial_j\partial_i,\qquad
+ \partial_ix_j-x_j\partial_i=\delta_{ij}
+ \tag{1}
+\]
+を満たす自由結合代数の商として定義されるものをいう．
+\end{definition}
+\begin{lemma}[微分作用素による表現]\label{lem:operators}
+$k[z_1,\ldots,z_n]$ 上で $x_i$ を
+$z_i$ の乗法，$\partial_i$ を $z_i$ に関する
+偏微分として作用させると，式 (1) の関係が成立する．
+従ってWeyl代数から
+$\operatorname{End}_k(k[z_1,\ldots,z_n])$ への
+$k$-代数準同型が定まる．
+\end{lemma}
+\begin{proof}
+乗法作用素は互いに可換であり，
+偏微分作用素も互いに可換である．
+任意の多項式 $f$ に対しLeibniz則から
+\[
+ \partial_i(z_jf)-z_j\partial_if=\delta_{ij}f
+\]
+となる．従って定義関係が全て成り立ち，
+商代数の普遍性によって準同型が誘導される．
+\end{proof}
+\begin{remark}
+標数零の仮定は，後の標準形の一次独立性および中心の記述，
+有限次元表現の不存在において本質的である．
+\end{remark}
+
+\section{正規形とPBW型基底}
+多重指数 $\alpha,\beta\in\mathbb N^n$ に対し
+$x^\alpha=x_1^{\alpha_1}\cdots x_n^{\alpha_n}$，
+$\partial^\beta=\partial_1^{\beta_1}\cdots\partial_n^{\beta_n}$
+と書く．
+\begin{lemma}[正規順序への書換え]\label{lem:normal}
+$A_n(k)$ の任意の元は
+$x^\alpha\partial^\beta$ の有限個の $k$-線形結合で表される．
+\end{lemma}
+\begin{proof}
+生成元からなる語を考える．
+全ての $x_i$ を左，$\partial_j$ を右に移すように
+隣接する $\partial_i x_j$ を交換する．
+関係 (1) から
+$\partial_i x_j=x_j\partial_i+\delta_{ij}$ である．
+第1項では「左の微分記号と右の乗法記号」の逆転数が
+一つ減り，第2項は語の長さが二つ減る．
+語の長さと逆転数に関する辞書式帰納法を用いれば，
+この書換えは有限回で終了する．
+$x_i$ 同士，$\partial_j$ 同士は可換なので，
+得られた語は $x^\alpha\partial^\beta$ の形に整理できる．
+\end{proof}
+\begin{theorem}[Weyl代数のPBW型基底]\label{thm:pbw}
+\[
+ \{x^\alpha\partial^\beta:
+   \alpha,\beta\in\mathbb N^n\}
+\]
+は $A_n(k)$ の $k$-線形基底である．
+特に補題\ref{lem:operators}の表現は忠実である．
+\end{theorem}
+
+\begin{proof}
+張ることは補題\ref{lem:normal}による．
+一次独立性を示すため，有限和
+$P=\sum_{\alpha,\beta}
+ c_{\alpha\beta}x^\alpha\partial^\beta$ が
+多項式環上の作用素として零と仮定する．
+形式的冪級数環
+$k[z_1,\ldots,z_n][[t_1,\ldots,t_n]]$ で
+\[
+ E(z,t)=\exp(t_1z_1+\cdots+t_nz_n)
+ =\sum_{\nu\in\mathbb N^n}{t^\nu z^\nu\over\nu!}
+\]
+を考える．標数零なので各 $\nu!$ は可逆である．
+$P$ は $z$ のみに作用する有限階微分作用素だから，
+$t$ に関する各係数へ作用させることで
+形式的冪級数全体に拡張できる．
+$P$ は全ての多項式上で零なので $PE=0$ である．
+一方 $\partial_iE=t_iE$ より
+\[
+ PE=\left(\sum_{\alpha,\beta}
+ c_{\alpha\beta}z^\alpha t^\beta\right)E.
+\]
+$E$ の定数項は1なので冪級数として可逆である．
+従って $\sum_{\alpha,\beta}c_{\alpha\beta}
+z^\alpha t^\beta=0$ が成立する．
+多変数多項式の単項式の一次独立性から
+全ての $c_{\alpha\beta}=0$ である．
+ゆえに元の正規形は一次独立であり，
+同時に作用素表現の核も零である．
+\end{proof}
+\begin{proposition}[一変数の交換公式]
+$A_1(k)$ で $a,b\ge0$ とすると
+\[
+ \partial x^a=x^a\partial+a x^{a-1}
+ \quad(a\ge1),
+\]
+および
+\[
+ \partial^b x^a
+ =\sum_{j=0}^{\min(a,b)}
+ {b\choose j}a(a-1)\cdots(a-j+1)
+ x^{a-j}\partial^{b-j}
+ \tag{2}
+\]
+が成立する．$j=0$ の積は1とする．
+\end{proposition}
+\begin{proof}
+第一式は $\partial x=x\partial+1$ から
+$a$ に関する帰納法で得られる．
+第二式は $b=0$ では自明である．
+$b$ について成立すると仮定して左から $\partial$ を掛け，
+第一式で正規順序へ直す．
+$x^{a-j}\partial^{b-j+1}$ の項と
+$(a-j)x^{a-j-1}\partial^{b-j}$ の項が現れる．
+同じ単項式の係数をまとめると
+$ {b\choose j}+{b\choose j-1}={b+1\choose j}$
+によって $b+1$ の場合の式を得る．
+\end{proof}
+
+\section{次数フィルトレーション}
+\begin{definition}
+$m\ge0$ に対して
+\[
+ F_mA_n=\operatorname{span}_k
+ \{x^\alpha\partial^\beta:|\alpha|+|\beta|\le m\}
+\]
+と置き，$F_{-1}A_n=0$ とする．
+\[
+ \operatorname{gr}A_n=
+ \bigoplus_{m\ge0}F_mA_n/F_{m-1}A_n
+\]
+を付随次数環という．
+\end{definition}
+\begin{lemma}
+$F_pA_n\cdot F_qA_n\subset F_{p+q}A_n$ である．
+さらに $u\in F_pA_n$，$v\in F_qA_n$ なら
+$[u,v]\in F_{p+q-2}A_n$ である
+（負の添字の $F_m$ は零とする）．
+\end{lemma}
+\begin{proof}
+正規形の二単項式を掛け，関係 (1) に従って
+乗法記号を左へ移すと，
+交換しない項では全次数は $p+q$ 以下に保たれる．
+交換によって現れる定数項は記号二個を消すので，
+その項は次数を二つ下げる．
+交換子を取ると最高次数の項は可換積として一致して相殺する．
+従って交換子には少なくとも一度の交換に由来する項しか残らず，
+その次数は高々 $p+q-2$ である．
+一般の $u,v$ は有限な線形結合なので結論が従う．
+\end{proof}
+\begin{theorem}[付随次数環]\label{thm:gr}
+\[
+ \operatorname{gr}A_n(k)\cong
+ k[X_1,\ldots,X_n,\Xi_1,\ldots,\Xi_n]
+\]
+が次数付き $k$-代数として成立する．
+\end{theorem}
+\begin{proof}
+前補題から付随次数環は可換であり，
+$x_i,\partial_j$ の主記号をそれぞれ
+$X_i,\Xi_j$ に対応させることで
+右辺から左辺への次数付き準同型が得られる．
+PBW型基底定理\ref{thm:pbw}によって
+次数 $m$ の成分では
+$|\alpha|+|\beta|=m$ の主記号が $k$-線形基底となる．
+右辺の同次数単項式も同じ添字を持つ基底であるから，
+準同型は各次数で同型であり，全体でも同型である．
+\end{proof}
+
+\section{Weyl代数のNoether性}
+\begin{lemma}[付随次数環からの有限生成性]\label{lem:filtered}
+$A$ を非負整数で添字付けられた増大フィルトレーション
+$F_0A\subset F_1A\subset\cdots$ を持つ環とし，
+$A=\bigcup_mF_mA$，
+$F_pA\,F_qA\subset F_{p+q}A$ を仮定する．
+$\operatorname{gr}A$ が左Noether環なら $A$ は左Noether環である．
+\end{lemma}
+\begin{proof}
+$A$ の任意の左イデアル $I$ に対し
+\[
+ \operatorname{gr}I=
+ \bigoplus_{m\ge0}(I\cap F_mA)/(I\cap F_{m-1}A)
+\]
+を考える．これは $\operatorname{gr}A$ の次数付き左イデアルである．
+Noether性から斉次元である有限個の生成元
+$\sigma(g_1),\ldots,\sigma(g_s)$ を取れる．
+各生成元は $g_i\in I$ の主記号として選んでよい．
+任意の零でない $f\in I$ のフィルトレーション次数を $m$ とする．
+$\sigma(f)$ はこれらの生成元の斉次な積の和
+$\sum_i a_i^\#\sigma(g_i)$ と書けるので，
+各 $a_i^\#$ を適当な $a_i\in A$ に持ち上げる．
+このとき
+$f-\sum_i a_i g_i$ は $I$ に属し，
+その次数は $m$ より真に小さい．
+非負整数の降下帰納法によって
+$f-\sum_i a_i g_i$ は $(g_1,\ldots,g_s)$ に属する．
+従って $f$ もこの左イデアルに属する．
+任意の $f\in I$ に対して成立するので
+$I=Ag_1+\cdots+Ag_s$ は有限生成である．
+\end{proof}
+\begin{theorem}[Weyl代数の両側Noether性]\label{thm:noether}
+$A_n(k)$ は左Noether環かつ右Noether環である．
+\end{theorem}
+\begin{proof}
+定理\ref{thm:gr}から
+$\operatorname{gr}A_n$ は有限変数多項式環である．
+これはHilbertの基底定理によってNoether環である．
+補題\ref{lem:filtered}から $A_n$ は左Noetherとなる．
+右Noether性には反自己同型
+$\tau:A_n\to A_n$ を使う．
+生成元で
+$\tau(x_i)=x_i$，
+$\tau(\partial_i)=-\partial_i$ と置き，
+$\tau(ab)=\tau(b)\tau(a)$ として延長する．
+例えば
+\[
+ \tau(\partial_ix_j-x_j\partial_i)
+ =-x_j\partial_i+\partial_ix_j=\delta_{ij}
+\]
+なので関係式を保つ．
+また $\tau^2=\mathrm{id}$ である．
+従って $\tau$ は左イデアルと右イデアルを互いに対応させ，
+有限生成性を保つ．
+左Noether性から右Noether性が従う．
+\end{proof}
+\section{中心と有限次元表現}
+\begin{theorem}[Weyl代数の中心]\label{thm:center}
+標数零の体 $k$ 上で
+$Z(A_n(k))=k$ である．
+\end{theorem}
+\begin{proof}
+$P=\sum_{\alpha,\beta}
+c_{\alpha\beta}x^\alpha\partial^\beta$ が中心に属するとする．
+生成元 $x_j$ との交換子を計算すると
+\[
+ [P,x_j]=
+ \sum_{\alpha,\beta}
+ c_{\alpha\beta}\beta_j
+ x^\alpha\partial^{\beta-e_j}=0
+\]
+となる（$\beta_j=0$ の項は零とする）．
+PBW基底の一次独立性と標数零から
+$\beta_j>0$ の係数は全て零である．
+全ての $j$ にこれを適用すると $P\in k[x_1,\ldots,x_n]$．
+さらに
+$[P,\partial_j]=-\partial P/\partial x_j=0$ なので，
+再び標数零を用いれば $P$ は定数である．
+逆に体 $k$ の元は全ての元と可換なので中心に含まれる．
+\end{proof}
+\begin{theorem}[非零有限次元加群の不存在]
+標数零の体 $k$ 上の $A_n(k)$ は，
+$n\ge1$ のとき非零の有限次元左加群を持たない．
+\end{theorem}
+\begin{proof}
+有限次元左加群 $V$ が存在すると仮定し，
+$\partial_1,x_1$ の作用をそれぞれ線形写像 $D,X$ とする．
+定義関係から
+$DX-XD=\mathrm{id}_V$ が成立する．
+有限次元空間で
+$\operatorname{tr}(DX)=\operatorname{tr}(XD)$ だから
+左辺の跡は零である．
+一方右辺の跡は $\dim_kV$ であり，
+$V\ne0$ なら正整数だから標数零の体で非零である．
+矛盾するので $V=0$ しか存在しない．
+\end{proof}
+
+\section{微分方程式からD加群へ}
+\begin{definition}
+$A_1(k)$ の元 $P$ に対して左巡回加群
+\[
+ M_P=A_1(k)/A_1(k)P
+\]
+を考える．その標準生成元を $e=1+A_1(k)P$ とすると
+$Pe=0$ が成立する．
+\end{definition}
+\begin{example}[一次線形微分方程式]
+$\lambda\in k$ とし
+$P=\partial-\lambda$ と置く．
+$M_P$ は $k[z]$ と $k$-ベクトル空間として同型であり，
+その上で $x$ は $z$ の乗法，
+$\partial$ は $d/dz+\lambda$ として作用する．
+\end{example}
+\begin{proof}
+$k[z]$ 上に $x\cdot f=zf$，
+$\partial\cdot f=f'+\lambda f$ と定めると
+\[
+ (\partial x-x\partial)f
+ =(zf)'+\lambda zf-z(f'+\lambda f)=f
+\]
+なのでWeyl代数の左加群となる．
+この加群は $1$ を $x$ の作用で繰り返して生成でき，
+$(\partial-\lambda)\cdot1=0$ である．
+従って $M_P$ から $k[z]$ への全射準同型が得られる．
+一方PBW基底で表した各元の $\partial$ の冪を
+$\partial=(\partial-\lambda)+\lambda$ に置き換え，
+右端の $(\partial-\lambda)$ を法として消去すると，
+商 $M_P$ の各元は $x^a e$ の有限線形結合で表される．
+これらの像は $z^a$ で一次独立なので，準同型は単射でもある．
+\end{proof}
+\begin{proposition}[解空間の具体例]
+$k=\mathbb C$ とし，複素平面上の正則関数 $u$ について
+$(d/dz-\lambda)u=0$ が成立することと，
+ある定数 $C\in\mathbb C$ に対し
+$u(z)=Ce^{\lambda z}$ となることは同値である．
+\end{proposition}
+\begin{proof}
+$(e^{-\lambda z}u(z))'
+ =e^{-\lambda z}(u'(z)-\lambda u(z))$ なので，
+微分方程式が成り立つと
+$e^{-\lambda z}u(z)$ は全平面で導関数が零となる．
+連結な領域上の正則関数で導関数が零なら定数だから
+$u(z)=Ce^{\lambda z}$ である．
+逆向きは直接微分すればよい．
+\end{proof}
+\begin{remark}
+多変数の微分方程式系を微分作用素環の左イデアルで表し，
+その商左加群として扱うことがD加群論の出発点である．
+良いフィルトレーション，特性多様体，正則ホロノミーなどは
+後続の独立したノートで扱う．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Weyl代数の交換関係を計算する．}
+\begin{proposition}
+標数零の体 $k$ 上のWeyl代数
+$A_1(k)=k\langle x,\partial\rangle/
+(\partial x-x\partial-1)$ において，
+$n\ge1$ なら
+\[
+\partial x^n=x^n\partial+nx^{n-1}
+\]
+である．
+\end{proposition}
+\begin{proof}
+$n=1$ は定義関係である．
+$n$ について成立すると仮定すると，
+\[
+\begin{aligned}
+\partial x^{n+1}
+&=(\partial x^n)x\\
+&=x^n\partial x+nx^n\\
+&=x^{n+1}\partial+(n+1)x^n
+\end{aligned}
+\]
+となる．帰納法により成立する．
+\end{proof}
+\begin{corollary}
+$[\partial,x^n]=nx^{n-1}$ であり，
+多項式 $f(x)$ に対し
+$[\partial,f(x)]=f'(x)$ が成立する．
+\end{corollary}
+\begin{proof}
+第一式は上式から $x^n\partial$ を引けばよい．
+第二式は多項式の線形性による．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\partial^2x^2$ を $x$ を左にした正規形にせよ．
+\par\noindent\textbf{解答．}
+$\partial x^2=x^2\partial+2x$ を使って
+$\partial^2x^2
+=\partial(x^2\partial+2x)
+=x^2\partial^2+4x\partial+2$．
+
+\section{正規形算法と主記号の具体計算}
+\begin{proposition}[一変数での積の正規形]
+$P=x^a\partial^b$，$Q=x^c\partial^d$ とする．
+このとき
+\[
+ PQ=\sum_{j=0}^{\min(b,c)}
+ \binom bj c^{\underline j}
+ x^{a+c-j}\partial^{b+d-j},
+\]
+ただし $c^{\underline 0}=1$，
+$c^{\underline j}=c(c-1)\cdots(c-j+1)$ とする．
+\end{proposition}
+\begin{proof}
+既に示した交換公式 (2) を
+$x^a(\partial^b x^c)\partial^d$ に代入する．
+$x$ 同士および $\partial$ 同士を整理すれば
+表示式を得る．
+\end{proof}
+\begin{example}[演算子の積と交換子]
+$P=x^2\partial$，$Q=x\partial^2$ に対して
+\[
+ \begin{aligned}
+ PQ&=x^2(\partial x)\partial^2
+     =x^3\partial^3+x^2\partial^2,\\
+ QP&=x(\partial^2x^2)\partial
+     =x^3\partial^3+4x^2\partial^2+2x\partial.
+ \end{aligned}
+\]
+従って
+\[
+ [P,Q]=-3x^2\partial^2-2x\partial.
+\]
+この交換子の全次数は4であり，
+$P,Q$ の全次数の和6より2低い．
+\end{example}
+\begin{proposition}[主記号と交換子]
+$P,Q\in A_1(k)$ の全次数をそれぞれ $p,q$ とする．
+$[P,Q]$ の次数 $p+q-2$ の斉次部分の主記号は
+\[
+ \frac{\partial\sigma_p(P)}{\partial\Xi}
+ \frac{\partial\sigma_q(Q)}{\partial X}
+ -
+ \frac{\partial\sigma_p(P)}{\partial X}
+ \frac{\partial\sigma_q(Q)}{\partial\Xi}
+\]
+である．ここで $[P,Q]$ の次数が $p+q-2$
+未満の場合，左辺は零と解釈する．
+\end{proposition}
+\begin{proof}
+双線形性により $P=x^a\partial^b$，
+$Q=x^c\partial^d$ の場合を示せば十分である．
+積の公式で $j=0$ の項は $PQ$ と $QP$ で一致する．
+$j=1$ の係数は $bc$ と $da$ であり，
+次数は $a+b+c+d-2$ である．
+$j\ge2$ の項は少なくとも4だけ全次数が下がる．
+従って最高候補次数の項は
+$(bc-ad)X^{a+c-1}\Xi^{b+d-1}$ となる．
+これは右辺を単項式について計算したものに等しい．
+一般の斉次多項式については線形性から，
+非斉次の場合は最高次数成分だけが候補次数に
+寄与することから結論が従う．
+\end{proof}
+\noindent\textbf{到達確認．}
+$P=\partial^2+x$，$Q=x^3$ とする．
+$PQ$ と $[P,Q]$ の正規形を求め，
+交換子の全次数が上の評価と整合することを確かめよ．
+
+\par\noindent\textbf{解答．}
+交換公式から
+\[
+ \partial^2x^3=x^3\partial^2+6x^2\partial+6x
+\]
+であるから
+\[
+ \begin{aligned}
+ PQ&=x^3\partial^2+6x^2\partial+6x+x^4,\\
+ QP&=x^3\partial^2+x^4,\\
+ [P,Q]&=6x^2\partial+6x.
+ \end{aligned}
+\]
+$P$ の全次数は2，$Q$ は3であり，
+交換子の全次数は3である．
+これは $2+3-2=3$ に一致する．
+
+\end{document}

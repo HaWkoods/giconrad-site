@@ -1,0 +1,355 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{特性多様体とホロノミー}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Weyl代数の次数フィルトレーション，随伴次数環，特性多様体．
+本稿の具体的な到達課題は，巡回D加群の特性多様体を具体的に計算する．
+
+\section{次数フィルトレーション}
+$k$ を標数零の体とする．$A=A_1(k)$ に
+$F_dA=\operatorname{span}_k\{x^i\partial^j:i+j\le d\}$ を入れる．
+\begin{proposition}
+$F_iA\,F_jA\subset F_{i+j}A$，
+$\operatorname{gr}_F A\simeq k[X,\Xi]$（可換多項式環）である．
+\end{proposition}
+\begin{proof}
+$\partial x=x\partial+1$ によって $x,\partial$ の順を入れ替えると
+余分な項は全次数を2だけ下げる．従って積の最高次記号は可換な
+$X,\Xi$ の積である．標準基底 $x^i\partial^j$ の最高次記号は
+互いに一次独立なので対応は同型となる．
+\end{proof}
+\begin{definition}
+有限生成左 $A$-加群 $M$ の良いフィルトレーションとは
+増大する有限次元部分空間列 $(F_dM)$ であって
+$F_iA\,F_jM\subset F_{i+j}M$，$\bigcup F_dM=M$ を満たし，
+$\operatorname{gr}M$ が $\operatorname{gr}A$ 上有限生成となるものをいう．
+$\operatorname{Supp}_{k[X,\Xi]}(\operatorname{gr}M)$ を特性多様体とする．
+\end{definition}
+\begin{lemma}
+任意の有限生成左 $A$-加群は良いフィルトレーションを持つ．
+\end{lemma}
+\begin{proof}
+有限個の生成元 $m_1,\ldots,m_r$ を選び
+$F_dM=\sum_{i=1}^rF_dA\,m_i$ と置く．
+有限次元・増大・網羅の性質は直ちに従う．
+付随次数加群は $m_i$ の記号から生成される．
+\end{proof}
+\section{一次元の場合のBernstein不等式}
+\begin{theorem}[一変数のBernstein不等式]
+$M\ne0$ を有限生成左 $A_1(k)$-加群とする．
+特性多様体のKrull次元は少なくとも1である．
+\end{theorem}
+\begin{proof}
+もし特性多様体が零次元なら，有限生成次数付き
+$k[X,\Xi]$-加群 $\operatorname{gr}M$ は有限次元 $k$-空間である．
+従って良いフィルトレーションは十分大きい次数で安定し，
+$M$ 自体が有限次元になる．
+しかし有限次元 $A_1$-加群では
+$[\partial,x]=1$ の両辺の跡を取ると
+$0=\operatorname{tr}([\partial,x])=\operatorname{tr}(1)=\dim_k M$ となる．
+標数零で $\dim_k M=0$，これは $M\ne0$ に反する．
+\end{proof}
+\begin{definition}
+$A_1$ の非零有限生成加群 $M$ で特性多様体が一次元のとき，
+$M$ をホロノミックと呼ぶ．
+\end{definition}
+\begin{example}
+$M=A_1/A_1\partial\simeq k[x]$ の良いフィルトレーションは
+多項式の次数によって与えられ，
+$\operatorname{gr}M\simeq k[X,\Xi]/(\Xi)$ である．
+特性多様体は $\Xi=0$ という直線だからホロノミックである．
+\end{example}
+\begin{remark}
+一般の $A_n$ に対するBernstein不等式と
+特性多様体のフィルトレーション独立性は後続の節で証明する．
+余等方性に関するGabberの定理は本稿の範囲外である．
+\end{remark}
+
+
+\section{良いフィルトレーションの比較と特性多様体の例}
+\begin{proposition}[良いフィルトレーションの比較]
+有限生成 $A_n$-加群 $M$ の二つの良いフィルトレーション
+$F_\bullet M,G_\bullet M$ に対し，ある整数 $c\ge0$ が存在して
+$F_dM\subset G_{d+c}M$ かつ $G_dM\subset F_{d+c}M$ が全 $d$ で成立する．
+\end{proposition}
+\begin{proof}
+$\operatorname{gr}_F M$ の斉次生成元を有限個取り，
+その持ち上げを $m_1,\ldots,m_r$ とする．次数帰納法で
+$F_dM=\sum_i F_{d-a_i}A_n\,m_i$（$a_i$ は持ち上げの次数）となる．
+各 $m_i$ は $G$ のいずれかの段階 $G_{b_i}M$ に属するから，
+$F_dM\subset G_{d+\max_i(b_i-a_i)}M$ を得る．
+$F,G$ を交換して同じ議論を行い，二つのずれを大きい方で統一する．
+\end{proof}
+\begin{corollary}[成長次数の独立性]
+$M\ne0$ について，$\dim_kF_dM$ の多項式増大次数
+（すなわち $\limsup_{d\to\infty}\log(\dim_k F_dM)/\log d$）は
+良いフィルトレーションの選択に依存しない．
+\end{corollary}
+\begin{proof}
+前命題より $\dim F_dM\le\dim G_{d+c}M$ とその逆が成立する．
+次数の有限な平行移動は対数比の極限上限を変えない．
+\end{proof}
+\begin{proposition}[高次元のホロノミック加群の例]
+$A_n$ の標準加群 $k[x_1,\ldots,x_n]$ を総次数で濾過すると，
+その付随次数加群は
+\[
+ k[X_1,\ldots,X_n,\Xi_1,\ldots,\Xi_n]
+ /(\Xi_1,\ldots,\Xi_n)
+\]
+に同型である．従って特性多様体の次元は $n$ である．
+\end{proposition}
+\begin{proof}
+$\partial_i$ は多項式次数を一つ下げるので，その最高次記号 $\Xi_i$ は
+付随次数加群に零作用する．$X$ の単項式の作用は独立なので，
+$X_1,\ldots,X_n$ に非自明な多項式関係はない．
+表示した商環と付随次数加群との間の標準的全射は単項式基底を保ち，
+従って単射でもある．次元は多項式環の次元公式による．
+\end{proof}
+\begin{remark}
+一般のBernstein不等式とGabberの余等方性定理はなお別の証明を要する．
+この節はフィルトレーションの比較と具体例についての完全な証明である．
+\end{remark}
+
+\section{一般のBernstein不等式}
+\begin{lemma}[特性多様体のフィルトレーション独立性]
+$M$ を有限生成 $A_n(k)$-加群とし，$F_\bullet M$ と $G_\bullet M$ を
+良いBernsteinフィルトレーションとする．
+$S=\operatorname{gr}A_n=k[X_1,\ldots,X_n,\Xi_1,\ldots,\Xi_n]$ と置けば
+\[
+ \sqrt{\operatorname{Ann}_S(\operatorname{gr}_F M)}
+ =\sqrt{\operatorname{Ann}_S(\operatorname{gr}_G M)}.
+\]
+従って特性多様体は良いフィルトレーションの選択によらない．
+\end{lemma}
+\begin{proof}
+前に示した比較命題から，ある $c\ge0$ に対し
+$G_dM\subset F_{d+c}M$，$F_dM\subset G_{d+c}M$ がすべての $d$ で成立する．
+$S$ の斉次元 $\sigma(a)$（$a\in B_rA_n$ の最高次記号）が
+$\sqrt{\operatorname{Ann}(\operatorname{gr}_F M)}$ に属するとする．
+このときある $N\ge1$ が存在し，すべての $d$ で
+\[
+ a^N F_dM\subset F_{d+Nr-1}M
+\]
+が成立する．この包含を $L$ 回繰り返すと
+\[
+ a^{NL}G_dM\subset a^{NL}F_{d+c}M
+ \subset F_{d+c+NLr-L}M
+ \subset G_{d+NLr+2c-L}M.
+\]
+$L>2c$ と取れば右辺は $G_{d+NLr-1}M$ に含まれる．
+すなわち $\sigma(a)^{NL}$ は $\operatorname{gr}_G M$ を零化する．
+従って $\sigma(a)$ は $\sqrt{\operatorname{Ann}(\operatorname{gr}_G M)}$
+に属する．$F,G$ を交換すれば逆包含も成り立つ．
+これで両根基イデアルの斉次元について包含が分かった．
+根基イデアルは斉次イデアルであるから，すべての元に拡張される．
+\end{proof}
+\begin{lemma}[Bernsteinフィルトレーションの作用の忠実性]
+$M\ne0$ を有限生成 $A_n(k)$-加群とする．良いフィルトレーションを
+適当な添字だけ平行移動して $B_0M\ne0$ と取る．
+このとき任意の整数 $p\ge0$ について
+\[
+ B_pA_n\longrightarrow
+ \operatorname{Hom}_k(B_pM,B_{2p}M),\quad
+ Q\longmapsto(u\mapsto Qu)
+\]
+は単射である．
+\end{lemma}
+\begin{proof}
+$p$ に関する帰納法による．$p=0$ では $B_0A_n=k$ であり，
+非零スカラーは $B_0M\ne0$ 上で零作用しない．
+$p>0$ とし，$Q\in B_pA_n$ が $B_pM$ 上で零作用すると仮定する．
+$Q$ がスカラーなら，$B_0M\subset B_pM$ から $Q=0$ である．
+そうでなければ，$Q$ の標準形に現れる $x_i$ または
+$\partial_i$ の次数が正である．標数零だから，ある
+$z\in\{x_1,\ldots,x_n,\partial_1,\ldots,\partial_n\}$ に対し
+$[Q,z]\ne0$ となる．実際 $[Q,\partial_i]$ は標準形の
+$x_i$ に関する形式偏微分の負号付き，$[Q,x_i]$ は
+$\partial_i$ に関する形式偏微分に等しい．
+従って $0\ne[Q,z]\in B_{p-1}A_n$ である．帰納法の仮定から，
+ある $v\in B_{p-1}M$ に対し $[Q,z]v\ne0$ となる．
+しかし $v,zv\in B_pM$ なので
+$Qv=Q(zv)=0$ であり，
+$[Q,z]v=Q(zv)-z(Qv)=0$ となって矛盾する．
+\end{proof}
+\begin{theorem}[Bernstein不等式：一般のWeyl代数]
+$k$ を標数零の体，$M\ne0$ を有限生成左 $A_n(k)$-加群とする．
+$B_\bullet M$ を良いBernsteinフィルトレーションとし，
+その増大次元の多項式増大次数を $d$ とする．
+このとき $d\ge n$ である．さらに次数付き可換加群の
+Hilbert多項式とKrull次元の対応を用いれば
+\[
+ \dim\operatorname{Ch}(M)\ge n
+\]
+が従う．
+\end{theorem}
+\begin{proof}
+前補題により
+\[
+ \dim_k B_pA_n
+ \le\dim_k\operatorname{Hom}_k(B_pM,B_{2p}M)
+ =\dim_k B_pM\cdot\dim_k B_{2p}M.
+\]
+標準基底 $x^\alpha\partial^\beta$ から
+$\dim_kB_pA_n={p+2n\choose2n}$ であり，これは
+$p$ の $2n$ 次多項式で正の最高次係数を持つ．
+一方，$\operatorname{gr}_B M$ は有限生成の標準次数付き
+$k[X,\Xi]$-加群だからHilbert--Serreの定理により
+$\dim_kB_pM$ は十分大きい $p$ で $p$ の多項式に一致する．
+その次数を $d$ とすると上の次元不等式は
+定数倍を無視して $p^{2n}=O(p^{2d})$ を与える．
+従って $2n\le2d$，すなわち $d\ge n$ である．
+最後に標準次数付き可換加群についての
+$\deg(\dim_kB_pM)=\dim\operatorname{Supp}(\operatorname{gr}_B M)$
+という次元とHilbert多項式の対応を適用する．
+\end{proof}
+\begin{remark}
+この証明で残る可換代数の依存事項は，有限生成次数付き加群の
+Hilbert多項式の累積次数と台のKrull次元の一致である．
+Bernstein不等式の作用素論的な次元比較は上で証明した．
+余等方性に関するGabberの定理は，これとは別の深い結果である．
+\end{remark}
+
+\section{単一微分方程式に対する特性超曲面の余等方性}
+\begin{theorem}[主左イデアルによる商加群の特性多様体]
+$A_n(k)$ を標数零の体上のWeyl代数とし，
+$0\ne P\in A_n(k)$ をスカラーでない元とする．
+$M=A_n/A_nP$ にBernsteinフィルトレーションの商フィルトレーションを入れる．
+$\sigma(P)\in k[X_1,\ldots,X_n,\Xi_1,\ldots,\Xi_n]$
+を $P$ の最高次記号とすると
+\[
+ \operatorname{gr}M\simeq
+ k[X_1,\ldots,X_n,\Xi_1,\ldots,\Xi_n]/(\sigma(P))
+\]
+である．従って特性多様体は超曲面
+$\operatorname{Ch}(M)=V(\sigma(P))$ であり，
+その各滑らかな点の接空間は標準シンプレクティック形式に関して余等方的である．
+\end{theorem}
+\begin{proof}
+Weyl代数のBernsteinフィルトレーションでは
+$\operatorname{gr}A_n$ は多項式環という整域である．
+そのため非零 $Q,P\in A_n$ の積の最高次記号は
+$\sigma(QP)=\sigma(Q)\sigma(P)\ne0$ となる．
+特に $A_nP$ の付随次数イデアルは
+$\operatorname{gr}(A_nP)=(\sigma(P))$ である．
+商フィルトレーションの付随次数についての完全性から
+表示した同型を得る．
+
+$V(\sigma(P))$ の滑らかな点 $z$ を取る．
+その点の近傍では超曲面はある既約因子 $g$ の零点として
+$dg(z)\ne0$ を満たす．
+標準シンプレクティック形式を
+$\omega=\sum_i dX_i\wedge d\Xi_i$ と書き，
+$\omega(X_g,\cdot)=dg$ でHamiltonベクトル場 $X_g$ を定める．
+接空間は $T_zV=\ker dg(z)$ であるから
+$(T_zV)^\omega=\operatorname{span}\{X_g(z)\}$ となる．
+一方 $dg(X_g)=\omega(X_g,X_g)=0$ なので
+$X_g(z)\in T_zV$．従って
+$(T_zV)^\omega\subset T_zV$ である．
+\end{proof}
+\begin{remark}
+主左イデアル一つによる商加群の特性超曲面では余等方性を
+初等的に証明できる．一般の有限生成D加群の特性多様体について
+根基を取った特性イデアルの余等方性を示すGabberの定理は，
+主イデアルの場合だけからは従わず，依然として未証明である．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{一次微分方程式の特性多様体．}
+\begin{proposition}
+$D=\mathbb C[x]\langle\partial\rangle$ に
+微分作用素の位数フィルトレーションを入れ，
+$M=D/D(\partial-1)$ とする．
+このとき $M$ の特性多様体は
+\[
+\operatorname{Char}(M)=\{(x,\xi)\in T^*\mathbb A^1:
+\xi=0\}
+\]
+であり，次元は1である．
+\end{proposition}
+\begin{proof}
+$\operatorname{gr}D\cong\mathbb C[x,\xi]$
+で，$\partial-1$ の主記号は $\xi$ である．
+左イデアル $D(\partial-1)$ の随伴次数イデアルは
+$(\xi)$ である．
+実際 $\operatorname{gr}D$ は整域なので，
+非零 $P\in D$ の積 $P(\partial-1)$ の
+主記号は $\sigma(P)\xi$ となる．
+従って
+$\operatorname{gr}M\cong\mathbb C[x,\xi]/(\xi)$．
+その台は零切断であり，次元1となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$D/D\partial$ の特性多様体を求めよ．
+\par\noindent\textbf{解答．}
+$\partial$ の主記号が $\xi$ なので同様に
+$\{\xi=0\}$ である．
+\end{document}

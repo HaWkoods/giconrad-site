@@ -1,0 +1,472 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{解析接続と一価性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，正則関数の恒等定理，複素曲線積分，単連結性と道のホモトピーである．
+正則関数の芽と解析接続を定義し，モノドロミー定理を本稿で証明する．
+本稿の具体的な到達課題は，一価性が破れる具体的な解析接続を追跡する．
+
+\section{正則関数の芽}
+
+以下，$U\subset\mathbb C$ を領域とする．
+開集合上の正則関数の恒等定理，Cauchyの積分定理，
+および道とホモトピーの基本事項を前提とする．
+
+\begin{definition}
+$a\in U$ とする．
+$a$ の開近傍 $V$ 上の正則関数 $f$ と，
+$a$ の開近傍 $W$ 上の正則関数 $g$ が
+$a$ のある開近傍で一致するとき
+$(V,f)\sim_a(W,g)$ と定める．
+この同値類を $a$ における\emph{正則関数の芽}といい，
+$[f]_a$ と書く．
+\end{definition}
+
+\begin{lemma}\label{lem:germ}
+$\sim_a$ は同値関係である．
+また二つの芽 $[f]_a,[g]_a$ が等しいことと，
+ある $r>0$ が存在して
+$D(a,r)$ 上で $f=g$ となることは同値である
+（円板は両方の定義域に含まれるように取る）．
+\end{lemma}
+\begin{proof}
+反射律と対称律は定義から明らかである．
+$(V,f)\sim_a(W,g)$ と
+$(W,g)\sim_a(Z,h)$ なら，
+$a$ の二つの開近傍の共通部分上で
+$f=g$ および $g=h$ が成立するので
+$(V,f)\sim_a(Z,h)$ である．
+従って推移律も成立する．
+最後の主張は，任意の開近傍が $a$ を中心とする
+十分小さい開円板を含むことから従う．
+\end{proof}
+
+\begin{proposition}[芽の局所的一意性]\label{prop:germ-unique}
+二つの正則関数 $f,g$ が連結な開集合 $V$ 上で定義され，
+ある $a\in V$ について $[f]_a=[g]_a$ なら
+$f=g$ が $V$ 上で成り立つ．
+\end{proposition}
+\begin{proof}
+芽が一致するので $f=g$ は $a$ の近傍で成立する．
+従って $f-g$ の零点集合は集積点を持ち，
+正則関数の恒等定理から $f-g\equiv0$ となる．
+\end{proof}
+
+\section{局所的な解析接続}
+
+\begin{definition}
+領域 $V_1,V_2$ 上の正則関数 $f_1,f_2$ に対し，
+$V_1\cap V_2$ のある連結成分 $W$ が空でなく，
+$f_1|_W=f_2|_W$ が成立するとき，
+$f_2$ は $W$ を通じた $f_1$ の\emph{解析接続}であるという．
+\end{definition}
+
+\begin{lemma}[重なりでの一意性]\label{lem:overlap}
+$V_1\cap V_2$ の連結成分 $W$ において，
+$f_1,f_2$ が一点の近傍で一致すれば
+$W$ 全体で一致する．
+\end{lemma}
+\begin{proof}
+$f_1-f_2$ は $W$ 上で正則であり，
+零点集合は集積点を持つから恒等定理による．
+\end{proof}
+
+\begin{example}[幾何級数の接続]
+$D(0,1)$ 上の正則関数
+$f(z)=\sum_{n=0}^\infty z^n$ は
+$1/(1-z)$ に等しい．
+従って $\mathbb C\setminus\{1\}$ 上の
+$F(z)=1/(1-z)$ は $f$ の解析接続を与える．
+\end{example}
+\begin{proof}
+$|z|<1$ なら有限等比級数の和
+$\sum_{n=0}^Nz^n=(1-z^{N+1})/(1-z)$ である．
+$N\to\infty$ として $f(z)=1/(1-z)$ となる．
+$F$ は $\mathbb C\setminus\{1\}$ 上で正則なので接続である．
+\end{proof}
+
+\section{曲線に沿う解析接続}
+
+\begin{definition}
+連続な曲線 $\gamma:[0,1]\to U$ と，
+始点 $a=\gamma(0)$ の正則関数の芽 $g_0$ を取る．
+$g_0$ が $\gamma$ に沿って\emph{解析接続可能}であるとは，
+分割
+$0=t_0<t_1<\cdots<t_N=1$ と
+各 $\gamma([t_{j-1},t_j])$ を含む開円板
+$D_j\subset U$ および正則関数 $f_j\in\mathcal O(D_j)$ が存在して，
+\[
+ [f_1]_a=g_0,\qquad
+ [f_j]_{\gamma(t_j)}=[f_{j+1}]_{\gamma(t_j)}
+ \quad(1\le j<N)
+\]
+が成り立つことをいう．
+このとき終点の芽 $[f_N]_{\gamma(1)}$ を
+接続によって得られた芽という．
+\end{definition}
+
+\begin{remark}
+上の分割では $\gamma([t_{j-1},t_j])\subset D_j$ とするが，
+そのような一つの円板が各短い部分曲線を含むように取れるのは，
+連続曲線の一様連続性と $U$ の開性による．
+既に与えられた解析接続の連鎖を細分しても
+終点の芽は変わらない．
+\end{remark}
+
+\begin{lemma}[固定曲線に沿う接続の一意性]
+\label{lem:path-unique}
+同じ始点の芽を同じ曲線 $\gamma$ に沿って解析接続したとき，
+終点に得られる芽は一意である．
+\end{lemma}
+\begin{proof}
+二つの接続の連鎖を取り，両方の分割点を合わせて
+共通細分を作る．始点の芽は一致する．
+各小区間で対応する二つの正則関数は，
+その小区間の始点の近傍で同じ芽を表すから，
+共通部分に含まれる小さい円板上で一致する．
+恒等定理によって小区間に沿う連続した重なりでも
+同じ解析接続を与える．
+これを有限個の小区間に対して帰納的に繰り返すと，
+終点における芽が一致する．
+\end{proof}
+
+\begin{lemma}[経路の小さな変形に対する安定性]
+\label{lem:path-stability}
+始点と終点をそれぞれ固定した曲線 $\gamma$ に沿って，
+芽 $g_0$ が解析接続可能であるとする．
+このとき $\gamma$ の十分小さい一様近傍にある曲線
+$\eta$ のうち始点・終点が同じものに沿っても
+$g_0$ は解析接続可能であり，
+終点の芽は $\gamma$ の場合と一致する．
+\end{lemma}
+\begin{proof}
+$\gamma$ に沿う解析接続の有限連鎖
+$(D_j,f_j,t_j)$ を取る．
+必要なら分割を細かくし，
+各閉部分曲線
+$\gamma([t_{j-1},t_j])$ が $D_j$ のコンパクト部分集合に
+含まれ，分割点 $\gamma(t_j)$ の周囲に
+$f_j,f_{j+1}$ が一致する小円板があるようにする．
+有限個のコンパクト集合と開円板の間には
+正の余裕が取れる．
+従って $\sup_t|\eta(t)-\gamma(t)|<\delta$ となる
+十分小さい $\delta>0$ に対して，
+$\eta([t_{j-1},t_j])\subset D_j$ が全ての $j$ で成り立つ．
+また $\eta(t_j)$ は $f_j=f_{j+1}$ が成立する
+重なりの小円板に入る．
+従って同じ $f_j$ が $\eta$ に沿う解析接続の連鎖をなす．
+始点と終点は固定しているため，
+両端での芽は $\gamma$ の場合と一致する．
+\end{proof}
+
+\section{モノドロミー定理}
+
+\begin{theorem}[ホモトピー不変性]\label{thm:homotopy}
+$g_0$ を $a\in U$ における正則関数の芽とし，
+$g_0$ は $a$ から始まる $U$ 内の
+\emph{任意の連続曲線に沿って解析接続可能}であるとする．
+始点 $a$ と終点 $b$ を固定した二つの曲線
+$\gamma_0,\gamma_1$ が端点固定ホモトピーで結ばれるなら，
+両曲線に沿って得られる終点の芽は一致する．
+\end{theorem}
+\begin{proof}
+端点固定ホモトピーを
+$H:[0,1]\times[0,1]\to U$ とし，
+$\gamma_s(t)=H(s,t)$ と置く．
+全ての曲線について解析接続が可能であるから，
+各 $s$ に対して終点の芽 $G(s)$ が一意に定まる．
+任意の $s_0$ について，
+補題\ref{lem:path-stability}を $\gamma_{s_0}$ に適用する．
+$H$ の連続性と定義域のコンパクト性から
+$s\to s_0$ で
+$\sup_t|\gamma_s(t)-\gamma_{s_0}(t)|\to0$
+となる．
+従って $s$ が $s_0$ に十分近ければ
+$G(s)=G(s_0)$ である．
+すなわち写像 $G:[0,1]\to
+ \{\text{$b$ における正則関数の芽}\}$
+は局所定数である．
+区間 $[0,1]$ は連結なので $G$ は定数であり，
+$G(0)=G(1)$ を得る．
+\end{proof}
+
+\begin{theorem}[モノドロミー定理]\label{thm:monodromy}
+$U\subset\mathbb C$ を単連結な領域，
+$a\in U$，$g_0$ を $a$ における正則関数の芽とする．
+$g_0$ が $a$ から始まる任意の連続曲線に沿って
+解析接続可能なら，
+唯一の正則関数 $F:U\to\mathbb C$ が存在して
+$[F]_a=g_0$ を満たす．
+この $F$ の各点での芽は，
+$g_0$ をその点へ至る任意の曲線に沿って
+解析接続して得られる芽と一致する．
+\end{theorem}
+\begin{proof}
+各 $z\in U$ に対して，
+$a$ から $z$ に至る曲線 $\gamma_z$ を選ぶ．
+$U$ は領域だから道連結であり，そのような曲線が存在する．
+単連結性によって，同じ端点を持つ二つの曲線は
+端点固定ホモトピーで結ばれる．
+定理\ref{thm:homotopy}から，
+$\gamma_z$ に沿う解析接続で得られる終点の芽は
+経路の選択に依存しない．
+その芽を $G_z$ と書き，
+$F(z)$ を芽 $G_z$ の任意の代表関数の $z$ における値とする．
+芽の定義からこの値はwell-definedである．
+
+$z_0\in U$ を固定する．
+$G_{z_0}$ は $z_0$ の小円板 $D\subset U$ 上の
+正則関数 $h$ によって表される．
+任意の $z\in D$ について，
+$a$ から $z_0$ への経路に
+$D$ 内の線分 $[z_0,z]$ を連結すると，
+その経路に沿う解析接続の終点の芽は $[h]_z$ になる．
+経路独立性から $G_z=[h]_z$ であり，
+$F(z)=h(z)$ が $D$ 全体で成立する．
+従って $F$ は $z_0$ の近傍で正則であり，
+$z_0$ は任意なので $F$ は $U$ 上正則である．
+$a$ における芽が $g_0$ であることは定義から従う．
+最後に別の正則関数 $F'$ が同じ芽を持つなら，
+恒等定理から $F'=F$ であり一意である．
+\end{proof}
+
+\begin{remark}
+単連結性だけでは結論を導けない．
+全ての曲線に沿って解析接続できるという仮定が本質的である．
+例えば $U=\mathbb C$ として原点以外で
+$1/z$ を表す芽を取っても，
+原点を終点とする曲線に沿って正則な接続はできない．
+\end{remark}
+
+\section{複素対数と解析接続}
+
+\begin{lemma}[局所対数]\label{lem:local-log}
+$a\ne0$ に対し，$a$ の十分小さい円板 $D$ 上に
+正則関数 $\ell$ が存在して
+$e^{\ell(z)}=z$ を満たす．
+\end{lemma}
+\begin{proof}
+$a$ の対数値 $c$ を一つ選び $e^c=a$ とする．
+$|z-a|<|a|$ で
+\[
+ \ell(z)=c+\sum_{n=1}^\infty
+ \frac{(-1)^{n+1}}n\left(\frac{z-a}{a}\right)^n
+\]
+と置く．級数は開円板で局所一様収束し，
+項別微分によって
+$\ell'(z)=1/z$ となる．
+$h(z)=e^{\ell(z)}/z$ と置くと
+$h'/h=\ell'-1/z=0$ であり，
+$h(a)=1$ なので連結性から $h\equiv1$ となる．
+従って $e^{\ell(z)}=z$ である．
+\end{proof}
+
+\begin{proposition}[対数の解析接続と巻き数]\label{prop:log-winding}
+$\gamma:[0,1]\to\mathbb C^\times$ を
+始点 $a$ と終点 $b$ を持つ区分的 $C^1$ 曲線とする．
+$a$ の対数の芽 $\ell_0$ を $\gamma$ に沿って接続すると，
+終点で得られる芽 $\ell_1$ は
+\[
+ \ell_1(b)-\ell_0(a)=\int_\gamma\frac{dz}{z}
+\]
+を満たす．
+特に $\gamma$ が閉曲線なら，
+接続後の対数値は元の対数値に
+$2\pi i\operatorname{Ind}(\gamma,0)$ を加えたものとなる．
+\end{proposition}
+\begin{proof}
+局所対数は導関数が $1/z$ である．
+$\gamma$ の像はコンパクトなので，
+有限個の局所対数の円板で覆い，
+隣接する対数の値が分割点で一致するように
+$2\pi i$ の整数倍を調整できる．
+各小区間で複素積分の基本定理を適用すると，
+局所対数の終点と始点の値の差は
+$\int dz/z$ に等しい．
+これらを全区間について足し合わせると
+中間点の値が打ち消し合い，
+最初の表示式を得る．
+閉曲線なら
+$\int_\gamma dz/z=2\pi i\operatorname{Ind}(\gamma,0)$
+は巻き数の定義とその整数性による．
+\end{proof}
+
+\begin{example}[原点を一周する対数]
+$\gamma(t)=e^{2\pi it}$（$0\le t\le1$）とする．
+$1$ における対数の芽を $\gamma$ に沿って接続すると，
+終点での対数値は始点の対数値より $2\pi i$ 大きい．
+従って $\mathbb C^\times$ 上に
+一価正則な複素対数は存在しない．
+\end{example}
+\begin{proof}
+\[
+ \int_\gamma\frac{dz}{z}
+ =\int_0^1\frac{2\pi ie^{2\pi it}}{e^{2\pi it}}\,dt
+ =2\pi i
+\]
+なので命題\ref{prop:log-winding}による．
+もし $F$ が $\mathbb C^\times$ 上の正則対数なら
+$F'(z)=1/z$ だから，閉曲線上のその積分は
+原始関数の存在によって零となるはずであり矛盾する．
+\end{proof}
+
+\begin{theorem}[単連結領域上の正則対数]\label{thm:global-log}
+$U$ を単連結な領域，
+$f:U\to\mathbb C^\times$ を零を持たない正則関数とする．
+このとき正則関数 $g:U\to\mathbb C$ が存在して
+\[
+ e^{g(z)}=f(z)\qquad(z\in U)
+\]
+を満たす．$g$ は $2\pi i$ の整数倍の定数を除いて一意である．
+\end{theorem}
+\begin{proof}
+$f'/f$ は $U$ 上で正則である．
+単連結領域上のCauchy積分定理から，
+正則関数 $h$ で $h'=f'/f$ となるものが存在する．
+ある $a\in U$ を固定し，$e^c=f(a)$ となる $c$ を選ぶ．
+\[
+ g(z)=h(z)-h(a)+c
+\]
+と置けば $g'=f'/f$ であり，
+$\frac d{dz}(e^g/f)=0$ となる．
+$e^{g(a)}/f(a)=1$ なので
+$e^{g(z)}=f(z)$ が全域で成り立つ．
+二つの正則対数 $g_1,g_2$ は
+$e^{g_1-g_2}=1$ を満たす．
+従って $g_1-g_2$ は離散集合 $2\pi i\mathbb Z$ に値を取る
+連続関数であり，$U$ が連結だから定数である．
+\end{proof}
+
+\section{平方根と分岐}
+
+\begin{proposition}[平方根の解析接続]\label{prop:sqrt}
+$\mathbb C^\times$ 上の局所正則な平方根の芽を
+原点の周りに一周解析接続すると，
+その値は元の値の符号を反転する．
+従って $\mathbb C^\times$ 上には
+$g(z)^2=z$ を満たす一価正則関数 $g$ は存在しない．
+\end{proposition}
+\begin{proof}
+局所対数 $\ell$ によって
+$g(z)=e^{\ell(z)/2}$ と書ける．
+原点を一周すると
+命題\ref{prop:log-winding}から
+$\ell$ は $2\pi i$ 増える．
+従って $g$ は
+$e^{(\ell+2\pi i)/2}=-e^{\ell/2}$ へ変わる．
+もし一価正則な平方根があれば，
+解析接続はその関数自身によって与えられるため
+一周後の芽も同じとなるが，符号の反転と矛盾する．
+\end{proof}
+
+\begin{definition}
+局所的な解析接続の全ての芽を集め，
+解析接続可能な関係で結んだ空間を考えると，
+元の領域の上に射影する空間が得られる．
+対数や平方根の場合，この空間は
+多価関数を一価な関数として表現する
+\emph{Riemann面}の基本例となる．
+\end{definition}
+
+\begin{remark}
+モノドロミー定理は解析接続に関する
+大域的一価性を，領域の単連結性と
+経路に沿う接続可能性から導く定理である．
+多価性は単に関数の表記上の問題ではなく，
+閉曲線に沿う解析接続が芽へ与える作用に現れる．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{対数関数の一周による値の変化．}
+\begin{proposition}
+$\mathbb C^\times$ における局所正則対数の枝を，
+原点を正向きに一周する閉曲線に沿って解析接続すると，
+終点での値は始点の値より $2\pi i$ 増加する．
+\end{proposition}
+\begin{proof}
+$\gamma(t)=e^{it}$（$0\le t\le2\pi$）とする．
+$\gamma$ に沿った正則対数の局所値 $L(t)$ は
+$e^{L(t)}=\gamma(t)$ を満たす．
+微分すると
+$L'(t)=\gamma'(t)/\gamma(t)=i$ なので
+$L(2\pi)-L(0)=\int_0^{2\pi}i\,dt=2\pi i$．
+従って原点を囲む環状領域では
+局所対数を一価な正則関数へ貼り合わせることはできない．
+\end{proof}
+\begin{remark}
+この計算は，局所的な正則性と
+大域的な一価性が異なる条件であることを表す．
+\end{remark}
+\noindent\textbf{到達確認．}
+同じ曲線を逆向きに一周した場合の変化量を求めよ．
+\par\noindent\textbf{解答．}
+逆向きでは $\int dz/z=-2\pi i$ なので
+対数の解析接続による変化量は $-2\pi i$ である．
+\end{document}

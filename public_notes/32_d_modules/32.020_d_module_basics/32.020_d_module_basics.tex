@@ -1,0 +1,318 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{D加群の基本構造}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Weyl代数，左加群，微分方程式．
+本稿の具体的な到達課題は，一つの微分方程式から巡回D加群を構成し，その解を求める．
+
+\section{Weyl代数の左加群}
+$k$ を標数零の体とする．$A_1(k)$ は $x,\partial$ で生成され
+$\partial x-x\partial=1$ を満たす結合的 $k$-代数である．
+既習事項として，$x^i\partial^j$ が $k$-基底になることを用いる．
+\begin{definition}
+左 $A_1(k)$-加群を一変数の代数的 $D$-加群と呼ぶ．
+その元に作用する $x,\partial$ は必ず
+$\partial(xm)=x\partial m+m$ を満たす．
+\end{definition}
+\begin{example}
+$M=k[x]$ とし，$x$ は多項式の乗法，$\partial$ は微分として作用させる．
+積の微分法則から $A_1(k)$-加群が得られる．
+\end{example}
+\begin{theorem}[多項式表現の単純性]
+標数零の体上の $A_1(k)$-加群 $k[x]$ は単純である．
+\end{theorem}
+\begin{proof}
+零でない部分加群 $N\subset k[x]$ を取る．
+$0\ne f\in N$ の次数を $d$ とする．
+$\partial^d f=d!a_d\ne0$ であるから非零定数が $N$ に入り，
+体で割って $1\in N$ を得る．
+$x$ の作用で $x^r\in N$（$r\ge0$）となり，$N=k[x]$．
+\end{proof}
+\begin{proposition}
+左 $A_1(k)$-加群として $k[x]\simeq A_1(k)/A_1(k)\partial$ である．
+\end{proposition}
+\begin{proof}
+$P\mapsto P\cdot1$ は全射準同型である．
+標準形 $P=\sum_{i,j}c_{ij}x^i\partial^j$ を用いれば
+$P\cdot1=\sum_i c_{i0}x^i$ である．
+従って核は $j\ge1$ の項の全体，すなわち左イデアル $A_1\partial$ である．
+\end{proof}
+\section{巡回表示と多項式の微分方程式}
+\begin{proposition}
+$P\in A_1(k)$ に対し $M_P=A_1(k)/A_1(k)P$ とすると，
+任意の左 $A_1$-加群 $N$ について
+\[
+ \operatorname{Hom}_{A_1}(M_P,N)
+ \simeq\{u\in N:Pu=0\}
+\]
+が $k$-線形同型である．
+\end{proposition}
+\begin{proof}
+$A_1$-準同型 $\varphi$ は $u=\varphi(1+A_1P)$ で決まり，
+$Pu=0$ を満たす．逆に $Pu=0$ なら
+$Q+A_1P\mapsto Qu$ は代表元に依存しない準同型を定める．
+両構成は逆である．
+\end{proof}
+\begin{example}
+$P=\partial-\lambda$ の場合，解析関数空間上の解 $Pu=0$ は
+$u(x)=c e^{\lambda x}$ に限られる．
+他方，$N=k[x]$ において $\lambda\ne0$ なら非零解は存在しない．
+従って解の概念には係数空間の選択が不可欠である．
+\end{example}
+\section{短完全列と解空間}
+\begin{lemma}
+左 $A_1$-加群の短完全列 $0\to L\to M\to N\to0$ と
+任意の左加群 $E$ について
+\[
+ 0\longrightarrow\operatorname{Hom}_{A_1}(N,E)
+ \longrightarrow\operatorname{Hom}_{A_1}(M,E)
+ \longrightarrow\operatorname{Hom}_{A_1}(L,E)
+\]
+は完全である．
+\end{lemma}
+\begin{proof}
+前二写像はそれぞれ商写像，包含写像との合成で定める．
+商写像との合成は単射である．
+後者の核に属する $\varphi:M\to E$ は $L$ 上で零なので
+$M/L\simeq N$ を通じて一意に因子分解する．
+\end{proof}
+\begin{remark}
+最後の射が一般に全射とは限らない．解函手の導来函手を考える動機になる．
+\end{remark}
+
+
+\section{局所化された微分加群}
+\begin{theorem}[微分作用を保つ局所化]
+$R=k[x]$，$k$ を標数零の体，$M$ を左 $A_1(k)$-加群とする．
+$S\subset R\setminus\{0\}$ を乗法的集合とすると，
+$S^{-1}M$ にはもとの $A_1$-加群構造と両立する一意な
+$A_1$-加群構造があり，任意の $m\in M,s\in S$ に対し
+\[
+ \partial\left(\frac m s\right)
+  =\frac{\partial m}{s}-\frac{s'm}{s^2}
+\]
+となる．
+\end{theorem}
+\begin{proof}
+$M$ の微分作用は $\partial(fm)=f'm+f\partial m$ を満たす．
+$m/a=m'/b$（$a,b\in S$）なら，ある $t\in S$ に対し
+$t(bm-am')=0$ である．微分に上点 $\dot{}$ を用いて
+この等式を $\partial$ で微分すると
+\[
+ \dot t(bm-am')+t(\dot b m+b\partial m-\dot a m'-a\partial m')=0.
+\]
+局所化では $t$ が可逆だから
+\[
+ bm=am',\qquad
+ b\partial m-a\partial m'=\dot a m'-\dot b m.
+\]
+この二式から
+\[
+ \begin{aligned}
+ &a^2b^2\left(
+ \frac{\partial m}{a}-\frac{\dot a m}{a^2}
+ -\frac{\partial m'}{b}+\frac{\dot b m'}{b^2}
+ \right)\\
+ &\quad=ab(b\partial m-a\partial m')
+ -b^2\dot a m+a^2\dot b m'=0
+ \end{aligned}
+\]
+が従う．従って二つの分数の微分の候補は一致し，
+上の公式は代表元の選び方によらず定まる．
+$R$ の乗法とこの $\partial$ は $[\partial,x]=1$ を満たすから
+$A_1$ の作用を定める．一意性は
+$\partial(s\cdot(m/s))=\partial m$ に積の微分法則を適用すると
+公式が強制されることによる．
+\end{proof}
+\begin{corollary}[局所化の完全性]
+左 $A_1$-加群の短完全列 $0\to L\to M\to N\to0$ を局所化すると
+$0\to S^{-1}L\to S^{-1}M\to S^{-1}N\to0$ は
+左 $A_1$-加群の短完全列になる．
+\end{corollary}
+\begin{proof}
+$R$-加群としての局所化は完全である．
+実際，分母を払うと核に属する分数は元の写像の核に入る分数で表せ，
+全射の像は分数の分子の持ち上げで得られる．
+各写像が微分作用と可換であることは前定理の公式による．
+\end{proof}
+\begin{example}
+標準加群 $k[x]$ を $S=\{x^j:j\ge0\}$ で局所化すると
+$k[x,x^{-1}]$ を得る．その上では
+$\partial(x^{-m})=-mx^{-m-1}$ である．
+\end{example}
+
+\section{Affine空間上の微分作用素の層}
+本節では $k$ を標数零の体とし，$A=k[x_1,\ldots,x_n]$ と置く．
+非零多項式 $f\in A$ に対して $A_f=A[f^{-1}]$ と書く．
+偏微分 $\partial_i$ は商の微分法則
+\[
+ \partial_i(a/f^m)=\frac{\partial_i a}{f^m}
+ -m\frac{a\,\partial_i f}{f^{m+1}}
+\]
+によって一意に $A_f$ の $k$-導分へ延長される．
+\begin{definition}
+$D(A_f)$ を $\operatorname{End}_k(A_f)$ の部分環で，
+$A_f$ の元による乗法作用素と $\partial_1,\ldots,\partial_n$
+により生成されるものとする．
+\end{definition}
+\begin{theorem}[微分作用素の標準形と一意性]
+$D(A_f)$ の任意の元 $P$ はただ一通り
+\[
+ P=\sum_{\alpha\in\mathbb N^n}^{\mathrm{finite}}
+ a_\alpha(x)\partial_1^{\alpha_1}\cdots\partial_n^{\alpha_n},
+ \qquad a_\alpha\in A_f
+\]
+と書ける．特に $D(A_f)$ の演算は関係式
+$[\partial_i,a]=\partial_i(a)$（$a\in A_f$）で決まる．
+\end{theorem}
+\begin{proof}
+乗法作用素は可換で，$\partial_i$ も相互に可換である．
+$\partial_i a=a\partial_i+\partial_i(a)$ を繰り返せば
+任意の生成元の積を表示形へ並べ替えられるため存在が従う．
+
+一意性を示す．表示形の右辺が零作用素であるとし，
+最大の全次数 $m$ で $a_\alpha\ne0$ となる $\alpha$ を取る．
+作用素 $P$ の乗法 $x_i$ との交換子を $m$ 回取り，
+$\operatorname{ad}_{x_1}^{\alpha_1}\cdots
+ \operatorname{ad}_{x_n}^{\alpha_n}(P)$ を考える．
+ここで $\operatorname{ad}_{x_i}(P)=[P,x_i]$ と定める．
+$[\partial^\beta,x_i]=\beta_i\partial^{\beta-e_i}$ だから，
+全次数 $m$ の項で $\beta\ne\alpha$ のものはこの交換子で消え，
+次数の小さい項も消える．残るのは
+$\alpha_1!\cdots\alpha_n!a_\alpha$ による乗法作用素である．
+元の $P$ が零なら交換子も零であり，
+標数零かつ $A_f$ が整域であることから $a_\alpha=0$ となる．
+これは $a_\alpha\ne0$ に矛盾する．
+従って標準形は一意である．
+\end{proof}
+\begin{theorem}[主開集合上の層化]
+$X=\mathbb A_k^n$ の主開集合 $D(f)=\operatorname{Spec}A_f$ に
+$D(A_f)$ を対応させ，$D(fg)\subset D(f)$ への制限を
+標準形の係数の局所化で定める．
+この対応はZariski位相の基底 $\{D(f)\}$ 上で層条件を満たし，
+全開集合上の層 $\mathcal D_X$ を一意に定める．
+この層の切断は局所的に有限階の微分作用素である．
+\end{theorem}
+\begin{proof}
+標準形の一意性から，制限の定義は表示の選択によらず，
+合成制限と両立する．
+主開集合 $D(f)$ の被覆 $D(f)=\bigcup_{i=1}^r D(f_i)$ を考える．
+ここでは $D(f)$ が準コンパクトなので有限部分被覆を取ってよい．
+各 $D(f_i)$ の切断 $P_i$ が交叉で一致するとする．
+標準形を $P_i=\sum_\alpha a_{i,\alpha}\partial^\alpha$ と書く．
+有限個の $P_i$ の階数には共通上界があるので，
+現れる多重指数 $\alpha$ は有限個に限られる．
+交叉での一意性から係数 $a_{i,\alpha}$ は交叉で一致する．
+$\mathcal O_X$ の層条件により各 $\alpha$ について
+$A_f$ の元 $a_\alpha$ が存在し，$a_{i,\alpha}$ を貼り合わせる．
+$P=\sum_\alpha a_\alpha\partial^\alpha$ は
+$D(A_f)$ の切断で，制限が全て $P_i$ に一致する．
+一意性も同様に従う．
+主開基底上の層を任意の開集合へ延長する標準的な層の構成から
+$\mathcal D_X$ が得られ，有限階という条件は局所的に保持される．
+\end{proof}
+\begin{remark}
+ここではAffine空間およびその開集合上の $\mathcal D_X$ を
+局所座標 $x_i$ で具体的に構成した．
+一般の滑らかな代数多様体への貼り合わせには
+局所座標の変換法則と滑らかな射の理論がさらに必要となる．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{巡回D加群の方程式を解く．}
+\begin{proposition}
+$D=\mathbb C[x]\langle\partial\rangle$
+を一次元Weyl代数とし，
+$M=D/D(\partial-1)$ とする．
+$D$-線形写像
+$\operatorname{Hom}_D(M,\mathcal O(\mathbb C))$
+は，関数方程式 $f'=f$ の解空間と同型であり，
+複素次元1である．
+\end{proposition}
+\begin{proof}
+$M$ は剰余類 $[1]$ で生成され，
+$(\partial-1)[1]=0$ を満たす．
+$D$-線形写像 $\varphi$ は $f=\varphi([1])$ により
+一意に決まり，
+$(\partial-1)f=0$ が必要である．
+逆に $f'=f$ を満たす整関数 $f$ は
+$\varphi(P[1])=Pf$ によって
+矛盾なく定まる $D$-線形写像を与える．
+$(e^{-x}f)'=0$ より $f=ce^x$ である．
+従って解空間は $\mathbb Ce^x$ で一次元．
+\end{proof}
+\noindent\textbf{到達確認．}
+$D/D\partial$ の整関数解空間を求めよ．
+\par\noindent\textbf{解答．}
+関係式 $\partial f=0$ は $f'=0$ なので
+定数関数全体 $\mathbb C$ となる．
+\end{document}
