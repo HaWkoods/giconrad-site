@@ -1,0 +1,516 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{算術級数中の素数とDirichletの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Dirichlet指標，合同式，Dirichletの定理．
+本稿の具体的な到達課題は，Dirichletの定理を具体的な合同類へ適用し，互いに素条件を検査する．
+
+\section{有限Abel群の指標}
+
+本稿では整数 $q\ge2$ を固定する．
+$G=(\mathbb Z/q\mathbb Z)^\times$ と置き，
+その位数を $\varphi(q)$ と書く．
+有限Abel群の構造定理と複素解析の基本定理を前提とする．
+
+\begin{definition}
+$G$ から複素数の単位円への群準同型を指標という．
+$G$ の指標を，$\gcd(n,q)=1$ なら $[n]\in G$ によって，
+$\gcd(n,q)>1$ なら零として整数全体へ延長したものを
+\emph{$q$ を法とするDirichlet指標}という．
+全体を $\widehat G$ と書く．
+$\gcd(n,q)=1$ なら $\chi(n)=1$，それ以外なら零となる指標を
+主指標 $\chi_0$ と書く．
+\end{definition}
+
+\begin{lemma}[指標の直交関係]\label{lem:orth}
+有限Abel群 $G$ について $\#\widehat G=\#G$ であり，
+\[
+ \sum_{\chi\in\widehat G}\chi(g)
+ =\begin{cases}\#G&(g=e),\\0&(g\ne e),\end{cases}
+\]
+\[
+ \sum_{g\in G}\chi(g)\overline{\psi(g)}
+ =\begin{cases}\#G&(\chi=\psi),\\0&(\chi\ne\psi).\end{cases}
+\]
+\end{lemma}
+\begin{proof}
+有限Abel群の構造定理から
+$G\cong C_{n_1}\times\cdots\times C_{n_r}$ と書ける．
+$C_n$ の指標は
+$[j]\mapsto\exp(2\pi ikj/n)$（$0\le k<n$）の
+ちょうど $n$ 個である．
+従って直積の指標は成分ごとの指標の積として全て得られ，
+個数は $\prod_i n_i=\#G$ である．
+$g\ne e$ ならある成分が非零なので，
+その成分に関する単位根の和が零となり
+最初の直交式を得る．
+二番目の式は $\chi\overline\psi$ が指標であり，
+非自明ならその群全体での和が零になることから従う．
+\end{proof}
+
+\begin{corollary}[合同類の指示関数]\label{cor:indicator}
+$\gcd(a,q)=1$ とする．任意の整数 $n$ について
+\[
+ 1_{\{n\equiv a\pmod q\}}
+ =\frac1{\varphi(q)}
+ \sum_{\chi\bmod q}\overline{\chi(a)}\chi(n).
+\]
+\end{corollary}
+\begin{proof}
+$\gcd(n,q)>1$ なら右辺の各 $\chi(n)$ は零であり，
+$n\equiv a\pmod q$ でもないので成立する．
+$\gcd(n,q)=1$ なら右辺は
+$\varphi(q)^{-1}\sum_\chi\chi([n][a]^{-1})$
+に等しい．
+補題\ref{lem:orth}からこれは $[n]=[a]$ のとき1，
+そうでないとき0である．
+\end{proof}
+
+\section{Dirichletの $L$ 関数}
+
+\begin{definition}
+Dirichlet指標 $\chi$ に対して
+\[
+ L(s,\chi)=\sum_{n=1}^\infty\frac{\chi(n)}{n^s},
+ \qquad \operatorname{Re}s>1
+\]
+をDirichletの $L$ 関数という．
+\end{definition}
+
+\begin{lemma}[非主指標の部分和]\label{lem:partialsums}
+$\chi\ne\chi_0$ なら
+\[
+ \sum_{a=1}^q\chi(a)=0,\qquad
+ \sup_{N\ge1}\left|\sum_{n=1}^N\chi(n)\right|\le q.
+\]
+\end{lemma}
+\begin{proof}
+$\chi$ は周期 $q$ であり，
+一周期の和は
+$\sum_{g\in G}\chi(g)$ に等しい．
+$\chi$ は非自明なので補題\ref{lem:orth}から零である．
+$N=kq+r$，$0\le r<q$ と分けると
+$N$ までの和は完全な $k$ 周期の和が零なので
+$\sum_{n=1}^r\chi(n)$ に等しい．
+$|\chi(n)|\le1$ だから絶対値は $r\le q$ 以下である．
+\end{proof}
+
+\begin{theorem}[非主 $L$ 関数の解析接続]\label{thm:L-hol}
+$\chi$ が非主指標なら，
+$L(s,\chi)$ は $\operatorname{Re}s>0$ で
+局所一様収束する級数によって正則関数に延長される．
+特に
+\[
+ L(1,\chi)=\sum_{n=1}^\infty\frac{\chi(n)}n
+\]
+は通常の意味で収束する．
+\end{theorem}
+\begin{proof}
+$A(N)=\sum_{n\le N}\chi(n)$ と置く．
+補題\ref{lem:partialsums}によって $|A(N)|\le q$ である．
+Abelの部分和公式から
+\[
+ \sum_{n=M}^{N}\frac{\chi(n)}{n^s}
+ =A(N)N^{-s}-A(M-1)M^{-s}
+  +s\int_M^N A(\lfloor x\rfloor)x^{-s-1}\,dx
+\]
+となる．
+$\operatorname{Re}s\ge\varepsilon>0$，
+$|s|\le R$ のコンパクト集合では右辺の尾部は
+$O_{\varepsilon,R,q}(M^{-\varepsilon})$ で抑えられる．
+従って級数は $\operatorname{Re}s>0$ で局所一様収束し，
+各項が正則であることから和も正則である．
+$s=1$ においても同じ収束が成立する．
+\end{proof}
+
+\begin{proposition}[Euler積]\label{prop:euler}
+$\operatorname{Re}s>1$ なら
+\[
+ L(s,\chi)=\prod_{p\ {\rm prime}}
+ (1-\chi(p)p^{-s})^{-1}.
+\]
+特にこの半平面では $L(s,\chi)\ne0$ である．
+\end{proposition}
+\begin{proof}
+有限個の素数について幾何級数を展開すると，
+完全乗法性によって，それらの素数だけを素因数とする
+$n$ の項 $\chi(n)n^{-s}$ の和を得る．
+$\sum_n|\chi(n)|n^{-\sigma}\le\zeta(\sigma)<\infty$
+（$\sigma=\operatorname{Re}s>1$）なので，
+有限素数集合を増加させると絶対収束によって
+Dirichlet級数へ収束する．
+さらに
+\[
+ \sum_p\sum_{k\ge1}
+ \frac{|\chi(p)|^k}{k p^{k\sigma}}
+ \le\sum_p\frac{p^{-\sigma}}{1-p^{-\sigma}}<\infty
+\]
+だから対数Euler積も絶対収束し，
+その指数は零でない．
+\end{proof}
+
+\section{主指標とRiemannゼータ関数}
+
+\begin{proposition}[ゼータ関数の局所的な解析接続]
+\label{prop:zeta}
+$\operatorname{Re}s>0$ において
+\[
+ \zeta(s)=\frac{s}{s-1}
+ -s\int_1^\infty\{x\}x^{-s-1}\,dx
+ \tag{2}
+\]
+は，$s=1$ に留数1の単純極を持つ正則関数の有理型延長を与える．
+また
+\[
+ L(s,\chi_0)=\zeta(s)\prod_{p\mid q}(1-p^{-s})
+\]
+である．
+従って $L(s,\chi_0)$ は $s=1$ に単純極を持ち，
+その留数は $\prod_{p\mid q}(1-p^{-1})>0$ である．
+\end{proposition}
+\begin{proof}
+$\operatorname{Re}s>1$ では部分積分によって
+\[
+ \zeta(s)=s\int_1^\infty\lfloor x\rfloor x^{-s-1}\,dx
+\]
+が成立する．
+$\lfloor x\rfloor=x-\{x\}$ を用いれば式 (2) を得る．
+$0\le\{x\}<1$ なので積分は
+$\operatorname{Re}s>0$ のコンパクト集合上で局所一様収束し，
+正則関数を定める．
+第一項 $s/(s-1)$ は $s=1$ に留数1の単純極を持つ．
+主指標のEuler積から，$q$ を割る素数についての
+Euler因子を取り除けば最後の積表示を得る．
+有限積は $s=1$ で非零なので，
+留数に関する主張が従う．
+\end{proof}
+
+\section{非零性の準備：正係数Dirichlet級数}
+
+\begin{lemma}[Landauの正係数補題]\label{lem:landau}
+$a_n\ge0$ とし
+$F(s)=\sum_{n\ge1}a_n n^{-s}$ の収束半平面が
+$\operatorname{Re}s>\sigma_c$ で，
+$\sigma_c$ は有限とする．
+このとき $F$ は実点 $s=\sigma_c$ の近傍へ
+正則に延長できない．
+\end{lemma}
+\begin{proof}
+背理法で，$F$ が $\sigma_c$ の近傍まで正則に延長するとする．
+$\sigma_0>\sigma_c$ を十分近く取れば，
+$\sigma_0$ を中心とするTaylor級数は
+$\sigma_0-\delta<\sigma_c$ となる正数 $\delta$ まで
+収束するように選べる．
+収束半平面の内部では級数を項別微分でき，
+\[
+ F^{(k)}(\sigma_0)
+ =\sum_{n\ge1}a_n(-\log n)^k n^{-\sigma_0}.
+\]
+従ってTaylor級数を $\sigma_0-\delta$ で評価し，
+各項が非負であることに注意してTonelliの定理を適用すると
+\[
+ \begin{aligned}
+ F(\sigma_0-\delta)
+ &=\sum_{k=0}^\infty\frac{\delta^k}{k!}
+    \sum_{n\ge1}a_n(\log n)^k n^{-\sigma_0}\\
+ &=\sum_{n\ge1}a_n n^{-\sigma_0}
+    \sum_{k=0}^\infty\frac{(\delta\log n)^k}{k!}\\
+ &=\sum_{n\ge1}a_n n^{-(\sigma_0-\delta)}.
+ \end{aligned}
+\]
+左辺は有限なので右辺も収束する．
+これは $\sigma_0-\delta<\sigma_c$ に矛盾する．
+\end{proof}
+
+\begin{lemma}[実非主指標の非零性]\label{lem:real-nonzero}
+$\chi$ が実数値の非主Dirichlet指標なら
+$L(1,\chi)>0$ である．
+\end{lemma}
+\begin{proof}
+定理\ref{thm:L-hol}から $L(1,\chi)$ は実数である．
+$\sigma>1$ に対して
+\[
+ \zeta(\sigma)L(\sigma,\chi)
+ =\sum_{n\ge1}\frac{a_n}{n^\sigma},
+ \qquad
+ a_n=\sum_{d\mid n}\chi(d)
+\]
+と書ける．
+$a_n$ は乗法的であり，
+素数冪 $p^k$ について
+$a_{p^k}=\sum_{j=0}^k\chi(p)^j$ である．
+$\chi(p)$ は $0,1,-1$ のいずれかなので
+$a_{p^k}\ge0$ である．
+また指数 $2k$ が偶数なら
+$a_{p^{2k}}\ge1$ となる．
+従って全ての $n$ について $a_n\ge0$ かつ
+$a_{n^2}\ge1$ である．
+このため
+$\sum_n a_nn^{-1/2}\ge\sum_m m^{-1}=\infty$ となり，
+このDirichlet級数の収束境界 $\sigma_c$ は
+少なくとも $1/2$ である．
+
+もし $L(1,\chi)=0$ なら，
+命題\ref{prop:zeta}によって
+$\zeta(s)L(s,\chi)$ の $s=1$ の極が相殺され，
+この積は半平面 $\operatorname{Re}s>0$ で正則となる．
+級数の収束境界は $\sigma_c\le1$ なので，
+特に実点 $\sigma_c\in[1/2,1]$ においても
+正則である．これは補題\ref{lem:landau}に矛盾する．
+従って $L(1,\chi)\ne0$ である．
+$\sigma>1$ ではEuler積から
+$L(\sigma,\chi)>0$ であり，
+$\sigma\downarrow1$ の極限も非負なので
+$L(1,\chi)>0$ となる．
+\end{proof}
+
+\section{非実指標の非零性}
+
+\begin{lemma}[三角多項式による非零性]\label{lem:complex-nonzero}
+$\chi$ を非実Dirichlet指標とする．
+このとき $L(1,\chi)\ne0$ である．
+\end{lemma}
+\begin{proof}
+$\chi$ が非実なので $\chi^2\ne\chi_0$ である．
+実際 $\chi^2=\chi_0$ なら
+$\gcd(n,q)=1$ の元に対し $\chi(n)\in\{\pm1\}$ となり，
+$\chi$ は実数値となる．
+$\sigma>1$ に対しEuler積の対数を用いると
+\[
+ \begin{aligned}
+ &\log\Bigl(
+ \zeta(\sigma)^3|L(\sigma,\chi)|^4
+ |L(\sigma,\chi^2)|\Bigr)\\
+ &=\sum_p\sum_{k=1}^\infty
+ \frac{3+4\operatorname{Re}(\chi(p)^k)
+   +\operatorname{Re}(\chi(p)^{2k})}
+      {k p^{k\sigma}}
+ \end{aligned}
+\]
+となる．
+$\chi(p)=0$ なら分子は3であり，
+$|\chi(p)|=1$ なら $\chi(p)^k=e^{i\theta}$ と書いて
+\[
+ 3+4\cos\theta+\cos2\theta
+ =2(1+\cos\theta)^2\ge0.
+\]
+従って対数は非負であり，
+\[
+ \zeta(\sigma)^3|L(\sigma,\chi)|^4
+ |L(\sigma,\chi^2)|\ge1.
+ \tag{3}
+\]
+
+もし $L(1,\chi)=0$ なら
+正則性により $L(\sigma,\chi)=O(\sigma-1)$ である．
+$\chi^2$ は非主指標なので
+$L(\sigma,\chi^2)$ は $\sigma\downarrow1$ で有界であり，
+$\zeta(\sigma)=O((\sigma-1)^{-1})$ である．
+従って式 (3) の左辺は
+$O((\sigma-1)^{-3+4})=O(\sigma-1)$ となり，
+零へ収束する．これは左辺が常に1以上という不等式に反する．
+ゆえに $L(1,\chi)\ne0$ である．
+\end{proof}
+
+\begin{theorem}[非主指標の非零性]\label{thm:nonvanishing}
+$q$ を法とする任意の非主Dirichlet指標 $\chi$ に対し
+\[
+ L(1,\chi)\ne0.
+\]
+\end{theorem}
+\begin{proof}
+$\chi$ が実数値なら補題\ref{lem:real-nonzero}，
+非実なら補題\ref{lem:complex-nonzero}を適用すればよい．
+\end{proof}
+
+\section{素数の対数Euler積}
+
+\begin{lemma}[対数Euler積の主項]\label{lem:prime-log}
+$\sigma\downarrow1$ のとき
+\[
+ \sum_p\frac{\chi_0(p)}{p^\sigma}
+ =\log\frac1{\sigma-1}+O_q(1)
+\]
+であり，非主指標 $\chi$ に対して
+\[
+ \sum_p\frac{\chi(p)}{p^\sigma}=O_{q,\chi}(1)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$\sigma>1$ において
+\[
+ \log L(\sigma,\chi)
+ =\sum_p\frac{\chi(p)}{p^\sigma}
+  +\sum_p\sum_{k\ge2}\frac{\chi(p)^k}{k p^{k\sigma}}
+\]
+が成立する．
+第二項の絶対値は $\sigma\ge1$ で
+\[
+ \sum_p\sum_{k\ge2}\frac1{k p^k}
+ \le\sum_{n=2}^\infty\frac1{n(n-1)}
+ <\infty
+\]
+で一様に抑えられる．
+主指標については
+命題\ref{prop:zeta}から
+$L(\sigma,\chi_0)\sim c_q/(\sigma-1)$，
+$c_q>0$ なので
+$\log L(\sigma,\chi_0)
+ =\log(1/(\sigma-1))+O_q(1)$ となる．
+非主指標では定理\ref{thm:nonvanishing}から
+$L(\sigma,\chi)\to L(1,\chi)\ne0$ であり，
+その近傍で対数の連続な枝を取れるため
+$\log L(\sigma,\chi)=O_{q,\chi}(1)$ である．
+従って主張を得る．
+\end{proof}
+
+\begin{theorem}[Dirichletの算術級数定理]\label{thm:dirichlet}
+$\gcd(a,q)=1$ なら，合同条件
+\[
+ p\equiv a\pmod q
+\]
+を満たす素数 $p$ は無限に存在する．
+さらに
+\[
+ \sum_{\substack{p\ {\rm prime}\\p\equiv a\pmod q}}
+ p^{-\sigma}
+ =\frac1{\varphi(q)}
+ \log\frac1{\sigma-1}+O_{a,q}(1)
+ \quad(\sigma\downarrow1)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+系\ref{cor:indicator}を素数に適用し，
+$\sigma>1$ で素数の総和を取ると
+\[
+ \sum_{p\equiv a\pmod q}p^{-\sigma}
+ =\frac1{\varphi(q)}
+ \sum_{\chi\bmod q}\overline{\chi(a)}
+ \sum_p\chi(p)p^{-\sigma}.
+\]
+指標は有限個なので
+補題\ref{lem:prime-log}を各項に適用できる．
+主指標では $\overline{\chi_0(a)}=1$ であり，
+非主指標の寄与は全て有界である．
+従って表示した漸近式を得る．
+右辺は $\sigma\downarrow1$ で無限大に発散する．
+もし該当する素数が有限個しかなければ，
+左辺は有限個の連続な関数の和であり有界となる．
+矛盾するので素数は無限に存在する．
+\end{proof}
+
+\begin{example}
+$4$ を法として $1$ および $3$ と合同な素数は
+いずれも無限に存在する．
+\end{example}
+\begin{proof}
+$1,3$ はいずれも $4$ と互いに素なので
+定理\ref{thm:dirichlet}を適用できる．
+\end{proof}
+
+\begin{remark}
+この証明で本質的なのは
+非主指標の $L(1,\chi)\ne0$ である．
+非実指標では三角多項式の非負性，
+実指標では正係数Dirichlet級数のLandau補題を用い，
+二種類の証明を区別した．
+本定理は各合同類に素数が無限にあることを示すが，
+素数の個数の精密な漸近式は別の定理を要する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{算術級数中の素数の判定条件．}
+\begin{proposition}
+$4n+1$ の形の素数と $4n+3$ の形の素数は
+それぞれ無限個存在する．
+\end{proposition}
+\begin{proof}
+$\gcd(1,4)=\gcd(3,4)=1$ である．
+Dirichletの定理をそれぞれ法4の剰余類
+$1$，$3$ に適用すれば，
+どちらの算術級数にも無限個の素数が存在する．
+\end{proof}
+\begin{proposition}
+$6n+2$ の形の素数は2だけである．
+\end{proposition}
+\begin{proof}
+$6n+2=2(3n+1)$ であるから，
+$n\ge1$ では二つの正整数の積となり合成数である．
+$n=0$ で2となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$10n+3$ の形の素数は無限に存在するか．
+\par\noindent\textbf{解答．}
+$\gcd(10,3)=1$ だからDirichletの定理から
+無限に存在する．定理を適用する際，
+法と剰余が互いに素であることの確認が必要である．
+\end{document}

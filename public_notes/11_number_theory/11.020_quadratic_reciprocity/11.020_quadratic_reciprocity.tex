@@ -1,0 +1,470 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{平方剰余の相互法則}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Legendre記号，Eulerの規準，平方剰余相互法則．
+本稿の具体的な到達課題は，奇素数に対する平方剰余性を相互法則と補充法則から判定する．
+
+\section{平方剰余とLegendre記号}
+
+以下，$p$ は奇素数とし，合同式の法は特に断らない限り $p$ とする．
+
+\begin{definition}
+$p\nmid a$ とする．合同式 $x^2\equiv a\pmod p$ が
+整数解を持つとき $a$ を\emph{平方剰余}，
+持たないとき\emph{平方非剰余}という．
+Legendre記号を
+\[
+ \left(\frac ap\right)=
+ \begin{cases}
+ 0&(p\mid a),\\
+ 1&(p\nmid a,\ a\text{ は平方剰余}),\\
+ -1&(p\nmid a,\ a\text{ は平方非剰余})
+ \end{cases}
+\]
+と定義する．
+\end{definition}
+
+\begin{lemma}\label{lem:squares}
+$\mathbb F_p^\times$ に平方剰余はちょうど $(p-1)/2$ 個ある．
+さらに平方剰余全体は
+$\mathbb F_p^\times$ の指数2の部分群をなす．
+\end{lemma}
+\begin{proof}
+$x^2=y^2$ であることと
+$(x-y)(x+y)=0$ であることは同値である．
+$\mathbb F_p$ は体で $p$ は奇数なので，
+$x\ne0$ に対して $x$ と $-x$ は相異なる二つの元であり，
+平方写像 $x\mapsto x^2$ の各像はちょうど二つの原像を持つ．
+従って像の位数は $(p-1)/2$ である．
+平方写像は乗法群の準同型なので，像は部分群であり，
+その指数は2である．
+\end{proof}
+
+\begin{theorem}[Eulerの規準]\label{thm:euler}
+任意の整数 $a$ に対し
+\[
+ \left(\frac ap\right)\equiv a^{(p-1)/2}\pmod p
+\]
+が成り立つ．
+また $p\nmid ab$ なら
+\[
+ \left(\frac{ab}{p}\right)
+ =\left(\frac ap\right)\left(\frac bp\right).
+\]
+\end{theorem}
+\begin{proof}
+$p\mid a$ の場合は両辺とも零である．
+$p\nmid a$ とし，$m=(p-1)/2$ と置く．
+Fermatの小定理により $a^{2m}=1$ なので，
+体 $\mathbb F_p$ において $a^m\in\{1,-1\}$ である．
+$a$ が平方 $x^2$ なら
+$a^m=x^{p-1}=1$ である．
+一方，多項式 $X^m-1$ の根は高々 $m$ 個であり，
+補題\ref{lem:squares}によって平方剰余の $m$ 個が
+すべてその根である．
+従って平方非剰余なら $a^m=-1$ となる．
+これでEulerの規準を得る．
+
+$p\nmid ab$ のとき
+$(ab)^m=a^mb^m$ なので，Eulerの規準により
+Legendre記号の両辺は法 $p$ で合同である．
+両辺はそれぞれ $\pm1$ であり，
+奇素数 $p$ に対して $1\not\equiv-1\pmod p$ だから
+整数として等しい．
+\end{proof}
+
+\section{Gaussの補題}
+
+\begin{lemma}[Gaussの補題]\label{lem:gauss}
+$p$ を奇素数，$m=(p-1)/2$ とし，$p\nmid a$ とする．
+$aj$（$1\le j\le m$）の法 $p$ の最小正剰余のうち，
+$p/2$ より大きいものの個数を $n(a)$ と置く．
+このとき
+\[
+ \left(\frac ap\right)=(-1)^{n(a)}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$aj$ の法 $p$ の最小絶対剰余を
+$r_j$（$-m\le r_j\le m$, $r_j\ne0$）とする．
+その絶対値 $|r_j|$ は $1,\dots,m$ の置換である．
+実際，$|r_i|=|r_j|$ なら
+$ai\equiv\pm aj\pmod p$ であり，
+$p\nmid a$ より $i\equiv\pm j\pmod p$ となる．
+$1\le i,j\le m$ だから $i=j$ である．
+
+$aj\equiv r_j\pmod p$ を $j=1,\dots,m$ にわたり掛けると
+\[
+ a^m m!\equiv\prod_{j=1}^m r_j
+ =(-1)^{n(a)}m!\pmod p.
+\]
+$p\nmid m!$ だから
+$a^m\equiv(-1)^{n(a)}\pmod p$ を得る．
+Eulerの規準と比較して結論が従う．
+\end{proof}
+
+\begin{lemma}[Eisensteinの補題]\label{lem:eisenstein}
+$p$ を奇素数，$a$ を奇整数で $p\nmid a$ とする．
+このとき
+\[
+ \left(\frac ap\right)
+ =(-1)^{\sum_{j=1}^{(p-1)/2}\lfloor aj/p\rfloor}.
+\]
+\end{lemma}
+\begin{proof}
+まず $a>0$ とする．$m=(p-1)/2$ と置き，
+$aj=pq_j+s_j$，
+$q_j=\lfloor aj/p\rfloor$，
+$1\le s_j\le p-1$ と書く．
+$s_j>p/2$ となる $j$ の個数を $n(a)$ とし，
+最小絶対剰余を $r_j$ と書く．
+$1\le k_j=|r_j|\le m$ は $1,\dots,m$ の置換であり，
+$s_j=k_j$ または $s_j=p-k_j$ だから
+\[
+ \sum_{j=1}^m s_j
+ =\sum_{j=1}^mk_j
+  +pn(a)-2\sum_{s_j>p/2}k_j.
+\]
+一方 $\sum_js_j=a\sum_jj-p\sum_jq_j$ なので
+\[
+ (a-1)\sum_{j=1}^m j
+ =p\left(n(a)+\sum_{j=1}^m q_j\right)
+  -2\sum_{s_j>p/2}k_j.
+\]
+$a-1$ は偶数で $p$ は奇数だから，
+両辺を法2で比較すると
+$n(a)\equiv\sum_jq_j\pmod2$ を得る．
+Gaussの補題から結論が従う．
+
+$a<0$ の場合には $a$ を正の奇数 $a+2kp$ に置き換える．
+Legendre記号は変わらず，
+\[
+ \sum_{j=1}^m\left\lfloor\frac{(a+2kp)j}{p}\right\rfloor
+ =\sum_{j=1}^m\left\lfloor\frac{aj}{p}\right\rfloor
+  +2k\sum_{j=1}^m j
+\]
+なので指数の偶奇も変わらない．
+従って一般の奇整数の場合にも成立する．
+\end{proof}
+
+\section{二つの補充法則}
+
+\begin{theorem}[第一補充法則]\label{thm:first}
+任意の奇素数 $p$ について
+\[
+ \left(\frac{-1}{p}\right)=(-1)^{(p-1)/2}
+ =
+ \begin{cases}
+ 1&(p\equiv1\pmod4),\\
+ -1&(p\equiv3\pmod4).
+ \end{cases}
+\]
+\end{theorem}
+\begin{proof}
+Eulerの規準に $a=-1$ を代入すれば
+$\left(\frac{-1}{p}\right)\equiv(-1)^{(p-1)/2}\pmod p$
+となる．両辺は $\pm1$ だから整数として等しい．
+$p$ の法4の剰余によって指数の偶奇が決まり，
+表示式を得る．
+\end{proof}
+
+\begin{theorem}[第二補充法則]\label{thm:second}
+任意の奇素数 $p$ について
+\[
+ \left(\frac2p\right)=(-1)^{(p^2-1)/8}
+ =
+ \begin{cases}
+ 1&(p\equiv\pm1\pmod8),\\
+ -1&(p\equiv\pm3\pmod8).
+ \end{cases}
+\]
+\end{theorem}
+\begin{proof}
+$m=(p-1)/2$ とする．$1\le j\le m$ について
+$2j$ は $2,\dots,p-1$ の偶数を動くので，
+法 $p$ の最小正剰余は $2j$ 自身である．
+$2j>p/2$ となるのは $j>p/4$ のときだから，
+Gaussの補題の負符号の個数は
+\[
+ n(2)=m-\lfloor p/4\rfloor
+\]
+である．$p=8k+1,8k+3,8k+5,8k+7$ の
+四つの場合に分けて計算すると，$n(2)$ の偶奇は
+順に偶，奇，奇，偶となる．
+一方 $(p^2-1)/8$ は整数であり，
+その偶奇も順に偶，奇，奇，偶である．
+よってGaussの補題から表示式を得る．
+\end{proof}
+
+\section{平方剰余の相互法則}
+
+\begin{theorem}[平方剰余の相互法則]\label{thm:qr}
+$p,q$ を異なる奇素数とする．
+このとき
+\[
+ \left(\frac pq\right)\left(\frac qp\right)
+ =(-1)^{\frac{p-1}{2}\frac{q-1}{2}}.
+\]
+すなわち，$p\equiv q\equiv3\pmod4$ の場合に限って
+二つのLegendre記号の符号が異なる．
+\end{theorem}
+\begin{proof}
+$m=(p-1)/2$，$n=(q-1)/2$ と置く．
+Eisensteinの補題より
+\[
+ \left(\frac qp\right)
+ =(-1)^{A},\qquad
+ A=\sum_{i=1}^m\left\lfloor\frac{qi}{p}\right\rfloor,
+\]
+および
+\[
+ \left(\frac pq\right)
+ =(-1)^{B},\qquad
+ B=\sum_{j=1}^n\left\lfloor\frac{pj}{q}\right\rfloor
+\]
+である．
+整数格子点
+\[
+ R=\{(i,j)\in\mathbb Z^2:
+ 1\le i\le m,\ 1\le j\le n\}
+\]
+を考える．$|R|=mn$ である．
+各 $i$ に対して $qi/p<q/2$ なので
+$\lfloor qi/p\rfloor\le n$ であり，
+$A$ は $qi>pj$ を満たす格子点の個数に等しい．
+同様に $B$ は $pj>qi$ を満たす格子点の個数に等しい．
+$qi=pj$ が成立すると，
+互いに異なる素数 $p,q$ は互いに素なので
+$p\mid i$，$q\mid j$ となるが
+$1\le i<p$，$1\le j<q$ に反する．
+従って $R$ の各格子点は二種類のいずれか一方に属し，
+$A+B=mn$ である．
+よって
+\[
+ \left(\frac qp\right)\left(\frac pq\right)
+ =(-1)^{A+B}=(-1)^{mn}
+\]
+となる．
+\end{proof}
+
+\begin{remark}
+証明においては有限個の格子点を直線
+$q x=p y$ の上下に分割した．
+この分割の数え上げとGaussの補題の符号が，
+平方剰余の相互法則を結びつける．
+\end{remark}
+
+\section{Jacobi記号}
+
+\begin{definition}
+$n>1$ を奇整数とし，
+$n=\prod_{j=1}^rp_j^{e_j}$ を素因数分解する．
+Jacobi記号を
+\[
+ \left(\frac an\right)
+ =\prod_{j=1}^r\left(\frac a{p_j}\right)^{e_j}
+\]
+と定義する．$n=1$ のときは $(a/1)=1$ と約束する．
+\end{definition}
+
+\begin{proposition}\label{prop:jacobi}
+$n>1$ を奇整数，$a,b\in\mathbb Z$ とすると，
+\[
+ \left(\frac{ab}{n}\right)
+ =\left(\frac an\right)\left(\frac bn\right)
+\]
+が成り立つ．
+また $\gcd(a,n)=1$ の場合には
+$\left(\frac an\right)\in\{1,-1\}$ である．
+\end{proposition}
+\begin{proof}
+Legendre記号の乗法性を各素因数 $p_j$ に適用し，
+それぞれ $e_j$ 乗して掛け合わせれば乗法性を得る．
+$\gcd(a,n)=1$ なら全ての $p_j$ で $p_j\nmid a$ だから，
+各Legendre記号は $\pm1$ となり，
+積も $\pm1$ である．
+\end{proof}
+
+\begin{theorem}[Jacobi記号の相互法則]\label{thm:jacobi-recip}
+$m,n>0$ を互いに素な奇整数とする．このとき
+\[
+ \left(\frac mn\right)\left(\frac nm\right)
+ =(-1)^{\frac{m-1}{2}\frac{n-1}{2}}.
+\]
+また任意の奇整数 $n>0$ に対し
+\[
+ \left(\frac{-1}{n}\right)=(-1)^{(n-1)/2},
+ \qquad
+ \left(\frac2n\right)=(-1)^{(n^2-1)/8}
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$m=\prod_ip_i^{a_i}$，$n=\prod_jq_j^{b_j}$ と分解する．
+$m,n$ は互いに素なので $p_i\ne q_j$ である．
+Legendre記号の相互法則を全ての $(p_i,q_j)$ に適用して
+\[
+ \left(\frac mn\right)\left(\frac nm\right)
+ =(-1)^{
+  \left(\sum_i a_i\frac{p_i-1}{2}\right)
+  \left(\sum_j b_j\frac{q_j-1}{2}\right)
+ }.
+\]
+奇整数 $u,v$ について
+$\frac{uv-1}{2}\equiv\frac{u-1}{2}+\frac{v-1}{2}\pmod2$
+が成り立つから，
+右辺の指数は
+$\frac{m-1}{2}\frac{n-1}{2}$ と法2で合同である．
+従って相互法則を得る．
+補充法則も素因子ごとのLegendre記号の公式を掛け合わせ，
+奇整数の法4・法8の積の規則を用いれば従う．
+\end{proof}
+
+\begin{example}[Jacobi記号の値と平方剰余]
+\[
+ \left(\frac2{15}\right)
+ =\left(\frac23\right)\left(\frac25\right)
+ =(-1)(-1)=1
+\]
+だが，合同式 $x^2\equiv2\pmod{15}$ は整数解を持たない．
+\end{example}
+\begin{proof}
+もし $x^2\equiv2\pmod{15}$ なら
+特に $x^2\equiv2\pmod3$ となる．
+しかし法3の平方剰余は $0,1$ のみなので矛盾する．
+従ってJacobi記号が1であっても
+平方剰余であるとは限らない．
+\end{proof}
+
+\section{相互法則の計算への応用}
+
+\begin{example}[二次合同式の判定]
+$p$ を $5$ と異なる奇素数とする．
+合同式 $x^2\equiv5\pmod p$ が解を持つための
+必要十分条件は
+$p\equiv1,4\pmod5$ である．
+\end{example}
+\begin{proof}
+$5\equiv1\pmod4$ なので平方剰余の相互法則から
+$\left(\frac5p\right)=\left(\frac p5\right)$ である．
+法5の非零平方剰余は $1,4$ だから，
+右辺が1になることと $p\equiv1,4\pmod5$ は同値である．
+Legendre記号の定義によって結論が従う．
+\end{proof}
+
+\begin{example}[$-1$ と $2$ の合同式]
+奇素数 $p$ について，
+$x^2\equiv-1\pmod p$ は
+$p\equiv1\pmod4$ の場合に限って解を持つ．
+また $x^2\equiv2\pmod p$ は
+$p\equiv1,7\pmod8$ の場合に限って解を持つ．
+\end{example}
+\begin{proof}
+前者は第一補充法則，後者は第二補充法則による．
+\end{proof}
+
+\begin{remark}
+平方剰余の相互法則は，法の異なる二次合同式を結びつけ，
+素数を法とする平方剰余判定を相互に変換する．
+その証明は有限群・合同式・格子点の数え上げを横断している．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{平方剰余相互法則を使い切る．}
+\begin{proposition}
+$3$ は $13$ と $11$ を法として平方剰余であるが，
+$7$ を法として平方非剰余である．
+\end{proposition}
+\begin{proof}
+$4^2=16\equiv3\pmod{13}$，
+$5^2=25\equiv3\pmod{11}$ だから前二者は平方剰余である．
+$7$ を法とする非零平方剰余は
+$1^2,2^2,3^2$ の剰余 $1,4,2$ のみであり，
+$3$ は含まれない．従って非剰余である．
+\end{proof}
+\begin{proposition}[相互法則による別の判定]
+$\bigl(\frac5{11}\bigr)=1$ である．
+\end{proposition}
+\begin{proof}
+$5\equiv1\pmod4$ なので相互法則より
+$\left(\frac5{11}\right)
+=\left(\frac{11}5\right)=\left(\frac15\right)=1$．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\left(\frac3{7}\right)$ を相互法則から求めよ．
+\par\noindent\textbf{解答．}
+$3\equiv7\equiv3\pmod4$ だから
+$\left(\frac3{7}\right)
+=-\left(\frac73\right)
+=-\left(\frac13\right)=-1$ である．
+\end{document}

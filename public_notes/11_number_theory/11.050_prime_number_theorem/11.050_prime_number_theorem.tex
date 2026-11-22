@@ -1,0 +1,542 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{素数定理とゼータ関数の解析}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Chebyshev関数，部分和公式，素数定理．
+本稿の具体的な到達課題は，素数定理から素数の重み付き総和の漸近を導く．
+
+\section{素数計数とChebyshev関数}
+
+本稿では複素解析のCauchy積分公式・留数定理，
+Lebesgueの収束定理，Dirichlet級数の絶対収束を前提とする．
+素数定理を，境界線上の零点排除と
+Newman型のTauber定理を通して証明する．
+
+\begin{definition}
+$x\ge1$ に対し
+\[
+ \pi(x)=\#\{p\le x:p\text{ は素数}\},\qquad
+ \vartheta(x)=\sum_{p\le x}\log p
+\]
+と置く．von Mangoldt関数を
+\[
+ \Lambda(n)=
+ \begin{cases}
+ \log p&(n=p^k,\ p\text{ 素数},\ k\ge1),\\
+ 0&(\text{その他})
+ \end{cases}
+\]
+と定め，
+\[
+ \psi(x)=\sum_{n\le x}\Lambda(n)
+ \]
+を第二Chebyshev関数という．
+\end{definition}
+
+\begin{lemma}[素数冪による差]\label{lem:prime-powers}
+$x\ge2$ に対し
+\[
+ 0\le\psi(x)-\vartheta(x)
+ \le\sum_{2\le k\le\log_2x}\vartheta(x^{1/k}).
+\]
+\end{lemma}
+\begin{proof}
+$\Lambda$ は素数冪でのみ非零なので
+\[
+ \psi(x)=\sum_{\substack{p^k\le x\\k\ge1}}\log p
+ =\sum_{k\ge1}\sum_{p\le x^{1/k}}\log p
+ =\sum_{k\ge1}\vartheta(x^{1/k}).
+\]
+$k=1$ の項は $\vartheta(x)$ であり，
+$p^k\ge2^k$ なので和に寄与する $k$ は
+$k\le\log_2x$ に限られる．
+従って差の表示と不等式を得る．
+\end{proof}
+
+\begin{lemma}[Chebyshevの上界]\label{lem:chebyshev}
+ある定数 $C>0$ が存在して
+\[
+ \vartheta(x)\le Cx,\qquad
+ \psi(x)\le Cx
+ \quad(x\ge2)
+\]
+が成り立つ．さらに
+$\psi(x)-\vartheta(x)=O(\sqrt x\log x)=o(x)$ である．
+\end{lemma}
+\begin{proof}
+$n$ を正の整数とする．
+$n<p\le2n$ の各素数は二項係数
+$\binom{2n}n$ を割る．
+実際 $p>n$ なので $p$ は分母の $n!^2$ を割らず，
+分子の $(2n)!$ をちょうど一度割る．
+従って
+\[
+ \prod_{n<p\le2n}p\le\binom{2n}n\le2^{2n}.
+\]
+対数を取って
+$\vartheta(2n)-\vartheta(n)\le2n\log2$ を得る．
+$2^j$ ごとの区間でこれを適用して加えると
+$\vartheta(2^m)\le C_0\,2^m$ となる．
+任意の $x\ge2$ に対し
+$2^{m-1}<x\le2^m$ を取れば
+$\vartheta(x)\le\vartheta(2^m)\le2C_0x$ なので
+$\vartheta(x)=O(x)$ である．
+
+補題\ref{lem:prime-powers}とこの評価から
+\[
+ \psi(x)-\vartheta(x)
+ \le C\sum_{2\le k\le\log_2x}x^{1/k}
+ \le C\sqrt x\,\log_2x
+ =O(\sqrt x\log x).
+\]
+最後の項は $o(x)$ なので，
+$\psi(x)=\vartheta(x)+o(x)=O(x)$ が従う．
+\end{proof}
+
+\section{ゼータ関数と対数微分}
+
+\begin{proposition}[ゼータ関数の有理型延長]
+\label{prop:zeta-cont}
+$\operatorname{Re}s>1$ で
+$\zeta(s)=\sum_{n\ge1}n^{-s}$ と定義する．
+\[
+ \zeta(s)=\frac{s}{s-1}
+ -s\int_1^\infty\{x\}x^{-s-1}\,dx
+ \tag{1}
+\]
+は $\operatorname{Re}s>0$ へ有理型に延長し，
+$s=1$ に留数1の単純極を持ち，他の極を持たない．
+\end{proposition}
+\begin{proof}
+$\operatorname{Re}s>1$ で部分和公式を用い
+\[
+ \zeta(s)=s\int_1^\infty\lfloor x\rfloor x^{-s-1}\,dx.
+\]
+$\lfloor x\rfloor=x-\{x\}$ と書いて積分すると式 (1) を得る．
+$\{x\}$ は有界なので，
+式 (1) の積分は $\operatorname{Re}s>0$ の
+コンパクト集合上で一様絶対収束する．
+従って積分の項はそこで正則であり，
+第一項は $s=1$ で留数1の単純極を持つ．
+\end{proof}
+
+\begin{lemma}[Euler積の対数微分]\label{lem:logder}
+$\operatorname{Re}s>1$ において
+\[
+ -\frac{\zeta'(s)}{\zeta(s)}
+ =\sum_{n=1}^\infty\frac{\Lambda(n)}{n^s}.
+ \tag{2}
+\]
+\end{lemma}
+\begin{proof}
+Euler積
+$\zeta(s)=\prod_p(1-p^{-s})^{-1}$ の対数は
+$\log\zeta(s)=\sum_p\sum_{k\ge1}p^{-ks}/k$
+である．
+$\operatorname{Re}s>1$ のコンパクト集合上で
+この級数と導関数級数はともに絶対一様収束する．
+従って項別微分でき，
+\[
+ -\frac{\zeta'(s)}{\zeta(s)}
+ =\sum_p\sum_{k\ge1}(\log p)p^{-ks}.
+\]
+右辺は $\Lambda(n)$ の定義によって式 (2) と一致する．
+\end{proof}
+
+\section{境界直線上の零点排除}
+
+\begin{theorem}[Hadamard--de la Vall\'ee-Poussinの零点排除]
+\label{thm:no-zero}
+任意の実数 $t$ に対し
+\[
+ \zeta(1+it)\ne0
+\]
+が成り立つ．ただし $t=0$ では $\zeta$ は極を持ち，
+零点ではないという意味である．
+\end{theorem}
+\begin{proof}
+$t\ne0$ を固定する．$\sigma>1$ に対し
+Euler積の対数から
+\[
+ \begin{aligned}
+ &\log\!\left(
+ \zeta(\sigma)^3
+ |\zeta(\sigma+it)|^4
+ |\zeta(\sigma+2it)|\right)\\
+ &=\sum_p\sum_{k=1}^\infty
+ \frac{3+4\cos(kt\log p)+\cos(2kt\log p)}
+ {k p^{k\sigma}}.
+ \end{aligned}
+\]
+三角恒等式
+$3+4\cos u+\cos2u=2(1+\cos u)^2\ge0$
+により右辺は非負である．
+従って
+\[
+ \zeta(\sigma)^3
+ |\zeta(\sigma+it)|^4
+ |\zeta(\sigma+2it)|\ge1.
+ \tag{3}
+\]
+もし $\zeta(1+it)=0$ なら，
+命題\ref{prop:zeta-cont}の正則性によって
+$\zeta(\sigma+it)=O(\sigma-1)$ となる．
+$\zeta(\sigma+2it)$ は $1+2it\ne1$ で正則なので
+$\sigma\downarrow1$ で有界である．
+また $\zeta(\sigma)=O((\sigma-1)^{-1})$ である．
+従って式 (3) の左辺は
+$O((\sigma-1)^{-3+4})=O(\sigma-1)$ となり
+零へ向かう．
+これは左辺が1以上という不等式と矛盾する．
+従って $\zeta(1+it)\ne0$ である．
+\end{proof}
+
+\section{NewmanのTauber型補題}
+
+\begin{lemma}[境界正則性からの収束]\label{lem:newman}
+$f:[0,\infty)\to\mathbb C$ を有界な局所可積分関数とする．
+\[
+ F(z)=\int_0^\infty f(t)e^{-zt}\,dt
+ \qquad(\operatorname{Re}z>0)
+\]
+が，閉半平面 $\operatorname{Re}z\ge0$ の
+ある開近傍へ正則に延長されると仮定する．
+このとき広義積分 $\int_0^\infty f(t)\,dt$ は収束し，
+その値は $F(0)$ に等しい．
+\end{lemma}
+\begin{proof}
+$|f(t)|\le B$ とする．
+\[
+ F_T(z)=\int_0^Tf(t)e^{-zt}\,dt
+\]
+と置くと $F_T$ は整関数である．
+任意に大きい $R>0$ を固定する．
+仮定により虚軸のコンパクトな区間
+$\{iy:|y|\le R\}$ の近傍で $F$ は正則なので，
+十分小さい $\delta>0$ を選び
+\[
+ D_R=\{z:|z|\le R,\ \operatorname{Re}z\ge-\delta\}
+\]
+の閉包が $F$ の正則領域に含まれるようにできる．
+$\partial D_R$ を正向きの輪郭 $C$ とする．
+Cauchyの積分公式から
+\[
+ F(0)-F_T(0)=\frac1{2\pi i}
+ \int_C(F(z)-F_T(z))e^{Tz}
+ \left(1+\frac{z^2}{R^2}\right)\frac{dz}{z}.
+ \tag{4}
+\]
+確かに被積分関数の $z=0$ における留数は
+$F(0)-F_T(0)$ である．
+$C_+=C\cap\{\operatorname{Re}z\ge0\}$，
+$C_-=C\cap\{\operatorname{Re}z\le0\}$ と分ける．
+
+$C_+$ 上で $|z|=R$ かつ $\operatorname{Re}z>0$ なら
+\[
+ |F(z)-F_T(z)|
+ =\left|\int_T^\infty f(t)e^{-zt}\,dt\right|
+ \le \frac{B e^{-T\operatorname{Re}z}}{\operatorname{Re}z}.
+\]
+また $|z|=R$ のとき
+\[
+ \left|\left(1+\frac{z^2}{R^2}\right)\frac1z\right|
+ =\frac{2|\operatorname{Re}z|}{R^2}.
+ \tag{5}
+\]
+$C_+$ の長さは高々 $2\pi R$ なので，
+式 (4) の $C_+$ 上の積分の絶対値は
+高々 $2B/R$ である．
+
+$C_-$ 上の $F_T$ の積分を考える．
+$F_T$ は整関数であるから，$C_-$ の左側部分は
+半径 $R$ の左半円弧
+$C'_-=\{z:|z|=R,\operatorname{Re}z\le0\}$
+へ，端点を固定して変形できる．
+両輪郭の間の領域には $z=0$ が含まれないので，
+この変形で積分値は変わらない．
+$C'_-$ 上で $\operatorname{Re}z<0$ なら
+\[
+ |F_T(z)|
+ \le B\int_0^Te^{-t\operatorname{Re}z}\,dt
+ \le \frac{B e^{-T\operatorname{Re}z}}{|\operatorname{Re}z|}.
+\]
+式 (5) と半円弧の長さの評価から，
+$C_-$ 上の $F_T$ の寄与も絶対値が
+高々 $2B/R$ である．
+
+最後に $C_-$ 上の $F$ の寄与を扱う．
+固定した $R,\delta$ に対して $F(z)$ は
+$C_-$ 上で有界であり，$z=0$ はこの輪郭上にない．
+輪郭のうち端点以外では
+$\operatorname{Re}z<0$ なので
+$e^{Tz}\to0$ である．
+$|e^{Tz}|\le1$ だから，
+輪郭を有限個の滑らかな弧に分割して
+Lebesgueの収束定理を適用すれば，
+$C_-$ 上の $F$ の寄与は $T\to\infty$ で零となる．
+従って式 (4) から
+\[
+ \limsup_{T\to\infty}|F(0)-F_T(0)|
+ \le\frac{4B}{R}.
+\]
+$R>0$ は任意に大きく取れるので，
+右辺を零へ近づけられる．
+従って $F_T(0)=\int_0^Tf(t)\,dt\to F(0)$ である．
+\end{proof}
+
+\section{素数定理の証明}
+
+\begin{lemma}[主要なLaplace変換]\label{lem:laplace}
+$t\ge0$ に対して
+\[
+ f(t)=e^{-t}\psi(e^t)-1
+\]
+と置く．このとき $f$ は有界であり，
+$\operatorname{Re}z>0$ におけるLaplace変換は
+\[
+ F(z)=-\frac1{z+1}
+ \frac{\zeta'(z+1)}{\zeta(z+1)}-\frac1z.
+ \tag{6}
+\]
+さらに $F$ は
+$\operatorname{Re}z\ge0$ の開近傍へ正則に延長される．
+\end{lemma}
+\begin{proof}
+補題\ref{lem:chebyshev}によって
+$\psi(x)=O(x)$ なので $f$ は有界である．
+$\operatorname{Re}z>0$ では
+Tonelliの定理または絶対収束する和と積分の交換により
+\[
+ \begin{aligned}
+ \int_0^\infty e^{-(z+1)t}\psi(e^t)\,dt
+ &=\sum_{n\ge2}\Lambda(n)
+   \int_{\log n}^\infty e^{-(z+1)t}\,dt\\
+ &=\frac1{z+1}\sum_{n\ge2}
+ \frac{\Lambda(n)}{n^{z+1}}.
+ \end{aligned}
+\]
+補題\ref{lem:logder}と
+$\int_0^\infty e^{-zt}\,dt=1/z$ から式 (6) が従う．
+$\operatorname{Re}z>0$ ではEuler積から
+$\zeta(1+z)\ne0$ である．
+境界 $\operatorname{Re}z=0$ で $z\ne0$ なら
+定理\ref{thm:no-zero}から
+$\zeta(1+z)\ne0$ であり，
+$\zeta$ がその点の近傍で正則なことから
+式 (6) もそこへ正則に延長できる．
+$z=0$ では
+$\zeta(1+z)=z^{-1}+a_0+a_1z+\cdots$ と展開されるので
+\[
+ -\frac{\zeta'(1+z)}{\zeta(1+z)}
+ =\frac1z+\text{正則関数}
+\]
+となる．
+これを式 (6) に代入すると
+$1/(z(1+z))-1/z=-1/(1+z)$ となり，
+極が相殺されるため $F$ は $z=0$ でも正則である．
+従って閉半平面の各点の近傍で正則に延長され，
+それらを合わせた開近傍で正則となる．
+\end{proof}
+
+\begin{theorem}[Chebyshev関数の漸近式]\label{thm:psi}
+\[
+ \psi(x)\sim x\qquad(x\to\infty).
+\]
+\end{theorem}
+\begin{proof}
+補題\ref{lem:laplace}の $f$ は
+補題\ref{lem:newman}の仮定を満たすので
+$\int_0^\infty f(t)\,dt$ は収束する．
+$x=e^t$ と変数変換すると
+\[
+ \int_1^\infty\frac{\psi(x)-x}{x^2}\,dx
+ \tag{7}
+\]
+が広義積分として収束することに等しい．
+
+もしある $\varepsilon>0$ について，
+$\psi(X)\ge(1+\varepsilon)X$ となる
+任意に大きい $X$ が存在するとする．
+$1<\lambda<1+\varepsilon$ を固定し，
+$\psi$ は単調非減少だから
+$X\le x\le\lambda X$ で
+$\psi(x)-x\ge(1+\varepsilon)X-x\ge0$ である．
+従って
+\[
+ \int_X^{\lambda X}\frac{\psi(x)-x}{x^2}\,dx
+ \ge\int_1^\lambda\frac{1+\varepsilon-u}{u^2}\,du>0
+\]
+となり，右辺は $X$ に依存しない．
+しかし式 (7) の収束から，
+$X\to\infty$ では左辺は零へ向かうはずである．
+矛盾する．
+同様に，ある $\varepsilon>0$ について
+$\psi(X)\le(1-\varepsilon)X$ が
+任意に大きい $X$ で成立すると仮定する．
+$1-\varepsilon<\lambda<1$ を取ると
+$\lambda X\le x\le X$ で
+$\psi(x)-x\le(1-\varepsilon)X-x<0$ である．
+従って
+\[
+ \int_{\lambda X}^{X}
+ \frac{\psi(x)-x}{x^2}\,dx
+ \le\int_\lambda^1
+ \frac{1-\varepsilon-u}{u^2}\,du<0
+\]
+となり，式 (7) の収束に反する．
+以上から $\psi(x)/x\to1$ が従う．
+\end{proof}
+
+\begin{theorem}[素数定理]\label{thm:pnt}
+\[
+ \boxed{\displaystyle
+ \pi(x)\sim\frac{x}{\log x}}
+ \qquad(x\to\infty)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:prime-powers}と
+補題\ref{lem:chebyshev}によって
+$\psi(x)-\vartheta(x)=o(x)$ だから，
+定理\ref{thm:psi}から
+$\vartheta(x)\sim x$ を得る．
+Abelの部分和公式により
+\[
+ \pi(x)=\sum_{p\le x}\frac{\log p}{\log p}
+ =\frac{\vartheta(x)}{\log x}
+  +\int_2^x\frac{\vartheta(t)}
+                 {t(\log t)^2}\,dt.
+ \tag{8}
+\]
+第一項は $\sim x/\log x$ である．
+第二項は補題\ref{lem:chebyshev}から
+\[
+ O\left(\int_2^x\frac{dt}{(\log t)^2}\right)
+ =O\left(\frac{x}{(\log x)^2}\right)
+ =o\left(\frac{x}{\log x}\right)
+\]
+である．
+真ん中の評価は積分区間を
+$[2,\sqrt x]$ と $[\sqrt x,x]$ に分けて確かめられる：
+前者は $O(\sqrt x)$，後者は
+$O(x/(\log x)^2)$ である．
+従って式 (8) の第一項だけが主項となり，
+求める漸近式を得る．
+\end{proof}
+
+\begin{remark}
+本証明ではゼータ関数の関数等式や
+臨界帯における零点分布を用いない．
+必要となる解析的事実は，
+$s=1$ の極，$\operatorname{Re}s=1$ 上の零点の不在，
+および境界正則性を積分の収束へ変換する
+Tauber型補題である．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{素数計数関数から重み付き総和へ．}
+\begin{proposition}
+$\pi(x)\sim x/\log x$ ならば
+\[
+\vartheta(x)=\sum_{p\le x}\log p\sim x
+\]
+である．
+\end{proposition}
+\begin{proof}
+Abelの部分和公式より
+\[
+\vartheta(x)
+=\pi(x)\log x-\int_2^x\frac{\pi(t)}t\,dt.
+\]
+第一項は $x(1+o(1))$ である．
+第二項について $\pi(t)\le Ct/\log t$ が十分大きな
+$t$ で成り立つから
+\[
+\int_2^x\frac{\pi(t)}t\,dt
+=O\left(\int_2^x\frac{dt}{\log t}\right)
+=O(x/\log x)=o(x).
+\]
+最後の評価は積分区間を
+$[2,\sqrt x]$ と $[\sqrt x,x]$ に分ければよい．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\pi(x)\sim x/\log x$ から
+$\sum_{p\le x}1/p$ の発散は導けるか．
+\par\noindent\textbf{解答．}
+部分和公式から
+\[
+\sum_{p\le x}\frac1p
+=\frac{\pi(x)}x+\int_2^x\frac{\pi(t)}{t^2}\,dt.
+\]
+ある $T$ 以降で $\pi(t)\ge t/(2\log t)$ なので，
+右辺の積分は
+$\frac12\int_T^x dt/(t\log t)$ 以上となり発散する．
+\end{document}
