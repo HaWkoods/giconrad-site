@@ -1,35 +1,790 @@
 {
   "version": 1,
   "notes": {
+    "03.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/03_logic_foundations/03.010_first_order_completeness/03.010_first_order_completeness.pdf",
+      "tex": "./public_notes/03_logic_foundations/03.010_first_order_completeness/03.010_first_order_completeness.tex"
+    },
+    "03.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/03_logic_foundations/03.020_compactness_model_theory/03.020_compactness_model_theory.pdf",
+      "tex": "./public_notes/03_logic_foundations/03.020_compactness_model_theory/03.020_compactness_model_theory.tex"
+    },
+    "03.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/03_logic_foundations/03.030_hyperreals_nonstandard/03.030_hyperreals_nonstandard.pdf",
+      "tex": "./public_notes/03_logic_foundations/03.030_hyperreals_nonstandard/03.030_hyperreals_nonstandard.tex"
+    },
+    "03.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/03_logic_foundations/03.040_godel_incompleteness/03.040_godel_incompleteness.pdf",
+      "tex": "./public_notes/03_logic_foundations/03.040_godel_incompleteness/03.040_godel_incompleteness.tex"
+    },
+    "05.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/05_combinatorics/05.010_counting_mobius_inversion/05.010_counting_mobius_inversion.pdf",
+      "tex": "./public_notes/05_combinatorics/05.010_counting_mobius_inversion/05.010_counting_mobius_inversion.tex"
+    },
+    "05.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/05_combinatorics/05.020_generating_functions_recurrences/05.020_generating_functions_recurrences.pdf",
+      "tex": "./public_notes/05_combinatorics/05.020_generating_functions_recurrences/05.020_generating_functions_recurrences.tex"
+    },
+    "05.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/05_combinatorics/05.030_graph_theory_foundations/05.030_graph_theory_foundations.pdf",
+      "tex": "./public_notes/05_combinatorics/05.030_graph_theory_foundations/05.030_graph_theory_foundations.tex"
+    },
+    "05.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/05_combinatorics/05.040_matching_network_flows/05.040_matching_network_flows.pdf",
+      "tex": "./public_notes/05_combinatorics/05.040_matching_network_flows/05.040_matching_network_flows.tex"
+    },
+    "05.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/05_combinatorics/05.050_group_actions_enumeration/05.050_group_actions_enumeration.pdf",
+      "tex": "./public_notes/05_combinatorics/05.050_group_actions_enumeration/05.050_group_actions_enumeration.tex"
+    },
+    "05.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/05_combinatorics/05.060_extremal_probabilistic_methods/05.060_extremal_probabilistic_methods.pdf",
+      "tex": "./public_notes/05_combinatorics/05.060_extremal_probabilistic_methods/05.060_extremal_probabilistic_methods.tex"
+    },
+    "11.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/11_number_theory/11.010_arithmetic_dirichlet_zeta/11.010_arithmetic_dirichlet_zeta.pdf",
+      "tex": "./public_notes/11_number_theory/11.010_arithmetic_dirichlet_zeta/11.010_arithmetic_dirichlet_zeta.tex"
+    },
+    "11.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/11_number_theory/11.020_quadratic_reciprocity/11.020_quadratic_reciprocity.pdf",
+      "tex": "./public_notes/11_number_theory/11.020_quadratic_reciprocity/11.020_quadratic_reciprocity.tex"
+    },
+    "11.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/11_number_theory/11.030_pell_quadratic_units/11.030_pell_quadratic_units.pdf",
+      "tex": "./public_notes/11_number_theory/11.030_pell_quadratic_units/11.030_pell_quadratic_units.tex"
+    },
+    "11.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/11_number_theory/11.040_dirichlet_primes/11.040_dirichlet_primes.pdf",
+      "tex": "./public_notes/11_number_theory/11.040_dirichlet_primes/11.040_dirichlet_primes.tex"
+    },
+    "11.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/11_number_theory/11.050_prime_number_theorem/11.050_prime_number_theorem.pdf",
+      "tex": "./public_notes/11_number_theory/11.050_prime_number_theorem/11.050_prime_number_theorem.tex"
+    },
+    "12.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/12_fields_galois/12.010_finite_fields/12.010_finite_fields.pdf",
+      "tex": "./public_notes/12_fields_galois/12.010_finite_fields/12.010_finite_fields.tex"
+    },
+    "12.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/12_fields_galois/12.020_galois_solvability/12.020_galois_solvability.pdf",
+      "tex": "./public_notes/12_fields_galois/12.020_galois_solvability/12.020_galois_solvability.tex"
+    },
+    "12.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/12_fields_galois/12.030_cubic_quartic_resolvents/12.030_cubic_quartic_resolvents.pdf",
+      "tex": "./public_notes/12_fields_galois/12.030_cubic_quartic_resolvents/12.030_cubic_quartic_resolvents.tex"
+    },
+    "12.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/12_fields_galois/12.040_galois_constructibility/12.040_galois_constructibility.pdf",
+      "tex": "./public_notes/12_fields_galois/12.040_galois_constructibility/12.040_galois_constructibility.tex"
+    },
+    "12.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/12_fields_galois/12.050_topological_fields_valuations/12.050_topological_fields_valuations.pdf",
+      "tex": "./public_notes/12_fields_galois/12.050_topological_fields_valuations/12.050_topological_fields_valuations.tex"
+    },
+    "12.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/12_fields_galois/12.060_picard_vessiot/12.060_picard_vessiot.pdf",
+      "tex": "./public_notes/12_fields_galois/12.060_picard_vessiot/12.060_picard_vessiot.tex"
+    },
+    "12.070": {
+      "status": "draft-review",
+      "pdf": "./public_notes/12_fields_galois/12.070_liouvillian_integrability/12.070_liouvillian_integrability.pdf",
+      "tex": "./public_notes/12_fields_galois/12.070_liouvillian_integrability/12.070_liouvillian_integrability.tex"
+    },
+    "13.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/13_commutative_algebra/13.010_noetherian_polynomial_rings/13.010_noetherian_polynomial_rings.pdf",
+      "tex": "./public_notes/13_commutative_algebra/13.010_noetherian_polynomial_rings/13.010_noetherian_polynomial_rings.tex"
+    },
+    "13.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/13_commutative_algebra/13.020_krull_dimension_hilbert_polynomial/13.020_krull_dimension_hilbert_polynomial.pdf",
+      "tex": "./public_notes/13_commutative_algebra/13.020_krull_dimension_hilbert_polynomial/13.020_krull_dimension_hilbert_polynomial.tex"
+    },
+    "13.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/13_commutative_algebra/13.030_groebner_bases/13.030_groebner_bases.pdf",
+      "tex": "./public_notes/13_commutative_algebra/13.030_groebner_bases/13.030_groebner_bases.tex"
+    },
+    "13.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/13_commutative_algebra/13.040_elimination_resultants/13.040_elimination_resultants.pdf",
+      "tex": "./public_notes/13_commutative_algebra/13.040_elimination_resultants/13.040_elimination_resultants.tex"
+    },
+    "13.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/13_commutative_algebra/13.050_hilbert_serre_samuel/13.050_hilbert_serre_samuel.pdf",
+      "tex": "./public_notes/13_commutative_algebra/13.050_hilbert_serre_samuel/13.050_hilbert_serre_samuel.tex"
+    },
+    "13.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/13_commutative_algebra/13.060_artin_rees_krull/13.060_artin_rees_krull.pdf",
+      "tex": "./public_notes/13_commutative_algebra/13.060_artin_rees_krull/13.060_artin_rees_krull.tex"
+    },
+    "15.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/15_linear_algebra/15.010_smith_normal_form_pid/15.010_smith_normal_form_pid.pdf",
+      "tex": "./public_notes/15_linear_algebra/15.010_smith_normal_form_pid/15.010_smith_normal_form_pid.tex"
+    },
+    "18.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/18_category_homological/18.010_category_yoneda/18.010_category_yoneda.pdf",
+      "tex": "./public_notes/18_category_homological/18.010_category_yoneda/18.010_category_yoneda.tex"
+    },
+    "18.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/18_category_homological/18.020_free_objects_universality/18.020_free_objects_universality.pdf",
+      "tex": "./public_notes/18_category_homological/18.020_free_objects_universality/18.020_free_objects_universality.tex"
+    },
+    "18.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/18_category_homological/18.030_limits_adjunctions/18.030_limits_adjunctions.pdf",
+      "tex": "./public_notes/18_category_homological/18.030_limits_adjunctions/18.030_limits_adjunctions.tex"
+    },
+    "18.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/18_category_homological/18.040_sheaves_stalks_sheafification/18.040_sheaves_stalks_sheafification.pdf",
+      "tex": "./public_notes/18_category_homological/18.040_sheaves_stalks_sheafification/18.040_sheaves_stalks_sheafification.tex"
+    },
+    "18.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/18_category_homological/18.050_homological_ext_tor/18.050_homological_ext_tor.pdf",
+      "tex": "./public_notes/18_category_homological/18.050_homological_ext_tor/18.050_homological_ext_tor.tex"
+    },
+    "18.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/18_category_homological/18.060_sheaf_cohomology/18.060_sheaf_cohomology.pdf",
+      "tex": "./public_notes/18_category_homological/18.060_sheaf_cohomology/18.060_sheaf_cohomology.tex"
+    },
+    "22.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/22_topological_lie_groups/22.010_topological_groups/22.010_topological_groups.pdf",
+      "tex": "./public_notes/22_topological_lie_groups/22.010_topological_groups/22.010_topological_groups.tex"
+    },
+    "22.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/22_topological_lie_groups/22.020_lie_groups_algebras/22.020_lie_groups_algebras.pdf",
+      "tex": "./public_notes/22_topological_lie_groups/22.020_lie_groups_algebras/22.020_lie_groups_algebras.tex"
+    },
+    "22.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/22_topological_lie_groups/22.030_haar_measure/22.030_haar_measure.pdf",
+      "tex": "./public_notes/22_topological_lie_groups/22.030_haar_measure/22.030_haar_measure.tex"
+    },
+    "28.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.pdf",
+      "tex": "./public_notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.tex"
+    },
+    "28.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/28_measure_theory/28.020_change_of_variables/28.020_change_of_variables.pdf",
+      "tex": "./public_notes/28_measure_theory/28.020_change_of_variables/28.020_change_of_variables.tex"
+    },
+    "30.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/30_complex_analysis/30.010_complex_differential_geometry/30.010_complex_differential_geometry.pdf",
+      "tex": "./public_notes/30_complex_analysis/30.010_complex_differential_geometry/30.010_complex_differential_geometry.tex"
+    },
+    "30.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/30_complex_analysis/30.020_cauchy_integral_theorem/30.020_cauchy_integral_theorem.pdf",
+      "tex": "./public_notes/30_complex_analysis/30.020_cauchy_integral_theorem/30.020_cauchy_integral_theorem.tex"
+    },
+    "30.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/30_complex_analysis/30.030_argument_principle_rouche/30.030_argument_principle_rouche.pdf",
+      "tex": "./public_notes/30_complex_analysis/30.030_argument_principle_rouche/30.030_argument_principle_rouche.tex"
+    },
+    "30.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/30_complex_analysis/30.040_analytic_continuation_monodromy/30.040_analytic_continuation_monodromy.pdf",
+      "tex": "./public_notes/30_complex_analysis/30.040_analytic_continuation_monodromy/30.040_analytic_continuation_monodromy.tex"
+    },
+    "32.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/32_d_modules/32.010_weyl_algebras_differential_operators/32.010_weyl_algebras_differential_operators.pdf",
+      "tex": "./public_notes/32_d_modules/32.010_weyl_algebras_differential_operators/32.010_weyl_algebras_differential_operators.tex"
+    },
+    "32.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/32_d_modules/32.020_d_module_basics/32.020_d_module_basics.pdf",
+      "tex": "./public_notes/32_d_modules/32.020_d_module_basics/32.020_d_module_basics.tex"
+    },
+    "32.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/32_d_modules/32.030_characteristic_variety_holonomicity/32.030_characteristic_variety_holonomicity.pdf",
+      "tex": "./public_notes/32_d_modules/32.030_characteristic_variety_holonomicity/32.030_characteristic_variety_holonomicity.tex"
+    },
+    "32.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/32_d_modules/32.040_d_module_derham_solutions/32.040_d_module_derham_solutions.pdf",
+      "tex": "./public_notes/32_d_modules/32.040_d_module_derham_solutions/32.040_d_module_derham_solutions.tex"
+    },
+    "35.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/35_partial_differential_equations/35.010_pde_heat_wave/35.010_pde_heat_wave.pdf",
+      "tex": "./public_notes/35_partial_differential_equations/35.010_pde_heat_wave/35.010_pde_heat_wave.tex"
+    },
+    "35.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.pdf",
+      "tex": "./public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex"
+    },
+    "35.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/35_partial_differential_equations/35.030_lipschitz_trace/35.030_lipschitz_trace.pdf",
+      "tex": "./public_notes/35_partial_differential_equations/35.030_lipschitz_trace/35.030_lipschitz_trace.tex"
+    },
+    "35.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/35_partial_differential_equations/35.040_reentrant_corner_elliptic/35.040_reentrant_corner_elliptic.pdf",
+      "tex": "./public_notes/35_partial_differential_equations/35.040_reentrant_corner_elliptic/35.040_reentrant_corner_elliptic.tex"
+    },
+    "35.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/35_partial_differential_equations/35.050_periodic_wave_wellposedness/35.050_periodic_wave_wellposedness.pdf",
+      "tex": "./public_notes/35_partial_differential_equations/35.050_periodic_wave_wellposedness/35.050_periodic_wave_wellposedness.tex"
+    },
+    "37.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/37_dynamical_systems/37.010_dynamics_stability/37.010_dynamics_stability.pdf",
+      "tex": "./public_notes/37_dynamical_systems/37.010_dynamics_stability/37.010_dynamics_stability.tex"
+    },
+    "37.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/37_dynamical_systems/37.020_bifurcation_basics/37.020_bifurcation_basics.pdf",
+      "tex": "./public_notes/37_dynamical_systems/37.020_bifurcation_basics/37.020_bifurcation_basics.tex"
+    },
+    "41.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/41_approximation/41.010_stone_weierstrass/41.010_stone_weierstrass.pdf",
+      "tex": "./public_notes/41_approximation/41.010_stone_weierstrass/41.010_stone_weierstrass.tex"
+    },
+    "42.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/42_fourier_analysis/42.010_fourier_series/42.010_fourier_series.pdf",
+      "tex": "./public_notes/42_fourier_analysis/42.010_fourier_series/42.010_fourier_series.tex"
+    },
+    "42.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/42_fourier_analysis/42.020_fourier_transform_plancherel/42.020_fourier_transform_plancherel.pdf",
+      "tex": "./public_notes/42_fourier_analysis/42.020_fourier_transform_plancherel/42.020_fourier_transform_plancherel.tex"
+    },
+    "43.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/43_abstract_harmonic_analysis/43.010_compact_abelian_fourier/43.010_compact_abelian_fourier.pdf",
+      "tex": "./public_notes/43_abstract_harmonic_analysis/43.010_compact_abelian_fourier/43.010_compact_abelian_fourier.tex"
+    },
+    "44.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/44_integral_transforms/44.010_laplace_transform/44.010_laplace_transform.pdf",
+      "tex": "./public_notes/44_integral_transforms/44.010_laplace_transform/44.010_laplace_transform.tex"
+    },
+    "46.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/46_functional_analysis/46.010_arzela_ascoli/46.010_arzela_ascoli.pdf",
+      "tex": "./public_notes/46_functional_analysis/46.010_arzela_ascoli/46.010_arzela_ascoli.tex"
+    },
+    "46.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/46_functional_analysis/46.020_uniform_boundedness/46.020_uniform_boundedness.pdf",
+      "tex": "./public_notes/46_functional_analysis/46.020_uniform_boundedness/46.020_uniform_boundedness.tex"
+    },
+    "46.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/46_functional_analysis/46.030_riesz_representation/46.030_riesz_representation.pdf",
+      "tex": "./public_notes/46_functional_analysis/46.030_riesz_representation/46.030_riesz_representation.tex"
+    },
+    "46.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/46_functional_analysis/46.040_hahn_banach/46.040_hahn_banach.pdf",
+      "tex": "./public_notes/46_functional_analysis/46.040_hahn_banach/46.040_hahn_banach.tex"
+    },
+    "46.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/46_functional_analysis/46.050_open_mapping_closed_graph/46.050_open_mapping_closed_graph.pdf",
+      "tex": "./public_notes/46_functional_analysis/46.050_open_mapping_closed_graph/46.050_open_mapping_closed_graph.tex"
+    },
+    "46.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/46_functional_analysis/46.060_weak_weakstar_topology/46.060_weak_weakstar_topology.pdf",
+      "tex": "./public_notes/46_functional_analysis/46.060_weak_weakstar_topology/46.060_weak_weakstar_topology.tex"
+    },
+    "46.100": {
+      "status": "draft-review",
+      "pdf": "./public_notes/46_functional_analysis/46.100_distributions_weak_derivatives/46.100_distributions_weak_derivatives.pdf",
+      "tex": "./public_notes/46_functional_analysis/46.100_distributions_weak_derivatives/46.100_distributions_weak_derivatives.tex"
+    },
+    "47.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/47_operator_theory/47.010_banach_fixed_point/47.010_banach_fixed_point.pdf",
+      "tex": "./public_notes/47_operator_theory/47.010_banach_fixed_point/47.010_banach_fixed_point.tex"
+    },
+    "47.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/47_operator_theory/47.020_compact_operator_spectrum/47.020_compact_operator_spectrum.pdf",
+      "tex": "./public_notes/47_operator_theory/47.020_compact_operator_spectrum/47.020_compact_operator_spectrum.tex"
+    },
+    "53.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/53_differential_geometry/53.010_vector_bundles_connections/53.010_vector_bundles_connections.pdf",
+      "tex": "./public_notes/53_differential_geometry/53.010_vector_bundles_connections/53.010_vector_bundles_connections.tex"
+    },
+    "53.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/53_differential_geometry/53.020_riemannian_metric_levi_civita/53.020_riemannian_metric_levi_civita.pdf",
+      "tex": "./public_notes/53_differential_geometry/53.020_riemannian_metric_levi_civita/53.020_riemannian_metric_levi_civita.tex"
+    },
+    "53.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/53_differential_geometry/53.030_geodesics_exponential_map/53.030_geodesics_exponential_map.pdf",
+      "tex": "./public_notes/53_differential_geometry/53.030_geodesics_exponential_map/53.030_geodesics_exponential_map.tex"
+    },
+    "53.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.pdf",
+      "tex": "./public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex"
+    },
+    "53.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/53_differential_geometry/53.050_curvature_jacobi/53.050_curvature_jacobi.pdf",
+      "tex": "./public_notes/53_differential_geometry/53.050_curvature_jacobi/53.050_curvature_jacobi.tex"
+    },
+    "53.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/53_differential_geometry/53.060_submanifold_extrinsic_geometry/53.060_submanifold_extrinsic_geometry.pdf",
+      "tex": "./public_notes/53_differential_geometry/53.060_submanifold_extrinsic_geometry/53.060_submanifold_extrinsic_geometry.tex"
+    },
+    "53.070": {
+      "status": "draft-review",
+      "pdf": "./public_notes/53_differential_geometry/53.070_gauss_bonnet/53.070_gauss_bonnet.pdf",
+      "tex": "./public_notes/53_differential_geometry/53.070_gauss_bonnet/53.070_gauss_bonnet.tex"
+    },
+    "53.100": {
+      "status": "draft-review",
+      "pdf": "./public_notes/53_differential_geometry/53.100_symplectic_geometry/53.100_symplectic_geometry.pdf",
+      "tex": "./public_notes/53_differential_geometry/53.100_symplectic_geometry/53.100_symplectic_geometry.tex"
+    },
+    "54.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/54_general_topology/54.010_topological_spaces/54.010_topological_spaces.pdf",
+      "tex": "./public_notes/54_general_topology/54.010_topological_spaces/54.010_topological_spaces.tex"
+    },
+    "54.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/54_general_topology/54.020_product_quotient_topology/54.020_product_quotient_topology.pdf",
+      "tex": "./public_notes/54_general_topology/54.020_product_quotient_topology/54.020_product_quotient_topology.tex"
+    },
+    "54.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/54_general_topology/54.030_connectedness/54.030_connectedness.pdf",
+      "tex": "./public_notes/54_general_topology/54.030_connectedness/54.030_connectedness.tex"
+    },
+    "54.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/54_general_topology/54.040_filters_ultrafilters/54.040_filters_ultrafilters.pdf",
+      "tex": "./public_notes/54_general_topology/54.040_filters_ultrafilters/54.040_filters_ultrafilters.tex"
+    },
+    "54.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.pdf",
+      "tex": "./public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex"
+    },
+    "54.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/54_general_topology/54.060_urysohn_tietze/54.060_urysohn_tietze.pdf",
+      "tex": "./public_notes/54_general_topology/54.060_urysohn_tietze/54.060_urysohn_tietze.tex"
+    },
+    "54.070": {
+      "status": "draft-review",
+      "pdf": "./public_notes/54_general_topology/54.070_separation_metrization/54.070_separation_metrization.pdf",
+      "tex": "./public_notes/54_general_topology/54.070_separation_metrization/54.070_separation_metrization.tex"
+    },
+    "54.080": {
+      "status": "draft-review",
+      "pdf": "./public_notes/54_general_topology/54.080_local_compact_paracompact/54.080_local_compact_paracompact.pdf",
+      "tex": "./public_notes/54_general_topology/54.080_local_compact_paracompact/54.080_local_compact_paracompact.tex"
+    },
+    "55.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/55_algebraic_topology/55.010_homotopy_topological_constructions/55.010_homotopy_topological_constructions.pdf",
+      "tex": "./public_notes/55_algebraic_topology/55.010_homotopy_topological_constructions/55.010_homotopy_topological_constructions.tex"
+    },
+    "55.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/55_algebraic_topology/55.020_covering_spaces_fundamental_group/55.020_covering_spaces_fundamental_group.pdf",
+      "tex": "./public_notes/55_algebraic_topology/55.020_covering_spaces_fundamental_group/55.020_covering_spaces_fundamental_group.tex"
+    },
+    "55.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/55_algebraic_topology/55.030_seifert_van_kampen/55.030_seifert_van_kampen.pdf",
+      "tex": "./public_notes/55_algebraic_topology/55.030_seifert_van_kampen/55.030_seifert_van_kampen.tex"
+    },
+    "57.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/57_manifold_topology/57.010_smooth_manifolds/57.010_smooth_manifolds.pdf",
+      "tex": "./public_notes/57_manifold_topology/57.010_smooth_manifolds/57.010_smooth_manifolds.tex"
+    },
+    "57.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/57_manifold_topology/57.020_quotient_manifolds/57.020_quotient_manifolds.pdf",
+      "tex": "./public_notes/57_manifold_topology/57.020_quotient_manifolds/57.020_quotient_manifolds.tex"
+    },
+    "57.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/57_manifold_topology/57.030_sard_transversality/57.030_sard_transversality.pdf",
+      "tex": "./public_notes/57_manifold_topology/57.030_sard_transversality/57.030_sard_transversality.tex"
+    },
+    "58.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/58_analysis_on_manifolds/58.010_vector_fields_flows/58.010_vector_fields_flows.pdf",
+      "tex": "./public_notes/58_analysis_on_manifolds/58.010_vector_fields_flows/58.010_vector_fields_flows.tex"
+    },
+    "58.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/58_analysis_on_manifolds/58.020_tensor_fields_lie_derivative/58.020_tensor_fields_lie_derivative.pdf",
+      "tex": "./public_notes/58_analysis_on_manifolds/58.020_tensor_fields_lie_derivative/58.020_tensor_fields_lie_derivative.tex"
+    },
+    "58.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/58_analysis_on_manifolds/58.030_frobenius_theorem/58.030_frobenius_theorem.pdf",
+      "tex": "./public_notes/58_analysis_on_manifolds/58.030_frobenius_theorem/58.030_frobenius_theorem.tex"
+    },
+    "58.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/58_analysis_on_manifolds/58.040_poincare_lemma_forms/58.040_poincare_lemma_forms.pdf",
+      "tex": "./public_notes/58_analysis_on_manifolds/58.040_poincare_lemma_forms/58.040_poincare_lemma_forms.tex"
+    },
+    "58.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/58_analysis_on_manifolds/58.050_stokes_manifolds/58.050_stokes_manifolds.pdf",
+      "tex": "./public_notes/58_analysis_on_manifolds/58.050_stokes_manifolds/58.050_stokes_manifolds.tex"
+    },
+    "58.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/58_analysis_on_manifolds/58.060_de_rham_cohomology/58.060_de_rham_cohomology.pdf",
+      "tex": "./public_notes/58_analysis_on_manifolds/58.060_de_rham_cohomology/58.060_de_rham_cohomology.tex"
+    },
+    "58.100": {
+      "status": "draft-review",
+      "pdf": "./public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.pdf",
+      "tex": "./public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.tex"
+    },
+    "60.005": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.005_laws_large_numbers_clt/60.005_laws_large_numbers_clt.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.005_laws_large_numbers_clt/60.005_laws_large_numbers_clt.tex"
+    },
+    "60.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.010_conditional_expectation_martingales/60.010_conditional_expectation_martingales.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.010_conditional_expectation_martingales/60.010_conditional_expectation_martingales.tex"
+    },
+    "60.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.020_brownian_motion/60.020_brownian_motion.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.020_brownian_motion/60.020_brownian_motion.tex"
+    },
+    "60.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.030_ito_integral/60.030_ito_integral.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.030_ito_integral/60.030_ito_integral.tex"
+    },
+    "60.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.040_ito_formula/60.040_ito_formula.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.040_ito_formula/60.040_ito_formula.tex"
+    },
+    "60.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.050_sde_existence_uniqueness/60.050_sde_existence_uniqueness.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.050_sde_existence_uniqueness/60.050_sde_existence_uniqueness.tex"
+    },
+    "60.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.060_martingale_representation/60.060_martingale_representation.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.060_martingale_representation/60.060_martingale_representation.tex"
+    },
+    "60.070": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.070_girsanov/60.070_girsanov.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.070_girsanov/60.070_girsanov.tex"
+    },
+    "60.080": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.080_feynman_kac_kolmogorov/60.080_feynman_kac_kolmogorov.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.080_feynman_kac_kolmogorov/60.080_feynman_kac_kolmogorov.tex"
+    },
+    "60.090": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.090_local_limit_theorems/60.090_local_limit_theorems.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.090_local_limit_theorems/60.090_local_limit_theorems.tex"
+    },
+    "62.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/62_mathematical_statistics/62.010_statistical_models_estimators/62.010_statistical_models_estimators.pdf",
+      "tex": "./public_notes/62_mathematical_statistics/62.010_statistical_models_estimators/62.010_statistical_models_estimators.tex"
+    },
+    "62.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/62_mathematical_statistics/62.020_sufficiency_completeness/62.020_sufficiency_completeness.pdf",
+      "tex": "./public_notes/62_mathematical_statistics/62.020_sufficiency_completeness/62.020_sufficiency_completeness.tex"
+    },
+    "62.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/62_mathematical_statistics/62.030_mle_asymptotics/62.030_mle_asymptotics.pdf",
+      "tex": "./public_notes/62_mathematical_statistics/62.030_mle_asymptotics/62.030_mle_asymptotics.tex"
+    },
+    "62.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/62_mathematical_statistics/62.040_hypothesis_testing/62.040_hypothesis_testing.pdf",
+      "tex": "./public_notes/62_mathematical_statistics/62.040_hypothesis_testing/62.040_hypothesis_testing.tex"
+    },
+    "62.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/62_mathematical_statistics/62.050_bayesian_statistics/62.050_bayesian_statistics.pdf",
+      "tex": "./public_notes/62_mathematical_statistics/62.050_bayesian_statistics/62.050_bayesian_statistics.tex"
+    },
+    "62.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/62_mathematical_statistics/62.060_linear_regression/62.060_linear_regression.pdf",
+      "tex": "./public_notes/62_mathematical_statistics/62.060_linear_regression/62.060_linear_regression.tex"
+    },
+    "65.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/65_numerical_analysis/65.010_roundoff_conditioning_stability/65.010_roundoff_conditioning_stability.pdf",
+      "tex": "./public_notes/65_numerical_analysis/65.010_roundoff_conditioning_stability/65.010_roundoff_conditioning_stability.tex"
+    },
+    "65.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/65_numerical_analysis/65.020_nonlinear_numerical_methods/65.020_nonlinear_numerical_methods.pdf",
+      "tex": "./public_notes/65_numerical_analysis/65.020_nonlinear_numerical_methods/65.020_nonlinear_numerical_methods.tex"
+    },
+    "65.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/65_numerical_analysis/65.030_numerical_linear_algebra/65.030_numerical_linear_algebra.pdf",
+      "tex": "./public_notes/65_numerical_analysis/65.030_numerical_linear_algebra/65.030_numerical_linear_algebra.tex"
+    },
+    "65.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/65_numerical_analysis/65.040_interpolation_quadrature/65.040_interpolation_quadrature.pdf",
+      "tex": "./public_notes/65_numerical_analysis/65.040_interpolation_quadrature/65.040_interpolation_quadrature.tex"
+    },
+    "65.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/65_numerical_analysis/65.050_numerical_odes/65.050_numerical_odes.pdf",
+      "tex": "./public_notes/65_numerical_analysis/65.050_numerical_odes/65.050_numerical_odes.tex"
+    },
+    "65.060": {
+      "status": "draft-review",
+      "pdf": "./public_notes/65_numerical_analysis/65.060_finite_difference_pde/65.060_finite_difference_pde.pdf",
+      "tex": "./public_notes/65_numerical_analysis/65.060_finite_difference_pde/65.060_finite_difference_pde.tex"
+    },
+    "65.070": {
+      "status": "draft-review",
+      "pdf": "./public_notes/65_numerical_analysis/65.070_finite_element_methods/65.070_finite_element_methods.pdf",
+      "tex": "./public_notes/65_numerical_analysis/65.070_finite_element_methods/65.070_finite_element_methods.tex"
+    },
+    "65.080": {
+      "status": "draft-review",
+      "pdf": "./public_notes/65_numerical_analysis/65.080_sobolev_fem_interpolation/65.080_sobolev_fem_interpolation.pdf",
+      "tex": "./public_notes/65_numerical_analysis/65.080_sobolev_fem_interpolation/65.080_sobolev_fem_interpolation.tex"
+    },
+    "65.090": {
+      "status": "draft-review",
+      "pdf": "./public_notes/65_numerical_analysis/65.090_wolfe_zoutendijk/65.090_wolfe_zoutendijk.pdf",
+      "tex": "./public_notes/65_numerical_analysis/65.090_wolfe_zoutendijk/65.090_wolfe_zoutendijk.tex"
+    },
+    "68.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/68_theoretical_computer_science/68.010_turing_computability/68.010_turing_computability.pdf",
+      "tex": "./public_notes/68_theoretical_computer_science/68.010_turing_computability/68.010_turing_computability.tex"
+    },
+    "68.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/68_theoretical_computer_science/68.020_decidability_undecidability/68.020_decidability_undecidability.pdf",
+      "tex": "./public_notes/68_theoretical_computer_science/68.020_decidability_undecidability/68.020_decidability_undecidability.tex"
+    },
+    "68.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/68_theoretical_computer_science/68.030_complexity_basics/68.030_complexity_basics.pdf",
+      "tex": "./public_notes/68_theoretical_computer_science/68.030_complexity_basics/68.030_complexity_basics.tex"
+    },
+    "68.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/68_theoretical_computer_science/68.040_np_completeness/68.040_np_completeness.pdf",
+      "tex": "./public_notes/68_theoretical_computer_science/68.040_np_completeness/68.040_np_completeness.tex"
+    },
+    "68.050": {
+      "status": "draft-review",
+      "pdf": "./public_notes/68_theoretical_computer_science/68.050_rice_shapiro/68.050_rice_shapiro.pdf",
+      "tex": "./public_notes/68_theoretical_computer_science/68.050_rice_shapiro/68.050_rice_shapiro.tex"
+    },
+    "68.100": {
+      "status": "draft-review",
+      "pdf": "./public_notes/68_theoretical_computer_science/68.100_exact_integer_polynomial/68.100_exact_integer_polynomial.pdf",
+      "tex": "./public_notes/68_theoretical_computer_science/68.100_exact_integer_polynomial/68.100_exact_integer_polynomial.tex"
+    },
+    "68.110": {
+      "status": "draft-review",
+      "pdf": "./public_notes/68_theoretical_computer_science/68.110_exact_computational_linear_algebra/68.110_exact_computational_linear_algebra.pdf",
+      "tex": "./public_notes/68_theoretical_computer_science/68.110_exact_computational_linear_algebra/68.110_exact_computational_linear_algebra.tex"
+    },
+    "70.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/70_mechanics/70.010_variational_principle_lagrangian_mechanics/70.010_variational_principle_lagrangian_mechanics.pdf",
+      "tex": "./public_notes/70_mechanics/70.010_variational_principle_lagrangian_mechanics/70.010_variational_principle_lagrangian_mechanics.tex"
+    },
+    "70.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/70_mechanics/70.020_hamiltonian_mechanics/70.020_hamiltonian_mechanics.pdf",
+      "tex": "./public_notes/70_mechanics/70.020_hamiltonian_mechanics/70.020_hamiltonian_mechanics.tex"
+    },
+    "70.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/70_mechanics/70.030_liouville_arnold/70.030_liouville_arnold.pdf",
+      "tex": "./public_notes/70_mechanics/70.030_liouville_arnold/70.030_liouville_arnold.tex"
+    },
+    "81.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/81_quantum_mechanics/81.010_quantum_math_foundations/81.010_quantum_math_foundations.pdf",
+      "tex": "./public_notes/81_quantum_mechanics/81.010_quantum_math_foundations/81.010_quantum_math_foundations.tex"
+    },
+    "81.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/81_quantum_mechanics/81.020_spectral_stone/81.020_spectral_stone.pdf",
+      "tex": "./public_notes/81_quantum_mechanics/81.020_spectral_stone/81.020_spectral_stone.tex"
+    },
+    "82.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/82_statistical_mechanics/82.010_statistical_mechanics/82.010_statistical_mechanics.pdf",
+      "tex": "./public_notes/82_statistical_mechanics/82.010_statistical_mechanics/82.010_statistical_mechanics.tex"
+    },
+    "83.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/83_relativity/83.010_lorentz_geometry_relativity/83.010_lorentz_geometry_relativity.pdf",
+      "tex": "./public_notes/83_relativity/83.010_lorentz_geometry_relativity/83.010_lorentz_geometry_relativity.tex"
+    },
+    "90.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/90_optimization/90.010_convex_duality_fenchel/90.010_convex_duality_fenchel.pdf",
+      "tex": "./public_notes/90_optimization/90.010_convex_duality_fenchel/90.010_convex_duality_fenchel.tex"
+    },
+    "90.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/90_optimization/90.020_kkt_convex_optimization/90.020_kkt_convex_optimization.pdf",
+      "tex": "./public_notes/90_optimization/90.020_kkt_convex_optimization/90.020_kkt_convex_optimization.tex"
+    },
+    "90.030": {
+      "status": "draft-review",
+      "pdf": "./public_notes/90_optimization/90.030_numerical_optimization/90.030_numerical_optimization.pdf",
+      "tex": "./public_notes/90_optimization/90.030_numerical_optimization/90.030_numerical_optimization.tex"
+    },
+    "91.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/91_financial_actuarial/91.010_discrete_asset_pricing/91.010_discrete_asset_pricing.pdf",
+      "tex": "./public_notes/91_financial_actuarial/91.010_discrete_asset_pricing/91.010_discrete_asset_pricing.tex"
+    },
+    "91.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/91_financial_actuarial/91.020_black_scholes/91.020_black_scholes.pdf",
+      "tex": "./public_notes/91_financial_actuarial/91.020_black_scholes/91.020_black_scholes.tex"
+    },
+    "91.100": {
+      "status": "draft-review",
+      "pdf": "./public_notes/91_financial_actuarial/91.100_life_insurance_actuarial/91.100_life_insurance_actuarial.pdf",
+      "tex": "./public_notes/91_financial_actuarial/91.100_life_insurance_actuarial/91.100_life_insurance_actuarial.tex"
+    },
+    "91.110": {
+      "status": "draft-review",
+      "pdf": "./public_notes/91_financial_actuarial/91.110_compound_poisson_ruin/91.110_compound_poisson_ruin.pdf",
+      "tex": "./public_notes/91_financial_actuarial/91.110_compound_poisson_ruin/91.110_compound_poisson_ruin.tex"
+    },
+    "91.200": {
+      "status": "draft-review",
+      "pdf": "./public_notes/91_financial_actuarial/91.200_social_networks_dynamics/91.200_social_networks_dynamics.pdf",
+      "tex": "./public_notes/91_financial_actuarial/91.200_social_networks_dynamics/91.200_social_networks_dynamics.tex"
+    },
+    "92.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/92_biology_modeling/92.010_epidemic_population_models/92.010_epidemic_population_models.pdf",
+      "tex": "./public_notes/92_biology_modeling/92.010_epidemic_population_models/92.010_epidemic_population_models.tex"
+    },
+    "93.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/93_systems_control_modeling/93.010_dimensional_analysis_model_identifiability/93.010_dimensional_analysis_model_identifiability.pdf",
+      "tex": "./public_notes/93_systems_control_modeling/93.010_dimensional_analysis_model_identifiability/93.010_dimensional_analysis_model_identifiability.tex"
+    },
+    "93.020": {
+      "status": "draft-review",
+      "pdf": "./public_notes/93_systems_control_modeling/93.020_linear_control/93.020_linear_control.pdf",
+      "tex": "./public_notes/93_systems_control_modeling/93.020_linear_control/93.020_linear_control.tex"
+    },
+    "94.010": {
+      "status": "draft-review",
+      "pdf": "./public_notes/94_information_cryptography/94.010_source_coding_information/94.010_source_coding_information.pdf",
+      "tex": "./public_notes/94_information_cryptography/94.010_source_coding_information/94.010_source_coding_information.tex"
+    },
+    "94.100": {
+      "status": "draft-review",
+      "pdf": "./public_notes/94_information_cryptography/94.100_rsa_public_key/94.100_rsa_public_key.pdf",
+      "tex": "./public_notes/94_information_cryptography/94.100_rsa_public_key/94.100_rsa_public_key.tex"
+    },
+    "94.110": {
+      "status": "draft-review",
+      "pdf": "./public_notes/94_information_cryptography/94.110_elliptic_curves_cryptography/94.110_elliptic_curves_cryptography.pdf",
+      "tex": "./public_notes/94_information_cryptography/94.110_elliptic_curves_cryptography/94.110_elliptic_curves_cryptography.tex"
+    },
     "97.030": {
+      "status": "draft-review",
       "pdf": "./public_notes/97_entrance_math/97.030_integral_limits/97.030_integral_limits.pdf",
-      "tex": "./public_notes/97_entrance_math/97.030_integral_limits/97.030_integral_limits.tex",
-      "status": "draft-review"
+      "tex": "./public_notes/97_entrance_math/97.030_integral_limits/97.030_integral_limits.tex"
     },
     "97.050": {
+      "status": "draft-review",
       "pdf": "./public_notes/97_entrance_math/97.050_quadratic_extrema/97.050_quadratic_extrema.pdf",
-      "tex": "./public_notes/97_entrance_math/97.050_quadratic_extrema/97.050_quadratic_extrema.tex",
-      "status": "draft-review"
+      "tex": "./public_notes/97_entrance_math/97.050_quadratic_extrema/97.050_quadratic_extrema.tex"
     },
     "97.120": {
+      "status": "draft-review",
       "pdf": "./public_notes/97_entrance_math/97.120_divisor_orbits/97.120_divisor_orbits.pdf",
-      "tex": "./public_notes/97_entrance_math/97.120_divisor_orbits/97.120_divisor_orbits.tex",
-      "status": "draft-review"
+      "tex": "./public_notes/97_entrance_math/97.120_divisor_orbits/97.120_divisor_orbits.tex"
     },
     "97.130": {
+      "status": "draft-review",
       "pdf": "./public_notes/97_entrance_math/97.130_mobius_circles/97.130_mobius_circles.pdf",
-      "tex": "./public_notes/97_entrance_math/97.130_mobius_circles/97.130_mobius_circles.tex",
-      "status": "draft-review"
+      "tex": "./public_notes/97_entrance_math/97.130_mobius_circles/97.130_mobius_circles.tex"
     },
     "97.170": {
+      "status": "draft-review",
       "pdf": "./public_notes/97_entrance_math/97.170_finite_fourier/97.170_finite_fourier.pdf",
-      "tex": "./public_notes/97_entrance_math/97.170_finite_fourier/97.170_finite_fourier.tex",
-      "status": "draft-review"
+      "tex": "./public_notes/97_entrance_math/97.170_finite_fourier/97.170_finite_fourier.tex"
     },
     "97.200": {
+      "status": "draft-review",
       "pdf": "./public_notes/97_entrance_math/97.200_hecke_sorting/97.200_hecke_sorting.pdf",
-      "tex": "./public_notes/97_entrance_math/97.200_hecke_sorting/97.200_hecke_sorting.tex",
-      "status": "draft-review"
+      "tex": "./public_notes/97_entrance_math/97.200_hecke_sorting/97.200_hecke_sorting.tex"
     }
   }
 }
