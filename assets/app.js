@@ -28,7 +28,7 @@ function closure(fs){const ret=new Set(fs);for(const f of fs){let p=S.fieldInfo.
 function norm(s){return String(s||"").normalize("NFKC").toLocaleLowerCase("ja")}
 function match(n){const fs=closure(n.fields||[]);if([...S.fields].some(x=>!fs.has(x)))return false;if([...S.topics].some(x=>!(n.topics||[]).includes(x)))return false;const words=[n.id,n.title,n.status,...(n.fields||[]).flatMap(x=>[S.fieldInfo.get(x)?.label,S.fieldInfo.get(S.fieldInfo.get(x)?.parent)?.label]),...(n.topics||[]).map(x=>S.topicInfo.get(x))].join(" ");return !S.word||norm(words).includes(norm(S.word));}
 function addLink(el,url,label){if(!url)return;try{const u=new URL(url,location.href);if(u.protocol!=="https:"&&u.protocol!=="http:")return;}catch{return;}const a=dom("a","",label);a.href=url;a.target="_blank";a.rel="noopener noreferrer";el.append(a);}
-function card(n){const box=dom("article","card"),heading=dom("div","heading");heading.append(dom("span","number",n.id),dom("h3","",n.title));box.append(heading);
+function card(n){const box=dom("article","card"),heading=dom("div","heading");heading.append(dom("span","number",n.id));const headingTitle=dom("h3","");const titleLink=dom("a","noteTitle",n.title);titleLink.href="./note.html?id="+encodeURIComponent(n.id);headingTitle.append(titleLink);heading.append(headingTitle);box.append(heading);
 const tags=dom("div","tags");for(const id of n.fields||[]){const d=S.fieldInfo.get(id);if(d)tags.append(dom("span","tag",(d.parent?S.fieldInfo.get(d.parent)?.label+" / ":"")+d.label));}for(const id of n.topics||[])tags.append(dom("span","tag topic","# "+(S.topicInfo.get(id)||id)));box.append(tags);
 box.append(dom("p","status","このノートの本文・PDF・pLaTeXソースは非公開です。"));
 return box;}

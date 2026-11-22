@@ -32,3 +32,33 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{o
 #topics details.topicGroup{padding:7px 0;margin:4px 0;border-bottom:0}
 #topics .topicGroupHead{font-size:12px;font-weight:700;color:var(--muted)}
 #topics .topicGroup .chips{margin-top:10px;padding:0 0 7px}
+
+/* ノートのタイトルは個別案内ページへ遷移する */
+.noteTitle,.relationLink{color:inherit;text-decoration:none;text-underline-offset:4px}
+.noteTitle:hover,.relationLink:hover{text-decoration:underline;color:var(--accent)}
+.noteMain{padding:38px 0 90px}
+.breadcrumbs{display:flex;align-items:center;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-bottom:55px}
+.breadcrumbs a{color:var(--accent);text-underline-offset:3px}
+.noteHeading{font-size:clamp(28px,3.9vw,48px);line-height:1.4;letter-spacing:-.03em;max-width:900px;margin:13px 0 17px}
+.noteTags{max-width:950px;margin-bottom:45px}
+.noteOverview{padding:25px 32px 23px;border:1px solid var(--line);border-radius:8px;background:#fff;max-width:900px}
+.noteOverview h2,.pathSection h2,.alsoRead h2{font-size:19px;margin:0 0 16px}
+.noteOverview>p:not(.basis){line-height:1.95;font-size:15px;margin:0 0 20px}
+.noteOverview .basis,.pathExplanation{font-size:12px;line-height:1.8;color:var(--muted)}
+.noteOverview .basis{border-top:1px solid var(--line);padding-top:14px;margin:0}
+.pathSection{margin-top:65px}.pathExplanation{margin:0 0 22px}
+.pathGrid{display:grid;grid-template-columns: minmax(0,1fr) minmax(180px,.8fr) minmax(0,1fr);gap:18px;align-items:start}
+.pathColumn,.pathCurrent{min-width:0}.pathLabel{display:flex;align-items:baseline;gap:8px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.pathLabel span{color:var(--accent);font:700 13px Georgia,serif}.pathLabel h3{margin:0;font-size:13px;font-weight:730}
+.pathCurrent{background:var(--pale);padding:0 18px 21px;border-radius:6px}
+.pathCurrent .pathLabel{margin:0 -18px 21px;padding:17px 18px 12px;border-bottom-color:#cadbd1}
+.pathCurrent strong{font-size:17px;line-height:1.6;display:block}.currentNumber{color:var(--accent);font-size:13px;font-weight:750}
+.pathCurrent>p:last-child{font-size:12px;color:var(--muted);margin-bottom:0}
+.relList{display:grid;gap:10px;margin-top:15px}.relationCard{padding:13px 14px 15px;background:#fff;border:1px solid var(--line);border-radius:6px}
+.relationCard h4{font-size:13px;line-height:1.6;margin:6px 0 0}.relationSummary{font-size:11px;color:var(--muted);line-height:1.7;margin:8px 0 0}
+.emptyRelation{font-size:12px;color:var(--muted);line-height:1.8;padding:14px 4px}
+.alsoRead{margin-top:65px}.relatedGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.privateNotice{font-size:12px;line-height:1.9;color:var(--muted);border-top:1px solid var(--line);margin-top:55px;padding-top:22px}
+#noteStatus{color:var(--muted);font-size:13px}
+@media(max-width:960px){.pathGrid{grid-template-columns:1fr}.pathCurrent{order:-1}.pathColumn .relList{grid-template-columns:repeat(2,minmax(0,1fr))}.breadcrumbs{margin-bottom:32px}}
+@media(max-width:610px){.noteMain{padding-top:25px}.noteOverview{padding:21px}.pathColumn .relList,.relatedGrid{grid-template-columns:1fr}.pathSection,.alsoRead{margin-top:45px}}
