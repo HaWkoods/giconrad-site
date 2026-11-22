@@ -363,6 +363,753 @@
           "label": "等角性"
         }
       ]
+    },
+    {
+      "label": "論理・集合と計算可能性",
+      "items": [
+        {
+          "id": "formal-logic",
+          "label": "形式論理"
+        },
+        {
+          "id": "logical-completeness",
+          "label": "論理の完全性"
+        },
+        {
+          "id": "compactness-theorem",
+          "label": "コンパクト性定理"
+        },
+        {
+          "id": "model-theory",
+          "label": "モデル理論"
+        },
+        {
+          "id": "ultrafilter",
+          "label": "超フィルター"
+        },
+        {
+          "id": "nonstandard-analysis",
+          "label": "超準解析"
+        },
+        {
+          "id": "incompleteness",
+          "label": "不完全性"
+        },
+        {
+          "id": "computability",
+          "label": "計算可能性"
+        },
+        {
+          "id": "undecidability",
+          "label": "決定不可能性"
+        },
+        {
+          "id": "turing-machine",
+          "label": "Turing機械"
+        },
+        {
+          "id": "complexity",
+          "label": "計算量"
+        },
+        {
+          "id": "np-completeness",
+          "label": "NP完全性"
+        },
+        {
+          "id": "proof-method",
+          "label": "証明論"
+        }
+      ]
+    },
+    {
+      "label": "代数学・数論の主題",
+      "items": [
+        {
+          "id": "field-extension",
+          "label": "体の拡大"
+        },
+        {
+          "id": "galois-theory",
+          "label": "Galois理論"
+        },
+        {
+          "id": "finite-field",
+          "label": "有限体"
+        },
+        {
+          "id": "differential-algebra",
+          "label": "微分代数"
+        },
+        {
+          "id": "polynomial-equations",
+          "label": "代数方程式"
+        },
+        {
+          "id": "geometric-construction",
+          "label": "作図問題"
+        },
+        {
+          "id": "solvability",
+          "label": "根号可解性"
+        },
+        {
+          "id": "arithmetic-function",
+          "label": "算術関数"
+        },
+        {
+          "id": "modular-arithmetic",
+          "label": "合同式・剰余"
+        },
+        {
+          "id": "quadratic-reciprocity",
+          "label": "平方剰余相互法則"
+        },
+        {
+          "id": "dirichlet-series",
+          "label": "Dirichlet級数"
+        },
+        {
+          "id": "zeta-function",
+          "label": "ゼータ関数"
+        },
+        {
+          "id": "prime-distribution",
+          "label": "素数分布"
+        },
+        {
+          "id": "diophantine",
+          "label": "不定方程式"
+        },
+        {
+          "id": "polynomial-ring",
+          "label": "多項式環"
+        },
+        {
+          "id": "noetherian",
+          "label": "Noether性"
+        },
+        {
+          "id": "krull-dimension",
+          "label": "Krull次元"
+        },
+        {
+          "id": "hilbert-polynomial",
+          "label": "Hilbert多項式"
+        },
+        {
+          "id": "groebner-basis",
+          "label": "Gröbner基底"
+        },
+        {
+          "id": "elimination-theory",
+          "label": "消去理論"
+        },
+        {
+          "id": "resultant",
+          "label": "終結式"
+        },
+        {
+          "id": "module-theory",
+          "label": "加群"
+        },
+        {
+          "id": "free-object",
+          "label": "自由対象"
+        },
+        {
+          "id": "adjunction",
+          "label": "随伴"
+        },
+        {
+          "id": "limits-colimits",
+          "label": "極限・余極限"
+        },
+        {
+          "id": "functor-natural",
+          "label": "函手・自然変換"
+        },
+        {
+          "id": "noncommutative-ring",
+          "label": "非可換環"
+        },
+        {
+          "id": "differential-operator",
+          "label": "微分作用素環"
+        },
+        {
+          "id": "characteristic-variety",
+          "label": "特性多様体"
+        },
+        {
+          "id": "invariant-factor",
+          "label": "不変因子"
+        },
+        {
+          "id": "local-ring",
+          "label": "局所環"
+        }
+      ]
+    },
+    {
+      "label": "位相・幾何の主題",
+      "items": [
+        {
+          "id": "general-topology",
+          "label": "一般位相"
+        },
+        {
+          "id": "continuous-map",
+          "label": "連続写像"
+        },
+        {
+          "id": "quotient-topology",
+          "label": "商位相"
+        },
+        {
+          "id": "connectedness",
+          "label": "連結性"
+        },
+        {
+          "id": "separation-axioms",
+          "label": "分離公理"
+        },
+        {
+          "id": "metrizability",
+          "label": "距離化"
+        },
+        {
+          "id": "paracompactness",
+          "label": "パラコンパクト性"
+        },
+        {
+          "id": "covering-space",
+          "label": "被覆空間"
+        },
+        {
+          "id": "fundamental-group",
+          "label": "基本群"
+        },
+        {
+          "id": "homotopy",
+          "label": "ホモトピー"
+        },
+        {
+          "id": "manifold",
+          "label": "多様体"
+        },
+        {
+          "id": "tangent-space",
+          "label": "接空間"
+        },
+        {
+          "id": "vector-bundle",
+          "label": "ベクトル束"
+        },
+        {
+          "id": "connection",
+          "label": "接続"
+        },
+        {
+          "id": "riemannian-metric",
+          "label": "Riemann計量"
+        },
+        {
+          "id": "curvature",
+          "label": "曲率"
+        },
+        {
+          "id": "geodesic",
+          "label": "測地線"
+        },
+        {
+          "id": "jacobi-field",
+          "label": "Jacobi場"
+        },
+        {
+          "id": "submanifold",
+          "label": "部分多様体"
+        },
+        {
+          "id": "gauss-bonnet",
+          "label": "Gauss–Bonnet定理"
+        },
+        {
+          "id": "transversality",
+          "label": "横断性"
+        },
+        {
+          "id": "differential-form",
+          "label": "微分形式"
+        },
+        {
+          "id": "tensor-field",
+          "label": "テンソル場"
+        },
+        {
+          "id": "stokes-theorem",
+          "label": "Stokesの定理"
+        },
+        {
+          "id": "de-rham",
+          "label": "de Rham理論"
+        },
+        {
+          "id": "morse-theory",
+          "label": "Morse理論"
+        },
+        {
+          "id": "symplectic-geometry",
+          "label": "シンプレクティック幾何"
+        },
+        {
+          "id": "lorentz-geometry",
+          "label": "Lorentz幾何"
+        },
+        {
+          "id": "topological-group",
+          "label": "位相群"
+        },
+        {
+          "id": "lie-group",
+          "label": "Lie群"
+        },
+        {
+          "id": "lie-algebra",
+          "label": "Lie代数"
+        },
+        {
+          "id": "vector-field",
+          "label": "ベクトル場"
+        },
+        {
+          "id": "lie-derivative",
+          "label": "Lie微分"
+        },
+        {
+          "id": "frobenius",
+          "label": "Frobeniusの定理"
+        }
+      ]
+    },
+    {
+      "label": "複素解析・関数解析・作用素",
+      "items": [
+        {
+          "id": "holomorphic",
+          "label": "正則関数"
+        },
+        {
+          "id": "complex-integration",
+          "label": "複素積分"
+        },
+        {
+          "id": "argument-principle",
+          "label": "偏角の原理"
+        },
+        {
+          "id": "analytic-continuation",
+          "label": "解析接続"
+        },
+        {
+          "id": "monodromy",
+          "label": "一価性・モノドロミー"
+        },
+        {
+          "id": "banach-space",
+          "label": "Banach空間"
+        },
+        {
+          "id": "hilbert-space",
+          "label": "Hilbert空間"
+        },
+        {
+          "id": "function-space",
+          "label": "関数空間"
+        },
+        {
+          "id": "linear-operator",
+          "label": "線形作用素"
+        },
+        {
+          "id": "uniform-boundedness",
+          "label": "一様有界性"
+        },
+        {
+          "id": "weak-topology",
+          "label": "弱位相"
+        },
+        {
+          "id": "spectral-theory",
+          "label": "スペクトル理論"
+        },
+        {
+          "id": "compact-operator",
+          "label": "コンパクト作用素"
+        },
+        {
+          "id": "self-adjoint",
+          "label": "自己共役作用素"
+        },
+        {
+          "id": "unitary-evolution",
+          "label": "ユニタリ群"
+        },
+        {
+          "id": "distribution",
+          "label": "分布"
+        },
+        {
+          "id": "weak-derivative",
+          "label": "弱微分"
+        },
+        {
+          "id": "sobolev",
+          "label": "Sobolev空間"
+        },
+        {
+          "id": "fourier-series",
+          "label": "Fourier級数"
+        },
+        {
+          "id": "harmonic-analysis",
+          "label": "調和解析"
+        },
+        {
+          "id": "laplace-transform",
+          "label": "Laplace変換"
+        },
+        {
+          "id": "pde",
+          "label": "偏微分方程式"
+        },
+        {
+          "id": "elliptic-pde",
+          "label": "楕円型方程式"
+        },
+        {
+          "id": "heat-equation",
+          "label": "熱方程式"
+        },
+        {
+          "id": "wave-equation",
+          "label": "波動方程式"
+        },
+        {
+          "id": "boundary-value",
+          "label": "境界値問題"
+        },
+        {
+          "id": "trace-theorem",
+          "label": "トレース定理"
+        },
+        {
+          "id": "regularity",
+          "label": "正則性"
+        },
+        {
+          "id": "well-posedness",
+          "label": "適切性"
+        },
+        {
+          "id": "ode",
+          "label": "常微分方程式"
+        },
+        {
+          "id": "recurrence",
+          "label": "漸化式"
+        },
+        {
+          "id": "convergence-rate",
+          "label": "収束速度"
+        },
+        {
+          "id": "approximation",
+          "label": "近似理論"
+        }
+      ]
+    },
+    {
+      "label": "確率・統計・確率解析",
+      "items": [
+        {
+          "id": "probability-distribution",
+          "label": "確率分布"
+        },
+        {
+          "id": "limit-theorem",
+          "label": "極限定理"
+        },
+        {
+          "id": "local-limit-theorem",
+          "label": "局所極限定理"
+        },
+        {
+          "id": "conditional-expectation",
+          "label": "条件付き期待値"
+        },
+        {
+          "id": "martingale",
+          "label": "マルチンゲール"
+        },
+        {
+          "id": "brownian-motion",
+          "label": "Brown運動"
+        },
+        {
+          "id": "stochastic-integration",
+          "label": "確率積分"
+        },
+        {
+          "id": "ito-formula",
+          "label": "Itôの公式"
+        },
+        {
+          "id": "sde",
+          "label": "確率微分方程式"
+        },
+        {
+          "id": "change-of-measure",
+          "label": "測度変換"
+        },
+        {
+          "id": "feynman-kac",
+          "label": "Feynman–Kac公式"
+        },
+        {
+          "id": "statistical-inference",
+          "label": "統計的推定"
+        },
+        {
+          "id": "sufficient-statistic",
+          "label": "十分統計量"
+        },
+        {
+          "id": "statistical-completeness",
+          "label": "完備統計量"
+        },
+        {
+          "id": "hypothesis-testing",
+          "label": "仮説検定"
+        },
+        {
+          "id": "bayesian",
+          "label": "Bayesian統計"
+        },
+        {
+          "id": "regression",
+          "label": "回帰"
+        },
+        {
+          "id": "asymptotic-theory",
+          "label": "漸近理論"
+        },
+        {
+          "id": "poisson-process",
+          "label": "Poisson過程"
+        },
+        {
+          "id": "ruin-probability",
+          "label": "破産確率"
+        }
+      ]
+    },
+    {
+      "label": "離散数学・計算法",
+      "items": [
+        {
+          "id": "counting",
+          "label": "数え上げ"
+        },
+        {
+          "id": "combinatorial-inversion",
+          "label": "組合せ論的反転"
+        },
+        {
+          "id": "generating-function",
+          "label": "生成関数"
+        },
+        {
+          "id": "graph-theory",
+          "label": "グラフ理論"
+        },
+        {
+          "id": "graph-connectivity",
+          "label": "グラフの連結性"
+        },
+        {
+          "id": "matching",
+          "label": "マッチング"
+        },
+        {
+          "id": "network-flow",
+          "label": "ネットワークフロー"
+        },
+        {
+          "id": "extremal-combinatorics",
+          "label": "極値組合せ論"
+        },
+        {
+          "id": "probabilistic-method",
+          "label": "確率的方法"
+        },
+        {
+          "id": "burnside-lemma",
+          "label": "Burnsideの補題"
+        },
+        {
+          "id": "numerical-stability",
+          "label": "数値的安定性"
+        },
+        {
+          "id": "error-analysis",
+          "label": "誤差解析"
+        },
+        {
+          "id": "numerical-linear-algebra",
+          "label": "数値線形代数"
+        },
+        {
+          "id": "computational-linear-algebra",
+          "label": "計算線形代数"
+        },
+        {
+          "id": "root-finding",
+          "label": "非線形方程式の求根"
+        },
+        {
+          "id": "interpolation",
+          "label": "補間"
+        },
+        {
+          "id": "numerical-integration",
+          "label": "数値積分"
+        },
+        {
+          "id": "finite-difference",
+          "label": "差分法"
+        },
+        {
+          "id": "finite-element",
+          "label": "有限要素法"
+        },
+        {
+          "id": "numerical-method",
+          "label": "数値解法"
+        }
+      ]
+    },
+    {
+      "label": "最適化・応用・数理物理",
+      "items": [
+        {
+          "id": "convexity",
+          "label": "凸性"
+        },
+        {
+          "id": "kkt",
+          "label": "KKT条件"
+        },
+        {
+          "id": "dynamical-systems",
+          "label": "力学系"
+        },
+        {
+          "id": "stability",
+          "label": "安定性"
+        },
+        {
+          "id": "bifurcation",
+          "label": "分岐"
+        },
+        {
+          "id": "integrability",
+          "label": "可積分性"
+        },
+        {
+          "id": "lagrangian",
+          "label": "Lagrange力学"
+        },
+        {
+          "id": "hamiltonian",
+          "label": "Hamilton力学"
+        },
+        {
+          "id": "quantum-theory",
+          "label": "量子力学"
+        },
+        {
+          "id": "equilibrium-statistics",
+          "label": "統計力学的平衡"
+        },
+        {
+          "id": "asset-pricing",
+          "label": "資産価格理論"
+        },
+        {
+          "id": "arbitrage",
+          "label": "無裁定"
+        },
+        {
+          "id": "black-scholes",
+          "label": "Black–Scholes"
+        },
+        {
+          "id": "actuarial",
+          "label": "保険数理"
+        },
+        {
+          "id": "network-model",
+          "label": "社会ネットワーク"
+        },
+        {
+          "id": "epidemic",
+          "label": "感染症モデル"
+        },
+        {
+          "id": "population-model",
+          "label": "個体群モデル"
+        },
+        {
+          "id": "modeling",
+          "label": "数理モデリング"
+        },
+        {
+          "id": "dimension-analysis",
+          "label": "次元解析"
+        },
+        {
+          "id": "identifiability",
+          "label": "識別可能性"
+        },
+        {
+          "id": "control-theory",
+          "label": "制御理論"
+        },
+        {
+          "id": "information-theory",
+          "label": "情報理論"
+        },
+        {
+          "id": "entropy",
+          "label": "エントロピー"
+        },
+        {
+          "id": "cryptography",
+          "label": "暗号理論"
+        },
+        {
+          "id": "elliptic-curve",
+          "label": "楕円曲線"
+        },
+        {
+          "id": "statistical-mechanics",
+          "label": "統計力学"
+        },
+        {
+          "id": "relativity",
+          "label": "相対性理論"
+        }
+      ]
     }
   ]
 }

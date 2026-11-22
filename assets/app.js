@@ -3,7 +3,26 @@ const $=s=>document.querySelector(s), dom=(tag,cls,value)=>{const el=document.cr
 const S={notes:[],taxonomy:null,fieldInfo:new Map(),topicInfo:new Map(),fields:new Set(),topics:new Set(),view:"number",word:""};
 function initMeta(){for(const g of S.taxonomy.fields){S.fieldInfo.set(g.id,{label:g.label,parent:null});for(const c of g.children||[])S.fieldInfo.set(c.id,{label:c.label,parent:g.id});}for(const g of S.taxonomy.topic_groups)for(const t of g.items)S.topicInfo.set(t.id,t.label);}
 function btnFilter(key,x,parent){const b=dom("button","chip"+(parent?" group":""),x.label);b.type="button";b.setAttribute("aria-pressed",String(S[key].has(x.id)));b.addEventListener("click",()=>{S[key].has(x.id)?S[key].delete(x.id):S[key].add(x.id);render()});return b;}
-function filterPanels(){const f=$("#fields"),t=$("#topics");f.replaceChildren();t.replaceChildren();for(const g of S.taxonomy.fields){const box=dom("div","filterGroup");box.append(btnFilter("fields",g,true));if(g.children?.length){const items=dom("div","chips");for(const c of g.children)items.append(btnFilter("fields",c,false));box.append(items);}f.append(box);}for(const g of S.taxonomy.topic_groups){const box=dom("div","filterGroup");box.append(dom("div","groupTitle",g.label));const items=dom("div","chips");for(const c of g.items)items.append(btnFilter("topics",c,false));box.append(items);t.append(box);}}
+function filterPanels(){
+ const f=$("#fields"),t=$("#topics");
+ const opened=new Set([...t.querySelectorAll("details.topicGroup[open]")].map(el=>el.dataset.group));
+ const usage=new Map();
+ for(const note of S.notes)for(const id of note.topics||[])usage.set(id,(usage.get(id)||0)+1);
+ f.replaceChildren();t.replaceChildren();
+ for(const g of S.taxonomy.fields){
+   const box=dom("div","filterGroup");box.append(btnFilter("fields",g,true));
+   if(g.children?.length){const items=dom("div","chips");for(const c of g.children)items.append(btnFilter("fields",c,false));box.append(items);}
+   f.append(box);
+ }
+ for(const g of S.taxonomy.topic_groups){
+   const active=g.items.filter(x=>usage.has(x.id));if(!active.length)continue;
+   const box=dom("details","topicGroup");box.dataset.group=g.label;box.open=opened.has(g.label);
+   box.append(dom("summary","topicGroupHead",g.label+"（"+active.length+"）"));
+   const items=dom("div","chips");
+   for(const c of active)items.append(btnFilter("topics",{...c,label:c.label+" · "+usage.get(c.id)},false));
+   box.append(items);t.append(box);
+ }
+}
 function selectedPanel(){const el=$("#selected");el.replaceChildren();for(const key of ["fields","topics"])for(const id of S[key]){const label=key==="fields"?S.fieldInfo.get(id)?.label:S.topicInfo.get(id);const b=dom("button","selectedChip",(key==="fields"?"分野：":"概念：")+(label||id)+" ×");b.type="button";b.onclick=()=>{S[key].delete(id);render()};el.append(b)}}
 function closure(fs){const ret=new Set(fs);for(const f of fs){let p=S.fieldInfo.get(f)?.parent;while(p){ret.add(p);p=S.fieldInfo.get(p)?.parent;}}return ret;}
 function norm(s){return String(s||"").normalize("NFKC").toLocaleLowerCase("ja")}

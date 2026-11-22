@@ -8,7 +8,11 @@
       "fields": [
         "logic"
       ],
-      "topics": []
+      "topics": [
+        "formal-logic",
+        "logical-completeness",
+        "proof-method"
+      ]
     },
     {
       "id": "03.020",
@@ -16,23 +20,37 @@
       "fields": [
         "logic"
       ],
-      "topics": []
+      "topics": [
+        "model-theory",
+        "compactness-theorem",
+        "formal-logic"
+      ]
     },
     {
       "id": "03.030",
       "title": "超実数の構成と超準解析の基本原理",
       "fields": [
-        "logic"
+        "logic",
+        "analysis"
       ],
-      "topics": []
+      "topics": [
+        "ultrafilter",
+        "nonstandard-analysis",
+        "model-theory"
+      ]
     },
     {
       "id": "03.040",
       "title": "Gödelの不完全性定理",
       "fields": [
-        "logic"
+        "logic",
+        "theoretical-cs"
       ],
-      "topics": []
+      "topics": [
+        "formal-logic",
+        "incompleteness",
+        "computability"
+      ]
     },
     {
       "id": "05.010",
@@ -40,7 +58,10 @@
       "fields": [
         "combinatorics"
       ],
-      "topics": []
+      "topics": [
+        "counting",
+        "combinatorial-inversion"
+      ]
     },
     {
       "id": "05.020",
@@ -48,55 +69,87 @@
       "fields": [
         "combinatorics"
       ],
-      "topics": []
+      "topics": [
+        "generating-function",
+        "recurrence",
+        "counting"
+      ]
     },
     {
       "id": "05.030",
       "title": "グラフ理論の基礎",
       "fields": [
-        "combinatorics"
+        "combinatorics",
+        "theoretical-cs"
       ],
-      "topics": []
+      "topics": [
+        "graph-theory",
+        "graph-connectivity"
+      ]
     },
     {
       "id": "05.040",
       "title": "マッチングとネットワークフロー",
       "fields": [
-        "combinatorics"
+        "combinatorics",
+        "optimization"
       ],
-      "topics": []
+      "topics": [
+        "graph-theory",
+        "matching",
+        "network-flow",
+        "optimization-method"
+      ]
     },
     {
       "id": "05.050",
       "title": "群作用と数え上げ",
       "fields": [
-        "combinatorics"
+        "combinatorics",
+        "algebra"
       ],
-      "topics": []
+      "topics": [
+        "group-action",
+        "counting",
+        "burnside-lemma"
+      ]
     },
     {
       "id": "05.060",
       "title": "極値組合せ論と確率的方法",
       "fields": [
-        "combinatorics"
+        "combinatorics",
+        "probability-theory"
       ],
-      "topics": []
+      "topics": [
+        "extremal-combinatorics",
+        "probabilistic-method"
+      ]
     },
     {
       "id": "11.010",
       "title": "算術関数・Dirichlet畳み込みとゼータ関数",
       "fields": [
-        "number-theory"
+        "number-theory",
+        "analytic-number-theory"
       ],
-      "topics": []
+      "topics": [
+        "arithmetic-function",
+        "dirichlet-series",
+        "zeta-function"
+      ]
     },
     {
       "id": "11.020",
       "title": "平方剰余の相互法則",
       "fields": [
-        "number-theory"
+        "number-theory",
+        "elementary-number-theory"
       ],
-      "topics": []
+      "topics": [
+        "quadratic-reciprocity",
+        "modular-arithmetic"
+      ]
     },
     {
       "id": "11.030",
@@ -107,24 +160,37 @@
         "field-theory"
       ],
       "topics": [
-        "unit-group"
+        "diophantine",
+        "unit-group",
+        "field-extension"
       ]
     },
     {
       "id": "11.040",
       "title": "算術級数中の素数とDirichletの定理",
       "fields": [
-        "number-theory"
+        "number-theory",
+        "analytic-number-theory"
       ],
-      "topics": []
+      "topics": [
+        "prime-distribution",
+        "dirichlet-series",
+        "arithmetic-function"
+      ]
     },
     {
       "id": "11.050",
       "title": "素数定理とゼータ関数の解析",
       "fields": [
-        "number-theory"
+        "number-theory",
+        "analytic-number-theory",
+        "complex-analysis"
       ],
-      "topics": []
+      "topics": [
+        "prime-distribution",
+        "zeta-function",
+        "holomorphic"
+      ]
     },
     {
       "id": "12.010",
@@ -132,7 +198,10 @@
       "fields": [
         "field-theory"
       ],
-      "topics": []
+      "topics": [
+        "finite-field",
+        "field-extension"
+      ]
     },
     {
       "id": "12.020",
@@ -140,7 +209,11 @@
       "fields": [
         "field-theory"
       ],
-      "topics": []
+      "topics": [
+        "galois-theory",
+        "field-extension",
+        "group-action"
+      ]
     },
     {
       "id": "12.030",
@@ -148,15 +221,24 @@
       "fields": [
         "field-theory"
       ],
-      "topics": []
+      "topics": [
+        "polynomial-equations",
+        "galois-theory",
+        "solvability"
+      ]
     },
     {
       "id": "12.040",
       "title": "Galois理論と定規・コンパス作図",
       "fields": [
-        "field-theory"
+        "field-theory",
+        "geometry"
       ],
-      "topics": []
+      "topics": [
+        "galois-theory",
+        "field-extension",
+        "geometric-construction"
+      ]
     },
     {
       "id": "12.050",
@@ -168,40 +250,62 @@
       ],
       "topics": [
         "completeness",
-        "valuation"
+        "valuation",
+        "general-topology"
       ]
     },
     {
       "id": "12.060",
       "title": "Picard–Vessiot拡大と微分Galois群",
       "fields": [
-        "field-theory"
+        "field-theory",
+        "ode"
       ],
-      "topics": []
+      "topics": [
+        "galois-theory",
+        "ode",
+        "differential-algebra"
+      ]
     },
     {
       "id": "12.070",
       "title": "Liouville可積分性と微分Galois理論",
       "fields": [
-        "field-theory"
+        "field-theory",
+        "ode"
       ],
-      "topics": []
+      "topics": [
+        "galois-theory",
+        "integration",
+        "differential-algebra",
+        "integrability"
+      ]
     },
     {
       "id": "13.010",
       "title": "多項式環とNoether性",
       "fields": [
-        "commutative-algebra"
+        "commutative-algebra",
+        "algebraic-geometry"
       ],
-      "topics": []
+      "topics": [
+        "polynomial-ring",
+        "noetherian",
+        "ideal"
+      ]
     },
     {
       "id": "13.020",
       "title": "Krull次元とHilbert多項式",
       "fields": [
-        "commutative-algebra"
+        "commutative-algebra",
+        "algebraic-geometry"
       ],
-      "topics": []
+      "topics": [
+        "krull-dimension",
+        "hilbert-polynomial",
+        "ideal"
+      ]
     },
     {
       "id": "13.030",
@@ -212,6 +316,7 @@
         "computational-algebra"
       ],
       "topics": [
+        "groebner-basis",
         "ideal",
         "algorithm"
       ]
@@ -220,17 +325,30 @@
       "id": "13.040",
       "title": "消去理論と終結式",
       "fields": [
-        "commutative-algebra"
+        "commutative-algebra",
+        "algebraic-geometry",
+        "computational-algebra",
+        "linear-algebra"
       ],
-      "topics": []
+      "topics": [
+        "elimination-theory",
+        "resultant",
+        "polynomial-equations",
+        "algorithm"
+      ]
     },
     {
       "id": "13.050",
       "title": "Hilbert–SerreとHilbert–Samuel多項式",
       "fields": [
-        "commutative-algebra"
+        "commutative-algebra",
+        "algebraic-geometry"
       ],
-      "topics": []
+      "topics": [
+        "hilbert-polynomial",
+        "noetherian",
+        "local-ring"
+      ]
     },
     {
       "id": "13.060",
@@ -238,15 +356,24 @@
       "fields": [
         "commutative-algebra"
       ],
-      "topics": []
+      "topics": [
+        "noetherian",
+        "local-ring",
+        "module-theory"
+      ]
     },
     {
       "id": "15.010",
       "title": "主イデアル整域上のSmith標準形",
       "fields": [
-        "linear-algebra"
+        "linear-algebra",
+        "commutative-algebra"
       ],
-      "topics": []
+      "topics": [
+        "module-theory",
+        "invariant-factor",
+        "algorithm"
+      ]
     },
     {
       "id": "18.010",
@@ -254,7 +381,10 @@
       "fields": [
         "category-theory"
       ],
-      "topics": []
+      "topics": [
+        "universality",
+        "functor-natural"
+      ]
     },
     {
       "id": "18.020",
@@ -264,7 +394,8 @@
         "linear-algebra"
       ],
       "topics": [
-        "universality"
+        "universality",
+        "free-object"
       ]
     },
     {
@@ -273,47 +404,79 @@
       "fields": [
         "category-theory"
       ],
-      "topics": []
+      "topics": [
+        "universality",
+        "adjunction",
+        "limits-colimits"
+      ]
     },
     {
       "id": "18.040",
       "title": "前層・層・茎と層化",
       "fields": [
-        "category-theory"
+        "category-theory",
+        "general-topology"
       ],
-      "topics": []
+      "topics": [
+        "sheaf",
+        "functor-natural",
+        "general-topology"
+      ]
     },
     {
       "id": "18.050",
       "title": "ホモロジー代数：完全列・Ext・Tor",
       "fields": [
-        "category-theory"
+        "category-theory",
+        "commutative-algebra"
       ],
-      "topics": []
+      "topics": [
+        "exact-sequence",
+        "module-theory",
+        "homological-method"
+      ]
     },
     {
       "id": "18.060",
       "title": "層コホモロジーの構成と基本定理",
       "fields": [
-        "category-theory"
+        "category-theory",
+        "algebraic-geometry"
       ],
-      "topics": []
+      "topics": [
+        "sheaf",
+        "cohomology",
+        "homological-method"
+      ]
     },
     {
       "id": "22.010",
       "title": "位相群の基本構造",
       "fields": [
-        "topological-groups"
+        "topological-groups",
+        "general-topology",
+        "algebra"
       ],
-      "topics": []
+      "topics": [
+        "topological-group",
+        "group-action",
+        "general-topology"
+      ]
     },
     {
       "id": "22.020",
       "title": "Lie群とLie代数",
       "fields": [
-        "topological-groups"
+        "topological-groups",
+        "differential-geometry",
+        "linear-algebra",
+        "manifold-theory"
       ],
-      "topics": []
+      "topics": [
+        "lie-group",
+        "lie-algebra",
+        "manifold"
+      ]
     },
     {
       "id": "22.030",
@@ -325,7 +488,8 @@
       ],
       "topics": [
         "measure",
-        "integration"
+        "integration",
+        "topological-group"
       ]
     },
     {
@@ -350,32 +514,49 @@
         "differential-geometry"
       ],
       "topics": [
-        "conformality"
+        "conformality",
+        "holomorphic"
       ]
     },
     {
       "id": "30.020",
       "title": "Cauchyの積分定理と積分公式",
       "fields": [
-        "complex-analysis"
+        "complex-analysis",
+        "manifold-analysis"
       ],
-      "topics": []
+      "topics": [
+        "complex-integration",
+        "holomorphic",
+        "differential-form"
+      ]
     },
     {
       "id": "30.030",
       "title": "偏角の原理とRouchéの定理",
       "fields": [
-        "complex-analysis"
+        "complex-analysis",
+        "general-topology"
       ],
-      "topics": []
+      "topics": [
+        "complex-integration",
+        "holomorphic",
+        "argument-principle"
+      ]
     },
     {
       "id": "30.040",
       "title": "解析接続と一価性",
       "fields": [
-        "complex-analysis"
+        "complex-analysis",
+        "general-topology",
+        "algebraic-topology"
       ],
-      "topics": []
+      "topics": [
+        "analytic-continuation",
+        "monodromy",
+        "fundamental-group"
+      ]
     },
     {
       "id": "32.010",
@@ -383,7 +564,10 @@
       "fields": [
         "d-modules"
       ],
-      "topics": []
+      "topics": [
+        "differential-operator",
+        "noncommutative-ring"
+      ]
     },
     {
       "id": "32.020",
@@ -391,105 +575,167 @@
       "fields": [
         "d-modules"
       ],
-      "topics": []
+      "topics": [
+        "differential-operator",
+        "module-theory"
+      ]
     },
     {
       "id": "32.030",
       "title": "特性多様体とホロノミー",
       "fields": [
-        "d-modules"
+        "d-modules",
+        "algebraic-geometry"
       ],
-      "topics": []
+      "topics": [
+        "characteristic-variety",
+        "differential-operator"
+      ]
     },
     {
       "id": "32.040",
       "title": "D加群のde Rham複体と解函手",
       "fields": [
-        "d-modules"
+        "d-modules",
+        "manifold-analysis"
       ],
-      "topics": []
+      "topics": [
+        "differential-form",
+        "de-rham",
+        "sheaf"
+      ]
     },
     {
       "id": "35.010",
       "title": "偏微分方程式の基本理論",
       "fields": [
-        "pde"
+        "pde",
+        "fourier-analysis"
       ],
-      "topics": []
+      "topics": [
+        "pde",
+        "heat-equation",
+        "wave-equation"
+      ]
     },
     {
       "id": "35.020",
       "title": "Sobolev空間と楕円型方程式",
       "fields": [
-        "pde"
+        "pde",
+        "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "sobolev",
+        "weak-derivative",
+        "elliptic-pde"
+      ]
     },
     {
       "id": "35.030",
       "title": "Lipschitz領域のSobolevトレース定理",
       "fields": [
-        "pde"
+        "pde",
+        "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "sobolev",
+        "trace-theorem",
+        "boundary-value"
+      ]
     },
     {
       "id": "35.040",
       "title": "凹角領域における楕円型正則性の限界",
       "fields": [
-        "pde"
+        "pde",
+        "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "elliptic-pde",
+        "regularity",
+        "boundary-value"
+      ]
     },
     {
       "id": "35.050",
       "title": "周期波動方程式のSobolev適切性",
       "fields": [
-        "pde"
+        "pde",
+        "fourier-analysis",
+        "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "wave-equation",
+        "sobolev",
+        "well-posedness"
+      ]
     },
     {
       "id": "37.010",
       "title": "力学系と安定性理論",
       "fields": [
-        "dynamical-systems"
+        "dynamical-systems",
+        "ode"
       ],
-      "topics": []
+      "topics": [
+        "dynamical-systems",
+        "stability",
+        "ode"
+      ]
     },
     {
       "id": "37.020",
       "title": "分岐理論の基礎",
       "fields": [
-        "dynamical-systems"
+        "dynamical-systems",
+        "ode",
+        "systems-modeling"
       ],
-      "topics": []
+      "topics": [
+        "bifurcation",
+        "dynamical-systems",
+        "ode"
+      ]
     },
     {
       "id": "41.010",
       "title": "Stone–Weierstrassの定理",
       "fields": [
-        "approximation"
+        "approximation",
+        "functional-analysis",
+        "general-topology"
       ],
-      "topics": []
+      "topics": [
+        "approximation",
+        "compactness"
+      ]
     },
     {
       "id": "42.010",
       "title": "Fourier級数の理論",
       "fields": [
-        "fourier-analysis"
+        "fourier-analysis",
+        "approximation",
+        "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "fourier-series",
+        "convergence",
+        "harmonic-analysis"
+      ]
     },
     {
       "id": "42.020",
       "title": "Fourier変換とPlancherelの定理",
       "fields": [
         "fourier-analysis",
-        "functional-analysis"
+        "functional-analysis",
+        "integral-transforms"
       ],
       "topics": [
         "fourier-transform",
+        "hilbert-space",
         "duality"
       ]
     },
@@ -497,25 +743,43 @@
       "id": "43.010",
       "title": "コンパクトAbel群上のFourier解析",
       "fields": [
-        "harmonic-analysis"
+        "harmonic-analysis",
+        "topological-groups",
+        "fourier-analysis",
+        "measure-theory"
       ],
-      "topics": []
+      "topics": [
+        "fourier-transform",
+        "harmonic-analysis",
+        "topological-group"
+      ]
     },
     {
       "id": "44.010",
       "title": "Laplace変換と反転公式",
       "fields": [
-        "integral-transforms"
+        "integral-transforms",
+        "ode",
+        "complex-analysis"
       ],
-      "topics": []
+      "topics": [
+        "laplace-transform",
+        "complex-integration",
+        "ode"
+      ]
     },
     {
       "id": "46.010",
       "title": "Arzelà–Ascoliの定理",
       "fields": [
-        "functional-analysis"
+        "functional-analysis",
+        "general-topology",
+        "approximation"
       ],
-      "topics": []
+      "topics": [
+        "compactness",
+        "function-space"
+      ]
     },
     {
       "id": "46.020",
@@ -523,127 +787,206 @@
       "fields": [
         "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "banach-space",
+        "uniform-boundedness",
+        "completeness"
+      ]
     },
     {
       "id": "46.030",
       "title": "Hilbert空間とRieszの表現定理",
       "fields": [
-        "functional-analysis"
+        "functional-analysis",
+        "linear-algebra"
       ],
-      "topics": []
+      "topics": [
+        "hilbert-space",
+        "duality",
+        "linear-operator"
+      ]
     },
     {
       "id": "46.040",
       "title": "Hahn–Banachの定理と凸集合の分離",
       "fields": [
-        "functional-analysis"
+        "functional-analysis",
+        "optimization"
       ],
-      "topics": []
+      "topics": [
+        "banach-space",
+        "duality",
+        "convexity"
+      ]
     },
     {
       "id": "46.050",
       "title": "開写像・有界逆写像・閉グラフ定理",
       "fields": [
-        "functional-analysis"
+        "functional-analysis",
+        "operator-theory"
       ],
-      "topics": []
+      "topics": [
+        "banach-space",
+        "linear-operator",
+        "completeness"
+      ]
     },
     {
       "id": "46.060",
       "title": "弱位相と弱*位相",
       "fields": [
-        "functional-analysis"
+        "functional-analysis",
+        "general-topology"
       ],
-      "topics": []
+      "topics": [
+        "weak-topology",
+        "duality"
+      ]
     },
     {
       "id": "46.100",
       "title": "分布と弱微分",
       "fields": [
-        "functional-analysis"
+        "functional-analysis",
+        "pde"
       ],
-      "topics": []
+      "topics": [
+        "distribution",
+        "weak-derivative"
+      ]
     },
     {
       "id": "47.010",
       "title": "Banachの不動点定理とその応用",
       "fields": [
-        "operator-theory"
+        "operator-theory",
+        "ode",
+        "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "fixed-point",
+        "completeness",
+        "iteration"
+      ]
     },
     {
       "id": "47.020",
       "title": "コンパクト作用素のスペクトル理論",
       "fields": [
-        "operator-theory"
+        "operator-theory",
+        "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "spectral-theory",
+        "compact-operator",
+        "linear-operator"
+      ]
     },
     {
       "id": "53.010",
       "title": "ベクトル束と線形接続",
       "fields": [
-        "differential-geometry"
+        "differential-geometry",
+        "manifold-topology",
+        "linear-algebra"
       ],
-      "topics": []
+      "topics": [
+        "vector-bundle",
+        "connection",
+        "manifold"
+      ]
     },
     {
       "id": "53.020",
       "title": "Riemann計量とLevi-Civita接続",
       "fields": [
-        "differential-geometry"
+        "differential-geometry",
+        "manifold-analysis"
       ],
-      "topics": []
+      "topics": [
+        "riemannian-metric",
+        "connection"
+      ]
     },
     {
       "id": "53.030",
       "title": "測地線と指数写像",
       "fields": [
-        "differential-geometry"
+        "differential-geometry",
+        "ode",
+        "classical-mechanics"
       ],
-      "topics": []
+      "topics": [
+        "geodesic",
+        "ode",
+        "riemannian-metric"
+      ]
     },
     {
       "id": "53.040",
       "title": "Hopf–Rinowの定理",
       "fields": [
-        "differential-geometry"
+        "differential-geometry",
+        "general-topology",
+        "manifold-analysis"
       ],
-      "topics": []
+      "topics": [
+        "geodesic",
+        "completeness",
+        "compactness"
+      ]
     },
     {
       "id": "53.050",
       "title": "曲率テンソルとJacobi場",
       "fields": [
-        "differential-geometry"
+        "differential-geometry",
+        "ode"
       ],
-      "topics": []
+      "topics": [
+        "curvature",
+        "geodesic",
+        "jacobi-field"
+      ]
     },
     {
       "id": "53.060",
       "title": "部分多様体の外在的幾何",
       "fields": [
-        "differential-geometry"
+        "differential-geometry",
+        "manifold-topology"
       ],
-      "topics": []
+      "topics": [
+        "submanifold",
+        "curvature"
+      ]
     },
     {
       "id": "53.070",
       "title": "曲面論とGauss–Bonnetの定理",
       "fields": [
-        "differential-geometry"
+        "differential-geometry",
+        "manifold-analysis",
+        "algebraic-topology"
       ],
-      "topics": []
+      "topics": [
+        "curvature",
+        "stokes-theorem",
+        "gauss-bonnet"
+      ]
     },
     {
       "id": "53.100",
       "title": "シンプレクティック幾何学入門",
       "fields": [
-        "differential-geometry"
+        "differential-geometry",
+        "classical-mechanics"
       ],
-      "topics": []
+      "topics": [
+        "symplectic-geometry",
+        "hamiltonian"
+      ]
     },
     {
       "id": "54.010",
@@ -651,15 +994,22 @@
       "fields": [
         "general-topology"
       ],
-      "topics": []
+      "topics": [
+        "general-topology",
+        "continuous-map"
+      ]
     },
     {
       "id": "54.020",
       "title": "積位相・商位相と普遍性",
       "fields": [
-        "general-topology"
+        "general-topology",
+        "category-theory"
       ],
-      "topics": []
+      "topics": [
+        "universality",
+        "quotient-topology"
+      ]
     },
     {
       "id": "54.030",
@@ -667,7 +1017,10 @@
       "fields": [
         "general-topology"
       ],
-      "topics": []
+      "topics": [
+        "connectedness",
+        "general-topology"
+      ]
     },
     {
       "id": "54.040",
@@ -675,7 +1028,10 @@
       "fields": [
         "general-topology"
       ],
-      "topics": []
+      "topics": [
+        "ultrafilter",
+        "convergence"
+      ]
     },
     {
       "id": "54.050",
@@ -683,7 +1039,9 @@
       "fields": [
         "general-topology"
       ],
-      "topics": []
+      "topics": [
+        "compactness"
+      ]
     },
     {
       "id": "54.060",
@@ -693,7 +1051,8 @@
         "functional-analysis"
       ],
       "topics": [
-        "normality"
+        "normality",
+        "continuous-map"
       ]
     },
     {
@@ -702,7 +1061,10 @@
       "fields": [
         "general-topology"
       ],
-      "topics": []
+      "topics": [
+        "separation-axioms",
+        "metrizability"
+      ]
     },
     {
       "id": "54.080",
@@ -710,7 +1072,10 @@
       "fields": [
         "general-topology"
       ],
-      "topics": []
+      "topics": [
+        "compactness",
+        "paracompactness"
+      ]
     },
     {
       "id": "55.010",
@@ -718,7 +1083,10 @@
       "fields": [
         "algebraic-topology"
       ],
-      "topics": []
+      "topics": [
+        "homotopy",
+        "quotient-topology"
+      ]
     },
     {
       "id": "55.020",
@@ -726,143 +1094,230 @@
       "fields": [
         "algebraic-topology"
       ],
-      "topics": []
+      "topics": [
+        "fundamental-group",
+        "covering-space",
+        "group-action"
+      ]
     },
     {
       "id": "55.030",
       "title": "Seifert–van Kampenの定理",
       "fields": [
-        "algebraic-topology"
+        "algebraic-topology",
+        "category-theory"
       ],
-      "topics": []
+      "topics": [
+        "fundamental-group",
+        "universality"
+      ]
     },
     {
       "id": "57.010",
       "title": "滑らかな多様体・接空間・微分",
       "fields": [
-        "manifold-topology"
+        "manifold-topology",
+        "differential-geometry",
+        "manifold-analysis"
       ],
-      "topics": []
+      "topics": [
+        "manifold",
+        "tangent-space"
+      ]
     },
     {
       "id": "57.020",
       "title": "多様体の構成と商多様体",
       "fields": [
-        "manifold-topology"
+        "manifold-topology",
+        "general-topology",
+        "differential-geometry"
       ],
-      "topics": []
+      "topics": [
+        "manifold",
+        "quotient-topology",
+        "group-action"
+      ]
     },
     {
       "id": "57.030",
       "title": "Sardの定理と横断性",
       "fields": [
-        "manifold-topology"
+        "manifold-topology",
+        "differential-geometry",
+        "manifold-analysis"
       ],
-      "topics": []
+      "topics": [
+        "transversality",
+        "manifold"
+      ]
     },
     {
       "id": "58.010",
       "title": "ベクトル場とそのフロー",
       "fields": [
-        "manifold-analysis"
+        "manifold-analysis",
+        "ode",
+        "dynamical-systems"
       ],
-      "topics": []
+      "topics": [
+        "vector-field",
+        "dynamical-systems",
+        "ode"
+      ]
     },
     {
       "id": "58.020",
       "title": "テンソル場とLie微分",
       "fields": [
-        "manifold-analysis"
+        "manifold-analysis",
+        "differential-geometry",
+        "linear-algebra"
       ],
-      "topics": []
+      "topics": [
+        "tensor-field",
+        "lie-derivative"
+      ]
     },
     {
       "id": "58.030",
       "title": "Frobeniusの定理",
       "fields": [
-        "manifold-analysis"
+        "manifold-analysis",
+        "differential-geometry",
+        "ode"
       ],
-      "topics": []
+      "topics": [
+        "vector-field",
+        "integrability",
+        "frobenius"
+      ]
     },
     {
       "id": "58.040",
       "title": "微分形式とPoincaréの補題",
       "fields": [
-        "manifold-analysis"
+        "manifold-analysis",
+        "differential-geometry"
       ],
-      "topics": []
+      "topics": [
+        "differential-form",
+        "de-rham"
+      ]
     },
     {
       "id": "58.050",
       "title": "多様体上の微分形式とStokesの定理",
       "fields": [
-        "manifold-analysis"
+        "manifold-analysis",
+        "differential-geometry",
+        "measure-theory"
       ],
-      "topics": []
+      "topics": [
+        "differential-form",
+        "stokes-theorem",
+        "integration"
+      ]
     },
     {
       "id": "58.060",
       "title": "de Rhamコホモロジーと大域的位相",
       "fields": [
-        "manifold-analysis"
+        "manifold-analysis",
+        "algebraic-topology"
       ],
-      "topics": []
+      "topics": [
+        "de-rham",
+        "cohomology",
+        "homotopy"
+      ]
     },
     {
       "id": "58.100",
       "title": "Morse理論と多様体の位相",
       "fields": [
-        "manifold-analysis"
+        "manifold-analysis",
+        "manifold-topology",
+        "differential-geometry"
       ],
-      "topics": []
+      "topics": [
+        "morse-theory",
+        "manifold",
+        "homotopy"
+      ]
     },
     {
       "id": "60.005",
       "title": "大数の法則と中心極限定理",
       "fields": [
-        "probability-theory"
+        "probability-theory",
+        "statistics"
       ],
-      "topics": []
+      "topics": [
+        "limit-theorem",
+        "convergence"
+      ]
     },
     {
       "id": "60.010",
       "title": "条件付き期待値とマルチンゲール",
       "fields": [
-        "probability-theory"
+        "probability-theory",
+        "measure-theory"
       ],
-      "topics": []
+      "topics": [
+        "conditional-expectation",
+        "martingale"
+      ]
     },
     {
       "id": "60.020",
       "title": "Brown運動の構成と基本性質",
       "fields": [
-        "probability-theory"
+        "probability-theory",
+        "measure-theory"
       ],
-      "topics": []
+      "topics": [
+        "brownian-motion",
+        "measure"
+      ]
     },
     {
       "id": "60.030",
       "title": "Itô積分の構成",
       "fields": [
-        "probability-theory"
+        "probability-theory",
+        "measure-theory"
       ],
-      "topics": []
+      "topics": [
+        "stochastic-integration",
+        "brownian-motion"
+      ]
     },
     {
       "id": "60.040",
       "title": "二次変分とItôの公式",
       "fields": [
-        "probability-theory"
+        "probability-theory",
+        "measure-theory"
       ],
-      "topics": []
+      "topics": [
+        "ito-formula",
+        "stochastic-integration"
+      ]
     },
     {
       "id": "60.050",
       "title": "確率微分方程式の存在と一意性",
       "fields": [
-        "probability-theory"
+        "probability-theory",
+        "ode"
       ],
-      "topics": []
+      "topics": [
+        "sde",
+        "brownian-motion",
+        "stochastic-integration"
+      ]
     },
     {
       "id": "60.060",
@@ -870,79 +1325,126 @@
       "fields": [
         "probability-theory"
       ],
-      "topics": []
+      "topics": [
+        "martingale",
+        "brownian-motion"
+      ]
     },
     {
       "id": "60.070",
       "title": "Girsanovの定理",
       "fields": [
-        "probability-theory"
+        "probability-theory",
+        "measure-theory",
+        "financial-math"
       ],
-      "topics": []
+      "topics": [
+        "change-of-measure",
+        "martingale"
+      ]
     },
     {
       "id": "60.080",
       "title": "Feynman–Kacの公式とKolmogorov方程式",
       "fields": [
-        "probability-theory"
+        "probability-theory",
+        "pde"
       ],
-      "topics": []
+      "topics": [
+        "feynman-kac",
+        "brownian-motion",
+        "pde"
+      ]
     },
     {
       "id": "60.090",
       "title": "格子・非格子の局所中心極限定理",
       "fields": [
-        "probability-theory"
+        "probability-theory",
+        "fourier-analysis",
+        "statistics"
       ],
-      "topics": []
+      "topics": [
+        "local-limit-theorem",
+        "fourier-transform",
+        "limit-theorem"
+      ]
     },
     {
       "id": "62.010",
       "title": "統計モデルと推定理論",
       "fields": [
-        "statistics"
+        "statistics",
+        "probability-theory",
+        "optimization"
       ],
-      "topics": []
+      "topics": [
+        "statistical-inference",
+        "probability-distribution"
+      ]
     },
     {
       "id": "62.020",
       "title": "十分統計量と完備統計量",
       "fields": [
-        "statistics"
+        "statistics",
+        "probability-theory"
       ],
-      "topics": []
+      "topics": [
+        "sufficient-statistic",
+        "statistical-completeness"
+      ]
     },
     {
       "id": "62.030",
       "title": "最尤推定と漸近理論",
       "fields": [
-        "statistics"
+        "statistics",
+        "optimization",
+        "probability-theory"
       ],
-      "topics": []
+      "topics": [
+        "statistical-inference",
+        "asymptotic-theory",
+        "optimization-method"
+      ]
     },
     {
       "id": "62.040",
       "title": "統計的仮説検定",
       "fields": [
-        "statistics"
+        "statistics",
+        "probability-theory"
       ],
-      "topics": []
+      "topics": [
+        "hypothesis-testing",
+        "statistical-inference"
+      ]
     },
     {
       "id": "62.050",
       "title": "Bayesian統計の数学",
       "fields": [
-        "statistics"
+        "statistics",
+        "probability-theory"
       ],
-      "topics": []
+      "topics": [
+        "bayesian",
+        "statistical-inference"
+      ]
     },
     {
       "id": "62.060",
       "title": "線形回帰の数学",
       "fields": [
-        "statistics"
+        "statistics",
+        "linear-algebra",
+        "optimization"
       ],
-      "topics": []
+      "topics": [
+        "regression",
+        "linear-operator"
+      ]
     },
     {
       "id": "65.010",
@@ -950,7 +1452,10 @@
       "fields": [
         "numerical-analysis"
       ],
-      "topics": []
+      "topics": [
+        "numerical-stability",
+        "error-analysis"
+      ]
     },
     {
       "id": "65.020",
@@ -958,79 +1463,121 @@
       "fields": [
         "numerical-analysis"
       ],
-      "topics": []
+      "topics": [
+        "root-finding",
+        "iteration"
+      ]
     },
     {
       "id": "65.030",
       "title": "数値線形代数",
       "fields": [
-        "numerical-analysis"
+        "numerical-analysis",
+        "linear-algebra"
       ],
-      "topics": []
+      "topics": [
+        "numerical-linear-algebra",
+        "algorithm"
+      ]
     },
     {
       "id": "65.040",
       "title": "補間と数値積分",
       "fields": [
-        "numerical-analysis"
+        "numerical-analysis",
+        "approximation"
       ],
-      "topics": []
+      "topics": [
+        "interpolation",
+        "numerical-integration"
+      ]
     },
     {
       "id": "65.050",
       "title": "常微分方程式の数値解法",
       "fields": [
-        "numerical-analysis"
+        "numerical-analysis",
+        "ode"
       ],
-      "topics": []
+      "topics": [
+        "ode",
+        "numerical-method"
+      ]
     },
     {
       "id": "65.060",
       "title": "偏微分方程式の差分法",
       "fields": [
-        "numerical-analysis"
+        "numerical-analysis",
+        "pde"
       ],
-      "topics": []
+      "topics": [
+        "pde",
+        "finite-difference"
+      ]
     },
     {
       "id": "65.070",
       "title": "有限要素法の数学",
       "fields": [
-        "numerical-analysis"
+        "numerical-analysis",
+        "pde",
+        "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "finite-element",
+        "sobolev"
+      ]
     },
     {
       "id": "65.080",
       "title": "二次元Sobolev補間と有限要素誤差の厳密評価",
       "fields": [
-        "numerical-analysis"
+        "numerical-analysis",
+        "pde",
+        "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "finite-element",
+        "interpolation",
+        "sobolev"
+      ]
     },
     {
       "id": "65.090",
       "title": "Wolfe条件とZoutendijkの収束定理",
       "fields": [
-        "numerical-analysis"
+        "numerical-analysis",
+        "optimization"
       ],
-      "topics": []
+      "topics": [
+        "optimization-method",
+        "convergence"
+      ]
     },
     {
       "id": "68.010",
       "title": "Turing機械と計算可能性",
       "fields": [
-        "theoretical-cs"
+        "theoretical-cs",
+        "logic"
       ],
-      "topics": []
+      "topics": [
+        "computability",
+        "turing-machine"
+      ]
     },
     {
       "id": "68.020",
       "title": "決定可能性と計算不可能性",
       "fields": [
-        "theoretical-cs"
+        "theoretical-cs",
+        "logic"
       ],
-      "topics": []
+      "topics": [
+        "computability",
+        "undecidability"
+      ]
     },
     {
       "id": "68.030",
@@ -1038,95 +1585,156 @@
       "fields": [
         "theoretical-cs"
       ],
-      "topics": []
+      "topics": [
+        "complexity",
+        "algorithm"
+      ]
     },
     {
       "id": "68.040",
       "title": "NP完全性",
       "fields": [
-        "theoretical-cs"
+        "theoretical-cs",
+        "combinatorics"
       ],
-      "topics": []
+      "topics": [
+        "complexity",
+        "np-completeness"
+      ]
     },
     {
       "id": "68.050",
       "title": "Rice–Shapiroの定理と計算可能な性質",
       "fields": [
-        "theoretical-cs"
+        "theoretical-cs",
+        "logic"
       ],
-      "topics": []
+      "topics": [
+        "computability",
+        "undecidability"
+      ]
     },
     {
       "id": "68.100",
       "title": "整数と多項式の厳密計算",
       "fields": [
-        "theoretical-cs"
+        "theoretical-cs",
+        "computational-algebra",
+        "number-theory"
       ],
-      "topics": []
+      "topics": [
+        "algorithm",
+        "polynomial-ring",
+        "modular-arithmetic"
+      ]
     },
     {
       "id": "68.110",
       "title": "計算線形代数",
       "fields": [
-        "theoretical-cs"
+        "theoretical-cs",
+        "linear-algebra",
+        "computational-algebra"
       ],
-      "topics": []
+      "topics": [
+        "computational-linear-algebra",
+        "algorithm"
+      ]
     },
     {
       "id": "70.010",
       "title": "変分原理とLagrange力学",
       "fields": [
-        "classical-mechanics"
+        "classical-mechanics",
+        "manifold-analysis",
+        "dynamical-systems"
       ],
-      "topics": []
+      "topics": [
+        "variational",
+        "lagrangian",
+        "ode"
+      ]
     },
     {
       "id": "70.020",
       "title": "Hamilton力学",
       "fields": [
-        "classical-mechanics"
+        "classical-mechanics",
+        "differential-geometry",
+        "dynamical-systems"
       ],
-      "topics": []
+      "topics": [
+        "hamiltonian",
+        "symplectic-geometry"
+      ]
     },
     {
       "id": "70.030",
       "title": "Liouville–Arnoldの定理と作用角座標",
       "fields": [
-        "classical-mechanics"
+        "classical-mechanics",
+        "dynamical-systems",
+        "differential-geometry"
       ],
-      "topics": []
+      "topics": [
+        "hamiltonian",
+        "integrability"
+      ]
     },
     {
       "id": "81.010",
       "title": "量子力学の数学的基礎",
       "fields": [
-        "quantum-mechanics"
+        "quantum-mechanics",
+        "functional-analysis",
+        "operator-theory"
       ],
-      "topics": []
+      "topics": [
+        "hilbert-space",
+        "linear-operator",
+        "quantum-theory"
+      ]
     },
     {
       "id": "81.020",
       "title": "自己共役作用素のスペクトル定理とStoneの定理",
       "fields": [
-        "quantum-mechanics"
+        "quantum-mechanics",
+        "functional-analysis",
+        "operator-theory"
       ],
-      "topics": []
+      "topics": [
+        "self-adjoint",
+        "spectral-theory",
+        "unitary-evolution"
+      ]
     },
     {
       "id": "82.010",
       "title": "統計力学の数学",
       "fields": [
-        "statistical-mechanics"
+        "statistical-mechanics",
+        "probability-theory",
+        "measure-theory"
       ],
-      "topics": []
+      "topics": [
+        "probability-distribution",
+        "equilibrium-statistics"
+      ]
     },
     {
       "id": "83.010",
       "title": "Lorentz幾何と一般相対論",
       "fields": [
-        "relativity"
+        "relativity",
+        "differential-geometry",
+        "manifold-analysis"
       ],
-      "topics": []
+      "topics": [
+        "lorentz-geometry",
+        "curvature",
+        "relativity"
+      ]
     },
     {
       "id": "90.010",
@@ -1137,6 +1745,7 @@
       ],
       "topics": [
         "duality",
+        "convexity",
         "variational"
       ]
     },
@@ -1144,105 +1753,180 @@
       "id": "90.020",
       "title": "凸最適化とKarush–Kuhn–Tucker条件",
       "fields": [
-        "optimization"
+        "optimization",
+        "functional-analysis"
       ],
-      "topics": []
+      "topics": [
+        "convexity",
+        "kkt",
+        "optimization-method"
+      ]
     },
     {
       "id": "90.030",
       "title": "数値最適化法と収束の定理",
       "fields": [
-        "optimization"
+        "optimization",
+        "numerical-analysis"
       ],
-      "topics": []
+      "topics": [
+        "optimization-method",
+        "convergence",
+        "numerical-method"
+      ]
     },
     {
       "id": "91.010",
       "title": "離散時間金融市場と無裁定価格理論",
       "fields": [
-        "financial-math"
+        "financial-math",
+        "probability-theory",
+        "optimization"
       ],
-      "topics": []
+      "topics": [
+        "arbitrage",
+        "martingale",
+        "asset-pricing"
+      ]
     },
     {
       "id": "91.020",
       "title": "Black–Scholes方程式",
       "fields": [
-        "financial-math"
+        "financial-math",
+        "pde",
+        "probability-theory"
       ],
-      "topics": []
+      "topics": [
+        "black-scholes",
+        "pde",
+        "stochastic-integration"
+      ]
     },
     {
       "id": "91.100",
       "title": "生命保険・年金の数理",
       "fields": [
-        "financial-math"
+        "financial-math",
+        "probability-theory",
+        "statistics"
       ],
-      "topics": []
+      "topics": [
+        "actuarial",
+        "probability-distribution"
+      ]
     },
     {
       "id": "91.110",
       "title": "複合Poissonリスクモデルと破産確率",
       "fields": [
-        "financial-math"
+        "financial-math",
+        "probability-theory"
       ],
-      "topics": []
+      "topics": [
+        "poisson-process",
+        "ruin-probability"
+      ]
     },
     {
       "id": "91.200",
       "title": "社会ネットワークと集団ダイナミクス",
       "fields": [
-        "financial-math"
+        "financial-math",
+        "graph-theory",
+        "probability-theory",
+        "systems-modeling"
       ],
-      "topics": []
+      "topics": [
+        "network-model",
+        "dynamical-systems",
+        "graph-theory"
+      ]
     },
     {
       "id": "92.010",
       "title": "感染症と個体群の数理モデル",
       "fields": [
-        "biomathematics"
+        "biomathematics",
+        "ode",
+        "dynamical-systems",
+        "systems-modeling"
       ],
-      "topics": []
+      "topics": [
+        "epidemic",
+        "population-model",
+        "ode"
+      ]
     },
     {
       "id": "93.010",
       "title": "数理モデルの構築と次元解析",
       "fields": [
-        "systems-modeling"
+        "systems-modeling",
+        "statistics"
       ],
-      "topics": []
+      "topics": [
+        "modeling",
+        "dimension-analysis",
+        "identifiability"
+      ]
     },
     {
       "id": "93.020",
       "title": "線形制御理論",
       "fields": [
-        "systems-modeling"
+        "systems-modeling",
+        "ode",
+        "optimization"
       ],
-      "topics": []
+      "topics": [
+        "control-theory",
+        "stability",
+        "linear-operator"
+      ]
     },
     {
       "id": "94.010",
       "title": "情報量と情報源符号化定理",
       "fields": [
-        "cryptography"
+        "cryptography",
+        "probability-theory",
+        "combinatorics"
       ],
-      "topics": []
+      "topics": [
+        "information-theory",
+        "entropy",
+        "probability-distribution"
+      ]
     },
     {
       "id": "94.100",
       "title": "RSAと公開鍵暗号の数学",
       "fields": [
-        "cryptography"
+        "cryptography",
+        "number-theory",
+        "theoretical-cs"
       ],
-      "topics": []
+      "topics": [
+        "cryptography",
+        "modular-arithmetic",
+        "algorithm"
+      ]
     },
     {
       "id": "94.110",
       "title": "有限体上の楕円曲線と暗号理論",
       "fields": [
-        "cryptography"
+        "cryptography",
+        "field-theory",
+        "algebraic-geometry",
+        "number-theory"
       ],
-      "topics": []
+      "topics": [
+        "cryptography",
+        "elliptic-curve",
+        "finite-field"
+      ]
     }
   ]
 }

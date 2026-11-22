@@ -27,3 +27,8 @@ summary{font-size:13px;font-weight:730;cursor:pointer}summary small{float:right;
 footer{border-top:1px solid var(--line);padding:24px 0 35px;font-size:11px;display:flex;justify-content:space-between;gap:18px;color:var(--muted)}
 a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid #408466;outline-offset:3px}
 @media(max-width:820px){.shell{padding:0 20px}.layout{grid-template-columns:1fr;gap:24px}aside{position:static}.hero{padding:34px 0}header small{display:none}footer{flex-direction:column}.card h3{font-size:16px}}
+
+/* 拡張された概念分類を、折りたたみ可能なグループとして表示 */
+#topics details.topicGroup{padding:7px 0;margin:4px 0;border-bottom:0}
+#topics .topicGroupHead{font-size:12px;font-weight:700;color:var(--muted)}
+#topics .topicGroup .chips{margin-top:10px;padding:0 0 7px}
