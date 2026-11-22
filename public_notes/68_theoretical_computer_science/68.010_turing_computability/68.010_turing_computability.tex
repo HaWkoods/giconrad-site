@@ -1,0 +1,406 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Turing機械と計算可能性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Turing機械の遷移規則，テープと停止状態．
+本稿の具体的な到達課題は，具体的な決定的Turing機械の全計算過程を設計する．
+
+\section{計算機械の数学的定義}
+有限アルファベット $\Sigma$ 上の有限語全体を $\Sigma^*$ と書く．
+空語を $\varepsilon$ とする．
+\begin{definition}
+決定的な一テープTuring機械とは，
+有限な状態集合 $Q$，テープ記号集合 $\Gamma$，
+入力記号集合 $\Sigma\subset\Gamma$，
+空白記号 $\sqcup\in\Gamma\setminus\Sigma$，
+初期状態 $q_0$，停止状態 $q_h$ および遷移関数
+\[
+ \delta:(Q\setminus\{q_h\})\times\Gamma
+ \longrightarrow Q\times\Gamma\times\{L,R,S\}
+\]
+からなるものとする．テープ位置は整数全体 $\mathbb Z$ とする．
+開始時には入力語を $0,1,\ldots,n-1$ 番地に置き，
+他は空白で，ヘッドは0番地，状態は $q_0$ とする．
+$L,R,S$ はヘッドをそれぞれ一つ左・右・同位置へ動かす．
+\end{definition}
+\begin{definition}
+配置とは，現在状態 $q\in Q$，ヘッド位置 $h\in\mathbb Z$，
+有限個の番地以外では空白となるテープ内容
+$\tau:\mathbb Z\to\Gamma$ の組 $(q,h,\tau)$ をいう．
+停止状態に到達すると計算は停止する．
+\end{definition}
+\begin{lemma}[一段階遷移の一意性]
+任意の非停止配置から次の配置はただ一つに定まる．
+また有限回の遷移の後にも非空白位置の集合は有限である．
+\end{lemma}
+\begin{proof}
+読取記号 $\tau(h)$ と状態 $q$ を固定すると，
+$\delta(q,\tau(h))$ は一つの三つ組を指定する．
+書換えの対象は一箇所のみなので，
+非空白位置の個数は一段階で高々一つしか増加しない．
+有限回の帰納法で有限性が保たれる．
+\end{proof}
+\section{計算可能な関数}
+\begin{definition}
+部分関数 $f:\Sigma^*\rightharpoonup\Sigma^*$ が
+Turing計算可能であるとは，Turing機械が入力 $x$ に対して
+$f(x)$ が定義されるとき停止し，指定された出力規約のもとで
+$f(x)$ を出力し，定義されないとき停止しないことをいう．
+出力は停止時のテープ上の指定領域に書かれた有限語とする．
+\end{definition}
+\begin{proposition}[恒等写像と有限置換]
+有限アルファベットの有限語に対する恒等写像は計算可能であり，
+固定した長さの有限語の集合上の任意の部分関数も
+計算可能である．
+\end{proposition}
+\begin{proof}
+恒等写像については初期テープを変更せず停止すればよい．
+固定長の有限語は有限個しかないので，
+各入力と有限個の値を有限状態に書き込んだ遷移表を作れる．
+定義域外の場合には停止しない状態でヘッドを左右に動かし続ける．
+\end{proof}
+
+\section{計算可能性の閉包性}
+\begin{theorem}[合成に関する閉包性]\label{thm:compose}
+部分計算可能関数 $f:\Sigma^*\rightharpoonup\Gamma^*$，
+$g:\Gamma^*\rightharpoonup\Delta^*$ の合成
+$g\circ f$ は部分計算可能である．
+\end{theorem}
+\begin{proof}
+入力 $x$ に対して最初の機械を模倣し，停止したら
+出力語 $f(x)$ を第二の機械の入力として配置し直す．
+第一の機械が停止しなければ合成も停止しない．
+第一の機械が停止して第二の機械が停止しなければ，
+合成も停止しない．
+両方が停止する場合に限って第二の出力を出して停止する．
+複数の有限のテープ領域を保存・転記する操作は，
+空白を除いた有限区間を左右へ走査し，記号をコピーする
+有限状態の遷移規則で実現できるので，
+この手順は一台のTuring機械で実装できる．
+\end{proof}
+\begin{proposition}[有限個の分岐]\label{prop:branch}
+$A\subset\Sigma^*$ が決定可能で，
+$f,g$ が部分計算可能なら
+\[
+ h(x)=\begin{cases}f(x)&x\in A,\\g(x)&x\notin A\end{cases}
+\]
+も部分計算可能である．
+\end{proposition}
+\begin{proof}
+まず $A$ の判定機械を走らせる．
+必ず停止してどちらの分岐かを決定するから，
+その結果に応じて $f$ または $g$ の計算を始める．
+各機械の遷移表を状態集合が互いに素となるように改名して，
+有限の分岐用状態を加えれば一台の機械が得られる．
+\end{proof}
+\section{多テープ機械との同値性}
+\begin{definition}
+$k$ テープTuring機械では，各テープが独立の読書きヘッドを持ち，
+遷移関数は $k$ 個の読取記号を受け取り，
+$k$ 個の書込記号と移動方向を同時に指定する．
+\end{definition}
+\begin{theorem}[一テープによる多テープの模倣]\label{thm:multitape}
+任意の有限個のテープを持つTuring機械の計算は，
+一テープTuring機械で同じ停止・非停止の挙動と
+同じ出力を実現できる．
+\end{theorem}
+\begin{proof}
+各テープの有限個の非空白位置とヘッド位置を含む
+有限区間を選び，その区間内の記号列を
+ヘッド位置を示す特別な印付きで記録する．
+$k$ 本のテープの記録を区切り記号で連結し，
+一テープ上に保存する．
+各模倣段階では左から右へ走査して
+全てのヘッド印の下の記号を読み取り，
+有限の制御状態に保持する．
+次に元の遷移関数の有限表を用いて
+新しい状態，書込記号，移動方向を求める．
+再度一テープを走査して印付き記号を書き換える．
+ヘッドが記録済み区間の端から外へ動く場合は，
+その区間を空白一つ分だけ延長し，
+必要なら区切り記号以降の有限文字列を右へ一欄ずらす．
+この全操作は有限回の左右走査と記号の局所書換えである．
+任意の一つの模倣段階は有限回の一テープ遷移で完了する．
+初期符号化は入力の有限走査で作れる．
+元の機械が $t$ 段階で停止するなら，
+模倣機械は有限段階でその停止を再現する．
+元の機械が停止しないなら全ての模倣段階を続行し，
+模倣機械も停止しない．
+最後に出力領域を復号して所定の出力規約へ移せばよい．
+\end{proof}
+\begin{corollary}
+一テープ機械と任意の固定本数の多テープ機械が
+計算する部分関数の族は一致する．
+\end{corollary}
+\begin{proof}
+一テープ機械は一番目以外を使用しない多テープ機械とみなせる．
+逆の包含は定理\ref{thm:multitape}による．
+\end{proof}
+
+\section{機械の符号化と万能機械}
+\begin{lemma}[有限な遷移表の有効な符号化]\label{lem:coding}
+Turing機械の有限の記述は自然数または二進語に符号化でき，
+符号が妥当な機械の記述であるかどうかはTuring機械で判定できる．
+\end{lemma}
+\begin{proof}
+状態・テープ記号・移動方向を自然数で番号付けする．
+一つの遷移は
+$(q,a,q',b,d)$ という五つの自然数の組なので，
+各整数をその長さと二進表示で符号化し，
+区切り記号を挿入すれば有限語として表現できる．
+遷移表をこのような語の有限連結で符号化する．
+復号は左から有限文字列を読み，
+区切り記号と長さを検査することで実行できる．
+さらに，有限個の状態とテープ記号について
+必要な遷移がちょうど一つずつあるか，
+停止状態が指定されているか，
+方向欄が $L,R,S$ のいずれかであるかを
+有限個の検査で決定できる．
+各検査は有限な走査・比較・転記で実行できるため，
+Turing機械として構成可能である．
+\end{proof}
+\begin{theorem}[万能Turing機械]\label{thm:universal}
+二進語で符号化した任意のTuring機械 $M$ と入力語 $x$ に対し，
+$M$ の計算を模倣し，同じ停止・非停止を実現する
+一つのTuring機械 $U$ が存在する．
+符号が妥当なら，停止時の出力も一致させられる．
+\end{theorem}
+\begin{proof}
+入力を $\langle M\rangle\#x$ として受け取り，
+まず補題\ref{lem:coding}の検査と復号によって
+有限な遷移表を得る．
+模倣用の作業領域に，現在状態，ヘッド位置，有限な
+非空白テープ内容を記録する．
+各段階では次の操作を行う．
+\begin{enumerate}
+\item 記録から状態とヘッド直下の記号を読み出す．
+\item 復号済みの遷移表を線形走査し，
+ 対応する五つ組を見つける．
+\item 書込みとヘッドの移動と状態の変更を
+ 記録に反映し，必要なら記録領域を延長する．
+\item 停止状態でなければ最初の操作へ戻り，
+ 停止状態なら出力部分を所定の形式へ復号して停止する．
+\end{enumerate}
+各操作は有限な文字列の比較と置換，および
+左右への有限走査からなり，
+有限状態のTuring機械で実現できる．
+複数の作業領域を用いた説明は定理\ref{thm:multitape}によって
+一テープ機械へ変換できる．
+構成した機械は元の一段階を有限回の遷移で忠実に模倣するので，
+停止の有無と出力が一致する．
+\end{proof}
+\begin{corollary}[機械の可算性]
+全てのTuring機械の集合は可算であり，
+Turing計算可能な部分関数の集合も高々可算である．
+\end{corollary}
+\begin{proof}
+有限アルファベット上の有限語全体は可算である．
+補題\ref{lem:coding}から各機械へ有限語を割り当てられるため，
+機械全体は可算集合に埋め込める．
+一つの機械は高々一つの部分関数を定めるから，
+計算可能な部分関数全体はその可算集合の像である．
+\end{proof}
+\section{決定可能性と認識可能性}
+\begin{definition}
+言語 $L\subset\Sigma^*$ が決定可能とは，
+任意の入力で停止し，$x\in L$ の場合にのみ
+受理を出力するTuring機械が存在することをいう．
+$L$ が認識可能とは，$x\in L$ のとき受理して停止し，
+$x\notin L$ では拒否して停止するか停止しないような
+機械が存在することをいう．
+\end{definition}
+\begin{theorem}[決定可能性の二側認識]\label{thm:both}
+言語 $L$ が決定可能であることと，
+$L$ と補言語 $\Sigma^*\setminus L$ が
+ともに認識可能であることは同値である．
+\end{theorem}
+\begin{proof}
+$L$ が決定可能なら，その判定機械は $L$ を認識し，
+判定結果の受理・拒否を交換した機械が補言語を認識する．
+逆に $M$ が $L$，$N$ が補言語を認識するとする．
+入力 $x$ に対し $M,N$ の配置を二つ記録し，
+$M$ の一段階と $N$ の一段階を交互に模倣する．
+$M$ が受理したら受理し，$N$ が受理したら拒否する．
+$x$ は $L$ とその補集合のどちらかに属するので，
+いずれか一方の認識機械が有限段階で受理する．
+従って交互の模倣は必ず停止し，正しい判定を与える．
+\end{proof}
+\begin{theorem}[認識可能性と列挙可能性]\label{thm:enumerate}
+空でない言語 $L\subset\Sigma^*$ について次は同値である．
+\begin{enumerate}
+\item $L$ はTuring認識可能である．
+\item 語を順次出力する機械が存在し，
+ 出力される語の集合がちょうど $L$ に等しい．
+\end{enumerate}
+なお，空言語も，何も出力しない機械で列挙可能である．
+\end{theorem}
+\begin{proof}
+認識機械を $M$ とし，
+$\Sigma^*$ の全語を長さと辞書順で
+$w_0,w_1,\ldots$ と並べる．
+第 $s$ 段階では $w_0,\ldots,w_s$ を入力として
+各 $s$ 段階ずつ $M$ を模倣し，
+その時点までに受理した語を出力する．
+$w_j\in L$ なら $M$ はある有限時刻 $t$ で受理するので，
+$s\ge\max(j,t)$ で $w_j$ は出力される．
+$w_j\notin L$ なら受理されないので出力されない．
+従って出力語の集合は $L$ である．
+逆に列挙機械 $E$ が与えられたら，
+入力 $x$ を保存して $E$ を一段階ずつ模倣し，
+出力された語が $x$ と一致するか逐次比較する．
+一致したとき受理して停止する．
+$x\in L$ ならいずれ出力されるので停止し，
+そうでなければ停止しない．
+\end{proof}
+
+\section{基本算法の例}
+\begin{proposition}[二進整数の加算と比較]\label{prop:binary}
+非負整数を通常の二進表示で符号化する．
+二つの整数の和を求める関数と，
+二つの整数の大小を判定する関数は
+いずれもTuring計算可能である．
+\end{proposition}
+\begin{proof}
+入力語の末尾から順に二つのビットを読み，
+繰り上がりを $\{0,1\}$ の一状態として保持する．
+各段階で二つの入力ビットと繰り上がりから
+出力ビットと次の繰り上がりが一意に決まる．
+入力の桁が尽きたら零とみなし，
+最後の繰り上がりを書き出すと停止する．
+必要なビットは有限通りなので，
+この演算は有限な遷移表で実装できる．
+比較については二進語の先頭の零を消し，
+まず桁数を比較し，同じ桁数なら左端から
+最初に異なるビットを調べればよい．
+有限語の長さと各ビットの比較は有限走査で実現できる．
+\end{proof}
+\begin{proposition}[乗算とEuclid算法]
+二進整数の乗算，正整数の除法，最大公約数は
+Turing計算可能である．
+\end{proposition}
+\begin{proof}
+乗算は一方の整数のビット列を右から調べ，
+ビットが1の位置の二冪倍を加算する方法で求められる．
+二冪倍は二進表示の末尾への零の付加で実装でき，
+加算は命題\ref{prop:binary}による．
+除法は，被除数から除数の適当な二冪倍を順に引く
+長除法によって商と余りを求める．
+減算は借りを有限状態で保持するビット演算であり，
+各段階で余りが減少するので算法は有限回で停止する．
+最大公約数は
+$(a,b)\mapsto(b,a\bmod b)$ を $b=0$ まで反復する．
+余りは常に $0\le a\bmod b<b$ を満たすから
+正の第二成分は厳密に減少する．
+従って停止し，
+$\gcd(a,b)=\gcd(b,a\bmod b)$ により正しい値を返す．
+\end{proof}
+\section{計算可能性と計算量の区別}
+\begin{remark}
+本稿の各定理は，有限な遷移規則によって計算を実現できるかを
+扱うものである．必要な遷移回数が入力長に対して
+どれほど増大するかは計算量理論の別の問題である．
+\end{remark}
+\begin{remark}[Church--Turingのテーゼ]
+「直観的に有効な算法で計算できる関数はTuring計算可能である」
+という主張は，直観的な「有効な算法」が数学的に定義された
+対象でないため，上記の公理系内で証明すべき定理ではない．
+本稿の多テープ模倣や万能機械の存在は，数学的に定義された
+二つの計算モデルを比較する定理であり，このテーゼとは区別する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{単項数に一を加えるTuring機械．}
+\begin{proposition}
+アルファベット $\{1,\square\}$ を持つ
+一テープTuring機械で，入力 $1^n$ から
+$1^{n+1}$ を出力するものが構成できる．
+\end{proposition}
+\begin{proof}
+作業状態を $q$，停止状態を $q_h$ とする．
+入力が左端から始まりヘッドがその位置にあるとする．
+遷移を
+\[
+\delta(q,1)=(q,1,R),\qquad
+\delta(q,\square)=(q_h,1,S)
+\]
+と定める．ここで $R$ は一マス右へ移動，
+$S$ は移動しないことを表す．
+最初の $n$ 個の1を読み取るたびに右へ進み，
+最初の空白セルへ到達したら1を書いて停止する．
+従って出力は $1^{n+1}$ であり，
+停止までの遷移回数は $n+1$ である．
+\end{proof}
+\noindent\textbf{到達確認．}
+入力が $111$ の場合の出力と遷移回数を求めよ．
+\par\noindent\textbf{解答．}
+三つの1を越えた空白に1を書き，
+出力は $1111$，遷移回数は4である．
+\end{document}

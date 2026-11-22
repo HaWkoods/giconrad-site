@@ -1,0 +1,534 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{決定可能性と計算不可能性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，停止問題，Turing機械の符号化，対角線論法．
+本稿の具体的な到達課題は，停止問題が決定不能であることを背理法で再構成する．
+
+\section{決定問題と停止問題}
+Turing機械を有限文字列で符号化できるとする．
+\begin{definition}
+集合 $A\subset\{0,1\}^*$ が決定可能であるとは，
+入力を必ず有限時間で停止し，$A$ への所属を正しく判定するTuring機械が存在することをいう．
+\end{definition}
+\begin{theorem}[停止問題の決定不可能性]
+\[
+ \operatorname{HALT}=\{\langle M,w\rangle:M\text{ は入力 }w\text{ で停止する}\}
+\]
+は決定可能でない．
+\end{theorem}
+\begin{proof}
+判定機械 $H$ が存在すると仮定する．
+機械 $D$ を，入力が機械の符号 $e$ のとき
+$H(e,e)$ が停止すると判定すれば無限ループし，停止しないと判定すれば即時停止するよう作る．
+$D$ 自身の符号を $d$ として $D(d)$ を実行すると，
+$H(d,d)$ が停止を判定する場合は停止せず，
+停止しないと判定する場合は停止する．いずれも矛盾する．
+\end{proof}
+\section{多対一帰着}
+\begin{definition}
+$A\le_m B$ とは，計算可能な全域写像 $f$ が存在して
+$x\in A\iff f(x)\in B$ が全ての $x$ で成り立つことをいう．
+\end{definition}
+\begin{proposition}
+$A\le_m B$ で $B$ が決定可能なら $A$ も決定可能である．
+\end{proposition}
+\begin{proof}
+$x$ に対し $f(x)$ を計算し，$B$ の決定算法を実行する．
+どちらも停止するため全体も停止し，条件式により正しく判定する．
+\end{proof}
+\section{Riceの定理}
+\begin{theorem}[Rice]
+部分計算可能関数に関する外延的性質 $\mathcal P$ が非自明，すなわち
+$\mathcal P$ を持つ関数と持たない関数がいずれも存在するとする．
+このとき「機械 $M$ が計算する部分関数は $\mathcal P$ を満たすか」は決定可能でない．
+\end{theorem}
+\begin{proof}
+性質の補集合を必要なら考えることで，どこでも未定義な関数
+$\bot$ が $\mathcal P$ を持たないと仮定してよい．
+$\mathcal P$ を持つ部分計算可能関数 $g$ の機械を固定する．
+入力 $(M,w)$ から新しい機械 $N$ を実効的に作る．$N$ は任意の入力 $x$ に対して
+まず $M(w)$ を模倣し，停止した場合にのみ $g(x)$ を計算する．
+$M(w)$ が停止しなければ $N$ の関数は $\bot$，
+停止すれば $g$ である．
+ゆえに $N$ の計算関数が $\mathcal P$ を持つことと
+$M(w)$ の停止は同値である．仮に性質を決定できれば停止問題も決定できて矛盾する．
+\end{proof}
+\begin{remark}
+定理は関数の外延的性質について述べる．
+「機械が一定時間内に停止する」など実行手順そのものの性質は
+直ちに対象とはならない．
+\end{remark}
+
+
+\section{半決定可能性と計算不可能性の階層の入口}
+\begin{definition}
+言語 $A\subset\{0,1\}^*$ が計算可枚挙（c.e.）であるとは，
+あるTuring機械が $x\in A$ のとき，かつそのときに限って
+有限時間で受理することをいう．$x\notin A$ では停止しなくてもよい．
+\end{definition}
+\begin{theorem}[計算可枚挙性の三つの特徴付け]
+言語 $A$ について以下は同値である．
+\begin{enumerate}
+\item $A$ は計算可枚挙である．
+\item $A$ は計算可能な機械が列挙する語の集合として得られる
+（空集合の場合は何も出力しない機械を許す）．
+\item ある決定可能な関係 $R(x,t)$ が存在して
+$x\in A\iff\exists t\in\mathbb N\;R(x,t)$ となる．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1)から(2)へは，全ての有限語と計算時間の対 $(x,s)$ を
+順番に列挙し，$x$ の受理計算を $s$ ステップだけ模倣して
+受理した語を出力すればよい．これはdovetailingである．
+(2)から(3)へは，$t$ ステップ以内に出力された語の列に
+$x$ が現れることを $R(x,t)$ とすれば，有限時間の模倣で決定できる．
+(3)から(1)へは，$t=0,1,2,\ldots$ と順に試し，$R(x,t)$ が真になれば
+受理する機械を用いればよい．
+\end{proof}
+\begin{theorem}[補集合との関係]
+$A$ とその補集合 $\overline A$ がともに計算可枚挙なら，$A$ は決定可能である．
+逆に決定可能な集合とその補集合はともに計算可枚挙である．
+\end{theorem}
+\begin{proof}
+$A$ と $\overline A$ の認識機械を同時に一ステップずつ模倣する．
+任意の入力は必ず一方に属し，対応する機械が有限時間で受理するため，
+いずれかが受理した段階で所属を出力すれば必ず停止し正しい．
+逆方向は決定機械の受理と拒否を入れ替えればよい．
+\end{proof}
+\begin{corollary}
+停止問題 $\mathrm{HALT}$ は計算可枚挙だが，その補集合は
+計算可枚挙でない．
+\end{corollary}
+\begin{proof}
+停止問題はシミュレーションによって半決定できる．
+補集合も半決定できるなら前定理より停止問題が決定可能となり，
+既に証明した停止問題の定理に矛盾する．
+\end{proof}
+
+\section{停止集合の算術的階層における完全性}
+$\langle e,x\rangle$ を機械番号 $e$ と入力語 $x$ の計算可能な対符号とする．
+\begin{definition}
+言語 $A$ が $\Sigma^0_1$ に属するとは，ある決定可能な述語
+$R(x,t)$ を用いて $x\in A\iff\exists t\,R(x,t)$ と書けることをいう．
+$\Pi^0_1$ はその補集合の類とする．
+\end{definition}
+\begin{theorem}[停止集合の $\Sigma^0_1$ 完全性]
+停止集合
+\[
+ K=\{\langle e,x\rangle:M_e(x)\text{ が有限時間で停止する}\}
+\]
+は $\Sigma^0_1$ に属し，任意の $A\in\Sigma^0_1$ について
+計算可能な多対一帰着 $A\le_mK$ が存在する．
+また $K^c$ は $\Pi^0_1$ に属するが $\Sigma^0_1$ には属さない．
+\end{theorem}
+\begin{proof}
+$R(\langle e,x\rangle,t)$ を
+「$M_e(x)$ は $t$ ステップ以内に停止する」と定めれば，
+$t$ ステップの有限シミュレーションで判定できるので
+$K\in\Sigma^0_1$ である．
+
+任意の $A\in\Sigma^0_1$ について
+$x\in A\iff\exists t\,R_A(x,t)$ となる決定可能述語を選ぶ．
+入力 $x$ に対し，プログラム $P_x$ を
+「$t=0,1,2,\ldots$ を順に調べ，$R_A(x,t)$ が真となったら停止する」
+と定義する．そのプログラム番号 $e_x$ は
+$x$ から計算可能な方法で生成できる（プログラムへの定数の代入）．
+従って計算可能写像 $f(x)=\langle e_x,\varepsilon\rangle$
+（$\varepsilon$ は空入力）は
+$x\in A\iff f(x)\in K$ を満たす．
+これで $\Sigma^0_1$ 完全性が従う．
+
+$K^c\in\Pi^0_1$ は定義から従う．
+もし $K^c\in\Sigma^0_1$ なら $K$ と $K^c$ を
+共に半決定できる．二つの半決定器を交互に一ステップずつ実行すれば
+必ずどちらかが停止するので，$K$ を決定できてしまう．
+しかし停止問題は非可判定であることを本ノートの前半で証明した．
+従って $K^c\notin\Sigma^0_1$ である．
+\end{proof}
+\begin{remark}
+ここでは算術的階層の第一水準の完全性を証明した．
+任意階層のPostの定理やRice--Shapiroの定理は別の論証を要する．
+\end{remark}
+
+\section{Rice--Shapiroの定理への証明増補}
+外延的に半決定可能な性質を，有限個の停止計算からの正の証拠により特徴づける．
+
+\section{主題と有効番号付け}
+本稿は，部分計算可能函数の性質について，
+「実際に有限個の計算が停止したことを確認できる」という意味で
+半決定できる性質を厳密に特徴づける．
+中心定理はRice--Shapiroの定理である．
+
+\begin{definition}
+$\mathcal P$ を部分函数 $f:\mathbb N\rightharpoonup\mathbb N$ の集合とする．
+$\theta\in\mathcal P$ が\emph{有限函数}であるとは，
+そのグラフ $\{(x,\theta(x)):x\in\operatorname{dom}\theta\}$ が
+有限集合である場合をいう．$\theta\subset f$ は
+$\operatorname{graph}(\theta)\subset\operatorname{graph}(f)$ を表す．
+\end{definition}
+
+\begin{definition}
+$\varphi_0,\varphi_1,\ldots$ を部分計算可能函数の
+\emph{許容的な番号付け}とする．本稿では次の二条件を採用する．
+\begin{enumerate}
+\item \emph{普遍性}：二変数部分計算可能函数
+$U(e,x)=\varphi_e(x)$ が存在する．
+\item \emph{パラメータ定理（$s$-$m$-$n$）}：任意の二変数部分計算可能函数
+$g(e,x)$ に対し，計算可能な全函数 $s(e)$ が存在し，
+$\varphi_{s(e)}(x)=g(e,x)$ を満たす．
+\end{enumerate}
+一般の有限個の整数パラメータも一つの整数に符号化できるので，
+二つ以上のパラメータについて同じ定理を適用できる．
+\end{definition}
+
+この二つは，Turing機械による標準番号付けに対し，
+機械と入力の符号化およびプログラムの部分評価から構成できる．
+本稿の論理的前提は，この許容番号付けの存在，
+自然数上の計算可能な対関数，および
+可算個の計算の並列実行（dovetailing）である．
+
+\begin{definition}
+$A\subset\mathbb N$ が\emph{帰納的可枚挙}（c.e.）であるとは，
+ある部分計算可能函数 $h$ に対し
+$A=\operatorname{dom}h$ と表せることをいう．
+同値に，$A$ の元を順次列挙する算法が存在する．
+$A$ が\emph{外延的}（index set）であるとは，
+$\varphi_e=\varphi_{e'}$ なら
+$e\in A\Longleftrightarrow e'\in A$ が成立することをいう．
+\end{definition}
+
+\begin{lemma}[有限函数の一様符号化]\label{lem:finitecode}
+有限函数のグラフは自然数に有効に符号化でき，
+その符号 $c(\theta)$ から
+$\varphi_{q(\theta)}=\theta$ を満たす番号 $q(\theta)$ を
+全計算可能函数として得られる．
+また $\theta\subset\varphi_e$ という関係は，
+組 $(c(\theta),e)$ に関してc.e.である．
+\end{lemma}
+\begin{proof}
+有限個の対 $(x,y)$ をソートした列として符号化する．
+入力 $z$ に対し符号を復号し，$z=x$ が現れれば値 $y$ を返し，
+現れなければ無限に実行を続けるプログラムを作れば
+その計算する部分函数は $\theta$ である．
+符号から当該プログラムの番号を計算可能に出力できることは
+パラメータ定理から従う．
+さらに $\theta\subset\varphi_e$ は
+有限個の入力 $x\in\operatorname{dom}\theta$ に対する
+計算 $\varphi_e(x)$ を並列実行し，すべて指定された値 $\theta(x)$ で
+停止した場合に限って受理する算法で半決定できる．
+\end{proof}
+
+\section{自己参照とKleeneの再帰定理}
+\begin{theorem}[Kleeneの再帰定理]\label{thm:rec}
+$f:\mathbb N\to\mathbb N$ を全計算可能函数とすると，
+ある $e\in\mathbb N$ が存在して
+\[
+ \varphi_e=\varphi_{f(e)}
+\]
+が成立する．さらに $f$ の番号から，このような $e$ を
+計算可能に得ることができる．
+\end{theorem}
+\begin{proof}
+二変数部分計算可能函数
+\[
+ G(y,x)=\varphi_{f(s(y,y))}(x)
+\]
+を考える．ここで $s(y,z)$ は，
+第一変数 $y$ をパラメータとする二変数函数
+$(y,x)\mapsto\varphi_y(\langle z,x\rangle)$ に
+対応するパラメータ函数としておく．
+すなわち
+\[
+ \varphi_{s(y,z)}(x)=\varphi_y(\langle z,x\rangle).
+\]
+$G$ は普遍性と全計算可能性から部分計算可能である．
+その計算するプログラムの番号を $a$ とし，
+$e=s(a,a)$ と置く．すると任意の $x$ に対し
+\[
+ \varphi_e(x)=\varphi_a(\langle a,x\rangle)
+ =G(a,x)=\varphi_{f(s(a,a))}(x)
+ =\varphi_{f(e)}(x)
+\]
+となる．プログラム $a$ と $s(a,a)$ の構成は
+$f$ の番号から有効に行えるので，一様性も従う．
+\end{proof}
+
+\begin{remark}
+再帰定理は，プログラムが自分の番号 $e$ を参照するような
+算法の存在を正当化する．これは実行中に自分の番号を
+外部から取得する操作を仮定するのではない．
+以降の「自分の番号が $A$ に列挙されたら」という命令は，
+再帰定理を使って正当化する．
+\end{remark}
+
+\section{有限の正の証拠}
+\begin{lemma}[有限部分函数の存在]\label{lem:witness}
+$A\subset\mathbb N$ をc.e.かつ外延的とする．
+$e\in A$ なら，ある有限函数 $\theta\subset\varphi_e$ が存在して
+$\theta=\varphi_q$ となる番号 $q\in A$ を持つ．
+\end{lemma}
+\begin{proof}
+背理法により，$\varphi_e$ のすべての有限部分函数
+$\theta$ の番号は $A$ に属さないと仮定する．
+$A$ の列挙算法を固定する．
+各整数 $p$ をパラメータとし，次の部分計算可能函数
+$h_p$ を計算するプログラムを考える．
+\begin{enumerate}
+\item $\varphi_e$ の計算を全入力について並列実行し，
+停止が確認された入力と出力を順次 $h_p$ のグラフに追加する．
+\item 同時に $A$ の列挙を監視し，$p$ が列挙された時点で
+新しい入力に対する値の出力をすべて停止し，その時点までに
+出力した有限函数のままとする．
+\end{enumerate}
+出力の一貫性は $\varphi_e$ が函数であることから従う．
+パラメータ定理により，$p\mapsto r(p)$ を全計算可能に取って
+$\varphi_{r(p)}=h_p$ とできる．
+再帰定理によって $\varphi_p=\varphi_{r(p)}$ を満たす
+番号 $p$ を取る．
+
+$p$ が $A$ に列挙されなければ，すべての停止する
+$\varphi_e(x)$ はやがて出力されるので $\varphi_p=\varphi_e$ となる．
+外延性と $e\in A$ から $p\in A$ となり，列挙されないことに矛盾する．
+一方，$p$ が $A$ に列挙されれば，$\varphi_p$ は
+$\varphi_e$ の有限部分函数となる．仮定により
+その有限函数の番号は $A$ に属さないから $p\notin A$ となり，
+列挙されたことに矛盾する．
+従って結論が成立する．
+\end{proof}
+
+\begin{lemma}[有限証拠の上方閉性]\label{lem:up}
+$A$ がc.e.かつ外延的で，有限函数 $\theta$ の番号が
+$A$ に属するとする．
+部分計算可能函数 $g$ が $\theta\subset g$ を満たすならば，
+$g$ の任意の番号は $A$ に属する．
+\end{lemma}
+\begin{proof}
+$g$ の番号を $e$ とし，次の函数 $h_p$ を計算する．
+最初に $\theta$ の有限個の値をすべて出力する．
+同時に $A$ の列挙を監視し，$p$ が $A$ に列挙された時点で
+$g$ の全入力での計算を並列実行し，追加の停止出力を
+順次グラフに加える．$\theta\subset g$ だから矛盾する出力はない．
+この $p\mapsto h_p$ は計算可能に一様である．
+再帰定理で $\varphi_p=h_p$ となる番号 $p$ を取る．
+
+$p$ が列挙されなければ $\varphi_p=\theta$ となる．
+$\theta$ の番号が $A$ に属するので外延性から $p\in A$ となり矛盾する．
+従って $p$ は列挙され，$\varphi_p=g$ となる．
+すると $p\in A$ であり外延性から $e\in A$ となる．
+\end{proof}
+
+\section{Rice--Shapiroの定理}
+\begin{theorem}[Rice--Shapiro]\label{thm:rs}
+$A\subset\mathbb N$ を部分計算可能函数の番号の集合とする．
+次は同値である．
+\begin{enumerate}
+\item $A$ はc.e.かつ外延的である．
+\item 有効に列挙できる有限函数の族 $\mathcal W$ が存在し，
+任意の $e$ について
+\[
+ e\in A\quad\Longleftrightarrow\quad
+ \text{ある }\theta\in\mathcal W\text{ について }
+ \theta\subset\varphi_e
+\]
+が成立する．
+\end{enumerate}
+さらに，(1)が成立するときは
+\[
+ \mathcal W=\{\theta:\theta\text{ は有限函数で，}
+               q(\theta)\in A\}
+\]
+と取れる．ここで $q(\theta)$ は補題\ref{lem:finitecode}の
+有効な有限函数の番号である．
+\end{theorem}
+\begin{proof}
+(1)を仮定する．$q(\theta)$ は全計算可能で $A$ はc.e.だから，
+有限函数をすべて有効に列挙しながら
+$q(\theta)\in A$ を半決定できる．従って表示した
+$\mathcal W$ はc.e.な有限函数族である．
+$e\in A$ なら補題\ref{lem:witness}より
+$\theta\subset\varphi_e$ で $q(\theta)\in A$ なる有限函数を得る．
+逆に $\theta\in\mathcal W$ で
+$\theta\subset\varphi_e$ なら補題\ref{lem:up}から $e\in A$ となる．
+
+(2)を仮定する．右辺の条件は部分計算可能に半決定できる．
+実際，$\mathcal W$ の列挙と各 $\theta\subset\varphi_e$ の
+有限個の計算の確認を並列実行すればよい
+（補題\ref{lem:finitecode}）．よって $A$ はc.e.である．
+条件は $\varphi_e$ のグラフのみに依存するから
+$A$ は外延的である．
+\end{proof}
+
+\begin{lemma}[停止問題の決定不可能性]\label{lem:halting}
+集合 $K=\{e:\varphi_e(e)\downarrow\}$ は決定可能でない．
+\end{lemma}
+\begin{proof}
+$K$ の特性函数が全計算可能であると仮定する．
+部分計算可能函数 $D$ を次のように作る．
+入力 $n$ について，$n\in K$ なら無限に実行を続け，
+$n\notin K$ なら $0$ を出力して停止する．
+$D=\varphi_d$ なる番号 $d$ を取る．
+$d\in K$ なら $D(d)$ は停止しないので $d\notin K$，
+$d\notin K$ なら $D(d)=0$ は停止するので $d\in K$．
+いずれも矛盾する．
+\end{proof}
+
+\begin{corollary}[Riceの定理]\label{cor:rice}
+外延的な集合 $A$ が決定可能であるなら，
+$A=\varnothing$ または $A=\mathbb N$ である．
+\end{corollary}
+\begin{proof}
+$A$ が非自明で決定可能と仮定する．
+空函数のある番号 $q$ を固定し，
+空函数と $A$ への所属が異なる部分計算可能函数 $g$ の番号 $e$ を取る．
+$A$ が非自明なので，このような $g$ は必ず存在する．
+
+任意の整数 $p$ を入力とし，次の部分函数 $h_p$ を計算する．
+$h_p(z)$ の計算では，最初に $\varphi_p(p)$ が停止するまで待ち，
+停止を確認してから $\varphi_e(z)$ の計算を開始する．
+パラメータ定理によって $p$ から $h_p$ の番号を計算可能に得る．
+もし $p\notin K$ なら $h_p$ は空函数であり，
+$p\in K$ なら $h_p=g$ である．
+従ってこの番号が $A$ に属するかどうかを判定して
+$\varphi_p(p)$ の停止を判定できる．
+これは補題\ref{lem:halting}に矛盾する．
+\end{proof}
+
+\section{有限証拠を持つ性質と持たない性質}
+\begin{example}[定義域に関する存在量化]
+$A_0=\{e:\varphi_e(0)\downarrow\}$ はc.e.かつ外延的である．
+$\mathcal W$ として
+$\{\{(0,y)\}:y\in\mathbb N\}$ を取ればよい．
+一方 $T=\{e:\varphi_e\text{ は全函数}\}$ はc.e.ではない．
+実際，任意の有限函数 $\theta$ は
+それ自体が全函数でないから，Rice--Shapiroの定理によれば
+$T$ のどの元にも正の有限証拠が存在しない．
+\end{example}
+
+\begin{example}[値域に関する存在量化]
+$A_1=\{e:1\in\operatorname{range}(\varphi_e)\}$ はc.e.である．
+$\mathcal W=\{\{(x,1)\}:x\in\mathbb N\}$ とできる．
+一方 $Z=\{e:\varphi_e(x)=0\text{ がすべての定義済み }x
+\text{ で成立}\}$ はc.e.ではない．
+$Z$ は空函数を含むが，空函数の拡張に値1を持つ函数があるため，
+上方閉性に反するからである．
+\end{example}
+
+\begin{example}[有限の値域]
+$F=\{e:\operatorname{range}(\varphi_e)\text{ は有限集合}\}$ はc.e.でない．
+有限函数 $\theta$ が与えられても，その定義域外の入力で
+新しい自然数値を順次出力する部分計算可能な全函数に拡張できる．
+したがって $F$ は上方閉でなく，定理の条件を満たさない．
+\end{example}
+
+\begin{remark}
+Rice--Shapiroの定理は一般の算術的階層の全層の完全性を
+述べるものではない．たとえば全域性の $\Pi^0_2$ 完全性などには
+別の帰着論証が必要である．本稿はc.e.という第一層の
+外延的性質について完全に特徴づける．
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{soare} R. I. Soare, \emph{Recursively Enumerable Sets and Degrees},
+ Springer, 1987.
+\bibitem{rogers} H. Rogers Jr., \emph{Theory of Recursive Functions and
+ Effective Computability}, MIT Press, 1987.
+\bibitem{odifreddi} P. Odifreddi, \emph{Classical Recursion Theory},
+ North-Holland, 1989.
+\end{thebibliography}
+
+\section{到達課題の完全解答}
+\noindent\textbf{停止判定器から矛盾を作る．}
+\begin{theorem}
+入力 $x$ 上でプログラム $P$ が停止するかを
+全ての $(P,x)$ について決定する算法は存在しない．
+\end{theorem}
+\begin{proof}
+そのような判定器 $H(P,x)$ が存在すると仮定する．
+プログラム $D$ を次のように作る：
+入力 $P$ に対して $H(P,P)$ を計算し，
+「停止する」と出れば無限ループへ入り，
+「停止しない」と出れば直ちに停止する．
+$D$ 自身を入力すると，
+$H(D,D)$ が「停止する」と判定すれば
+$D(D)$ は停止せず，判定に矛盾する．
+「停止しない」と判定すれば $D(D)$ は停止して
+やはり矛盾する．
+従って停止判定器は存在しない．
+\end{proof}
+\noindent\textbf{到達確認．}
+この証明はある特定の入力上の停止を
+実際に判定しているか．
+\par\noindent\textbf{解答．}
+していない．あらゆるプログラムと入力で
+正しく答える一つの算法が存在しないことを
+自己参照の矛盾によって示している．
+\end{document}

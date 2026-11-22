@@ -1,0 +1,333 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{NP完全性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+本稿の到達目標は，多項式時間帰着の方向を正しく判断し，
+与えられた3SAT式からCLIQUE問題のグラフを自分で構成して，
+充足割当てとクリークを相互に復元できることである．
+さらにNP完全性の証明には，
+問題がNPに属することとNP困難であることの双方が必要だと理解する．
+前提は有限グラフ，Boolean論理式，計算量の初歩である．
+
+\section{充足可能性とNP}
+Boolean変数のリテラルの選言を節と呼び，節の連言をCNF式と呼ぶ．
+\begin{definition}
+$\mathrm{SAT}$ は充足可能なCNF式全体の言語である．
+$\mathrm{3SAT}$ は節の長さが高々3のCNF式に制限した言語である．
+\end{definition}
+\begin{proposition}
+$\mathrm{SAT}\in\mathbf{NP}$ かつ $\mathrm{3SAT}\in\mathbf{NP}$．
+\end{proposition}
+\begin{proof}
+証拠は各変数への真偽値の割当てである．
+各節に真となるリテラルがあるか走査すれば式の長さに線形な時間で検証できる．
+\end{proof}
+\section{Cook--Levinの定理の詳細な証明}
+\begin{lemma}[Boolean式のCNF化]
+$\neg,\wedge,\vee$ からなる任意のBoolean式 $F$ に対し，
+$F$ と充足可能性が同値で，長さが $O(|F|)$ のCNF式 $C_F$ を
+$O(|F|)$ 時間で構成できる．
+\end{lemma}
+\begin{proof}
+式を二項演算の構文木とみなす．各葉には元の変数を対応させ，
+各内部節点に新変数 $z$ を一つ対応させる．
+節点 $z$ の二つの子に対応する変数を $u,v$ とすると，
+$z\leftrightarrow(u\wedge v)$ を次の三節で表せる．
+\[
+ (\neg z\vee u)\wedge(\neg z\vee v)
+ \wedge(z\vee\neg u\vee\neg v).
+\]
+$z\leftrightarrow(u\vee v)$ は
+\[
+ (z\vee\neg u)\wedge(z\vee\neg v)
+ \wedge(\neg z\vee u\vee v)
+\]
+で表せ，$z\leftrightarrow\neg u$ は
+$(\neg z\vee\neg u)\wedge(z\vee u)$ で表せる．
+全節点の制約と根に対応する変数 $z_F$ の一項節を連言した式を
+$C_F$ とする．$F$ を満たす割当ては各節点の真偽値を設定することにより
+$C_F$ の充足割当てへ延長できる．
+逆に $C_F$ を満たす割当てでは全節点が各演算の真偽値に一致し，
+根は真なので $F$ も真である．
+一節点当たり一定個数の節で足りるから長さと構成時間は $O(|F|)$ である．
+\end{proof}
+\begin{theorem}[Cook--Levin]
+多項式時間非決定的Turing機械で判定できる任意の言語 $L$ に対し，
+多項式時間で計算できるCNF式への写像
+$x\mapsto\Phi_x$ が存在して
+\[
+ x\in L\quad\Longleftrightarrow\quad\Phi_x\text{ は充足可能}
+\]
+となる．従ってSATはNP完全である．
+\end{theorem}
+\begin{proof}
+$L$ を判定する非決定的Turing機械 $M$ を固定する．
+ここではNPの機械モデルとして一テープ非決定性Turing機械を用いる．
+標準的な多テープ機械との多項式時間同値性は別に用意する
+機械モデルの基本定理であり，本証明は一テープモデル内で完結する．
+また受理・拒否状態にはその状態のまま停止せずに留まる遷移を加え，
+全ての枝を同じ時刻まで延長できるようにする．
+入力長を $n$ とし，全ての受理枝を含む計算枝のステップ数の上界を
+$T=p(n)\ge n+1$ とする．ヘッドが訪れる位置は入力を含む
+$N=n+2T+3$ 個のテープセルからなる区間に収まる．
+
+テープのアルファベットを $\Gamma$，状態集合を $Q$ とする．
+一つのセルに書かれる記号を，ヘッドのないときは $a\in\Gamma$，
+ヘッドがあるときは $(q,a)\in Q\times\Gamma$ と符号化する．
+この有限集合を $\Sigma=\Gamma\sqcup(Q\times\Gamma)$ とする．
+時刻 $t=0,\ldots,T$，セル $j=1,\ldots,N$，$\sigma\in\Sigma$
+に対して変数 $X_{t,j,\sigma}$ を設け，
+「時刻 $t$ のセル $j$ の値が $\sigma$ である」を意味させる．
+
+次に計算全体が正当で受理されることと同値なBoolean式 $F_x$ を作る．
+まず各 $(t,j)$ においてちょうど一つの $X_{t,j,\sigma}$ が真となることを
+\[
+ \left(\bigvee_{\sigma\in\Sigma}X_{t,j,\sigma}\right)
+ \wedge\bigwedge_{\sigma\ne\tau}
+ (\neg X_{t,j,\sigma}\vee\neg X_{t,j,\tau})
+\]
+で課す．さらに各行のヘッド印付き記号がちょうど一箇所で現れるという
+条件を，同じく「少なくとも一つ」と「二つは同時に真でない」の式で課す．
+初期行 $t=0$ に入力 $x$，初期状態，空白セルの符号を指定し，
+最終行 $t=T$ に受理状態のヘッド印が現れることを課す．
+
+遷移条件を明示する．$M$ の有限遷移表に
+$(q,a)\mapsto(q',b,d)$（$d\in\{-1,0,1\}$）があるとする．
+時刻 $t$ にヘッドが位置 $j$ にあるとき，$d=0$ なら
+次の行の同じセルが $(q',b)$ であることを要求する．
+$d=\pm1$ なら，時刻 $t$ に隣接セル $j+d$ に記号 $c$ が書かれている
+各 $c\in\Gamma$ について，次の行で
+位置 $j$ が単なる記号 $b$，位置 $j+d$ が $(q',c)$ となることを課す．
+どちらの場合も，これら以外の全セルは同じ通常のテープ記号を保つとする．
+この具体的な条件は，各 $X$ とその否定の連言・選言による式で表せる．
+各遷移の選択，ヘッド位置 $j$，および $d\ne0$ のときの隣接記号 $c$
+についての有限選言を取り，各 $t<T$ でその選言が真であることを課す．
+行が正当であるという既出の条件と合わせると，隣接二行の関係は
+正に $M$ の許された遷移の一つとなる．
+
+$N=O(T)$，$|Q|,|\Gamma|$ は固定の定数である．
+一つの遷移候補の記述は高々 $O(N|\Gamma|)$ の長さで，
+候補は一時刻当たり $O(N|Q||\Gamma|^2)$ 個しかない．
+行の一意性制約も高々 $O(TN^2|\Sigma|^2)$ の長さである．
+従って $|F_x|$ は $T$ の多項式であり，
+すべての文字列 $x$ から $F_x$ を多項式時間で生成できる．
+
+$M$ が $x$ を受理すれば，受理枝の各時刻の配置を
+$X$ に割り当てると $F_x$ は真である．
+逆に $F_x$ が真なら，行の一意性条件から配置がただ一つ決まり，
+遷移制約から隣接行は $M$ の正当な一遷移で結ばれる．
+初期条件と最終受理条件から，これは $x$ の受理枝である．
+よって $x\in L$ と $F_x$ の充足可能性は同値である．
+
+前補題のCNF化により $F_x$ から $O(|F_x|)$ の大きさのCNF式
+$\Phi_x$ を構成できる．充足可能性は保たれるので
+$L\le_p\mathrm{SAT}$ である．
+SATがNPに属することは節ごとの真偽判定により既知だから
+SATはNP完全である．
+\end{proof}
+\begin{remark}
+ここでは多項式サイズの大きな選言を直接構成したため，
+局所窓の符号化で必要になる隣接窓の整合性の証明を回避できた．
+得られる式は最適なサイズである必要はなく，
+多項式時間帰着として十分である．
+\end{remark}
+
+
+\section{SATから3SATへの帰着}
+\begin{theorem}
+$\mathrm{3SAT}$ はNP完全である．
+\end{theorem}
+\begin{proof}
+$\mathrm{3SAT}\in\mathbf{NP}$ は既に示した．
+SATの節 $(\ell_1\vee\cdots\vee\ell_m)$（$m\ge4$）に対し
+新変数 $z_1,\ldots,z_{m-3}$ を用いて
+\[
+ (\ell_1\vee\ell_2\vee z_1)\wedge
+ \bigwedge_{j=1}^{m-4}(\neg z_j\vee\ell_{j+2}\vee z_{j+1})
+ \wedge(\neg z_{m-3}\vee\ell_{m-1}\vee\ell_m)
+\]
+に置換する．元の節が真なら，真のリテラルの位置に応じて
+$z_j$ を前方では真，後方では偽となるよう選べる．
+逆に元の節が全て偽なら初項から $z_1$ が真，
+中間項から順次 $z_j$ が真となり，終項が偽となる．
+従って充足可能性は同値であり，変換サイズは元の節長に線形である．
+二項以下の節はそのまま用いればよい．
+\end{proof}
+
+
+\section{3SATからグラフ問題への帰着}
+\begin{theorem}[CLIQUEのNP完全性]
+入力が有限無向グラフ $G$ と整数 $k$ であるとき，
+$k$ 頂点の完全部分グラフの存在を判定する問題
+$\mathrm{CLIQUE}$ はNP完全である．
+\end{theorem}
+\begin{proof}
+頂点集合が証拠となり，各頂点対の隣接性を調べれば
+多項式時間で検証できるから $\mathrm{CLIQUE}\in\mathbf{NP}$．
+3SAT式 $\Phi=C_1\wedge\cdots\wedge C_m$ の各節に現れる
+各リテラルの出現箇所を頂点とする．
+異なる節の頂点で，リテラルが互いに否定関係にないもの同士を
+辺で結ぶ．同じ節の頂点間には辺を結ばない．
+このグラフは式の長さの多項式時間で構成できる．
+$\Phi$ が充足可能なら各節で真となるリテラルを一つ選べる．
+選んだ $m$ 頂点のリテラルは互いに矛盾しないから完全グラフをなす．
+逆に大きさ $m$ の完全部分グラフは各節からちょうど一頂点を含み，
+互いに反対のリテラルを含まない．選んだリテラルを真にする
+部分的真偽割当てを残る変数へ拡張すれば $\Phi$ を充足する．
+従って $\mathrm{3SAT}\le_p\mathrm{CLIQUE}$．
+3SATのNP完全性から結論を得る．
+\end{proof}
+\begin{corollary}[独立集合と頂点被覆のNP完全性]
+$\mathrm{INDEPENDENT\ SET}$ と $\mathrm{VERTEX\ COVER}$ はともにNP完全である．
+\end{corollary}
+\begin{proof}
+$G$ の $k$-cliqueは補グラフ $\overline G$ の $k$-独立集合と同値である．
+また $G$ の独立集合 $S$ と補集合 $V\setminus S$ が頂点被覆であることは
+同値である．いずれの変換も多項式時間でできる．
+証拠の検証も多項式時間だから二問題はNPに属し，
+前定理からNP困難でもある．
+\end{proof}
+
+
+\section{3SATからCLIQUEへの帰着を具体化する}
+\begin{example}[グラフを作ってから充足性を判定する]\label{ex:sat-to-clique}
+次のCNF式を考える：
+\[
+ \Phi=(x\vee y)\wedge(\neg x\vee z)
+       \wedge(\neg y\vee\neg z).
+\]
+各節の各リテラルの出現箇所を頂点として，
+\[
+ C_1:\ (1,x),(1,y),\quad
+ C_2:\ (2,\neg x),(2,z),\quad
+ C_3:\ (3,\neg y),(3,\neg z)
+\]
+の計6頂点を作る．異なる節に属し，
+リテラルが否定関係にない頂点対だけを辺で結ぶ．
+同じ節の頂点間には辺を結ばない．
+ここで $(1,x)$，$(2,z)$，$(3,\neg y)$ は
+相互に否定関係になく，三つの節が異なるので，
+この3頂点は3-cliqueをなす．
+また $x=\mathrm{真}$，$y=\mathrm{偽}$，
+$z=\mathrm{真}$ とすれば三つの節を同時に満たす．
+このように選んだクリークの各リテラルを
+真と指定することで充足割当てが得られる．
+\end{example}
+\begin{proposition}[上の帰着における両方向の復元]
+$C_1,\ldots,C_m$ を空でない節とし，
+各リテラル出現箇所を頂点とするグラフを
+上と同じ規則で作る．このグラフが
+$m$ 頂点のクリークを持つことと，
+元のCNF式が充足可能であることは同値である．
+\end{proposition}
+\begin{proof}
+充足割当てがあれば，各節で真となるリテラルを
+一つずつ選ぶ．同じ変数についてリテラルとその否定が
+同時に真になることはないので，
+選んだ頂点は互いに辺で結ばれ，
+$m$-cliqueをなす．逆に $m$-clique があれば，
+同じ節には辺がないので各節からちょうど一つの頂点が
+選ばれている．異なる節の選択リテラルは互いに
+否定関係になく，そのすべてが真となる部分割当てを
+矛盾なく定められる．残る変数の値を任意に補えば
+各節に真のリテラルが存在するので元の式は充足可能である．
+\end{proof}
+\begin{example}[充足不能な場合の比較]
+$\Phi=(x)\wedge(\neg x)$ には
+$(1,x),(2,\neg x)$ の二頂点しかなく，
+相互に否定関係なので辺は引かれない．
+従って2-cliqueは存在せず，元の式も充足不能である．
+\end{example}
+
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題．}
+$\Psi=(x\vee y)\wedge(\neg x\vee\neg y)$ に対して
+CLIQUEへの帰着を実施し，生成したグラフの頂点と辺を
+列挙せよ．目標とするクリークの大きさを述べ，
+クリークから一つの充足割当てを構成せよ．
+
+\medskip\noindent\textbf{解答．}
+頂点は
+$(1,x)$，$(1,y)$，$(2,\neg x)$，
+$(2,\neg y)$ の4つである．異なる節からの頂点対は
+4組あるが，$(1,x)$ と $(2,\neg x)$，
+$(1,y)$ と $(2,\neg y)$ は否定関係にあるので辺がない．
+従って辺は
+\[
+ \{(1,x),(2,\neg y)\},\qquad
+ \{(1,y),(2,\neg x)\}
+\]
+の二つである．節数は2なので目標は2-cliqueである．
+例えば最初の辺から $x=\mathrm{真}$，
+$y=\mathrm{偽}$ を選べば，
+両方の節が真になる．
+
+\end{document}
