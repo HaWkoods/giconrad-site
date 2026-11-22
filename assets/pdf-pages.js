@@ -3,6 +3,8 @@
 (function(){
  const LIB="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js";
  const WORKER="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+ const CMAPS="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/";
+ const FONTS="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/";
  let loading;
  function loadLibrary(){
   if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);
@@ -18,7 +20,11 @@
   container.replaceChildren();
   const message=document.createElement("p");message.className="pdfRenderStatus";message.setAttribute("role","status");message.textContent="ページ画像を準備しています…";container.append(message);
   try{
-   const lib=await loadLibrary();const task=lib.getDocument(url);const pdf=await task.promise;
+   const lib=await loadLibrary();
+   // pLaTeX/dvipdfmx PDFs can use Japanese CID fonts that need Adobe CMaps.
+   // Without these maps, PDF.js may show only Latin letters and mathematics.
+   const task=lib.getDocument({url,cMapUrl:CMAPS,cMapPacked:true,standardFontDataUrl:FONTS,useSystemFonts:true});
+   const pdf=await task.promise;
    const total=Math.min(pdf.numPages,maxPages);
    const pages=document.createElement("div");pages.className="pdfPageList";
    for(let i=1;i<=total;i++){
