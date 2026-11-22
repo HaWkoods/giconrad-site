@@ -507,6 +507,19 @@
       ]
     },
     {
+      "id": "28.020",
+      "title": "Lebesgue積分の変数変換公式",
+      "fields": [
+        "measure-theory",
+        "manifold-analysis"
+      ],
+      "topics": [
+        "measure",
+        "integration",
+        "differential-geometry"
+      ]
+    },
+    {
       "id": "30.010",
       "title": "複素微分の幾何学",
       "fields": [
