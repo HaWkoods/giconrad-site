@@ -1,0 +1,409 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{コンパクト性定理とモデル理論の基礎}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，コンパクト性定理，一階理論とモデル．
+本稿の具体的な到達課題は，有限充足可能性を証明して無限モデルを構成する．
+
+\section{構造と初等部分構造}
+
+本稿では可算一階言語 $\mathcal L$ を扱い，
+一階述語論理の健全性・完全性定理を既知とする．
+
+\begin{definition}
+$\mathcal L$-構造 $\mathcal M,\mathcal N$ に対し，
+$M\subset N$ が成り立ち，
+$\mathcal M$ の定数・関数・関係の解釈が
+$\mathcal N$ のものの制限になっているとき，
+$\mathcal M$ を $\mathcal N$ の\emph{部分構造}といい
+$\mathcal M\subset\mathcal N$ と書く．
+\end{definition}
+
+\begin{definition}
+部分構造 $\mathcal M\subset\mathcal N$ が
+\emph{初等部分構造}であるとは，
+任意の一階論理式 $\varphi(x_1,\dots,x_k)$ と
+$a_1,\dots,a_k\in M$ に対し
+\[
+ \mathcal M\models\varphi(a_1,\dots,a_k)
+ \iff
+ \mathcal N\models\varphi(a_1,\dots,a_k)
+\]
+が成立することをいう．
+このとき $\mathcal M\preccurlyeq\mathcal N$ と書く．
+\end{definition}
+
+\begin{proposition}[初等部分構造の基本性質]\label{prop:elementary}
+$\mathcal M\preccurlyeq\mathcal N$ なら，
+両構造は全ての一階文について同じ真理値を持つ．
+また
+$\mathcal M\preccurlyeq\mathcal N$，
+$\mathcal N\preccurlyeq\mathcal P$ なら
+$\mathcal M\preccurlyeq\mathcal P$ である．
+\end{proposition}
+\begin{proof}
+文は自由変数のない論理式なので，
+初等部分構造の定義をそのまま適用すれば前半が従う．
+後半は，任意の $\varphi$ と $M$ の元からなる組について
+\[
+ \mathcal M\models\varphi(\boldsymbol a)
+ \iff\mathcal N\models\varphi(\boldsymbol a)
+ \iff\mathcal P\models\varphi(\boldsymbol a)
+\]
+を用いればよい．
+\end{proof}
+
+\section{コンパクト性定理}
+
+\begin{theorem}[一階論理のコンパクト性定理]\label{thm:compactness}
+一階言語の文集合 $T$ がモデルを持つための必要十分条件は，
+$T$ の任意の有限部分集合がモデルを持つことである．
+\end{theorem}
+\begin{proof}
+$T$ がモデル $\mathcal M$ を持てば，
+任意の有限部分集合も $\mathcal M$ によって満たされる．
+逆に任意の有限部分集合がモデルを持つとする．
+もし $T$ がモデルを持たなければ，
+一階述語論理の完全性定理から $T$ は矛盾する．
+従ってある文 $\varphi$ について
+$T\vdash\varphi$ と $T\vdash\neg\varphi$ が成り立つ．
+しかし形式的証明は有限長なので，
+この二つの証明で使われた $T$ の前提は有限個に限られる．
+その全体を $T_0\subset T$ と置けば
+$T_0$ は矛盾する．
+健全性定理によって $T_0$ はモデルを持たず，
+仮定に反する．
+従って $T$ はモデルを持つ．
+\end{proof}
+
+\begin{corollary}[無限モデルの存在]\label{cor:infinite}
+一階理論 $T$ が任意に大きい有限モデルを持つなら，
+$T$ は無限モデルを持つ．
+\end{corollary}
+\begin{proof}
+言語に等号を加え，各 $n\ge1$ に対して
+$\sigma_n$ を「少なくとも $n$ 個の異なる元が存在する」
+という文とする．
+\[
+ \sigma_n=\exists x_1\cdots\exists x_n
+ \bigwedge_{1\le i<j\le n}\neg(x_i=x_j).
+\]
+$T'=T\cup\{\sigma_n:n\ge1\}$ と置く．
+$T'$ の任意の有限部分集合は，
+有限個の $\sigma_n$ のうち最大の $n$ 以上の
+元を持つ $T$ の有限モデルによって満たされる．
+コンパクト性定理から $T'$ はモデルを持つ．
+このモデルは全ての $\sigma_n$ を満たすので
+無限集合を台集合とする．
+\end{proof}
+
+\begin{example}[有限グラフから無限グラフへ]
+任意に大きい有限グラフに共通する一階公理系であって，
+任意の有限部分がモデルを持つものは，
+無限グラフのモデルを持つ．
+\end{example}
+\begin{proof}
+頂点集合と二項隣接関係を持つグラフを
+一階言語 $\{E\}$ の構造として表す．
+有限個の公理がモデルを持つなら，
+その有限部分の充足可能性から
+コンパクト性定理により全公理のモデルを得る．
+さらに「頂点が少なくとも $n$ 個」を全ての $n$ について
+加えた理論が有限充足可能なら，
+系\ref{cor:infinite}の証明から無限グラフのモデルを得る．
+\end{proof}
+
+\section{有限性と連結性の表現の限界}
+
+\begin{theorem}[有限構造全体は公理化できない]
+\label{thm:finiteness}
+等号を含む一階言語において，
+有限構造全体をちょうどモデルとする文集合は存在しない．
+\end{theorem}
+\begin{proof}
+そのような文集合 $T$ が存在すると仮定する．
+$T$ は全ての有限構造をモデルとして持つので，
+任意の自然数 $n$ に対して，
+$T$ は少なくとも $n$ 元を持つモデルを持つ．
+系\ref{cor:infinite}によって $T$ は無限モデルを持つ．
+これは $T$ のモデルが有限構造に限られるという仮定に反する．
+\end{proof}
+
+\begin{theorem}[無向グラフの連結性は一階公理化できない]
+\label{thm:connectivity}
+単純無向グラフのクラスのうち，連結グラフ全体を
+ちょうどモデルとして持つ一階文の集合は存在しない．
+\end{theorem}
+\begin{proof}
+連結グラフ全体を公理化する文集合 $T$ があると仮定する．
+新しい定数記号 $a,b$ を加える．
+自然数 $n\ge1$ に対し，$\rho_n(a,b)$ を
+「$a$ と $b$ の間に長さ $n$ 以下の道は存在しない」
+という文とする．
+長さ $n$ 以下の道の存在は，
+頂点変数 $x_1,\dots,x_{n-1}$ を用いる
+有限個の存在式の論理和によって表現できる．
+$T'=T\cup\{\rho_n(a,b):n\ge1\}$ とする．
+任意の有限部分集合に現れる $\rho_n$ の最大添字を $N$ とする．
+長さが $N+1$ 以上の単純な有限道グラフを取り，
+その両端の頂点を $a,b$ と解釈する．
+このグラフは連結なので $T$ を満たし，
+$a,b$ の距離が $N$ より大きいため
+有限個の $\rho_n$ も満たす．
+従って $T'$ は有限充足可能である．
+コンパクト性定理から $T'$ はモデルを持つ．
+そのモデルでは全ての $n$ について
+$a,b$ の間に長さ $n$ 以下の道が存在しないので，
+$a,b$ は同じ連結成分に属さない．
+一方モデルは $T$ を満たすので連結であるはずであり，
+矛盾する．
+\end{proof}
+
+\section{Tarski--Vaughtの判定条件}
+
+\begin{theorem}[Tarski--Vaught判定条件]\label{thm:tarski-vaught}
+$\mathcal M\subset\mathcal N$ を一階言語の部分構造とする．
+次は同値である．
+\begin{enumerate}
+\item $\mathcal M\preccurlyeq\mathcal N$．
+\item 任意の論理式 $\varphi(x,\boldsymbol y)$ と
+$\boldsymbol a\in M$ に対し，
+$\mathcal N\models\exists x\,\varphi(x,\boldsymbol a)$
+なら，ある $b\in M$ で
+$\mathcal N\models\varphi(b,\boldsymbol a)$ となる．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) とする．
+$\mathcal N\models\exists x\,\varphi(x,\boldsymbol a)$ なら，
+初等性から
+$\mathcal M\models\exists x\,\varphi(x,\boldsymbol a)$ である．
+従って $M$ に証人 $b$ が存在し，
+再び初等性によって
+$\mathcal N\models\varphi(b,\boldsymbol a)$ となる．
+
+(2) を仮定する．
+任意の論理式 $\psi$ と $M$ の元の割当てについて，
+$\mathcal M$ と $\mathcal N$ の満足関係が一致することを，
+論理式の構成に関する帰納法で示す．
+原子論理式については $\mathcal M$ が部分構造なので
+項の評価と関係の解釈が一致する．
+否定と命題結合子については帰納法の仮定から従う．
+存在量化 $\exists x\,\varphi(x,\boldsymbol a)$ を考える．
+$\mathcal M$ で成立すれば証人 $b\in M$ が存在し，
+帰納法の仮定から $\mathcal N$ でも成立する．
+逆に $\mathcal N$ で成立すれば (2) によって
+証人 $b\in M$ を取れる．
+帰納法の仮定から $\mathcal M\models\varphi(b,\boldsymbol a)$
+となるので $\mathcal M$ でも存在文が成立する．
+全称量化は否定と存在量化で表せる．
+よって全ての論理式について初等性が成立する．
+\end{proof}
+
+\section{下方L\"owenheim--Skolemの定理}
+
+\begin{theorem}[可算言語の下方L\"owenheim--Skolem]
+\label{thm:ls}
+$\mathcal N$ を可算一階言語の無限構造とし，
+$A\subset N$ を可算部分集合とする．
+このとき $A\subset M\subset N$ を満たす
+可算な初等部分構造 $\mathcal M\preccurlyeq\mathcal N$
+が存在する．
+\end{theorem}
+\begin{proof}
+$A$ と全ての定数記号の解釈を含む可算集合 $A_0$ を取る．
+$A_0$ が空なら任意の一元を加える．
+$A_k$ が可算とする．
+まず全ての関数記号の有限項によって
+$A_k$ を閉じた最小の部分集合 $B_k$ を取る．
+言語が可算で各関数の引数の数が有限なので，
+有限回の関数記号適用で得られる元の集合は可算である．
+従って $B_k$ は可算となる．
+
+次に全ての論理式 $\varphi(x,\boldsymbol y)$ と
+$\boldsymbol a\in B_k$ について，
+$\mathcal N\models\exists x\,\varphi(x,\boldsymbol a)$
+が成り立つ場合には証人 $b_{\varphi,\boldsymbol a}\in N$
+を一つ選ぶ．
+論理式全体と有限長の $B_k$ の組は可算なので，
+選んだ証人の集合も可算である．
+$A_{k+1}$ を $B_k$ と証人全体の和集合とする．
+\[
+ M=\bigcup_{k=0}^\infty A_k
+\]
+は可算集合である．
+全ての定数・関数の解釈に閉じているので
+$\mathcal N$ の部分構造 $\mathcal M$ を定める．
+任意の $\boldsymbol a\in M$ は有限個の元からなるので
+ある $A_k$ に全て属する．
+その $\boldsymbol a$ について
+$\mathcal N$ で存在文が成立すれば，
+対応する証人は $A_{k+1}\subset M$ に属する．
+従ってTarski--Vaught判定条件を満たし，
+$\mathcal M\preccurlyeq\mathcal N$ となる．
+\end{proof}
+
+\begin{corollary}[無限構造の可算モデル]\label{cor:countable-model}
+可算言語の一階理論が無限モデルを持つなら，
+可算無限モデルを持つ．
+\end{corollary}
+\begin{proof}
+無限モデル $\mathcal N$ の中に可算無限集合 $A$ を選ぶ．
+定理\ref{thm:ls}から $A$ を含む可算な初等部分構造
+$\mathcal M$ が存在する．
+$A$ が無限なので $M$ は可算無限であり，
+初等性によって $\mathcal N$ と同じ理論の文を満たす．
+従って所望のモデルである．
+\end{proof}
+
+\section{非標準自然数モデル}
+
+\begin{theorem}[算術の非標準モデルの存在]\label{thm:nonstandard}
+自然数の構造
+$\mathbb N=(\mathbb N,0,1,+,\cdot,<)$ の
+一階理論を
+\[
+ T_{\mathrm{true}}
+ =\{\sigma:\mathbb N\models\sigma\}
+\]
+とする．
+このとき $T_{\mathrm{true}}$ のモデルであって，
+$\mathbb N$ と同型でない可算モデルが存在する．
+\end{theorem}
+\begin{proof}
+新しい定数記号 $c$ を加え，
+\[
+ T'=T_{\mathrm{true}}\cup
+ \{\underline n<c:n\in\mathbb N\}
+\]
+を考える．ここで $\underline n$ は
+自然数 $n$ を表す数詞である．
+任意の有限部分集合では
+$\underline n<c$ という条件は有限個しか現れないので，
+$c$ をそれら全てより大きい自然数として解釈すれば
+標準モデル $\mathbb N$ を拡張して満たせる．
+従って $T'$ は有限充足可能である．
+コンパクト性定理から $T'$ はモデル $\mathcal M$ を持つ．
+このモデルの元 $c^{\mathcal M}$ は
+全ての標準数詞より大きい．
+もし $\mathcal M\cong\mathbb N$ なら，
+$c^{\mathcal M}$ はある自然数 $m$ に写るが，
+$\underline m<c$ の解釈は $m<m$ となり矛盾する．
+従って同型でない．
+定理\ref{thm:ls}によって
+$c^{\mathcal M}$ を含む可算初等部分構造を取れば，
+この性質を保つ可算モデルが得られる．
+\end{proof}
+
+\begin{remark}
+完全性定理が主張するのは「論理的帰結が全て証明可能」
+ということであり，個々の理論が全ての文を決定することではない．
+コンパクト性とL\"owenheim--Skolemの定理は，
+無限構造の一階理論が同型を除く一意性を
+一般に保証できないことを示す．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{コンパクト性による無限モデルの存在．}
+\begin{proposition}[有限充足可能性からモデルを構成する]
+無限モデルを持つ一階理論 $T$ に
+互いに異なる新定数 $c_1,c_2,\ldots$ を加え，
+\[
+T'=T\cup\{c_i\ne c_j:i<j\}
+\]
+と置く．このとき $T'$ はモデルを持つ．
+\end{proposition}
+\begin{proof}
+$T'$ の任意の有限部分理論には有限個の
+新定数の不等式しか現れない．
+$T$ の無限モデルから相異なる元を必要個数だけ選び，
+それぞれの定数に解釈すれば有限部分理論を満たす．
+よってコンパクト性定理により $T'$ にモデルが存在する．
+\end{proof}
+\begin{proposition}[有限構造と無限構造の違い]
+言語に一変数関数記号 $f$ があるとする．
+「$f$ が単射なら全射である」を表す文
+\[
+\bigl[\forall x\forall y(f(x)=f(y)\to x=y)\bigr]
+\to\bigl[\forall y\exists x(f(x)=y)\bigr]
+\]
+は全ての有限構造で真だが，全ての構造で妥当ではない．
+\end{proposition}
+\begin{proof}
+有限集合から自身への単射は鳩ノ巣原理から全射である．
+一方，自然数集合上の $f(n)=n+1$ は単射だが
+0を像に持たないので文は偽となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+「台集合が少なくとも $n$ 元ある」を表す一階文を書け．
+\par\noindent\textbf{解答．}
+$\exists x_1\cdots\exists x_n
+\bigwedge_{1\le i<j\le n}(x_i\ne x_j)$ である．
+\end{document}

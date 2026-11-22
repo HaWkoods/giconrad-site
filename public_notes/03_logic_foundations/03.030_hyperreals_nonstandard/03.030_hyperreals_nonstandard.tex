@@ -1,0 +1,326 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{超実数の構成と超準解析}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，超積，超フィルター，順序体．
+本稿の具体的な到達課題は，超実数の無限小・無限大を具体的に構成して標準部分を計算する．
+
+\section{超フィルターと超冪}
+本稿では自然数集合 $\mathbb N$ 上の自由超フィルター $\mathcal U$ を固定する．
+その存在には超フィルター補題を用いる．
+\begin{definition}
+実数列について
+\[
+ (x_n)\sim(y_n)\iff\{n:x_n=y_n\}\in\mathcal U
+\]
+と定め，商集合を
+$ {}^*\mathbb R=\mathbb R^{\mathbb N}/{\sim}$ と書く．
+\end{definition}
+\begin{lemma}\label{lem:ultra}
+任意の $A\subset\mathbb N$ について，
+$A$ とその補集合のちょうど一方が $\mathcal U$ に属する．
+また有限個の集合の和集合が $\mathcal U$ に属すれば，
+そのうち一つが $\mathcal U$ に属する．
+\end{lemma}
+\begin{proof}
+前半は超フィルターの極大性による．
+後半が偽なら各集合の補集合が $\mathcal U$ に属する．
+その共通部分は和集合の補集合に等しいので，
+和集合とその補集合が共に属することとなり矛盾する．
+\end{proof}
+\begin{theorem}[超実数体]\label{thm:field}
+$ {}^*\mathbb R$ は成分ごとの演算で体となり，
+\[
+ [(x_n)]<[(y_n)]\iff\{n:x_n<y_n\}\in\mathcal U
+\]
+により全順序体となる．
+定数列は実数体を順序部分体として埋め込む．
+\end{theorem}
+\begin{proof}
+$\sim$ の反射律・対称律は明らかであり，
+推移律はフィルターの有限共通部分性から従う．
+同じ理由で和・積は代表元に依存せず，
+実数の環公理が商へ移る．
+非零元 $x=[(x_n)]$ について
+$A=\{n:x_n\ne0\}\in\mathcal U$ である．
+$n\in A$ で $y_n=x_n^{-1}$，その他では $y_n=0$ とすると
+$xy=1$ なので体である．
+任意の二元に対する三分割
+$\{x_n<y_n\},\{x_n=y_n\},\{x_n>y_n\}$ から
+補題\ref{lem:ultra}を用いて三分律を得る．
+順序と演算の整合性は対応する実数上の不等式を
+有限個組み合わせて確認できる．
+定数列が体の演算と順序を保つことは定義から従う．
+\end{proof}
+
+\section{無限小と標準部分}
+\begin{definition}
+$x\in{}^*\mathbb R$ が無限小であるとは
+任意の実数 $\varepsilon>0$ に対して $|x|<\varepsilon$ となることをいう．
+ある $M>0$ について $|x|<M$ なら有限元という．
+\end{definition}
+\begin{example}
+$\epsilon=[(1/n)]$ は非零無限小で，
+$H=[(n)]$ は任意の実数より大きい．
+さらに $\epsilon H=1$ となる．
+\end{example}
+\begin{proof}
+自由超フィルターは全ての補有限集合を含むので，
+任意の $N$ について $0<\epsilon<1/N$，$H>N$ となる．
+実数のArchimedes性から主張が従い，
+積の等式は成分ごとの計算による．
+\end{proof}
+\begin{theorem}[標準部分定理]\label{thm:standard}
+任意の有限元 $x$ に対し
+$x-r$ が無限小となる実数 $r$ がただ一つ存在する．
+これを $\operatorname{st}(x)$ と書く．
+有限元 $x,y$ について
+\[
+ \operatorname{st}(x+y)=\operatorname{st}(x)+\operatorname{st}(y),\quad
+ \operatorname{st}(xy)=\operatorname{st}(x)\operatorname{st}(y)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$A=\{r\in\mathbb R:r\le x\}$ は空でなく上に有界なので
+$s=\sup A$ が存在する．任意の $\varepsilon>0$ に対し
+$s-\varepsilon<r\le x$ となる $r\in A$ があり，
+$s+\varepsilon\notin A$ だから
+$s-\varepsilon<x<s+\varepsilon$ である．
+従って $x-s$ は無限小である．
+二つの実数がこの条件を満たせば差の絶対値は
+任意の $2\varepsilon$ より小さく，一意性が従う．
+有限元の和・積は有限であり，
+無限小の和および有限元と無限小の積は無限小である．
+$x=r+\delta$，$y=s+\eta$ と書けば
+$x+y-(r+s)=\delta+\eta$ および
+$xy-rs=r\eta+s\delta+\delta\eta$ は無限小なので，
+一意性から演算公式を得る．
+\end{proof}
+
+\section{L\l{}o\'sの定理と移行原理}
+\begin{theorem}[L\l{}o\'sの定理]\label{thm:los}
+順序体の一階言語
+$\{0,1,+,\cdot,<\}$ の論理式
+$\varphi(x_1,\dots,x_m)$ と
+$a_j=[(a_{j,n})]$ に対し，
+\[
+ {}^*\mathbb R\models\varphi(a_1,\dots,a_m)
+ \iff
+ \{n:\mathbb R\models\varphi(a_{1,n},\dots,a_{m,n})\}
+ \in\mathcal U.
+\]
+\end{theorem}
+\begin{proof}
+項についての帰納法から，超実数の項評価は
+実数で成分ごとに評価した列の同値類である．
+従って原子論理式の等号・不等号では定義から成立する．
+論理式に関する構造帰納法を行う．
+否定は超フィルターの二値性，
+連言は有限共通部分性によって処理できる．
+残りの命題結合子は否定と連言で表せる．
+存在文が超実数で真なら証人 $b=[(b_n)]$ を取り，
+帰納法の仮定から各成分における存在文の真理集合が
+$\mathcal U$ に属する．
+逆に実数での存在文の真理集合が $\mathcal U$ に属すれば，
+その集合の各添字 $n$ で証人 $b_n$ を一つ選び，
+それ以外の添字では $b_n=0$ と置く．
+帰納法の仮定から $[(b_n)]$ が超実数の証人となる．
+全称量化は否定と存在量化で表せるので証明が完了する．
+\end{proof}
+\begin{corollary}[移行原理]\label{cor:transfer}
+自由変数を持たない任意の一階文 $\sigma$ について
+\[
+ \mathbb R\models\sigma\iff{}^*\mathbb R\models\sigma.
+\]
+\end{corollary}
+\begin{proof}
+各成分に同じ実数体を用いるので，
+文の真理集合は $\mathbb N$ または空集合となる．
+前者だけが $\mathcal U$ に属するから結論が従う．
+\end{proof}
+
+\section{連続性と微分可能性}
+\begin{definition}
+$A\subset\mathbb R$ と $f:A\to\mathbb R$ について
+\[
+ {}^*A=\{[(x_n)]:x_n\in A\text{ for all }n\},\quad
+ {}^*f([(x_n)])=[(f(x_n))]
+\]
+と定める．
+\end{definition}
+\begin{lemma}
+$ {}^*f$ は代表列に依存しない．
+\end{lemma}
+\begin{proof}
+代表列が等しい添字集合は $\mathcal U$ に属し，
+その集合上では関数値も等しいからである．
+\end{proof}
+\begin{theorem}[連続性の超準的特徴づけ]\label{thm:cont}
+$f:A\to\mathbb R$，$a\in A$ について，
+$f$ が $a$ で連続であることと，
+$x\in{}^*A$，$x-a$ が無限小なら
+$ {}^*f(x)-f(a)$ も無限小であることは同値である．
+\end{theorem}
+\begin{proof}
+連続なら任意の $\varepsilon>0$ について
+$\delta>0$ が存在し，
+$|y-a|<\delta$ なら $|f(y)-f(a)|<\varepsilon$
+となる．超実数 $x-a$ が無限小なら
+$\{n:|x_n-a|<\delta\}\in\mathcal U$ なので
+$|{}^*f(x)-f(a)|<\varepsilon$ となる．
+逆に連続でなければ $\varepsilon_0>0$ が存在し，
+$|y_n-a|<1/n$ かつ
+$|f(y_n)-f(a)|\ge\varepsilon_0$ となる列を取れる．
+$x=[(y_n)]$ は $a$ に無限小だけ近いが，
+関数値の差は無限小ではない．
+\end{proof}
+\begin{theorem}[導関数の超準的特徴づけ]\label{thm:derivative}
+開区間 $I$ 上の関数 $f$ と $a\in I$，
+実数 $L$ について，$f'(a)=L$ であることと，
+非零無限小 $h$ に対して
+\[
+ \frac{{}^*f(a+h)-f(a)}h-L
+\]
+が無限小であることは同値である．
+\end{theorem}
+\begin{proof}
+$g(t)=(f(a+t)-f(a))/t$（$t\ne0$），
+$g(0)=L$ と定める．
+$f'(a)=L$ は $g$ の0での連続性と同値であり，
+定理\ref{thm:cont}を適用すれば主張が従う．
+\end{proof}
+
+\section{超有限和とRiemann積分}
+\begin{theorem}[超有限Riemann和]\label{thm:integral}
+$f:[a,b]\to\mathbb R$ を連続関数とする．
+無限大の超自然数 $H=[(N_j)]$ に対し
+\[
+ \operatorname{st}\left(
+ \frac{b-a}{H}\sum_{k=1}^H
+ {}^*f\left(a+\frac{(k-1)(b-a)}H\right)
+ \right)=\int_a^bf(t)\,dt
+\]
+が成り立つ．
+ここで超有限和は各添字で有限和を計算した列の類である．
+\end{theorem}
+\begin{proof}
+$f$ の有界性から超有限和は有限元である．
+連続関数の一様連続性によって，
+通常の等分割Riemann和 $R_N$ は
+$I=\int_a^bf(t)\,dt$ に収束する．
+任意の $\varepsilon>0$ に対し
+$N\ge N_0$ なら $|R_N-I|<\varepsilon$ とする．
+$H$ が無限大なので
+$\{j:N_j\ge N_0\}\in\mathcal U$ であり，
+超有限和と $I$ の差は無限小である．
+標準部分の一意性から表示式が従う．
+\end{proof}
+\begin{remark}
+移行原理は一階文に対する命題である．
+全ての部分集合を量化するDedekind完備性を
+そのまま超実数へ移してはならない．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{超実数の無限小の具体例．}
+\begin{proposition}
+非主超フィルター $\mathcal U$ による
+$\mathbb R^{\mathbb N}/\mathcal U$ において
+$\varepsilon=[(1/n)_{n\ge1}]$ は
+正の無限小であり，
+$H=[(n)_{n\ge1}]$ は正の無限大である．
+しかも $\varepsilon H=1$ である．
+\end{proposition}
+\begin{proof}
+任意の $m\ge1$ について
+$\{n:0<1/n<1/m\}$ は補有限集合なので
+$\mathcal U$ に属する．従って
+$0<\varepsilon<1/m$ が全ての標準自然数 $m$
+に対して成立する．
+同様に $H>m$ となり，
+各座標で $(1/n)n=1$ だから積は1である．
+\end{proof}
+\begin{proposition}
+有限超実数 $x=2+\varepsilon$ の標準部分は2であり，
+$y=1/(1+\varepsilon)$ の標準部分は1である．
+\end{proposition}
+\begin{proof}
+$x-2=\varepsilon$ は無限小である．
+また $y-1=-\varepsilon/(1+\varepsilon)$ であり
+$0<\varepsilon<1$ から絶対値は $\varepsilon$ 以下である．
+したがって両者とも対応する実数に無限に近い．
+\end{proof}
+\noindent\textbf{到達確認．}
+$(1+\varepsilon)^2$ の標準部分を求めよ．
+\par\noindent\textbf{解答．}
+$(1+\varepsilon)^2-1=2\varepsilon+\varepsilon^2$
+は無限小だから標準部分は1である．
+\end{document}

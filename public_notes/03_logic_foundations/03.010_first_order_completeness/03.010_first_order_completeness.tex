@@ -1,0 +1,513 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{一階述語論理の健全性と完全性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，一階論理の構文・意味論，証明体系とモデル．
+本稿の具体的な到達課題は，自然演繹の証明とモデルでの真理を区別し，具体式の恒真性を導く．
+
+\section{言語・項・論理式}
+
+本稿では古典的一階論理を扱う．
+言語は可算で，等号を含むと仮定する．
+証明体系としてHilbert型の体系を固定する．
+
+\begin{definition}
+\emph{一階言語} $\mathcal L$ は，
+定数記号，それぞれ有限個の引数を持つ関数記号と
+関係記号の集合からなる．
+変数記号 $x_0,x_1,\dots$ を用いる．
+\emph{項}は変数・定数から出発し，
+関数記号の適用を有限回繰り返して得る式である．
+\emph{原子論理式}は $t=s$ または
+$R(t_1,\dots,t_n)$ の形の式である．
+論理式は原子論理式から
+$\neg,\land,\lor,\to,\forall,\exists$ によって
+有限回の構成を繰り返して得る式とする．
+\end{definition}
+
+\begin{definition}
+構造 $\mathcal M$ とは，空でない集合 $M$ と，
+各定数記号 $c$ に対する元 $c^{\mathcal M}\in M$，
+各関数記号 $f$ に対する演算 $f^{\mathcal M}$，
+各関係記号 $R$ に対する部分集合 $R^{\mathcal M}$ を
+指定したものをいう．
+変数割当て $s:\{x_i\}\to M$ のもとで項の値
+$t^{\mathcal M}[s]$ を再帰的に定める．
+\end{definition}
+
+\begin{definition}
+満足関係 $\mathcal M\models\varphi[s]$ は
+論理式の構成に関する帰納法で定義する．
+原子論理式については実際の等号・関係を用い，
+命題結合子には通常の真理値を用いる．
+量化について
+\[
+ \mathcal M\models\exists x\,\varphi[s]
+ \iff
+ \text{ある }a\in M\text{ に対し }
+ \mathcal M\models\varphi[s(x\mapsto a)]
+\]
+とし，$\forall$ は全ての $a\in M$ に対する成立とする．
+\end{definition}
+
+\begin{lemma}[代入補題]\label{lem:substitution}
+項 $t$ が論理式 $\varphi$ の変数 $x$ に
+自由に代入可能であるとする．
+このとき
+\[
+ \mathcal M\models\varphi[t/x][s]
+ \iff
+ \mathcal M\models\varphi[s(x\mapsto t^{\mathcal M}[s])]
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+原子論理式の場合，項の評価が関数の構成に関して
+帰納的に定義されることから直接成立する．
+否定と命題結合子については，
+帰納法の仮定を各部分論理式へ適用すればよい．
+量化 $\exists y\,\psi$ の場合，
+$y\ne x$ なら $t$ は $y$ の量化に捕獲されないよう
+変数名を変更してよい．
+すると
+\[
+ (\exists y\,\psi)[t/x]=\exists y\,(\psi[t/x])
+\]
+である．
+左辺の真理値はある $a\in M$ に対して
+$\psi[t/x]$ が割当て $s(y\mapsto a)$ のもとで成立することと
+同値である．
+$t$ は $y$ を自由変数として含まない
+（そうでなければ代入可能性に反する）ので，
+$t^{\mathcal M}[s(y\mapsto a)]=t^{\mathcal M}[s]$ である．
+帰納法の仮定を適用すれば，
+この条件は右辺の満足関係と同値となる．
+$y=x$ の場合は量化された $x$ は自由でないので
+置換によって式が変わらず，主張は明らかである．
+全称量化も同様である．
+\end{proof}
+
+\section{Hilbert型の証明体系}
+
+\begin{definition}
+$\Gamma$ を論理式の集合とする．
+$\Gamma$ から $\varphi$ が\emph{形式的に証明可能}であるとは，
+有限列 $\varphi_1,\dots,\varphi_n=\varphi$ があり，
+各項が $\Gamma$ の元，以下の公理，
+または先行項から推論規則で得られることをいう．
+\begin{enumerate}
+\item 全ての命題論理の恒真式の代入例．
+\item $\forall x\,\psi\to\psi[t/x]$．
+\item $\forall x(\alpha\to\beta)\to
+ (\alpha\to\forall x\,\beta)$
+（$x$ が $\alpha$ に自由に現れないとき）．
+\item 等号の反射律 $t=t$ と，
+等しい項を原子式の引数内で置換するための
+合同公理．
+\end{enumerate}
+推論規則はmodus ponensと全称化である．
+全称化は，その導出で未解消の仮定に自由に現れない変数
+についてのみ行う．
+$\Gamma\vdash\varphi$ と書く．
+\end{definition}
+
+\begin{remark}
+等号の合同公理は，
+全ての関数記号 $f$ について
+\[
+ t_i=s_i\ (1\le i\le n)\ \Longrightarrow\
+ f(t_1,\dots,t_n)=f(s_1,\dots,s_n)
+\]
+および関係記号 $R$ について
+\[
+ t_i=s_i\ (1\le i\le n),\ R(t_1,\dots,t_n)
+ \ \Longrightarrow\ R(s_1,\dots,s_n)
+\]
+を形式化した公理図式である．
+\end{remark}
+
+\begin{theorem}[健全性定理]\label{thm:soundness}
+$\Gamma\vdash\varphi$ なら
+$\Gamma\models\varphi$ が成り立つ．
+\end{theorem}
+\begin{proof}
+$\Gamma$ を満たす任意の構造 $\mathcal M$ と割当て $s$ を取る．
+証明列に関する帰納法を行う．
+仮定として採用した論理式は
+$\mathcal M$ で真である．
+命題論理公理は真理値表によって常に真である．
+全称量化の例化公理は代入補題\ref{lem:substitution}から真であり，
+量化子の分配公理は
+$x$ が $\alpha$ に自由に現れないという条件から真である．
+等号の公理は等号の解釈が実際の等号であり，
+関数・関係が同じ引数値に同じ結果を与えることから真である．
+modus ponensは真な $\alpha$ と
+$\alpha\to\beta$ から真な $\beta$ を導く．
+全称化については，量化する変数は未解消の仮定に
+自由に現れないから，その変数の割当てを任意に変更しても
+全ての前提は真である．
+従って帰納法の仮定によって，その変数の全ての値で
+結論は真となり，全称化した式も真となる．
+よって証明列の全ての式は前提を満たす構造で真であり，
+最後の式 $\varphi$ も真となる．
+\end{proof}
+
+\begin{lemma}[演繹定理]\label{lem:deduction}
+$\Gamma\cup\{\alpha\}\vdash\beta$ なら
+$\Gamma\vdash\alpha\to\beta$ が成り立つ．
+\end{lemma}
+\begin{proof}
+$\Gamma\cup\{\alpha\}$ からの証明列に関する帰納法で，
+各 $\varphi_i$ に対して
+$\Gamma\vdash\alpha\to\varphi_i$ を示す．
+$\varphi_i=\alpha$ の場合は命題論理の恒真式
+$\alpha\to\alpha$ を用いる．
+公理または $\Gamma$ の元なら，
+$\varphi_i\to(\alpha\to\varphi_i)$ が恒真式なので従う．
+modus ponensの場合，
+$\alpha\to\psi$ と
+$\alpha\to(\psi\to\varphi_i)$ から
+命題論理の恒真式により $\alpha\to\varphi_i$ を導ける．
+全称化の場合は，変数 $x$ は未解消の仮定 $\alpha$ に
+自由に現れない．
+帰納法の仮定 $\Gamma\vdash\alpha\to\psi$ を
+全称化して $\Gamma\vdash\forall x(\alpha\to\psi)$ とし，
+量化子の分配公理から
+$\Gamma\vdash\alpha\to\forall x\,\psi$ を得る．
+最後の式に適用すれば結論が従う．
+\end{proof}
+
+\section{無矛盾性と最大無矛盾理論}
+
+\begin{definition}
+論理式集合 $\Gamma$ が\emph{無矛盾}であるとは，
+ある論理式 $\chi$ について
+$\Gamma\vdash\chi$ と
+$\Gamma\vdash\neg\chi$ が同時に成立しないことをいう．
+$\Gamma$ が完全であるとは，
+任意の文 $\sigma$ について
+$\Gamma\vdash\sigma$ または
+$\Gamma\vdash\neg\sigma$ が成り立つことをいう．
+\end{definition}
+
+\begin{lemma}[無矛盾性の拡張]\label{lem:maximal}
+可算言語における無矛盾な文の集合 $\Gamma$ は，
+無矛盾かつ完全な文の集合 $\Gamma^*$ へ拡張できる．
+\end{lemma}
+\begin{proof}
+言語の文を $\sigma_0,\sigma_1,\dots$ と列挙する．
+$\Gamma_0=\Gamma$ と置き，
+$\Gamma_n\cup\{\sigma_n\}$ が無矛盾なら
+$\Gamma_{n+1}=\Gamma_n\cup\{\sigma_n\}$，
+そうでなければ
+$\Gamma_{n+1}=\Gamma_n\cup\{\neg\sigma_n\}$
+と定める．
+後者の選択でも無矛盾であることを示す．
+もし両方の追加で矛盾が導けるなら，
+演繹定理\ref{lem:deduction}と古典命題論理の法則から
+$\Gamma_n\vdash\sigma_n$ および
+$\Gamma_n\vdash\neg\sigma_n$ が従い，
+$\Gamma_n$ の無矛盾性に反する．
+従って帰納的に各 $\Gamma_n$ は無矛盾である．
+$\Gamma^*=\bigcup_n\Gamma_n$ と置く．
+証明は有限個の前提しか使用しないので，
+もし $\Gamma^*$ が矛盾するなら
+ある $\Gamma_N$ で既に矛盾するはずである．
+従って $\Gamma^*$ は無矛盾である．
+全ての文 $\sigma_n$ について，その文または否定が
+$\Gamma^*$ に属するので完全である．
+\end{proof}
+
+\section{Henkin定数と証人}
+
+\begin{lemma}[証人定数の追加]\label{lem:henkin-step}
+$\Gamma$ を無矛盾な文の集合，
+$\exists x\,\varphi(x)$ を文とし，
+$c$ を $\Gamma$ と $\varphi$ に現れない新しい定数記号とする．
+このとき
+\[
+ \Gamma\cup\{\exists x\,\varphi(x)\to\varphi(c)\}
+\]
+は無矛盾である．
+\end{lemma}
+\begin{proof}
+矛盾すると仮定する．
+演繹定理と命題論理の恒真式によって
+\[
+ \Gamma\vdash\exists x\,\varphi(x),
+ \qquad
+ \Gamma\vdash\neg\varphi(c)
+\]
+となる．
+$c$ は元の言語に現れない新しい記号なので，
+後者の導出で $c$ を新しい変数 $y$ に一様に置き換えられる．
+従って $\Gamma\vdash\neg\varphi(y)$ を得る．
+$y$ は元の仮定に自由に現れないから全称化が許され，
+$\Gamma\vdash\forall y\,\neg\varphi(y)$ となる．
+$\neg\exists x\,\varphi(x)$ は
+$\forall x\,\neg\varphi(x)$ と同値であるため，
+$\Gamma$ が矛盾し仮定に反する．
+従って追加後も無矛盾である．
+\end{proof}
+
+\begin{theorem}[Henkin拡張]\label{thm:henkin}
+可算言語の無矛盾な文集合 $\Gamma$ は，
+可算個の新しい定数を加えた言語の
+無矛盾かつ完全な理論 $T$ に拡張でき，
+全ての存在文 $\exists x\,\varphi(x)$ に対し，
+ある定数 $c_\varphi$ について
+\[
+ T\vdash\exists x\,\varphi(x)\to\varphi(c_\varphi)
+\]
+が成り立つようにできる．
+\end{theorem}
+\begin{proof}
+まず元の言語に可算無限個の新しい定数を加え，
+各存在文 $\exists x\,\varphi(x)$ を順に列挙する．
+各段階で未使用の定数 $c$ を選び，
+補題\ref{lem:henkin-step}による証人公理を追加する．
+この操作を一度行うだけでは，新しい定数を含む存在文が
+後から生じるため，言語の拡張と証人の追加を
+可算回繰り返す．
+各有限段階は補題\ref{lem:henkin-step}により無矛盾であり，
+証明の有限性から全ての段階の和集合も無矛盾である．
+さらに補題\ref{lem:maximal}を適用し，
+全ての文を決定する完全な無矛盾拡張 $T$ を取る．
+証人公理は拡張で保たれるため，
+$T$ は全ての存在文に証人定数を持つ．
+\end{proof}
+
+\section{項モデルと真理補題}
+
+\begin{definition}
+Henkin理論 $T$ の言語において，
+閉項の集合 $\mathrm{Term}_0$ 上に
+\[
+ t\sim s\iff T\vdash t=s
+\]
+と定める．
+閉項の同値類全体を $M_T$ とする．
+関数記号 $f$ の解釈を
+\[
+ f^{M_T}([t_1],\dots,[t_n])
+ =[f(t_1,\dots,t_n)]
+\]
+と定め，関係記号 $R$ について
+\[
+ M_T\models R([t_1],\dots,[t_n])
+ \iff T\vdash R(t_1,\dots,t_n)
+\]
+と定める．
+これを\emph{Henkin項モデル}という．
+\end{definition}
+
+\begin{lemma}[項モデルのwell-defined性]\label{lem:term-model}
+$\sim$ は同値関係であり，
+項モデルの演算と関係の解釈は代表元に依存しない．
+また $M_T$ は空でない．
+\end{lemma}
+\begin{proof}
+等号の公理から反射律 $t=t$ が証明可能である．
+対称律と推移律も等号の合同公理と命題論理の推論によって
+導けるから $\sim$ は同値関係である．
+$t_i\sim s_i$ なら等号の合同公理から
+\[
+ T\vdash f(t_1,\dots,t_n)=f(s_1,\dots,s_n)
+\]
+が成立し，同じ項同値類を与える．
+関係記号の解釈についても，
+等号の合同公理により
+$T\vdash R(t_1,\dots,t_n)$ と
+$T\vdash R(s_1,\dots,s_n)$ は同値である．
+従ってwell-definedである．
+新しい定数記号が少なくとも一つ存在するため，
+閉項の同値類があり $M_T$ は空でない．
+\end{proof}
+
+\begin{lemma}[真理補題]\label{lem:truth}
+$T$ を無矛盾・完全・Henkinな理論とする．
+任意の文 $\varphi$ について
+\[
+ M_T\models\varphi
+ \quad\Longleftrightarrow\quad T\vdash\varphi
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+論理式の構成に関する帰納法で証明する．
+閉項の解釈は項同値類そのものなので，
+等号の原子式については $\sim$ の定義から成立する．
+関係記号の原子式については項モデルの定義から成立する．
+否定 $\neg\psi$ については，
+$T$ が完全かつ無矛盾であるから
+\[
+ T\vdash\neg\psi\iff T\not\vdash\psi
+\]
+が成り立つ．
+帰納法の仮定と古典論理の否定の意味論を比較すればよい．
+連言については
+$T\vdash\psi\land\chi$ が
+$T\vdash\psi$ かつ $T\vdash\chi$ と同値であり，
+意味論でも同様なので成立する．
+他の命題結合子も同様である．
+
+存在量化 $\exists x\,\psi(x)$ を考える．
+$T\vdash\exists x\,\psi(x)$ なら，
+Henkin性によって
+$T\vdash\psi(c)$ となる定数 $c$ が存在する．
+帰納法の仮定から
+$M_T\models\psi([c])$ なので
+$M_T\models\exists x\,\psi(x)$ となる．
+逆にモデルで存在文が真なら，
+ある閉項同値類 $[t]\in M_T$ が存在して
+$M_T\models\psi([t])$ となる．
+帰納法の仮定から $T\vdash\psi(t)$ であり，
+存在量化への導入が証明可能なので
+$T\vdash\exists x\,\psi(x)$ を得る．
+全称量化は否定と存在量化で定義できるため，
+これで全ての論理式について帰納法が完了する．
+\end{proof}
+
+\section{完全性定理}
+
+\begin{theorem}[Gödelの完全性定理]\label{thm:completeness}
+可算一階言語の文集合 $\Gamma$ と文 $\varphi$ に対し
+\[
+ \Gamma\models\varphi
+ \quad\Longleftrightarrow\quad
+ \Gamma\vdash\varphi
+\]
+が成り立つ．
+特に無矛盾な一階理論はモデルを持つ．
+\end{theorem}
+\begin{proof}
+右から左は健全性定理\ref{thm:soundness}による．
+逆に $\Gamma\models\varphi$ かつ
+$\Gamma\not\vdash\varphi$ と仮定する．
+もし $\Gamma\cup\{\neg\varphi\}$ が矛盾すれば，
+演繹定理\ref{lem:deduction}と古典命題論理の法則から
+$\Gamma\vdash\varphi$ が従うので，
+$\Gamma\cup\{\neg\varphi\}$ は無矛盾である．
+定理\ref{thm:henkin}により，
+この集合を含む無矛盾・完全・Henkin理論 $T$ が存在する．
+補題\ref{lem:truth}からその項モデル $M_T$ は
+$T$ の全ての文を満たす．
+従って $M_T\models\Gamma$ かつ
+$M_T\models\neg\varphi$ であり，
+$\Gamma\models\varphi$ に矛盾する．
+ゆえに $\Gamma\vdash\varphi$ である．
+
+最後に無矛盾な $\Gamma$ に
+Henkin拡張と項モデルを適用すれば
+$\Gamma$ を満たすモデルを得られる．
+\end{proof}
+
+\begin{remark}
+ここでの「完全性」とは，意味論的に全てのモデルで真となる
+一階の帰結が形式的に証明可能であるという意味である．
+これは，十分強い再帰的公理化可能な算術理論が
+全ての算術文を決定できないという
+Gödelの不完全性定理とは異なる主張である．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{量化式の妥当性を証明する．}
+\begin{proposition}
+一階論理の任意の構造 $\mathcal M$ と述語 $P$ に対して
+\[
+(\forall x\,P(x))\longrightarrow(\exists x\,P(x))
+\]
+は，$\mathcal M$ の台集合が非空であれば妥当である．
+\end{proposition}
+\begin{proof}
+$\mathcal M\models\forall xP(x)$ と仮定する．
+非空性から元 $a$ を一つ選べる．
+全称量化の意味から $\mathcal M\models P(a)$ であり，
+存在量化の意味から $\mathcal M\models\exists xP(x)$．
+したがって含意は真である．
+\end{proof}
+\begin{proposition}
+$(\exists x\,\forall y\,R(x,y))\to
+(\forall y\,\exists x\,R(x,y))$ は妥当である．
+\end{proposition}
+\begin{proof}
+前件が真ならある元 $a$ が全ての $y$ に対して
+$R(a,y)$ を満たす．任意の $y$ に対し存在量化の
+証人として同じ $a$ を選べるので後件が真となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$(\forall y\,\exists x\,R(x,y))\to
+(\exists x\,\forall y\,R(x,y))$ は妥当か．
+\par\noindent\textbf{解答．}
+一般には妥当でない．台集合を $\{0,1\}$ とし，
+$R(x,y)$ を $x=y$ と解釈する．
+各 $y$ に対して $x=y$ を選べるから前件は真だが，
+全ての $y$ に等しい固定した $x$ は存在しない．
+\end{document}
