@@ -1,0 +1,532 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Feynman--Kacの公式とKolmogorov方程式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Brown運動，熱方程式，Feynman--Kac公式．
+本稿の具体的な到達課題は，期待値として与えられた関数を計算し，対応する偏微分方程式を検証する．
+
+\section{拡散過程と生成作用素}
+
+$B$ を $m$ 次元標準Brown運動とし，
+$b:\mathbb R^d\to\mathbb R^d$，
+$\sigma:\mathbb R^d\to\mathbb R^{d\times m}$
+を有界で大域Lipschitz連続な写像とする．
+このとき任意の初期値 $x\in\mathbb R^d$ に対して
+\begin{equation}\label{eq:diffusion}
+ X_t^x=x+\int_0^t b(X_s^x)\,ds
+       +\int_0^t\sigma(X_s^x)\,dB_s
+\end{equation}
+は一意な連続適合解を持つ．
+
+\begin{definition}
+$a(x)=\sigma(x)\sigma(x)^{\mathsf T}$ と置く．
+$C^2$ 級関数 $f:\mathbb R^d\to\mathbb R$ に対して
+\[
+ Lf(x)=\sum_{i=1}^d b_i(x)\partial_if(x)
+ +\frac12\sum_{i,j=1}^d a_{ij}(x)\partial_{ij}f(x)
+\]
+を定める．これを拡散過程の\emph{生成作用素}という．
+\end{definition}
+
+\begin{proposition}[It\^oの公式による生成作用素]\label{prop:generator}
+$f\in C_b^2(\mathbb R^d)$ とし，
+その1階・2階導関数は有界かつ連続であるとする．
+このとき
+\[
+ f(X_t^x)-f(x)-\int_0^tLf(X_s^x)\,ds
+\]
+は二乗可積分なマルチンゲールである．
+\end{proposition}
+\begin{proof}
+多次元It\^oの公式により
+\begin{align*}
+ f(X_t^x)-f(x)
+ &=\int_0^t Lf(X_s^x)\,ds\\
+ &\quad+\sum_{i=1}^d\sum_{k=1}^m
+   \int_0^t\partial_if(X_s^x)\sigma_{ik}(X_s^x)\,dB_s^k.
+\end{align*}
+係数と $\nabla f$ は有界なので，
+最後の確率積分の被積分過程は二乗可積分である．
+従って確率積分は真の二乗可積分マルチンゲールとなる．
+\end{proof}
+
+\begin{proposition}[生成作用素の極限表示]\label{prop:limit-generator}
+$f\in C_b^2(\mathbb R^d)$ とし，その偏導関数は有界で連続，
+$Lf$ は連続とする．
+$P_tf(x)=E[f(X_t^x)]$ と置くと
+\[
+ \lim_{t\downarrow0}\frac{P_tf(x)-f(x)}{t}
+ =Lf(x)
+\]
+が任意の $x\in\mathbb R^d$ で成立する．
+\end{proposition}
+\begin{proof}
+命題\ref{prop:generator}で期待値を取ると
+\[
+ P_tf(x)-f(x)=E\int_0^tLf(X_s^x)\,ds.
+\]
+係数が有界なので
+\[
+ E|X_s^x-x|^2
+ \le2sE\int_0^s|b(X_u^x)|^2du
+   +2E\int_0^s|\sigma(X_u^x)|_{\mathrm{HS}}^2du
+ \le Cs
+\]
+となる．従って $X_s^x\to x$ は確率収束である．
+$Lf$ は連続で有界なので
+$E[Lf(X_s^x)]\to Lf(x)$ が従う．
+時間平均を取って
+\[
+ \frac1t\int_0^tE[Lf(X_s^x)]\,ds\to Lf(x)
+\]
+を得る．
+\end{proof}
+
+\section{Markov半群}
+
+\begin{definition}
+有界Borel関数 $f$ に対し
+\[
+ (P_tf)(x)=E[f(X_t^x)]
+\]
+と定める．$(P_t)_{t\ge0}$ を拡散過程の
+\emph{Markov半群}という．
+\end{definition}
+
+\begin{theorem}[Markov性と半群性]\label{thm:semigroup}
+任意の有界Borel関数 $f$ と $s,t\ge0$ について
+\[
+ P_{s+t}f=P_s(P_tf)
+\]
+が成立する．また $P_t1=1$，
+$f\ge0$ なら $P_tf\ge0$，
+$\norm{P_tf}_\infty\le\norm f_\infty$ である．
+\end{theorem}
+\begin{proof}
+時刻 $s$ までのBrown運動の情報を $\mathcal F_s$ とする．
+$s$ 以降のBrown運動の増分
+$\widetilde B_u=B_{s+u}-B_s$ は
+$\mathcal F_s$ と独立な標準Brown運動である．
+経路ごとの一意性により，
+時刻 $s$ 以降の解は $X_s^x$ を初期値とし
+$\widetilde B$ で駆動される同じ確率微分方程式の解となる．
+従って
+\[
+ E[f(X_{s+t}^x)\mid\mathcal F_s]
+ =(P_tf)(X_s^x).
+\]
+期待値を取れば $P_{s+t}f=P_s(P_tf)$ を得る．
+残る主張は $P_t$ が確率測度に関する期待値として
+定義されていることから従う．
+\end{proof}
+
+\begin{proposition}[初期値の連続性]\label{prop:feller}
+任意の有界連続関数 $f$ に対して
+$P_tf$ は有界連続関数である．
+\end{proposition}
+\begin{proof}
+大域Lipschitz条件のもとでは，
+初期値 $x,y$ に対応する解について
+\[
+ E\sup_{s\le t}|X_s^x-X_s^y|^2
+ \le C_t|x-y|^2
+\]
+がGronwallの不等式から従う．
+$x_n\to x$ なら $X_t^{x_n}\to X_t^x$ は確率収束する．
+$f$ は連続かつ有界なので
+$f(X_t^{x_n})\to f(X_t^x)$ は確率収束し，
+一様有界性によって期待値も収束する．
+従って $P_tf(x_n)\to P_tf(x)$ を得る．
+\end{proof}
+
+\section{後退Kolmogorov方程式}
+
+\begin{theorem}[後退方程式の古典解の表示]
+\label{thm:backward}
+$T>0$ とし，
+$u\in C^{1,2}([0,T]\times\mathbb R^d)$ が有界で，
+$u_t,\nabla u,D^2u$ も有界であるとする．
+\[
+ \partial_tu(t,x)+Lu(t,x)=0,\quad t<T,
+ \qquad u(T,x)=g(x)
+\]
+を満たすなら
+\[
+ u(t,x)=E[g(X_{T-t}^x)]
+ \qquad(0\le t\le T)
+\]
+が成立する．従ってこのクラスの古典解は一意である．
+\end{theorem}
+\begin{proof}
+固定した $(t,x)$ について，
+$Y_s=X_s^x$（$0\le s\le T-t$）と置く．
+It\^oの公式を $s\mapsto u(t+s,Y_s)$ に適用すると
+\begin{align*}
+ u(t+s,Y_s)-u(t,x)
+ &=\int_0^s(\partial_tu+Lu)(t+r,Y_r)\,dr\\
+ &\quad+\int_0^s\nabla u(t+r,Y_r)
+     \sigma(Y_r)\,dB_r.
+\end{align*}
+偏微分方程式により第1項は零である．
+第2項の被積分過程は有界なので期待値は零となる．
+$s=T-t$ と置いて期待値を取れば
+$u(t,x)=E[u(T,Y_{T-t})]=E[g(X_{T-t}^x)]$
+を得る．右辺は $u$ の選択に依存しないから一意性も従う．
+\end{proof}
+
+\section{前進Kolmogorov方程式}
+
+\begin{proposition}[法則の弱方程式]\label{prop:forward-weak}
+$\mu_t$ を $X_t^x$ の法則とする．
+任意の $f\in C_c^\infty(\mathbb R^d)$ に対して
+\[
+ \int f(y)\,\mu_t(dy)-f(x)
+ =\int_0^t\int Lf(y)\,\mu_s(dy)\,ds.
+\]
+\end{proposition}
+\begin{proof}
+命題\ref{prop:generator}のマルチンゲールの期待値を取ると
+\[
+ E[f(X_t^x)]-f(x)
+ =\int_0^tE[Lf(X_s^x)]\,ds.
+\]
+各期待値を法則 $\mu_t$ による積分に書き換えればよい．
+\end{proof}
+
+\begin{corollary}[Fokker--Planck方程式]\label{cor:fokker}
+$\mu_t$ がLebesgue密度 $p(t,y)$ を持ち，
+係数と密度が必要な微分・部分積分を正当化する程度に
+滑らかであると仮定する．このとき分布の意味で
+\[
+ \partial_tp(t,y)
+ =-\sum_{i=1}^d\partial_{y_i}(b_i(y)p(t,y))
+  +\frac12\sum_{i,j=1}^d
+    \partial_{y_i}\partial_{y_j}(a_{ij}(y)p(t,y))
+\]
+が成立する．
+\end{corollary}
+\begin{proof}
+命題\ref{prop:forward-weak}の両辺を $t$ で微分すると
+\[
+ \frac d{dt}\int f(y)p(t,y)\,dy
+ =\int\left(
+ \sum_i b_i\partial_if+\frac12\sum_{i,j}a_{ij}\partial_{ij}f
+ \right)p(t,y)\,dy.
+\]
+$f$ はコンパクト台を持つので，
+各項で部分積分を1回または2回行えば
+右辺は表示された微分作用素を $p$ に適用したものとの
+双対対合となる．
+任意の $f\in C_c^\infty$ について成立するため，
+分布の意味で方程式を得る．
+\end{proof}
+
+\begin{remark}
+この系は確率過程の法則が既に密度を持つ場合の主張である．
+一般の係数から密度の存在や滑らかさが自動的に従うとは
+主張していない．
+\end{remark}
+
+\section{Dynkinの公式と停止時刻}
+
+\begin{theorem}[Dynkinの公式]\label{thm:dynkin}
+$\tau\le T$ を停止時刻，
+$f\in C_b^2(\mathbb R^d)$ とし，
+導関数も有界とする．このとき
+\[
+ E[f(X_\tau^x)]-f(x)
+ =E\int_0^\tau Lf(X_s^x)\,ds.
+\]
+\end{theorem}
+\begin{proof}
+命題\ref{prop:generator}のマルチンゲールを
+停止時刻 $\tau$ で止める．
+積分過程は二乗可積分で $\tau$ は有界だから，
+停止定理により停止したマルチンゲールの期待値は零である．
+従って
+\[
+ E\left[
+ f(X_\tau^x)-f(x)-\int_0^\tau Lf(X_s^x)\,ds
+ \right]=0
+\]
+となり結論を得る．
+\end{proof}
+
+\begin{example}[区間からの退出時刻]\label{ex:exit}
+1次元Brown運動を $X_t=x+B_t$，
+$-a<x<a$，$a>0$ とし，
+$\tau=\inf\{t\ge0:|X_t|=a\}$ と置く．
+このとき $\tau<\infty$ が概至る所成立し，
+\[
+ E[\tau]=a^2-x^2,\qquad
+ P(X_\tau=a)=\frac{x+a}{2a}.
+\]
+\end{example}
+\begin{proof}
+$f(y)=a^2-y^2$ と置く．
+$|y|\le a$ の範囲では $f(y)\ge0$ であり，
+Brown運動の生成作用素は $L=\frac12d^2/dy^2$
+だから $Lf=-1$ となる．
+$\tau_n=\tau\wedge n$ とし，
+停止区間上だけで必要な偏導関数が有界な
+$C_b^2$ 関数へ $f$ を切断して
+定理\ref{thm:dynkin}を適用すると
+\[
+ E[a^2-X_{\tau_n}^2]
+ =a^2-x^2-E[\tau_n].
+ \tag{$*$}
+\]
+左辺は非負なので $E\tau_n\le a^2-x^2$ である．
+単調収束定理により
+$E\tau\le a^2-x^2<\infty$ となり，
+特に $\tau<\infty$ が概至る所成立する．
+Brown運動の連続性から $X_\tau\in\{-a,a\}$ である．
+$0\le a^2-X_{\tau_n}^2\le a^2$ を用いて
+$(*)$ に有界収束定理を適用すれば
+$E\tau=a^2-x^2$ である．
+
+次に $g(y)=(y+a)/(2a)$ と置くと $Lg=0$ である．
+同じ停止論法から
+$Eg(X_{\tau_n})=g(x)$ となる．
+有界収束定理を使って $n\to\infty$ とすると
+$Eg(X_\tau)=g(x)$ を得る．
+$g(-a)=0$，$g(a)=1$ だから
+$P(X_\tau=a)=(x+a)/(2a)$ となる．
+\end{proof}
+
+\section{Feynman--Kacの公式}
+
+\begin{theorem}[Feynman--Kacの表示]\label{thm:fk}
+$T>0$ とし，$b,\sigma$ は第1節の条件を満たすとする．
+$V,F:[0,T]\times\mathbb R^d\to\mathbb R$ を
+有界連続関数，$g:\mathbb R^d\to\mathbb R$ を
+有界連続関数とする．
+$u\in C^{1,2}([0,T]\times\mathbb R^d)$ が有界で，
+$u_t,\nabla u,D^2u$ も有界であり，
+\[
+ \partial_tu+Lu-Vu+F=0,\qquad
+ u(T,x)=g(x)
+\]
+を満たすなら，各 $(t,x)$ に対して
+\begin{align}
+ u(t,x)
+ &=E\left[
+ e^{-\int_t^TV(s,X_s^{t,x})\,ds}
+    g(X_T^{t,x})\right]\notag\\
+ &\quad+
+ E\left[\int_t^T
+  e^{-\int_t^sV(r,X_r^{t,x})\,dr}
+  F(s,X_s^{t,x})\,ds\right].
+ \label{eq:fk}
+\end{align}
+ここで $X_s^{t,x}$ は時刻 $t$ に $x$ から出発する
+\eqref{eq:diffusion} の解とする．
+従って上記の正則性クラスにおける古典解は一意である．
+\end{theorem}
+\begin{proof}
+固定した $(t,x)$ を取り，
+$s\in[t,T]$ に対して
+\[
+ A_s=\exp\!\left(-\int_t^sV(r,X_r^{t,x})\,dr\right)
+\]
+と置く．$A_t=1$ であり，
+$A$ は有限変動過程で
+$dA_s=-V(s,X_s^{t,x})A_s\,ds$ を満たす．
+It\^oの積の公式を
+$A_su(s,X_s^{t,x})$ に適用する．
+$A$ は有限変動なので二次共変動の項は零であり，
+\begin{align*}
+ d(A_su(s,X_s))
+ &=A_s\left(
+ (\partial_su+Lu-Vu)(s,X_s)\,ds
+ +\nabla u(s,X_s)\sigma(X_s)\,dB_s
+ \right)\\
+ &=-A_sF(s,X_s)\,ds+
+ A_s\nabla u(s,X_s)\sigma(X_s)\,dB_s.
+\end{align*}
+$V$ は有界なので $A_s$ は決定論的な定数で有界であり，
+$\nabla u,\sigma$ も有界である．
+従って最後のIt\^o積分は二乗可積分マルチンゲールで，
+期待値は零である．
+$s=t$ から $s=T$ まで積分し，期待値を取ると
+\[
+ E[A_Tu(T,X_T)]-u(t,x)
+ =-E\int_t^TA_sF(s,X_s)\,ds.
+\]
+$u(T,\cdot)=g$ を代入して移項すれば
+\eqref{eq:fk} を得る．
+右辺は $u$ の選択によらないため一意性も従う．
+\end{proof}
+
+\begin{remark}
+定理\ref{thm:fk}は，既に存在する古典解の確率的表示と
+一意性を証明する定理である．
+一般の $b,\sigma,V,F,g$ のもとで右辺が
+$C^{1,2}$ の古典解になることまでは，
+追加の楕円型・放物型正則性理論なしに主張しない．
+\end{remark}
+
+\section{熱方程式とGaussian核}
+
+\begin{theorem}[熱方程式の明示解]\label{thm:heat}
+$g\in C^2(\mathbb R)$ とし，
+$g,g',g''$ が有界で連続であるとする．
+\[
+ u(t,x)=\int_{\mathbb R}
+ g(x+y)\frac{1}{\sqrt{2\pi(T-t)}}
+ \exp\!\left(-\frac{y^2}{2(T-t)}\right)\,dy
+ \quad(0\le t<T)
+\]
+および $u(T,x)=g(x)$ と置く．
+このとき $u\in C^{1,2}([0,T)\times\mathbb R)$ で
+\[
+ \partial_tu+\frac12\partial_{xx}u=0
+\]
+を満たす．
+また $t\uparrow T$ で $u(t,x)\to g(x)$ が成り立つ．
+\end{theorem}
+\begin{proof}
+$h=T-t>0$ と置き，
+$p_h(y)=(2\pi h)^{-1/2}e^{-y^2/(2h)}$ とする．
+$g,g',g''$ は有界なのでLebesgueの収束定理によって
+\[
+ u_x(t,x)=\int g'(x+y)p_h(y)\,dy,\quad
+ u_{xx}(t,x)=\int g''(x+y)p_h(y)\,dy
+\]
+と微分できる．
+Gaussian核について
+$\partial_hp_h=\frac12\partial_{yy}p_h$ が直接計算で従う．
+積分と $h$ による微分を交換して
+\[
+ \partial_hu
+ =\frac12\int g(x+y)\partial_{yy}p_h(y)\,dy.
+\]
+$g,g'$ が有界でGaussian核が無限遠で急減少するため，
+部分積分を二回行えば
+$\partial_hu=\frac12\int g''(x+y)p_h(y)\,dy
+=\frac12u_{xx}$ である．
+$\partial_t=-\partial_h$ なので
+$u_t+\frac12u_{xx}=0$ を得る．
+最後に $u(t,x)=E[g(x+\sqrt h\,Z)]$，
+$Z\sim N(0,1)$ と書き，
+$h\downarrow0$ で有界収束定理を適用すれば
+$u(t,x)\to g(x)$ となる．
+\end{proof}
+
+\begin{corollary}
+定理\ref{thm:heat}の解は
+\[
+ u(t,x)=E[g(x+B_{T-t})]
+\]
+と表せる．
+\end{corollary}
+\begin{proof}
+$B_{T-t}\sim N(0,T-t)$ なので，
+その密度を用いた期待値の定義は
+定理\ref{thm:heat}の積分表示と一致する．
+\end{proof}
+
+\begin{remark}
+確率微分方程式から生成作用素が定まり，
+その随伴作用素が法則の時間発展を，
+生成作用素自身が期待値の時間発展を支配する．
+Feynman--Kacの公式は，この対応を
+ポテンシャル項・外力項を含む方程式へ拡張する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{熱方程式の確率表示．}
+\begin{proposition}
+標準Brown運動 $B_t$ に対し
+\[
+u(t,x)=E[(x+B_t)^2]
+\]
+と置くと $u(t,x)=x^2+t$ であり，
+\[
+\partial_tu=\frac12\partial_{xx}u,\qquad
+u(0,x)=x^2
+\]
+を満たす．
+\end{proposition}
+\begin{proof}
+$E[B_t]=0$，$E[B_t^2]=t$ だから
+\[
+E[(x+B_t)^2]=x^2+2xE[B_t]+E[B_t^2]=x^2+t.
+\]
+従って $\partial_tu=1$，
+$\partial_{xx}u=2$ であり方程式が成立する．
+$t=0$ では $B_0=0$ だから初期条件も成立する．
+この計算はFeynman--Kac公式の単純な例である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$g(x)=x$ の場合に $E[g(x+B_t)]$ を求めよ．
+\par\noindent\textbf{解答．}
+$E[x+B_t]=x$ であり，時間に依らない解となる．
+\end{document}

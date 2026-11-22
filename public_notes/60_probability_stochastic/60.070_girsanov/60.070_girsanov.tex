@@ -1,0 +1,525 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Girsanovの定理と確率測度の変換}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，指数マルチンゲール，Girsanovの定理，Brown運動．
+本稿の具体的な到達課題は，確率測度の変更でBrown運動のドリフトがどのように変わるか示す．
+
+\section{確率測度の変更}
+
+$(\Omega,\mathcal F,(\mathcal F_t)_{0\le t\le T},P)$ を
+通常の条件を満たすフィルター付き確率空間とし，
+$B=(B_t)_{0\le t\le T}$ を標準Brown運動とする．
+$T>0$ は固定する．
+
+\begin{definition}
+確率測度 $Q$ が $P$ に\emph{絶対連続}であるとは，
+$P(A)=0$ なら $Q(A)=0$ となることをいい，
+$Q\ll P$ と書く．
+$Q\ll P$ かつ $P\ll Q$ のとき，両測度は同値であるという．
+\end{definition}
+
+\begin{proposition}[Radon--Nikodym密度]\label{prop:rn}
+$Q\ll P$ を確率測度とすると，ただ一つの
+$Z\in L^1(P)$，$Z\ge0$ が存在して
+\[
+ Q(A)=E_P[Z1_A]\qquad(A\in\mathcal F)
+\]
+となる．このとき $E_PZ=1$ であり，
+$Q$ と $P$ が同値であることと $Z>0$ が
+$P$-ほとんど確実に成り立つことは同値である．
+\end{proposition}
+\begin{proof}
+存在と一意性はRadon--Nikodymの定理による．
+$A=\Omega$ と置けば $E_PZ=Q(\Omega)=1$ である．
+$Z>0$ が $P$-ほとんど確実なら，
+$Q(A)=E_P[Z1_A]=0$ は $P(A)=0$ を導く．
+逆に $Q$ と $P$ が同値であるなら，
+$Q(Z=0)=E_P[Z1_{\{Z=0\}}]=0$ なので
+$P(Z=0)=0$ となる．
+\end{proof}
+
+\begin{lemma}[測度変換後の条件付き期待値]\label{lem:bayes}
+$Z>0$，$E_PZ=1$ とし $dQ=Z\,dP$ と置く．
+$Z_t=E_P[Z\mid\mathcal F_t]$ とする．
+$0\le s\le t\le T$，$Y$ を有界な
+$\mathcal F_t$ 可測確率変数とすると
+\[
+ E_Q[Y\mid\mathcal F_s]
+ =\frac{E_P[Z_tY\mid\mathcal F_s]}{Z_s}
+ \qquad Q\text{-ほとんど確実}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$Z_s>0$ は $P$-ほとんど確実に成り立つ．
+実際，$A=\{Z_s=0\}\in\mathcal F_s$ とすると
+$E_P[Z1_A]=E_P[Z_s1_A]=0$ であり，
+$Z>0$ の仮定から $P(A)=0$ となる．
+右辺は $\mathcal F_s$ 可測である．
+任意の $A\in\mathcal F_s$ について
+\begin{align*}
+ E_Q\left[1_A
+ \frac{E_P[Z_tY\mid\mathcal F_s]}{Z_s}\right]
+ &=E_P\left[Z_s1_A
+ \frac{E_P[Z_tY\mid\mathcal F_s]}{Z_s}\right]\\
+ &=E_P[1_AZ_tY]
+ =E_P[1_AZY]=E_Q[1_AY].
+\end{align*}
+最後から二番目の等号は
+$1_AY$ が $\mathcal F_t$ 可測であることによる．
+条件付き期待値の一意性から結論を得る．
+\end{proof}
+
+\section{確率指数関数}
+
+\begin{definition}
+$\theta$ を実数値予測可能過程で
+$\int_0^T\theta_s^2\,ds<\infty$ が
+ほとんど確実に成り立つものとする．
+\[
+ M_t=-\int_0^t\theta_s\,dB_s,\qquad
+ A_t=\int_0^t\theta_s^2\,ds
+\]
+と置き，\emph{確率指数関数}を
+\[
+ Z_t=\exp\!\left(M_t-\frac12A_t\right)
+\]
+と定義する．
+\end{definition}
+
+\begin{lemma}\label{lem:positive-local}
+$Z$ は非負の連続局所マルチンゲールであり，
+$Z_0=1$ および
+\[
+ dZ_t=-\theta_tZ_t\,dB_t
+\]
+を満たす．特に任意の $t\le T$ で $E_PZ_t\le1$ である．
+\end{lemma}
+\begin{proof}
+It\^oの公式を $f(x,a)=e^{x-a/2}$ に適用すれば，
+$dZ_t=Z_t\,dM_t=-\theta_tZ_t\,dB_t$ となる．
+$Z$ は局所化した確率積分の和で表されるので
+局所マルチンゲールである．
+$Z_t>0$ は定義から明らかである．
+局所化列 $(\tau_n)$ を取り，
+$E[Z_{t\wedge\tau_n}\mid\mathcal F_s]
+ =Z_{s\wedge\tau_n}$ に条件付きFatouの補題を適用すると
+\[
+ E[Z_t\mid\mathcal F_s]\le Z_s
+\]
+となる．従って $Z$ は非負の優マルチンゲールであり，
+$E_PZ_t\le E_PZ_0=1$ である．
+\end{proof}
+
+\begin{lemma}[二次変分を有界に止めた指数関数]
+\label{lem:stop-exponential}
+$M$ を初期値零の連続局所マルチンゲールとし，
+$A_t=[M]_t$ と置く．
+$\tau_n=\inf\{t\le T:A_t\ge n\}\wedge T$ とすると，
+\[
+ Z_{t\wedge\tau_n}
+ =\exp\!\left(M_{t\wedge\tau_n}
+              -\frac12A_{t\wedge\tau_n}\right)
+\]
+は二乗可積分なマルチンゲールであり，
+$E Z_{\tau_n}=1$ である．
+\end{lemma}
+\begin{proof}
+It\^oの公式によって
+$\mathcal E(2M)_t=\exp(2M_t-2A_t)$ も
+非負の局所マルチンゲールである．
+従って補題\ref{lem:positive-local}と同じFatouの議論から
+$E\mathcal E(2M)_{t\wedge\tau_n}\le1$ である．
+一方
+\[
+ Z_{t\wedge\tau_n}^2
+ =\mathcal E(2M)_{t\wedge\tau_n}
+   \exp(A_{t\wedge\tau_n})
+ \le e^n\mathcal E(2M)_{t\wedge\tau_n}.
+\]
+従って
+$\sup_{t\le T}E[Z_{t\wedge\tau_n}^2]\le e^n$ である．
+停止した指数過程は局所マルチンゲールであり，
+この一様な $L^2$ 上界により一様可積分である．
+局所化列に関するマルチンゲール等式を
+$L^1$ 極限へ移せば真のマルチンゲールとなる．
+$Z_0=1$ なので $EZ_{\tau_n}=1$ である．
+\end{proof}
+
+\section{Novikovの条件}
+
+\begin{lemma}[少し強い指数積分条件]\label{lem:strong-nov}
+$M$ を初期値零の連続局所マルチンゲール，
+$A_T=[M]_T<\infty$ とする．
+ある $\delta>0$ が存在して
+\[
+ E\exp\!\left(\frac{1+\delta}{2}A_T\right)<\infty
+\]
+が成立するなら，$\mathcal E(M)$ は
+$[0,T]$ 上の真のマルチンゲールである．
+\end{lemma}
+\begin{proof}
+$\tau_n$ を補題\ref{lem:stop-exponential}の停止時刻とし，
+$Z_n=\mathcal E(M)_{\tau_n}$ と置く．
+$EZ_n=1$ である．
+$p>1$，$q>1$ を取り $q'=q/(q-1)$ と置く．
+指数関数の恒等式
+\[
+ Z_n^p
+ =\mathcal E(qpM)_{\tau_n}^{1/q}
+  \exp\!\left(\frac{qp^2-p}{2}A_{\tau_n}\right)
+\]
+が成立する．
+H\"olderの不等式と非負局所マルチンゲールの
+優マルチンゲール性から
+\begin{align*}
+ E[Z_n^p]
+ &\le
+ (E\mathcal E(qpM)_{\tau_n})^{1/q}\\
+ &\quad\cdot
+ \left(E\exp\!\left(
+  \frac{q'(qp^2-p)}{2}A_{\tau_n}\right)\right)^{1/q'}\\
+ &\le
+ \left(Ee^{cA_T}\right)^{1/q'},
+\end{align*}
+ここで
+$c=q'(qp^2-p)/2$ と置いた．
+$q=1+u$，$p=1+u^2$ とすれば
+$u\downarrow0$ のとき $c\to1/2$ となる．
+従って $u>0$ を十分小さく取ることで
+$c<(1+\delta)/2$ とできる．
+仮定により右辺は有限で $n$ に依存しない．
+従って $(Z_n)$ は $L^p$ 有界で一様可積分である．
+$A_T<\infty$ だから $\tau_n\uparrow T$ は
+ほとんど確実に成立し，
+$Z_n\to Z_T=\mathcal E(M)_T$ も概至る所成立する．
+一様可積分性によって
+$EZ_T=\lim_nEZ_n=1$ を得る．
+$Z$ は非負の優マルチンゲールで $Z_0=1$ なので，
+任意の $s\le t\le T$ に対して
+\[
+ 1\ge EZ_s\ge EZ_t\ge EZ_T=1.
+\]
+従って全ての期待値は1であり，
+$Z_s-E[Z_t\mid\mathcal F_s]\ge0$ の期待値は零である．
+ゆえに $E[Z_t\mid\mathcal F_s]=Z_s$ となり真のマルチンゲールである．
+\end{proof}
+
+\begin{theorem}[Novikovの条件]\label{thm:novikov}
+$M$ を初期値零の連続局所マルチンゲールとし，
+$A_T=[M]_T<\infty$ がほとんど確実に成り立つとする．
+\[
+ E\exp\!\left(\frac12A_T\right)<\infty
+\]
+ならば
+$Z_t=\exp(M_t-A_t/2)$ は
+$[0,T]$ 上の真のマルチンゲールであり，
+$EZ_T=1$ となる．
+\end{theorem}
+\begin{proof}
+$0<\varepsilon<1$ とし，
+$M^\varepsilon=(1-\varepsilon)M$ と置く．
+その二次変分は
+$[M^\varepsilon]_T=(1-\varepsilon)^2A_T$ である．
+$(1+\delta)(1-\varepsilon)^2<1$ を満たす
+$\delta>0$ が選べるから，
+仮定により
+\[
+ E\exp\!\left(
+ \frac{1+\delta}{2}[M^\varepsilon]_T\right)
+ \le E e^{A_T/2}<\infty.
+\]
+補題\ref{lem:strong-nov}を $M^\varepsilon$ に適用し，
+\[
+ 1=E\mathcal E(M^\varepsilon)_T
+ \tag{$*$}
+\]
+を得る．
+ここで
+\[
+ \mathcal E(M^\varepsilon)_T
+ =\mathcal E(M)_T^{1-\varepsilon}
+  \exp\!\left(\frac{\varepsilon(1-\varepsilon)}2 A_T\right).
+\]
+H\"olderの不等式を指数
+$1/(1-\varepsilon)$ と $1/\varepsilon$ で適用すると
+\[
+ 1\le
+ (E\mathcal E(M)_T)^{1-\varepsilon}
+ \left(Ee^{(1-\varepsilon)A_T/2}\right)^\varepsilon
+ \le
+ (EZ_T)^{1-\varepsilon}
+ (Ee^{A_T/2})^\varepsilon.
+\]
+$\varepsilon\downarrow0$ とすれば
+$1\le EZ_T$ である．一方
+非負局所マルチンゲールの優マルチンゲール性から
+$EZ_T\le1$ なので $EZ_T=1$ を得る．
+補題\ref{lem:strong-nov}の証明の最後と同じ議論で
+$Z$ は真のマルチンゲールとなる．
+\end{proof}
+
+\begin{corollary}[有界ドリフトの場合]\label{cor:bounded-theta}
+$\theta$ が有界な予測可能過程なら
+\[
+ Z_t=\exp\!\left(
+ -\int_0^t\theta_s\,dB_s
+ -\frac12\int_0^t\theta_s^2\,ds\right)
+\]
+は真のマルチンゲールである．
+\end{corollary}
+\begin{proof}
+$|\theta_s|\le K$ なら
+$\int_0^T\theta_s^2ds\le K^2T$ なので
+$E\exp(\frac12\int_0^T\theta_s^2ds)
+ \le e^{K^2T/2}<\infty$ である．
+定理\ref{thm:novikov}を適用する．
+\end{proof}
+
+\section{Girsanovの定理}
+
+\begin{theorem}[Brown運動のGirsanov変換]\label{thm:girsanov}
+$\theta$ を予測可能な実数値過程で
+\[
+ E_P\exp\!\left(\frac12\int_0^T\theta_s^2\,ds\right)<\infty
+\]
+を満たすものとする．
+\[
+ Z_t=\exp\!\left(
+ -\int_0^t\theta_s\,dB_s
+ -\frac12\int_0^t\theta_s^2\,ds\right),\qquad
+ dQ=Z_T\,dP
+\]
+と定める．このとき $Q$ は $P$ と同値な確率測度である．
+また
+\[
+ W_t=B_t+\int_0^t\theta_s\,ds
+\]
+は $(\mathcal F_t)$ に関する $Q$ のもとでの標準Brown運動である．
+\end{theorem}
+\begin{proof}
+定理\ref{thm:novikov}により $Z$ は真のマルチンゲールで
+$EZ_T=1$ となる．$Z_T>0$ は概至る所成り立つので，
+命題\ref{prop:rn}によって $Q$ は $P$ と同値な確率測度となる．
+
+Brown運動の特徴づけを，条件付き特性関数で直接証明する．
+任意の $u\in\mathbb R$ について
+\[
+ Y_t=Z_t\exp\!\left(iuW_t+\frac12u^2t\right)
+\]
+と置く．It\^oの公式と積の公式を適用すると，
+\begin{align*}
+ dZ_t&=-\theta_tZ_t\,dB_t,\\
+ d\exp(iuW_t+u^2t/2)
+ &=\exp(iuW_t+u^2t/2)
+   (iu\,dB_t+iu\theta_t\,dt),\\
+ dY_t&=Y_t(iu-\theta_t)\,dB_t.
+\end{align*}
+最後の式で，積の公式の交差項
+$-\theta_tiuY_t\,dt$ と直前のドリフト
+$+iu\theta_tY_t\,dt$ が打ち消し合った．
+従って $Y$ は複素数値の局所マルチンゲールである．
+しかも
+\[
+ |Y_t|=e^{u^2t/2}Z_t\le e^{u^2T/2}Z_t.
+\]
+$Z_t=E_P[Z_T\mid\mathcal F_t]$ だから
+$(Z_t)_{0\le t\le T}$ は一様可積分なマルチンゲールである．
+上の評価から $(Y_t)$ も一様可積分であり，
+局所化してから $L^1$ 極限を取ることによって
+$Y$ は真のマルチンゲールとなる．
+
+従って $0\le s<t\le T$ に対して
+\[
+ E_P[Z_t e^{iuW_t}\mid\mathcal F_s]
+ =Z_s e^{iuW_s}e^{-u^2(t-s)/2}.
+\]
+補題\ref{lem:bayes}を用いれば
+\[
+ E_Q[e^{iu(W_t-W_s)}\mid\mathcal F_s]
+ =e^{-u^2(t-s)/2}.
+ \tag{$*$}
+\]
+右辺は分散 $t-s$ の中心正規分布の特性関数である．
+条件付き特性関数の一意性から，
+$W_t-W_s$ は $Q$ のもとで $N(0,t-s)$ に従い，
+$\mathcal F_s$ と独立である．
+また $W_0=0$ であり，$W$ は連続標本路を持つ．
+従って $W$ は $Q$ のもとで標準Brown運動である．
+\end{proof}
+
+\begin{remark}
+この証明ではL\'evyのBrown運動の特徴づけ定理を
+外部の結果として使わず，
+条件付き特性関数を直接計算して独立増分と正規性を示した．
+測度の同値性は，零確率の事象が変換後も零確率であることを保証する．
+\end{remark}
+
+\section{確率微分方程式への応用}
+
+\begin{proposition}[ドリフトの変更]\label{prop:drift}
+$X$ が $P$ のもとで
+\[
+ dX_t=b_t\,dt+\sigma_t\,dB_t
+\]
+を満たすIt\^o過程であるとする．
+定理\ref{thm:girsanov}の条件のもとでは，
+$Q$ のもとで
+\[
+ dX_t=(b_t-\sigma_t\theta_t)\,dt+\sigma_t\,dW_t
+\]
+と表される．右辺の積分は必要に応じて局所化して解釈する．
+\end{proposition}
+\begin{proof}
+$W_t=B_t+\int_0^t\theta_sds$ なので
+$dB_t=dW_t-\theta_tdt$ である．
+まず全ての被積分過程が有界単純予測可能な場合は，
+確率積分の定義である有限和に直接代入して結論を得る．
+一般の場合には局所化とIt\^o等長性による近似を行う．
+$P$ と $Q$ は同値なので，概至る所の等式は両測度で共有される．
+\end{proof}
+
+\begin{example}[定数ドリフトの除去]
+$\mu\in\mathbb R$ を定数とし，$X_t=B_t+\mu t$ と置く．
+$\theta_t=\mu$ として
+\[
+ Z_T=\exp(-\mu B_T-\tfrac12\mu^2T)
+\]
+で定めた $Q$ のもとでは
+$W_t=B_t+\mu t=X_t$ が標準Brown運動となる．
+\end{example}
+\begin{proof}
+$\theta=\mu$ は有界なので定理\ref{thm:girsanov}を適用できる．
+測度変換後のBrown運動は
+$W_t=B_t+\int_0^t\mu\,ds=B_t+\mu t=X_t$
+となる．
+\end{proof}
+
+\begin{example}[リスク中立測度の構成]
+定数 $\mu,r\in\mathbb R$，$\sigma>0$ に対して
+\[
+ dS_t=\mu S_t\,dt+\sigma S_t\,dB_t
+\]
+とする．
+$\theta=(\mu-r)/\sigma$ によるGirsanov変換のもとで
+\[
+ dS_t=rS_t\,dt+\sigma S_t\,dW_t
+\]
+となり，$e^{-rt}S_t$ は $Q$-マルチンゲールとなる．
+\end{example}
+\begin{proof}
+命題\ref{prop:drift}により
+$\mu-\sigma\theta=r$ となる．
+$e^{-rt}S_t
+ =S_0\exp(-\sigma^2t/2+\sigma W_t)$ である．
+Brown運動の独立増分と正規分布の指数モーメントから
+$Q$ のもとでの真のマルチンゲール性を直接確認できる．
+\end{proof}
+
+\begin{remark}
+一般の予測可能ドリフト $\theta$ に対しては
+確率指数関数が真のマルチンゲールであることが
+自動的には従わない．
+本稿ではNovikovの条件を仮定として明示し，
+測度変換を確率測度として正当に定義した．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{定数ドリフトのGirsanov変換．}
+\begin{proposition}
+$T>0,\theta\in\mathbb R$ とし
+\[
+Z_T=\exp(-\theta B_T-\theta^2T/2)
+\]
+と置く．$E[Z_T]=1$ であり，
+$dQ=Z_T\,dP$ によって定める
+$\mathcal F_T$ 上の確率測度 $Q$ のもとで，
+$W_t=B_t+\theta t$（$0\le t\le T$）
+は標準Brown運動となる．
+\end{proposition}
+\begin{proof}
+$B_T\sim N(0,T)$ なので
+$E[e^{-\theta B_T}]=e^{\theta^2T/2}$，
+従って $E[Z_T]=1$ である．
+正の密度は確率測度 $Q$ を定める．
+定数過程 $\theta$ はNovikov条件
+$E[\exp(\frac12\int_0^T\theta^2ds)]
+=e^{\theta^2T/2}<\infty$ を満たす．
+Girsanovの定理から $B_t+\theta t$ は
+$Q$ のもとでBrown運動となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$E_Q[B_t]$ を求めよ．
+\par\noindent\textbf{解答．}
+$B_t=W_t-\theta t$ で，
+$E_Q[W_t]=0$ だから $E_Q[B_t]=-\theta t$ である．
+\end{document}

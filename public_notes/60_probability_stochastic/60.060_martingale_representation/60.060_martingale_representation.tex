@@ -1,0 +1,414 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Brown運動のマルチンゲール表現定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Brown運動のマルチンゲール表現，Itô公式．
+本稿の具体的な到達課題は，具体的なマルチンゲールをItô積分で表現する．
+
+\section{表現問題の設定}
+
+$(B_t)_{0\le t\le T}$ を標準Brown運動とし，
+$\mathcal F_t^B$ を
+$\sigma(B_s:0\le s\le t)$ の通常の拡大とする．
+このフィルトレーションは完備かつ右連続なものとする．
+$L^2(\mathcal F_T^B)$ における内積は
+$\langle X,Y\rangle=E[XY]$ とする．
+
+\begin{definition}
+$\mathcal H^2_T$ を
+$\mathcal F_t^B$ に関する実数値予測可能過程 $H$ で
+\[
+ \norm H_{\mathcal H^2_T}^2
+ =E\int_0^T H_s^2\,ds<\infty
+\]
+を満たすものの $dt\otimes P$ に関する同値類の空間とする．
+It\^o積分
+\[
+ I(H)=\int_0^TH_s\,dB_s
+\]
+は $\mathcal H^2_T$ から $L^2(\mathcal F_T^B)$ への
+線形等距離写像である．
+\end{definition}
+
+\begin{proposition}[It\^o積分の値域]\label{prop:range}
+\[
+ \mathcal R=\left\{\int_0^TH_s\,dB_s:
+ H\in\mathcal H^2_T\right\}
+\]
+は $L^2(\mathcal F_T^B)$ の閉線形部分空間であり，
+$\mathcal R\subset\{Z\in L^2(\mathcal F_T^B):EZ=0\}$ である．
+\end{proposition}
+\begin{proof}
+線形性はIt\^o積分の線形性から従う．
+$(I(H_n))$ が $L^2$ で収束するならCauchy列であり，
+It\^o等長性により $(H_n)$ は
+$\mathcal H^2_T$ のCauchy列である．
+$\mathcal H^2_T$ は $L^2$ 空間なので完備であり，
+ある $H$ に収束する．再びIt\^o等長性を用いれば
+$I(H_n)\to I(H)$ となるので $\mathcal R$ は閉である．
+単純過程のIt\^o積分の平均は零であり，
+$L^2$ 極限で平均は連続に変化するため
+任意の $H\in\mathcal H^2_T$ に対して $EI(H)=0$ となる．
+\end{proof}
+
+\section{Gaussian指数関数の稠密性}
+
+\begin{definition}
+決定論的な実数値階段関数 $h:[0,T]\to\mathbb R$ に対して
+\[
+ \mathcal E_t(h)=
+ \exp\!\left(\int_0^t h(s)\,dB_s
+   -\frac12\int_0^t h(s)^2\,ds\right)
+\]
+を\emph{確率指数関数}という．
+\end{definition}
+
+\begin{lemma}\label{lem:exponential}
+決定論的な有界階段関数 $h$ に対して
+\[
+ \mathcal E_t(h)=1+\int_0^t h(s)\mathcal E_s(h)\,dB_s
+\]
+が成り立つ．特に
+$\mathcal E_T(h)-1\in\mathcal R$ である．
+\end{lemma}
+\begin{proof}
+$Y_t=\int_0^t h(s)\,dB_s$，
+$v_t=\int_0^t h(s)^2\,ds$ と置く．
+関数 $f(x,v)=\exp(x-v/2)$ に
+多次元It\^oの公式を適用すると
+\[
+ d\mathcal E_t(h)=h(t)\mathcal E_t(h)\,dB_t
+\]
+となる．
+実際，$dY_t=h(t)dB_t$，
+$dv_t=h(t)^2dt$ なので，
+二次変分の補正項 $h(t)^2dt/2$ が
+$v_t$ からのドリフトを打ち消す．
+またGaussian分布の指数モーメントにより
+\[
+ E[\mathcal E_t(h)^2]
+ =\exp\!\left(\int_0^th(s)^2\,ds\right).
+\]
+従って
+\[
+ E\int_0^T h(t)^2\mathcal E_t(h)^2\,dt
+ =\int_0^Th(t)^2
+   e^{\int_0^t h(s)^2ds}\,dt<\infty.
+\]
+よって右辺の積分は二乗可積分なIt\^o積分であり，
+$\mathcal E_T(h)-1\in\mathcal R$ を得る．
+\end{proof}
+
+\begin{lemma}[指数関数の稠密性]\label{lem:exp-dense}
+次の線形部分空間は $L^2(\mathcal F_T^B)$ に稠密である：
+\[
+ \mathcal V=
+ \operatorname{span}
+ \left\{\mathcal E_T(h):
+ h\text{ は決定論的な有界階段関数}\right\}.
+\]
+\end{lemma}
+\begin{proof}
+$\mathcal V^\perp=\{0\}$ を示す．
+$Z\in L^2(\mathcal F_T^B)$ が
+全ての $\mathcal E_T(h)$ に直交するとする．
+有理数時刻（必要なら $T$ を加える）
+$q_1,q_2,\dots$ を稠密に取り，
+$\mathcal G_n=\sigma(B_{q_1},\dots,B_{q_n})$ と置く．
+任意の $n$ と $u_1,\dots,u_n\in\mathbb R$ について
+\[
+ \sum_{j=1}^nu_jB_{q_j}
+ =\int_0^T h_u(s)\,dB_s,\qquad
+ h_u(s)=\sum_{j=1}^nu_j1_{(0,q_j]}(s)
+\]
+が成立する．従って直交性から
+\[
+ E\left[Z\exp\!\left(\sum_{j=1}^nu_jB_{q_j}\right)\right]=0
+ \qquad(u\in\mathbb R^n)
+ \tag{$*$}
+\]
+を得る．指数の決定論的な分散補正係数は正であるから，
+それを取り除いても零の等式は保たれる．
+
+$\mu_n$ を
+$\mathbb R^n$ 上の有限符号付き測度
+\[
+ \mu_n(A)=E[Z1_{\{(B_{q_1},\dots,B_{q_n})\in A\}}]
+\]
+とする．$Z\in L^2$ とGaussianベクトルの指数モーメントを
+Cauchy--Schwarzの不等式で評価すれば，
+任意の $z\in\mathbb C^n$ に対して
+$\int e^{z\cdot x}\,\mu_n(dx)$ は絶対収束し，
+コンパクトな $z$ の集合上で一様に収束する冪級数展開を持つ．
+従ってこの関数は各変数について整関数である．
+式 $(*)$ から実数 $z=u\in\mathbb R^n$ で零なので，
+一変数の正則関数の恒等定理を各変数に順次適用すると
+全ての $z\in\mathbb C^n$ で零となる．
+特に $z=i\xi$ とすると
+$\mu_n$ のFourier変換が恒等的に零である．
+有限符号付き測度のFourier変換の一意性より
+$\mu_n=0$ である．
+すなわち
+$E[Z\mid\mathcal G_n]=0$ が成立する．
+
+最後に
+$\mathcal F_T^B$ は
+$\sigma(\bigcup_n\mathcal G_n)$ の完備化と一致する．
+これはBrown運動の標本路の連続性から，
+任意の時刻 $t$ の $B_t$ が有理時刻の値の極限として
+可測であることによる．
+$\bigcup_nL^2(\mathcal G_n)$ は
+$L^2(\mathcal F_T^B)$ に稠密である：
+有限個の座標に関する有界単純関数の線形包の
+$L^2$ 閉包は，
+単調類定理と有界関数の近似によって
+$L^2(\sigma(\bigcup_n\mathcal G_n))$ 全体となる．
+従って $E[Z\mid\mathcal G_n]=0$ が全ての $n$ で
+成立するなら，$Z$ は稠密部分空間に直交するので
+$Z=0$ となる．
+これで $\mathcal V^\perp=\{0\}$ を示した．
+\end{proof}
+
+\begin{remark}
+証明で用いたGaussian指数関数の稠密性は，
+Brown運動の自然フィルトレーションに固有の重要な性質である．
+Fourier変換の一意性と複素解析の恒等定理を利用するのは，
+有限次元Gaussian分布の指数関数系が完全であることを
+示すためである．
+\end{remark}
+
+\section{マルチンゲール表現定理}
+
+\begin{theorem}[Brown運動のマルチンゲール表現]\label{thm:mrt}
+$Z\in L^2(\mathcal F_T^B)$ とする．
+このときただ一つの $H\in\mathcal H^2_T$ が存在して
+\[
+ Z=E[Z]+\int_0^TH_s\,dB_s
+ \qquad\text{ほとんど確実}
+\]
+が成り立つ．
+従って
+\[
+ M_t=E[Z\mid\mathcal F_t^B]
+\]
+と置けば
+\[
+ M_t=E[Z]+\int_0^tH_s\,dB_s
+ \qquad(0\le t\le T)
+\]
+が各固定時刻でほとんど確実に成り立ち，右辺は連続な修正を与える．
+\end{theorem}
+\begin{proof}
+$\mathcal R$ を命題\ref{prop:range}の閉部分空間とし，
+$\mathcal W=\mathbb R1+\mathcal R$ と置く．
+$\mathcal R$ は平均零の確率変数から成るので
+定数関数の空間と直交する．
+従って $\mathcal W$ は閉線形部分空間である．
+補題\ref{lem:exponential}によって
+任意の決定論的有界階段関数 $h$ に対し
+$\mathcal E_T(h)\in\mathcal W$ である．
+補題\ref{lem:exp-dense}により
+これらの指数関数の線形包は
+$L^2(\mathcal F_T^B)$ に稠密であるから，
+$\mathcal W=L^2(\mathcal F_T^B)$ となる．
+従って任意の $Z$ は
+$Z=c+\int_0^TH_s\,dB_s$ と表される．
+期待値を取ると $c=EZ$ である．
+二つの被積分過程 $H,G$ が同じ表現を与えるなら
+It\^o等長性から
+\[
+ E\int_0^T|H_s-G_s|^2\,ds
+ =E\left|\int_0^T(H_s-G_s)\,dB_s\right|^2=0
+\]
+なので $H=G$ が $dt\otimes P$ について成立する．
+従って表現は一意である．
+
+表現式の両辺に $\mathcal F_t^B$ に関する
+条件付き期待値を取れば，
+右辺のIt\^o積分過程がマルチンゲールであることから
+\[
+ E[Z\mid\mathcal F_t^B]
+ =E[Z]+\int_0^tH_s\,dB_s
+\]
+を得る．右辺は連続な修正を持つ．なお，左辺の各時刻の版を任意に選ぶと，
+区別不能性の意味で一致するとは限らない．
+\end{proof}
+
+\begin{corollary}[二乗可積分マルチンゲールの連続性]\label{cor:continuous}
+$(M_t)_{0\le t\le T}$ を
+Brown運動の自然フィルトレーションに関する
+二乗可積分なマルチンゲールとする．
+このとき $M$ は連続な修正を持つ．
+\end{corollary}
+\begin{proof}
+マルチンゲール性により
+$M_t=E[M_T\mid\mathcal F_t^B]$ である．
+定理\ref{thm:mrt}を $Z=M_T$ に適用すると
+$M_t=E[M_T]+\int_0^tH_s\,dB_s$ と表される．
+右辺は連続な修正を持つから結論が従う．
+\end{proof}
+
+\section{具体的な表現}
+
+\begin{example}[Brown運動の二次多項式]
+$M_t=B_t^2-t$ と置くと
+\[
+ M_t=2\int_0^tB_s\,dB_s
+\]
+となる．
+\end{example}
+\begin{proof}
+$f(x)=x^2$ にIt\^oの公式を適用すると
+$d(B_t^2)=2B_t\,dB_t+dt$ である．
+$B_0=0$ なので積分表示を得る．
+また
+$E\int_0^TB_s^2\,ds=\int_0^Ts\,ds=T^2/2<\infty$ だから
+被積分過程は $\mathcal H^2_T$ に属する．
+\end{proof}
+
+\begin{example}[指数マルチンゲール]
+$\theta\in\mathbb R$ とし
+$M_t=\exp(\theta B_t-\theta^2t/2)$ と置くと
+\[
+ M_t=1+\int_0^t\theta M_s\,dB_s.
+\]
+\end{example}
+\begin{proof}
+補題\ref{lem:exponential}を
+定数関数 $h(s)=\theta$ に適用すればよい．
+\end{proof}
+
+\begin{proposition}[二つの独立Brown運動の下での違い]
+$B,W$ を独立な標準Brown運動とし，
+$\mathcal G_t=\sigma(B_s,W_s:0\le s\le t)$ の通常の拡大とする．
+$M_t=W_t$ は $\mathcal G_t$ に関する連続
+二乗可積分マルチンゲールだが，
+$W_T=\int_0^TH_s\,dB_s$ となる
+$\mathcal G_t$-予測可能な $H\in\mathcal H^2_T$
+は存在しない．
+\end{proposition}
+\begin{proof}
+独立増分性から $W$ は $\mathcal G_t$ に関する
+マルチンゲールである．
+一方，有界単純 $\mathcal G_t$-予測可能過程
+$H_s=\sum_j\xi_j1_{(t_j,t_{j+1}]}(s)$ に対して
+\[
+ E\left[W_T\int_0^TH_s\,dB_s\right]
+ =\sum_j E[W_T\xi_j(B_{t_{j+1}}-B_{t_j})].
+\]
+$W_T=W_{t_j}+(W_T-W_{t_j})$ と分解する．
+$\xi_jW_{t_j}$ は $\mathcal G_{t_j}$ 可測であり，
+$B$ の増分は $\mathcal G_{t_j}$ と独立で平均零だから，
+最初の項の期待値は零である．
+さらに $(W_T-W_{t_j}, B_{t_{j+1}}-B_{t_j})$ は，
+$\mathcal G_{t_j}$ と独立であり互いにも独立な
+中心正規増分なので，
+二番目の項の期待値も零である．
+従って全体は $0$ となる．
+単純過程の $L^2$ 稠密性とIt\^o等長性によって，
+任意の $H\in\mathcal H^2_T$ について
+$E[W_T\int_0^TH_s\,dB_s]=0$ となる．
+もし $W_T=\int_0^TH_s\,dB_s$ なら
+$E[W_T^2]=0$ となるが，$E[W_T^2]=T>0$ なので矛盾する．
+\end{proof}
+
+\begin{remark}
+表現定理の仮定は，
+積分に使うBrown運動とフィルトレーションが
+正確に対応していることを要求する．
+フィルトレーションに別の独立な雑音を追加すると，
+その雑音によるマルチンゲールを
+元のBrown運動だけで表現することはできない．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{二次マルチンゲールの積分表示．}
+\begin{proposition}
+$M_t=B_t^2-t$ は二乗可積分マルチンゲールで，
+\[
+M_t=2\int_0^tB_s\,dB_s
+\]
+と表せる．
+\end{proposition}
+\begin{proof}
+Itôの公式を $f(x)=x^2$ に適用すると
+$d(B_t^2)=2B_t\,dB_t+dt$．
+従って $dM_t=2B_t\,dB_t$ であり，
+$M_0=0$ だから表示式が従う．
+任意の有限時間 $T$ について
+$E\int_0^T(2B_s)^2ds=4\int_0^Ts\,ds<\infty$
+なので右辺は二乗可積分マルチンゲールである．
+\end{proof}
+\noindent\textbf{到達確認．}
+$N_t=B_t$ をItô積分で表現せよ．
+\par\noindent\textbf{解答．}
+$B_t=\int_0^t1\,dB_s$ である．
+\end{document}

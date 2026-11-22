@@ -1,0 +1,549 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{確率微分方程式の存在と一意性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Itôの公式，確率微分方程式，強解．
+本稿の具体的な到達課題は，線形乗法的雑音の確率微分方程式を明示的に解く．
+
+\section{確率微分方程式の定式化}
+
+$T>0$ とし，
+$(\Omega,\mathcal F,(\mathcal F_t)_{0\le t\le T},P)$ を
+通常の条件を満たすフィルター付き確率空間とする．
+$B=(B^1,\dots,B^m)$ を $\mathcal F_t$ に関する
+$m$ 次元標準Brown運動とする．
+$d$ 次元Euclid空間のノルムは $|\cdot|$，
+行列のHilbert--Schmidtノルムは $|\cdot|_{\mathrm{HS}}$
+と書く．
+
+\begin{definition}
+Borel可測な係数
+$b:[0,T]\times\mathbb R^d\to\mathbb R^d$，
+$\sigma:[0,T]\times\mathbb R^d\to\mathbb R^{d\times m}$
+および初期値 $x_0\in\mathbb R^d$ に対する
+確率微分方程式（SDE）
+\[
+ dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dB_t,\quad X_0=x_0
+\]
+の\emph{強解}とは，
+与えられた確率空間とBrown運動上の連続適合過程 $X$ で，
+必要な積分が定義可能であり，
+\begin{equation}\label{eq:sde}
+ X_t=x_0+\int_0^tb(s,X_s)\,ds+
+       \int_0^t\sigma(s,X_s)\,dB_s
+\end{equation}
+が全ての時刻について区別不能性の意味で成り立つものをいう．
+\emph{経路ごとの一意性}とは，
+同じBrown運動・同じ初期値を持つ二つの強解が
+区別不能であることをいう．
+\end{definition}
+
+\begin{remark}
+弱解は，確率空間とBrown運動自体を解の一部として選ぶ定義である．
+弱解の一意性には分布の一意性と経路ごとの一意性の違いがある．
+本稿の中心は，与えられたBrown運動上の強解の存在・一意性である．
+\end{remark}
+
+\section{解析的準備}
+
+\begin{lemma}[Gronwallの不等式]\label{lem:gronwall}
+$u:[0,T]\to[0,\infty)$ を可積分関数とし，
+定数 $A,B\ge0$ について
+\[
+ u(t)\le A+B\int_0^tu(s)\,ds
+\]
+がほとんど全ての $t$ で成り立つとする．
+このとき $u(t)\le Ae^{Bt}$ がほとんど全ての $t$ で成り立つ．
+特に $A=0$ なら $u=0$ がほとんど至る所成立する．
+\end{lemma}
+\begin{proof}
+$v(t)=A+B\int_0^tu(s)\,ds$ と置くと
+$v$ は絶対連続であり，
+$v'(t)=Bu(t)\le Bv(t)$ がほとんど全ての $t$ で成り立つ．
+従って $e^{-Bt}v(t)$ は非増加であり，
+$v(t)\le v(0)e^{Bt}=Ae^{Bt}$ となる．
+$u\le v$ と合わせれば結論を得る．
+\end{proof}
+
+\begin{definition}
+$\mathcal S^2_T$ を，
+$\mathbb R^d$ 値の連続適合過程 $X$ で
+\[
+ \norm X_{\mathcal S^2_T}
+ =\left(E\sup_{0\le t\le T}|X_t|^2\right)^{1/2}<\infty
+\]
+を満たすものの同値類の空間とする．
+同値関係は区別不能性とする．
+\end{definition}
+
+\begin{lemma}[$\mathcal S^2_T$ の完備性]\label{lem:s2}
+$\mathcal S^2_T$ はノルム
+$\norm{\cdot}_{\mathcal S^2_T}$ に関してBanach空間である．
+\end{lemma}
+\begin{proof}
+$(X^{(n)})$ をCauchy列とする．
+部分列を取り直して
+\[
+ E\sup_{t\le T}|X^{(n+1)}_t-X^{(n)}_t|^2
+ \le2^{-4n}
+\]
+とできる．Chebyshevの不等式から
+\[
+ P\left(\sup_{t\le T}|X^{(n+1)}_t-X^{(n)}_t|>2^{-n}\right)
+ \le2^{-2n}
+\]
+である．Borel--Cantelliの補題により，
+確率 $1$ で $(X^{(n)})$ は時間について一様Cauchyとなる．
+従って連続な標本路を持つ極限 $X$ が存在する．
+各固定時刻での確率変数の極限は $\mathcal F_t$ 可測だから
+$X$ は適合である．
+Fatouの補題によって
+\[
+ E\sup_{t\le T}|X_t-X^{(n)}_t|^2
+ \le\liminf_{m\to\infty}
+ E\sup_{t\le T}|X^{(m)}_t-X^{(n)}_t|^2.
+\]
+元の列がCauchyであることから
+右辺は $n\to\infty$ で $0$ に収束する．
+従って $X\in\mathcal S^2_T$ かつ
+$X^{(n)}\to X$ はこのノルムで成立する．
+\end{proof}
+
+\begin{lemma}[確率積分の最大評価]\label{lem:sde-est}
+予測可能な $m$ 次元Brown運動の被積分係数
+$H_s\in\mathbb R^{d\times m}$ が
+$E\int_0^T|H_s|_{\mathrm{HS}}^2ds<\infty$
+を満たすとする．このとき
+\[
+ E\sup_{t\le T}\left|\int_0^tH_s\,dB_s\right|^2
+ \le4E\int_0^T|H_s|_{\mathrm{HS}}^2ds.
+\]
+\end{lemma}
+\begin{proof}
+$\int_0^tH_s\,dB_s$ は平方可積分な連続
+$\mathbb R^d$ 値マルチンゲールである．
+そのノルムは凸関数であるから劣マルチンゲールであり，
+Doobの $L^2$ 最大不等式を適用すると
+\[
+ E\sup_{t\le T}|M_t|^2\le4E|M_T|^2
+\]
+となる．
+多次元It\^o等長性により
+$E|M_T|^2=E\int_0^T|H_s|_{\mathrm{HS}}^2ds$
+であるから結論を得る．
+\end{proof}
+
+\section{大域Lipschitz条件のもとでの存在}
+
+\begin{theorem}[強解の存在と一意性]\label{thm:exist-uniq}
+$b,\sigma$ は時間変数についてBorel可測，
+空間変数について連続であるとする．
+ある $L,K\ge0$ が存在し，全ての $t\in[0,T]$ と
+$x,y\in\mathbb R^d$ について
+\begin{align}
+ |b(t,x)-b(t,y)|
+ +|\sigma(t,x)-\sigma(t,y)|_{\mathrm{HS}}
+ &\le L|x-y|, \label{eq:lip}\\
+ |b(t,0)|+|\sigma(t,0)|_{\mathrm{HS}}
+ &\le K \label{eq:origin}
+\end{align}
+が成り立つとする．
+任意の決定論的初期値 $x_0\in\mathbb R^d$ に対して
+\eqref{eq:sde} は
+$\mathcal S^2_T$ に属する強解をただ一つ持つ．
+\end{theorem}
+\begin{proof}
+まず係数は \eqref{eq:lip}，\eqref{eq:origin} により
+\[
+ |b(t,x)|+|\sigma(t,x)|_{\mathrm{HS}}
+ \le K+L|x|
+ \tag{$*$}
+\]
+を満たす．
+$\mathcal S^2_T$ 上の写像 $\Phi$ を
+\[
+ (\Phi X)_t=x_0+
+ \int_0^tb(s,X_s)\,ds+
+ \int_0^t\sigma(s,X_s)\,dB_s
+\]
+と定める．
+$X$ は連続適合なので予測可能であり，
+係数の合成も予測可能である．
+$(*)$ から両積分は定義可能であり，
+補題\ref{lem:sde-est}とCauchy--Schwarzの不等式から
+$\Phi X\in\mathcal S^2_T$ である．
+
+任意の $X,Y\in\mathcal S^2_T$ に対して，
+$\Delta b_s=b(s,X_s)-b(s,Y_s)$，
+$\Delta\sigma_s=\sigma(s,X_s)-\sigma(s,Y_s)$ と置く．
+$u(t)=E\sup_{r\le t}|X_r-Y_r|^2$ とすると，
+\begin{align*}
+ E\sup_{r\le t}|(\Phi X)_r-(\Phi Y)_r|^2
+ &\le2tE\int_0^t|\Delta b_s|^2ds\\
+ &\quad+8E\int_0^t|\Delta\sigma_s|_{\mathrm{HS}}^2ds\\
+ &\le C\int_0^tu(s)\,ds
+\end{align*}
+となる．ここで $C=2L^2(T+4)$ と取れる．
+
+$X^{(0)}_t=x_0$ を定数過程とし，
+$X^{(n+1)}=\Phi X^{(n)}$ と定める．
+$D_n(t)=E\sup_{r\le t}|X_r^{(n+1)}-X_r^{(n)}|^2$
+と置けば
+\[
+ D_n(t)\le C\int_0^tD_{n-1}(s)\,ds
+\]
+を得る．
+$D_0(T)<\infty$ なので帰納法によって
+\[
+ D_n(T)\le D_0(T)\frac{(CT)^n}{n!}.
+\]
+従って
+$\sum_{n=0}^\infty\norm{X^{(n+1)}-X^{(n)}}_{\mathcal S^2_T}
+ \le\sqrt{D_0(T)}\sum_{n\ge0}\sqrt{(CT)^n/n!}<\infty$ である．
+Banach空間 $\mathcal S^2_T$ の完備性によって
+$X^{(n)}\to X\in\mathcal S^2_T$ となる．
+上の評価から $\Phi$ は $\mathcal S^2_T$ 上で連続なので
+$X=\Phi X$ が従い，$X$ は強解である．
+
+$X,Y$ が二つの強解であれば，同じ評価から
+$u(t)\le C\int_0^tu(s)\,ds$ が成立する．
+補題\ref{lem:gronwall}を $A=0$ として適用すれば
+$u(t)=0$ となる．従って
+$E\sup_{r\le T}|X_r-Y_r|^2=0$ であり，
+$X,Y$ は区別不能である．
+\end{proof}
+
+\begin{remark}
+上の証明は有限時間区間全体で一度に縮小写像を作るのではなく，
+Picard反復の差に対する階乗型評価を用いている．
+大域Lipschitz条件のもとでは，
+十分小さな時間幅への分割を経ずに存在を証明できる．
+\end{remark}
+
+\section{初期値への連続依存性}
+
+\begin{proposition}\label{prop:stability}
+定理\ref{thm:exist-uniq}の仮定のもとで，
+初期値 $x_0,y_0$ に対応する強解を $X,Y$ とすると，
+ある $C_T>0$ が存在して
+\[
+ E\sup_{t\le T}|X_t-Y_t|^2
+ \le C_T|x_0-y_0|^2
+\]
+となる．$C_T$ は $L,T$ のみで決められる．
+\end{proposition}
+\begin{proof}
+二つの積分方程式の差を取り，
+$|u+v+w|^2\le3(|u|^2+|v|^2+|w|^2)$ を用いると
+\begin{align*}
+ u(t)&=E\sup_{r\le t}|X_r-Y_r|^2\\
+ &\le3|x_0-y_0|^2
+   +3tE\int_0^t|\Delta b_s|^2ds\\
+ &\quad+12E\int_0^t|\Delta\sigma_s|_{\mathrm{HS}}^2ds\\
+ &\le3|x_0-y_0|^2+C\int_0^tu(s)\,ds
+\end{align*}
+となる．$C=3L^2(T+4)$ と取ればよい．
+Gronwallの不等式によって
+$u(T)\le3e^{CT}|x_0-y_0|^2$ を得る．
+\end{proof}
+
+\section{局所Lipschitz条件と爆発}
+
+\begin{definition}
+係数 $b,\sigma$ が\emph{局所Lipschitz条件}を満たすとは，
+任意の $R>0$ に対し $L_R\ge0$ が存在し，
+$|x|,|y|\le R$ のとき
+\[
+ |b(t,x)-b(t,y)|
+ +|\sigma(t,x)-\sigma(t,y)|_{\mathrm{HS}}
+ \le L_R|x-y|
+\]
+が全ての $t\in[0,T]$ で成立することをいう．
+\end{definition}
+
+\begin{theorem}[局所Lipschitz・線形成長条件]\label{thm:local-global}
+$b,\sigma$ は時間についてBorel可測，
+空間について連続であり，局所Lipschitz条件を満たすとする．
+さらにある $K\ge0$ が存在して
+\[
+ |b(t,x)|+|\sigma(t,x)|_{\mathrm{HS}}
+ \le K(1+|x|)
+ \qquad(t\in[0,T],\ x\in\mathbb R^d)
+\]
+が成り立つとする．
+このとき任意の初期値 $x_0$ に対し，
+\eqref{eq:sde} の強解が $[0,T]$ 全体に存在し，
+経路ごとに一意である．
+\end{theorem}
+\begin{proof}
+$R>|x_0|$ とし，Euclid空間の閉球への最近点射影
+$P_R:\mathbb R^d\to\overline{B}(0,R)$ を考える．
+この射影は1-Lipschitzである．
+実際，閉凸集合への射影の特徴づけから
+$|P_Rx-P_Ry|^2\le\langle P_Rx-P_Ry,x-y\rangle$
+が従い，Cauchy--Schwarzの不等式によって
+$|P_Rx-P_Ry|\le|x-y|$ となる．
+\[
+ b_R(t,x)=b(t,P_Rx),\qquad
+ \sigma_R(t,x)=\sigma(t,P_Rx)
+\]
+と置くと，局所Lipschitz条件から
+$b_R,\sigma_R$ は大域Lipschitzであり，
+線形成長条件から原点での値も有界である．
+定理\ref{thm:exist-uniq}により，
+切断方程式の強解 $X^{(R)}$ が一意に存在する．
+
+$\tau_R=\inf\{t\le T:|X_t^{(R)}|\ge R\}\wedge T$
+と置く．$S>R$ に対して，
+両方の切断方程式の係数は閉球 $|x|\le R$ 上で
+元の係数に一致する．
+従って停止時刻 $\tau_R\wedge\tau_S$ までの二つの解の差に
+定理\ref{thm:exist-uniq}の一意性の証明と同じ
+Gronwallの不等式を適用すれば，
+$X^{(R)}=X^{(S)}$ が共通の停止時刻まで成立する．
+このことから切断解を，最初に境界に達するまで
+矛盾なく貼り合わせられる．
+
+爆発しないことを示す．
+$\tau_R$ までの方程式に対し，
+線形成長条件と最大不等式を適用すると
+\[
+ u_R(t)=E\sup_{s\le t}|X^{(R)}_{s\wedge\tau_R}|^2
+ \le C_0(1+|x_0|^2)
+   +C_1\int_0^tu_R(s)\,ds
+\]
+を得る．ここで $C_0,C_1$ は $K,T$ のみで決まり
+$R$ に依存しない．
+実際，ドリフトには
+$\sup_{r\le t}|\int_0^{r\wedge\tau_R}b(s,X_s^{(R)})ds|^2
+ \le t\int_0^{t\wedge\tau_R}|b(s,X_s^{(R)})|^2ds$
+を用い，確率積分には
+Doobの最大不等式を用いればよい．
+Gronwallの不等式から
+$u_R(T)\le C(1+|x_0|^2)$ を得る．
+$|X_{\tau_R}^{(R)}|=R$ が
+$\{\tau_R<T\}$ 上で成立するため
+\[
+ P(\tau_R<T)\le \frac{C(1+|x_0|^2)}{R^2}
+ \longrightarrow0.
+\]
+従って貼り合わせの爆発時刻は $T$ より前には生じない．
+連続性と極限によって $[0,T]$ 全体の強解を得る．
+経路ごとの一意性は，各停止時刻までの一意性と
+$\tau_R\uparrow T$ から従う．
+\end{proof}
+
+\begin{remark}
+局所Lipschitz条件だけでは大域的な解の存在は保証されない．
+線形成長条件を課すことによって爆発を排除した点が重要である．
+\end{remark}
+
+\section{線形方程式と明示解}
+
+\begin{example}[幾何Brown運動]\label{ex:gbm}
+$\mu,\sigma\in\mathbb R$，$x_0>0$ に対して
+\[
+ dX_t=\mu X_t\,dt+\sigma X_t\,dB_t,\qquad X_0=x_0
+\]
+は一意な強解
+\[
+ X_t=x_0\exp\!\left(
+ (\mu-\tfrac12\sigma^2)t+\sigma B_t\right)
+\]
+を持つ．
+\end{example}
+\begin{proof}
+係数 $b(x)=\mu x$，$\sigma(x)=\sigma x$ は
+大域Lipschitzなので定理\ref{thm:exist-uniq}から
+一意性と存在が従う．
+表示された過程にIt\^oの公式を適用すると
+\[
+ dX_t=X_t\bigl(
+ (\mu-\tfrac12\sigma^2)dt+\sigma dB_t
+ +\tfrac12\sigma^2dt\bigr)
+ =\mu X_t\,dt+\sigma X_t\,dB_t
+\]
+となり初期条件を満たす．
+\end{proof}
+
+\begin{example}[Ornstein--Uhlenbeck過程]\label{ex:ou}
+$\lambda>0$，$\sigma\in\mathbb R$ に対して
+\[
+ dX_t=-\lambda X_t\,dt+\sigma\,dB_t,\qquad X_0=x_0
+\]
+の一意な強解は
+\[
+ X_t=e^{-\lambda t}
+  \left(x_0+\sigma\int_0^te^{\lambda s}\,dB_s\right)
+\]
+である．特に
+\[
+ E[X_t]=e^{-\lambda t}x_0,\qquad
+ \operatorname{Var}(X_t)
+ =\frac{\sigma^2}{2\lambda}(1-e^{-2\lambda t})
+\]
+となる．
+\end{example}
+\begin{proof}
+係数は大域Lipschitzである．
+$e^{\lambda t}X_t$ にIt\^oの積の公式を適用すると
+$d(e^{\lambda t}X_t)=\sigma e^{\lambda t}dB_t$ となる．
+積分して表示式を得る．
+It\^o積分の平均は零で，等長性から
+\[
+ \operatorname{Var}(X_t)
+ =\sigma^2e^{-2\lambda t}\int_0^te^{2\lambda s}ds
+ =\frac{\sigma^2}{2\lambda}(1-e^{-2\lambda t})
+\]
+が従う．
+\end{proof}
+
+\section{仮定を外したときの例}
+
+\begin{example}[一意性の失敗]
+確率項を持たない微分方程式
+\[
+ dX_t=\sqrt{|X_t|}\,dt,\qquad X_0=0
+\]
+は一意な解を持たない．
+\end{example}
+\begin{proof}
+$X_t\equiv0$ は解である．
+さらに任意の $c\ge0$ に対して
+\[
+ X_t^{(c)}=
+ \begin{cases}
+ 0&(t\le c),\\
+ (t-c)^2/4&(t>c)
+ \end{cases}
+\]
+と置けば，$X^{(c)}$ は連続で区分的に $C^1$，
+実際には $C^1$ 級であり，
+$t>c$ で
+$\frac d{dt}X_t^{(c)}=(t-c)/2
+=\sqrt{X_t^{(c)}}$ を満たす．
+$t\le c$ でも方程式を満たすため解となる．
+したがって一意性が失敗する．
+係数 $x\mapsto\sqrt{|x|}$ は原点でLipschitzでない．
+\end{proof}
+
+\begin{example}[有限時間爆発]
+確率項を持たない
+$dX_t=X_t^2\,dt$，$X_0=1$ は
+$0\le t<1$ で $X_t=(1-t)^{-1}$ と解けるが，
+$t=1$ で爆発する．
+\end{example}
+\begin{proof}
+$x(t)=1/(1-t)$ を微分すると
+$x'(t)=1/(1-t)^2=x(t)^2$ であり初期条件を満たす．
+$t\uparrow1$ で $x(t)\to+\infty$ だから，
+有限値の連続解として $t=1$ を越えて延長できない．
+係数 $x^2$ は局所Lipschitzだが線形成長条件を満たさない．
+\end{proof}
+
+\begin{remark}
+強解の存在・一意性と，解の具体的な法則の計算は別問題である．
+一般の係数では明示解が存在しなくても，
+本稿の条件のもとで確率微分方程式は数学的に一意に解ける．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{幾何Brown運動の解．}
+\begin{proposition}
+$a,b\in\mathbb R$，$x_0>0$ とすると
+\[
+dX_t=aX_t\,dt+bX_t\,dB_t,\qquad X_0=x_0
+\]
+の解は
+\[
+X_t=x_0\exp((a-b^2/2)t+bB_t)
+\]
+である．
+\end{proposition}
+\begin{proof}
+$Y_t=(a-b^2/2)t+bB_t$ と置く．
+指数関数にItôの公式を適用すると
+\[
+d(e^{Y_t})=e^{Y_t}dY_t+
+\tfrac12e^{Y_t}b^2dt
+=e^{Y_t}(a\,dt+b\,dB_t).
+\]
+$x_0$ を掛ければ所要のSDEを満たす．
+係数 $x\mapsto ax,bx$ は大域Lipschitzなので
+強解の一意性定理よりこれが唯一の強解である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$a=0,b=1,x_0=1$ のとき $E[X_t]$ を求めよ．
+\par\noindent\textbf{解答．}
+$X_t=e^{B_t-t/2}$．
+正規分布のモーメント母関数から
+$E[e^{B_t}]=e^{t/2}$ なので $E[X_t]=1$．
+\end{document}
