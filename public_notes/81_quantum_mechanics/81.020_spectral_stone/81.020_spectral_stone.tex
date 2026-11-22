@@ -1,0 +1,771 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{自己共役作用素のスペクトル定理とStoneの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，自己共役作用素，スペクトル定理，強連続ユニタリ群．
+本稿の具体的な到達課題は，有限次元の自己共役作用素からStone型の時間発展を構成する．
+
+\section{主題と論理的前提}
+本稿では，複素Hilbert空間上の有界正規作用素のスペクトル定理を
+証明したのち，Cayley変換を使って稠密定義された非有界自己共役作用素の
+スペクトル定理を導く．最後にStoneの定理を証明する．
+Hilbert空間は可分であるとは仮定しない．内積は第二変数について線形とする．
+
+用いる既習事項は，Hilbert空間における直交分解，
+Banach空間の開写像定理，複素函数のCauchy積分公式，
+Stone--Weierstrassの定理，Lebesgue積分の単調・優収束定理，
+Carath\'eodoryの外測度構成定理，およびZornの補題である．
+Stone--Weierstrassの定理とCarath\'eodoryの定理を
+「スペクトル定理の特殊な場合」として暗黙に利用することはしない．
+正値汎函数の測度表示は次節で構成から証明する．
+
+\begin{definition}
+$H$ を複素Hilbert空間とする．稠密な線形部分空間 $D(A)\subset H$ 上の
+線形写像 $A:D(A)\to H$ を稠密定義作用素と呼ぶ．
+その随伴 $A^*$ の定義域は
+\[
+ D(A^*)=\{y\in H:\exists z\in H\ \forall x\in D(A),
+                 \ \langle Ax,y\rangle=\langle x,z\rangle\}
+\]
+であり，$A^*y=z$ とする．この $z$ は $D(A)$ の稠密性により一意である．
+$A=A^*$ が定義域も含めて成立する場合を\emph{自己共役}という．
+\end{definition}
+
+\begin{definition}
+$K$ をコンパクトHausdorff空間とし，$H$ をHilbert空間とする．
+$K$ のBorel集合上の\emph{直交射影値測度}とは，
+$E(B)\in\mathcal B(H)$ が直交射影であり，
+$E(K)=I$，$E(B\cap C)=E(B)E(C)$，かつ
+互いに素な $B_n$ に対して
+\[
+ E\bigl(\textstyle\bigcup_n B_n\bigr)x
+   =\sum_nE(B_n)x \qquad(x\in H)
+\]
+がノルム収束の意味で成立する写像である．
+\end{definition}
+
+\section{コンパクト距離空間上の正値汎函数}
+ここではRiesz--Markovの定理のうち本稿で必要となる形を証明する．
+
+\begin{lemma}[連続函数の分割]
+$K$ をコンパクト距離空間とし，$F\subset\bigcup_{j=1}^m U_j$ を
+閉集合とする．ただし各 $U_j$ は開集合とする．
+このとき $0\le h_j\le1$ なる $h_j\in C(K)$ が存在して，
+$\operatorname{supp}h_j\subset U_j$ かつ
+$\sum_jh_j=1$ が $F$ 上で成立する．
+\end{lemma}
+\begin{proof}
+各 $x\in F$ に対しある $j$ で $x\in U_j$ である．距離の連続性と
+$F$ のコンパクト性により，有限個の閉球 $B_i$ を取って，
+$F\subset\bigcup_i\operatorname{int} B_i$，$B_i\subset U_{j(i)}$ とできる．
+各 $B_i$ 上で1となり $U_{j(i)}$ に台をもつ連続函数 $a_i$ を
+距離による切断函数から作れる．
+$h_j'=\sum_{i:j(i)=j}a_i$，$S=\sum_jh_j'$ とおく．
+$F$ の近傍で $S\ge1$ である．$\chi\in C(K)$ を
+$F$ 上で1，$\{S\le1/2\}$ 上で0となるように取る．
+$h_j=\chi h_j'/S$ とし，$S=0$ では0と定めればよい．
+$\chi$ の台を $\{S>1/2\}$ に選ぶことができるので，連続性も従う．
+\end{proof}
+
+\begin{theorem}[Riesz--Markovの定理：コンパクト距離空間版]
+$K$ をコンパクト距離空間とし，
+$\Lambda:C(K;\mathbb C)\to\mathbb C$ を複素線形汎函数で，
+$0\le f\in C(K;\mathbb R)$ ならば $\Lambda(f)\ge0$ とする．
+ただ一つの有限正則Borel測度 $\mu$ が存在して
+\[
+  \Lambda(f)=\int_K f\,d\mu\qquad(f\in C(K;\mathbb C))
+\]
+が成り立つ．さらに $\mu(K)=\Lambda(1)$ である．
+\end{theorem}
+\begin{proof}
+正値性から $|\Lambda(f)|\le\Lambda(1)\norm{f}_\infty$
+が実値函数について成立し，複素線形性から連続性も従う．
+開集合 $U\subset K$ に対し
+\[
+ m(U)=\sup\{\Lambda(f): 0\le f\le1,\ f\in C(K;\mathbb R),
+                  \operatorname{supp}f\subset U\}
+\]
+と置く．$0\le m(U)\le\Lambda(1)$ である．
+開集合の被覆 $U\subset\bigcup_{n\ge1}U_n$ について，
+$\operatorname{supp}f$ の有限部分被覆を選び前補題を適用すると，
+$f=\sum_jfh_j$，$0\le fh_j\le1$，
+$\operatorname{supp}(fh_j)\subset U_{n(j)}$ なので
+\[
+ \Lambda(f)\le\sum_{n\ge1}m(U_n),\qquad
+ m(U)\le\sum_{n\ge1}m(U_n).
+\]
+また $U,V$ が互いに素な開集合なら
+$m(U\cup V)=m(U)+m(V)$ である．実際，
+$U,V$ に台をもつ任意の二つの $0\le f,g\le1$ は
+$f+g\le1$ を満たすので一方の不等号を得る．
+他方，$U\cup V$ に台をもつ $h$ の台を閉集合
+$\operatorname{supp}h\cap U$ と $\operatorname{supp}h\cap V$ に分離し，
+それぞれに台をもつ連続切断函数で $h$ を分割すれば逆向きが従う．
+
+任意の集合 $A\subset K$ に対して
+\[
+ \mu^*(A)=\inf_{A\subset U,\ U\text{ 開}}m(U)
+\]
+と定める．上の被覆不等式により $\mu^*$ は有限の外測度である．
+$\operatorname{dist}(A,B)>0$ なら，$A,B$ を分離する開集合を
+それぞれ $V,W$ として，任意の開集合 $O\supset A\cup B$ に対して
+\[
+ m(O)\ge m(O\cap V)+m(O\cap W)
+       \ge\mu^*(A)+\mu^*(B)
+\]
+だから $\mu^*(A\cup B)=\mu^*(A)+\mu^*(B)$ となる．
+これは距離的外測度である．Carath\'eodoryの距離的外測度定理により
+すべてのBorel集合は可測であり，その制限 $\mu$ はBorel測度である．
+$\mu(U)=m(U)$ は定義から従い，外側正則性が成立する．
+$\mu(K)=\Lambda(1)<\infty$ であるから，補集合の外側正則性から
+内側正則性も従う．
+
+$0\le f\le M$ とし，$\delta=M/N$ と置く．
+$U_t=\{f>t\}$，$F_t=\{f\ge t\}$ とする．
+各 $j=1,\dots,N$ に対して $U_{j\delta}$ に台をもつ
+$0\le g_j\le1$ を選ぶと，点ごとに
+$\delta\sum_{j=1}^N g_j\le f$ となる．
+$\Lambda(g_j)$ の上限を取って
+\[
+ \delta\sum_{j=1}^{N}\mu(U_{j\delta})\le\Lambda(f)
+\]
+を得る．逆に $F_{j\delta}$ を含む任意の開集合 $V_j$ に対し，
+$F_{j\delta}$ 上で1，$V_j$ に台をもつ連続函数 $0\le h_j\le1$ を
+取れる．点ごとに
+$f\le\delta\sum_{j=0}^{N-1}h_j$ となるから，
+外側正則性と $\Lambda(h_j)\le m(V_j)$ を使って
+\[
+ \Lambda(f)\le\delta\sum_{j=0}^{N-1}\mu(F_{j\delta})
+\]
+が従う．両辺の和は $N\to\infty$ で
+$\int_0^M\mu(\{f>t\})\,dt$ に収束する．
+これは $\int_K f\,d\mu$ に等しい（Tonelliの定理）．
+実数値 $f$ は正部分と負部分に分け，複素函数は実部・虚部に分ける．
+
+二つの有限正則測度がすべての連続函数上で同じ積分を与えるとき，
+各開集合 $U$ に対しその内部に台をもつ $0\le f\le1$ を動かすことで
+$\mu(U)$ が一致する．外側正則性により任意のBorel集合上で一致する．
+\end{proof}
+
+\begin{lemma}[連続函数の $L^2$ 稠密性]
+$\mu$ をコンパクト距離空間 $K$ 上の有限正則Borel測度とする．
+$C(K;\mathbb C)$ は $L^2(K,\mu)$ で稠密である．
+\end{lemma}
+\begin{proof}
+有限Borel測度に対する単函数の稠密性を用いる．
+Borel集合 $B$ と $\varepsilon>0$ に対し，正則性により
+コンパクト集合 $F\subset B\subset U$（$U$ は開）で
+$\mu(U\setminus F)<\varepsilon^2$ とできる．
+$F$ 上で1，$U$ の中に台をもつ $0\le h\le1$ なる連続函数を取れば
+$\norm{h-\mathbf1_B}_{L^2(\mu)}<\varepsilon$ となる．
+これを単函数の有限線形結合に適用する．
+\end{proof}
+
+\section{可換作用素環と連続函数計算}
+$\mathcal B(H)$ は作用素ノルムによる単位的Banach代数である．
+
+\begin{lemma}[スペクトルとスペクトル半径]
+単位的複素Banach代数 $\mathcal A$ の $a\in\mathcal A$ に対し，
+$\sigma_{\mathcal A}(a)=\{z:z1-a\text{ は非可逆}\}$ は
+空でないコンパクト集合であり，
+\[
+ \max_{z\in\sigma_{\mathcal A}(a)}|z|
+   =\lim_{n\to\infty}\norm{a^n}^{1/n}.
+\]
+\end{lemma}
+\begin{proof}
+$|z|>\norm a$ ではNeumann級数
+$(z-a)^{-1}=\sum_{n\ge0}a^nz^{-n-1}$ が収束する．
+逆元を持つ集合は開なのでスペクトルは閉かつ有界である．
+空であると仮定すると $z\mapsto(z-a)^{-1}$ は全函数で，
+無限遠で0に収束する．Banach空間値Liouvilleの定理を
+Cauchy積分公式から適用すれば零函数となり，矛盾する．
+
+$a^n$ のノルムの劣乗法性により
+$\rho=\lim_n\norm{a^n}^{1/n}=\inf_n\norm{a^n}^{1/n}$ が存在する
+（零項があれば $\rho=0$ とする）．
+$|z|>\rho$ では上記冪級数は絶対収束するので
+$\max|\sigma(a)|\le\rho$ である．逆向きは
+$R>\max|\sigma(a)|$ として円 $|z|=R$ に沿う
+Banach値Cauchy積分
+\[
+ a^n=\frac1{2\pi i}\int_{|z|=R}z^n(z-a)^{-1}\,dz
+\]
+を用いる．この等式は大きい半径でのNeumann展開から得られ，
+積分路の変形で任意の $R$ に延長できる．
+したがって $\norm{a^n}\le M_RR^{n+1}$ であり
+$\rho\le R$．$R$ をスペクトル半径に近づければよい．
+\end{proof}
+
+\begin{lemma}[自己共役作用素の基本的評価]
+$T\in\mathcal B(H)$ が自己共役なら
+\[
+ \norm T=\sup_{\norm x=1}|\langle Tx,x\rangle|,
+ \qquad\sigma(T)\subset\mathbb R.
+\]
+また $cI\le T\le MI$ なら $\norm{I-T/M}\le1-c/M$
+（$0<c\le M$）である．
+\end{lemma}
+\begin{proof}
+$\alpha=\sup_{\norm x=1}|\langle Tx,x\rangle|$ とする．
+$T=T^*$ だから，任意の $x,y$ と $\theta\in\mathbb R$ に対し
+\[
+ 4|\operatorname{Re}(e^{i\theta}\langle Tx,y\rangle)|
+ \le\alpha\bigl(\norm{x+e^{i\theta}y}^2+
+                        \norm{x-e^{i\theta}y}^2\bigr)
+ =2\alpha(\norm x^2+\norm y^2).
+\]
+$\theta$ を選んで実部の絶対値を $|\langle Tx,y\rangle|$
+に等しくすると
+$|\langle Tx,y\rangle|\le\frac\alpha2(\norm x^2+\norm y^2)$ を得る．
+この評価を $tx,t^{-1}y$ に適用し，$t>0$ について最小化すると
+$|\langle Tx,y\rangle|\le\alpha\norm x\norm y$ となる．
+ゆえに $\norm T\le\alpha$ であり，逆向きはCauchy--Schwarzによる．
+
+$z\notin\mathbb R$ なら
+$\norm{(T-z)x}\ge|\operatorname{Im}z|\norm x$ である．
+したがって像は閉であり，
+$\operatorname{Ran}(T-z)^\perp=\ker(T-\bar z)=\{0\}$ なので
+像は稠密，ゆえに全空間に一致する．逆元も有界である．
+最後の評価は $0\le I-T/M\le(1-c/M)I$ と
+最初のノルム等式から従う．
+\end{proof}
+
+\begin{lemma}[可換 $C^*$ 代数の指標]
+$\mathcal A\subset\mathcal B(H)$ を恒等作用素を含む可換な閉 $*$ 部分代数とする．
+乗法的な非零複素線形汎函数
+$\chi:\mathcal A\to\mathbb C$（指標）の集合を $X$ とする．
+$X$ は空でなく，任意の $a\in\mathcal A$ について
+\[
+  \sigma_{\mathcal A}(a)=\{\chi(a):\chi\in X\},\qquad
+  \norm a=\max_{\chi\in X}|\chi(a)|,
+  \quad\chi(a^*)=\overline{\chi(a)}.
+\]
+\end{lemma}
+\begin{proof}
+任意の真のイデアルはZornの補題によって極大イデアルに含まれる．
+極大イデアル $M$ は閉である．実際，その閉包が全体なら
+$\norm{1-m}<1$ となる $m\in M$ があり，Neumann級数で
+$m$ は可逆となって矛盾する．
+$\mathcal A/M$ は単位的複素Banach除法代数である．
+前補題により各元 $b$ にはスペクトル値 $z$ が存在し，
+$b-z1$ が非可逆である．除法代数だから $b=z1$ である．
+従って $\mathcal A/M\simeq\mathbb C$ となり，商写像が指標を与える．
+逆に指標の核は極大イデアルである．
+$a-z$ が非可逆であることと極大イデアルに含まれることが同値なので
+最初の等式を得る．
+
+$\mathcal A$ の任意の元 $a$ は正規作用素である．
+$\norm{a^{2^n}}=\norm a^{2^n}$ は
+$\norm{a^2}^2=\norm{(a^*a)^2}=\norm{a^*a}^2=\norm a^4$
+を繰り返して従う．
+スペクトル半径公式によって
+$\norm a=\max_{z\in\sigma_{\mathcal A}(a)}|z|$ となる．
+$h=h^*$ のスペクトルは実数であり，
+$\chi(h)$ も実数である．
+$a=h+ik$（$h,k$ は自己共役）と分解すれば
+$\chi(a^*)=\overline{\chi(a)}$ が従う．
+\end{proof}
+
+\begin{lemma}[逆閉性]
+前補題の $\mathcal A$ に属する $a$ が $\mathcal B(H)$ で可逆なら
+$a^{-1}\in\mathcal A$ である．
+\end{lemma}
+\begin{proof}
+$Q=a^*a\in\mathcal A$ と置く．可逆性により
+$cI\le Q\le MI$ なる $0<c\le M$ が存在する．
+$\norm{I-Q/M}\le1-c/M<1$ なので
+\[
+ Q^{-1}=M^{-1}\sum_{n\ge0}(I-Q/M)^n\in\mathcal A.
+\]
+$a^{-1}=Q^{-1}a^*\in\mathcal A$ である．
+\end{proof}
+
+\begin{theorem}[有界正規作用素の連続函数計算]
+$N\in\mathcal B(H)$ を正規作用素，$K=\sigma(N)$ とする．
+各 $f\in C(K;\mathbb C)$ に対し $f(N)\in\mathcal B(H)$ が一意に定まり，
+\[
+ \begin{gathered}
+  1(N)=I,\qquad z(N)=N,\qquad
+  (fg)(N)=f(N)g(N),\\
+  \overline f(N)=f(N)^*,\qquad
+  \norm{f(N)}=\norm f_\infty.
+ \end{gathered}
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$\mathcal A$ を $I,N,N^*$ が生成する閉 $*$ 代数とする．
+$N$ が正規であるから可換である．逆閉性により
+$\sigma_{\mathcal A}(N)=\sigma_{\mathcal B(H)}(N)=K$ である．
+前の指標の補題によって任意の $z,\bar z$ の複素多項式 $p$ に対し
+\[
+ \norm{p(N,N^*)}=\max_{\lambda\in K}|p(\lambda,\bar\lambda)|.
+\]
+ここで $p$ の異なる表示が $K$ 上で一致すれば作用素値も一致する．
+$z,\bar z$ の多項式は定数を含み共役に閉じて点を分離するので，
+複素Stone--Weierstrassの定理により $C(K)$ で一様稠密である．
+上の等長写像を完備化して $f\mapsto f(N)$ を得る．
+乗法，$*$，単位元およびノルムの等式は一様極限に移る．
+一意性も稠密性から従う．
+\end{proof}
+
+\section{有界正規作用素の射影値スペクトル定理}
+\begin{lemma}[巡回部分空間]
+$N$ を有界正規作用素，$K=\sigma(N)$ とする．
+$x\in H$ に対し
+\[
+ H_x=\overline{\{f(N)x:f\in C(K)\}}
+\]
+と置く．このとき $H_x$ は $N,N^*$ に関して不変で，
+その直交補空間も不変である．さらに $K$ 上の有限正則Borel測度
+$\mu_x$ とユニタリ同型
+$W_x:H_x\to L^2(K,\mu_x)$ が存在し，
+\[
+ W_x(f(N)x)=f,\qquad W_xN|_{H_x}W_x^{-1}=M_z
+\]
+を満たす．
+\end{lemma}
+\begin{proof}
+函数計算の乗法性から $N,N^*$ は $H_x$ を保つ．
+両方で不変であることから直交補空間も不変となる．
+$\Lambda_x(f)=\langle x,f(N)x\rangle$ は正値線形汎函数である．
+実際 $f\ge0$ なら $f=g^2$（$g=\sqrt f$）とでき，
+$\Lambda_x(f)=\norm{g(N)x}^2\ge0$ である．
+前節の定理から
+$\Lambda_x(f)=\int f\,d\mu_x$ なる正則Borel測度を得る．
+任意の $f\in C(K)$ に対して
+\[
+ \norm{f(N)x}^2
+ =\langle x,\overline f(N)f(N)x\rangle
+ =\int_K|f|^2\,d\mu_x.
+\]
+従って $f(N)x\mapsto f$ は等長写像であり，
+$H_x$ 上の等長写像 $W_x$ に延長される．
+連続函数の $L^2$ 稠密性により像は全 $L^2(K,\mu_x)$ である．
+$Nf(N)x=(zf)(N)x$ から最後の等式が従う．
+\end{proof}
+
+\begin{theorem}[有界正規作用素のスペクトル定理]
+$N\in\mathcal B(H)$ が正規であるとする．
+$K=\sigma(N)$ 上にただ一つの直交射影値測度 $E$ が存在して，
+\[
+ N=\int_K z\,dE(z),\qquad
+ f(N)=\int_K f(z)\,dE(z)\quad(f\in C(K))
+\]
+が成り立つ．さらに，任意の有界Borel函数 $f$ に対して
+$\int_Kf\,dE$ が有界作用素として定まり，
+\[
+ \norm{f(N)x}^2=\int_K|f|^2\,d\mu_x,
+ \qquad \mu_x(B)=\langle x,E(B)x\rangle
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+直交する巡回部分空間の族 $\{H_{x_j}\}_{j\in J}$ の全体を
+包含関係で順序付け，Zornの補題によって極大な族を取る．
+各空間は $N,N^*$ について還元的である．
+その直交和の直交補空間が非零なら，そこから $0\ne x$ を取ると
+$H_x$ が既存の族すべてに直交するため極大性に反する．
+よって
+\[
+ H=\bigoplus_{j\in J}H_{x_j}
+   \simeq\bigoplus_{j\in J}L^2(K,\mu_{x_j}),
+ \qquad N\simeq\bigoplus_{j\in J}M_z.
+\]
+直交和は非可算でもHilbert空間の直交直和として定義される．
+Borel集合 $B\subset K$ に対し
+$E(B)=\bigoplus_j M_{\mathbf1_B}$ と定める．
+これは直交射影であり積の規則を満たす．
+互いに素な $B_n$ に対するノルムでの可算加法性は，
+各 $L^2$ 成分での優収束定理と，直交和全体での
+$\sum_j\norm{x_j}^2<\infty$ から従う．
+連続函数の積分が $f(N)$ に一致することは巡回表示で確認できる．
+任意の有界Borel函数について同様に掛け算で定めれば
+表示されたノルム等式が成立する．
+
+一意性を示す．別の $E'$ が連続函数計算を与えるなら，
+各 $x\in H$ に対して正値測度
+$B\mapsto\langle x,E'(B)x\rangle$ の連続函数積分は
+$\langle x,f(N)x\rangle$ に一致する．
+Riesz--Markovの一意性から
+$\langle x,E'(B)x\rangle=\langle x,E(B)x\rangle$ であり，
+極化恒等式により $E'=E$ となる．
+\end{proof}
+
+\begin{remark}
+正規作用素のスペクトル測度は，一般に固有ベクトルへの
+可算和だけでは表されない．
+連続スペクトルも上記の $L^2$ 乗法作用素で同様に扱われる．
+また巡回分解には可分性を仮定していない．
+\end{remark}
+
+\section{Cayley変換と非有界自己共役作用素}
+\begin{lemma}[非実数の解像とCayley変換]
+$A:D(A)\to H$ を稠密定義自己共役作用素とする．
+$A\pm i:D(A)\to H$ は全単射で，逆は有界である．
+\[
+ U=(A-i)(A+i)^{-1}=I-2i(A+i)^{-1}
+\]
+はユニタリ作用素で，$\ker(I-U)=\{0\}$ である．
+\end{lemma}
+\begin{proof}
+$A$ の対称性から
+\[
+ \norm{(A\pm i)x}^2=\norm{Ax}^2+\norm x^2
+ \qquad(x\in D(A))
+\]
+が従い，$A\pm i$ は単射である．
+自己共役作用素は閉であるから，像は閉である．
+また
+$\operatorname{Ran}(A\pm i)^\perp=\ker(A\mp i)=\{0\}$
+なので像は全空間である．逆のノルムは1以下である．
+$y=(A+i)x$ とおくと
+$\norm{Uy}=\norm{(A-i)x}=\norm{(A+i)x}=\norm y$．
+$A-i$ が全射なので $U$ も全射でありユニタリである．
+$U-I=-2i(A+i)^{-1}$ は単射である．
+\end{proof}
+
+\begin{lemma}[逆Cayley変換]
+$U$ をユニタリ作用素で $\ker(I-U)=\{0\}$ とする．
+\[
+ D(A)=\operatorname{Ran}(I-U),\qquad
+ A((I-U)x)=i(I+U)x
+\]
+と定めると，$A$ は稠密定義自己共役作用素で，
+そのCayley変換は $U$ である．
+\end{lemma}
+\begin{proof}
+$(I-U)$ の単射性から $A$ は良定義である．
+$\operatorname{Ran}(I-U)^\perp=\ker(I-U^*)=\ker(I-U)=0$
+だから定義域は稠密である．
+$\langle A(I-U)x,(I-U)y\rangle$ と
+$\langle (I-U)x,A(I-U)y\rangle$ の差は，
+$U^*U=UU^*=I$ を展開して0となるので $A$ は対称である．
+さらに
+\[
+ (A+i)(I-U)x=2ix,\qquad
+ (A-i)(I-U)x=2iUx.
+\]
+したがって $A+i$ と $A-i$ はともに全射である．
+稠密対称作用素について両方の全射性は自己共役性を意味する．
+実際 $A\subset A^*$ であり，$y\in D(A^*)$ に対し
+$(A+i)x=(A^*+i)y$ を解くと
+$y-x\in\ker(A^*+i)=\operatorname{Ran}(A-i)^\perp=0$，
+従って $y=x\in D(A)$ となる．
+最後の等式から $(A-i)(A+i)^{-1}=U$ を得る．
+\end{proof}
+
+\begin{theorem}[非有界自己共役作用素のスペクトル定理]
+$A:D(A)\to H$ を稠密定義自己共役作用素とする．
+$\mathbb R$ のBorel集合上のただ一つの直交射影値測度 $E_A$ が存在し，
+\[
+ D(A)=\left\{x:\int_{\mathbb R}\lambda^2
+                 \,d\langle x,E_A(\lambda)x\rangle<\infty\right\},
+ \qquad Ax=\int_{\mathbb R}\lambda\,dE_A(\lambda)x
+\]
+が成立する．右辺は切断函数の $H$-ノルム極限とする．
+さらに可測函数 $f:\mathbb R\to\mathbb C$ に対して
+$D(f(A))=\{x:\int|f|^2d\mu_x<\infty\}$ による
+Borel函数計算が定義できる．
+\end{theorem}
+\begin{proof}
+$U=(A-i)(A+i)^{-1}$ をCayley変換とし，
+その有界正規作用素としてのスペクトル測度を $E_U$ とする．
+$\ker(I-U)=0$ なので
+$E_U(\{1\})H=\ker(I-U)=0$ である．
+単位円上の $z\ne1$ に対し
+\[
+ \phi(z)=i\frac{1+z}{1-z}\in\mathbb R
+\]
+と置く．$\phi$ は $\mathbb T\setminus\{1\}$ から $\mathbb R$ への
+Borel同型であり，逆写像は
+$\lambda\mapsto(\lambda-i)/(\lambda+i)$ である．
+Borel集合 $B\subset\mathbb R$ について
+$E_A(B)=E_U(\phi^{-1}(B))$ と置けば，射影値測度となる．
+
+有界正規作用素のスペクトル定理により
+$U\simeq\bigoplus_j M_z$ と表される．
+各成分で
+\[
+ \norm{(1-z)^{-1}h}^2
+   =\frac14\int(1+|\phi(z)|^2)|h(z)|^2\,d\mu_j(z)
+\]
+が成立する．ただし $z=1$ は測度零である．
+したがって $h\in\operatorname{Ran}(I-U)$ であることと
+$\phi h\in L^2$ であることは同値である．
+逆Cayley変換の補題により，
+その定義域では $A$ は $M_\phi$ に一致する．
+このことを各直交成分で適用して
+$D(A)=\{x:\int\lambda^2\,d\mu_x<\infty\}$ と作用素等式を得る．
+一般のBorel函数 $f$ も乗法作用素 $M_{f\circ\phi}$ として定義できる．
+
+一意性は解像式で示せる．二つのスペクトル測度が
+定義域も含めて同じ $A$ を与えるなら
+\[
+ (A+i)^{-1}=\int\frac1{\lambda+i}\,dE_A(\lambda)
+\]
+が等しい．従って $U=I-2i(A+i)^{-1}$ も等しく，
+有界正規作用素のスペクトル測度の一意性により
+そのCayley変換に対する $E_U$ が一致する．
+$\phi$ の可逆性から $E_A$ も一致する．
+\end{proof}
+
+\begin{corollary}[測度による作用素の正値性]
+自己共役作用素 $A$ について次の条件は同値である．
+\begin{enumerate}
+ \item $\langle Ax,x\rangle\ge0$ が全ての $x\in D(A)$ で成立する．
+ \item $E_A(( -\infty,0))=0$．
+\end{enumerate}
+特に $f\ge0$ なる実Borel函数に対して $f(A)$ は正作用素となる．
+\end{corollary}
+\begin{proof}
+$(2)\Rightarrow(1)$ は積分表示で従う．
+逆に負のスペクトル成分が存在すれば，
+ある $n\ge1$ に対し $E_A([-n,-1/n])\ne0$ である．
+この射影の像に属する非零 $x$ は $D(A)$ に属し
+$\langle Ax,x\rangle\le-\norm x^2/n<0$ となり矛盾する．
+最後の主張も積分表示により従う．
+\end{proof}
+
+\section{強連続ユニタリ群とStoneの定理}
+\begin{definition}
+$U:\mathbb R\to\mathcal B(H)$ が一パラメータユニタリ群であるとは，
+$U(t+s)=U(t)U(s)$，$U(0)=I$，$U(t)^*U(t)=I$ が成立することをいう．
+任意の $x\in H$ に対し $U(t)x\to x$（$t\to0$）なら\emph{強連続}という．
+\end{definition}
+
+\begin{lemma}[強微分生成元の性質]
+$U(t)$ を強連続一パラメータユニタリ群とし，
+\[
+ D(B)=\left\{x:\lim_{t\to0}\frac{U(t)x-x}{t}
+                  \text{ が存在する}\right\},\qquad
+ Bx=\lim_{t\to0}\frac{U(t)x-x}{t}
+\]
+とする．$D(B)$ は稠密で，$B\subset-B^*$ であり，
+$U(t)D(B)=D(B)$，$BU(t)x=U(t)Bx$ が成り立つ．
+\end{lemma}
+\begin{proof}
+$\rho\in C_c^1(\mathbb R)$ と $x\in H$ に対し
+\[
+ x_\rho=\int_{\mathbb R}\rho(s)U(s)x\,ds
+\]
+をBochner積分として定義する．
+$U(t)x_\rho=\int\rho(s-t)U(s)x\,ds$ なので
+$x_\rho\in D(B)$ かつ
+$Bx_\rho=-\int\rho'(s)U(s)x\,ds$ である．
+$\rho$ を積分1の近似単位に取ると，強連続性から
+$x_\rho\to x$ となるため $D(B)$ は稠密である．
+群法則によって $U(t)D(B)=D(B)$ と可換性が従う．
+$\langle U(t)x,U(t)y\rangle=\langle x,y\rangle$ を
+$t=0$ で微分して
+$\langle Bx,y\rangle+\langle x,By\rangle=0$ を得る．
+従って $B\subset-B^*$ である．
+\end{proof}
+
+\begin{lemma}[Laplace解像作用素]
+前補題の $B$ に対し，任意の $a>0$ について
+$aI-B$ および $aI+B$ は $D(B)$ から $H$ への全射である．
+\end{lemma}
+\begin{proof}
+\[
+ R_+x=\int_0^\infty e^{-at}U(t)x\,dt,\qquad
+ R_-x=\int_0^\infty e^{-at}U(-t)x\,dt
+\]
+はノルムが $\norm x/a$ 以下のBochner積分として定まる．
+変数変換と群法則から
+\[
+ \frac{U(h)R_+x-R_+x}{h}
+ =\frac{e^{ah}-1}{h}R_+x
+   -\frac{e^{ah}}h\int_0^h e^{-at}U(t)x\,dt.
+\]
+$h\to0$ で右辺は $aR_+x-x$ に収束する．
+従って $R_+x\in D(B)$，$(aI-B)R_+x=x$ である．
+同様に $(aI+B)R_-x=x$ を得る．
+\end{proof}
+
+\begin{theorem}[Stoneの定理]
+$U(t)$ を複素Hilbert空間 $H$ 上の強連続一パラメータユニタリ群とする．
+このときただ一つの稠密定義自己共役作用素 $A$ が存在して
+\[
+ U(t)=e^{-itA}\qquad(t\in\mathbb R)
+\]
+が成り立つ．その定義域は強微分可能なベクトル全体であり，
+\[
+ Ax=i\lim_{t\to0}\frac{U(t)x-x}{t}
+\]
+によって特徴づけられる．逆に任意の自己共役作用素 $A$ は
+この表示によって強連続ユニタリ群を定める．
+\end{theorem}
+\begin{proof}
+$B$ を強微分生成元とする．前二補題により $B$ は稠密な歪対称作用素で
+$\operatorname{Ran}(I\pm B)=H$ である．
+$B\subset-B^*$ を用いる．任意の $x\in D(B^*)$ に対し
+$(I-B)y=(I+B^*)x$ なる $y\in D(B)$ を選ぶと
+$(I+B^*)(x-y)=0$ となる．ところが
+$\ker(I+B^*)=\operatorname{Ran}(I+B)^\perp=\{0\}$ なので
+$x=y\in D(B)$ である．ゆえに $B^*=-B$．
+$A=iB$ と置けば $A$ は自己共役である．
+
+この $A$ に対する一般スペクトル定理で
+$V(t)=e^{-itA}$ を定義する．
+可測函数計算から $V(t)$ はユニタリ群であり，
+$|e^{-it\lambda}-1|\le2$ と優収束定理によって強連続である．
+$x\in D(A)$ では
+\[
+ \frac{V(t)x-x}{t}\longrightarrow-iAx
+\]
+がノルム収束する．実際，差商は点ごとに $-i\lambda$ に収束し
+絶対値が $|\lambda|$ 以下で抑えられるからである．
+逆に差商が収束する $x$ については，
+$t_n\to0$ に沿う差商の二乗ノルムの有界性とFatouの補題から
+$\int\lambda^2\,d\mu_x<\infty$ が従い，$x\in D(A)$ となる．
+
+$x\in D(A)=D(B)$ を固定すると，$U(s)$ は $D(B)$ を保ち
+$B$ と可換であり，$V(s)$ も $D(A)$ を保つ．
+従って $t\mapsto U(-t)V(t)x$ は微分可能で，
+\[
+ \frac d{dt}\{U(-t)V(t)x\}
+  =-U(-t)BV(t)x+U(-t)BV(t)x=0.
+\]
+$t=0$ の値は $x$ であるから $U(t)x=V(t)x$ となる．
+$D(A)$ の稠密性と両作用素の有界性から全 $H$ で等しい．
+生成元の定義から一意性も従う．
+\end{proof}
+
+\begin{example}[平行移動群と運動量]
+$H=L^2(\mathbb R;\mathbb C)$ とし，
+$(U(t)f)(x)=f(x-t)$ とする．$U(t)$ は強連続ユニタリ群である．
+Fourier変換を $\widehat f(\xi)=(2\pi)^{-1/2}
+\int e^{-ix\xi}f(x)\,dx$ とすると
+$\widehat{U(t)f}(\xi)=e^{-it\xi}\widehat f(\xi)$．
+Stoneの定理から自己共役生成元は
+\[
+ D(A)=\{f:\xi\widehat f(\xi)\in L^2\},\qquad
+ \widehat{Af}(\xi)=\xi\widehat f(\xi)
+\]
+であり，Schwartz函数上では $Af=-if'$ である．
+前節の乗法作用素の証明により，この定義域を持つ $A$ は自己共役である．
+\end{example}
+
+\section{依存関係と結論}
+本稿の論理的な主系列は次の通りである．
+\[
+ \begin{gathered}
+ \text{正値汎函数の測度表示}\ \Longrightarrow\
+ \text{有界正規作用素のスペクトル測度}\\
+ \Longrightarrow\ \text{Cayley変換による一般自己共役作用素}\\
+ \Longrightarrow\ \text{Stoneの定理}.
+ \end{gathered}
+\]
+具体的な行列や乗法作用素だけでなく，非可分Hilbert空間上の
+任意の稠密定義自己共役作用素を扱った．
+使った既習の基礎定理は第1節で列挙した通りである．
+特に一般スペクトル定理を途中で仮定してはいない．
+
+\begin{thebibliography}{9}
+\bibitem{conway} J. B. Conway, \emph{A Course in Functional Analysis},
+ 2nd ed., Springer, 1990.
+\bibitem{reed-simon} M. Reed and B. Simon,
+ \emph{Methods of Modern Mathematical Physics I: Functional Analysis},
+ 2nd ed., Academic Press, 1980.
+\bibitem{rudin} W. Rudin, \emph{Functional Analysis},
+ 2nd ed., McGraw--Hill, 1991.
+\end{thebibliography}
+
+\section{到達課題の完全解答}
+\noindent\textbf{スペクトルからユニタリ群を構成する．}
+\begin{proposition}
+$\mathbb C^2$ において
+$A=\operatorname{diag}(1,2)$ とすると
+\[
+U(t)=e^{-itA}
+=\begin{pmatrix}e^{-it}&0\\0&e^{-2it}\end{pmatrix}
+\]
+は強連続ユニタリ群であり，
+$i\frac d{dt}U(t)\psi=AU(t)\psi$ を満たす．
+\end{proposition}
+\begin{proof}
+各対角成分の絶対値が1なので
+$U(t)^*U(t)=I$．
+指数法則から $U(t+s)=U(t)U(s)$，
+$U(0)=I$．
+成分が連続なので有限次元で強連続である．
+成分ごとに微分すると
+$\frac d{dt}U(t)=-iAU(t)$ だから
+$ i\frac d{dt}U(t)=AU(t)$ となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+初期状態 $\psi_0=(1,1)/\sqrt2$ の時刻 $t$ での状態を求めよ．
+\par\noindent\textbf{解答．}
+$U(t)\psi_0=(e^{-it},e^{-2it})/\sqrt2$ であり，
+ノルムは1に保たれる．
+\end{document}

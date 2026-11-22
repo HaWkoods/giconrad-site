@@ -1,0 +1,674 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Hamilton力学}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Hamilton方程式，シンプレクティック形式，保存量．
+本稿の具体的な到達課題は，調和振動子のHamilton流を求めてエネルギー保存を証明する．
+
+\section{Legendre変換と正準方程式}
+$L(q,v)$ を $\mathbb R^n\times\mathbb R^n$ 上の $C^2$ 関数とし，
+$\partial^2_{vv}L$ が各点で可逆であるとする．
+$ p=\partial_vL(q,v)$ が局所的に $v=v(q,p)$ と解ける領域を考える．
+\begin{definition}
+Hamilton関数を $H(q,p)=p\cdot v(q,p)-L(q,v(q,p))$ とする．
+\end{definition}
+\begin{theorem}[Hamiltonの正準方程式]
+Euler--Lagrange方程式
+$\frac d{dt}\partial_vL=\partial_qL$ は，
+上記の局所変数変換の下で
+\[
+ \dot q=\partial_pH,\qquad \dot p=-\partial_qH
+\]
+と同値である．
+\end{theorem}
+\begin{proof}
+$H$ を微分すると
+$dH=v\cdot dp+p\cdot dv-\partial_qL\cdot dq-\partial_vL\cdot dv
+=v\cdot dp-\partial_qL\cdot dq$．
+従って $\partial_pH=v$，$\partial_qH=-\partial_qL$．
+$p=\partial_vL$ と合わせると両方程式は同値である．
+\end{proof}
+\section{シンプレクティック形式}
+$z=(q,p)\in\mathbb R^{2n}$ とし，
+$\omega=\sum_{i=1}^n dq_i\wedge dp_i$ を標準シンプレクティック形式とする．
+\begin{theorem}[Hamilton流のシンプレクティック性]
+$H\in C^2$ のHamiltonベクトル場を
+$X_H=(\partial_pH,-\partial_qH)$ とする．
+その局所フロー $\Phi_t$ が存在する範囲で
+$\Phi_t^*\omega=\omega$ である．
+\end{theorem}
+\begin{proof}
+Hamiltonベクトル場の内部積は
+$\iota_{X_H}\omega=\sum_i(H_{p_i}dp_i+H_{q_i}dq_i)=dH$．
+Cartanの公式と $d\omega=0$ から
+$\mathcal L_{X_H}\omega=d\iota_{X_H}\omega+\iota_{X_H}d\omega=d^2H=0$．
+流れによる引き戻しの微分公式
+$\frac d{dt}\Phi_t^*\omega=\Phi_t^*(\mathcal L_{X_H}\omega)$
+を用いると引き戻しは時間によらず，$t=0$ で $\omega$ に等しい．
+\end{proof}
+\section{Liouvilleの定理とエネルギー保存}
+\begin{proposition}
+$H$ が時間に陽に依存しなければ，Hamilton軌道に沿って $H$ は一定である．
+またHamiltonベクトル場のEuclid体積に関する発散は零である．
+\end{proposition}
+\begin{proof}
+$\dot H=H_q\cdot H_p+H_p\cdot(-H_q)=0$．
+また
+$\operatorname{div}X_H=\sum_i
+(\partial_{q_i}\partial_{p_i}H-\partial_{p_i}\partial_{q_i}H)=0$．
+局所フローのヤコビ行列式 $J_t$ は
+$\dot J_t=(\operatorname{div}X_H)\circ\Phi_t\,J_t=0$ を満たし，$J_0=1$．
+\end{proof}
+
+
+\section{Poisson括弧と一般シンプレクティック多様体}
+\begin{definition}
+滑らかな多様体 $M$ の二形式 $\omega$ が
+$d\omega=0$ を満たし，各点で非退化なら，$(M,\omega)$ を
+シンプレクティック多様体と呼ぶ．
+$f\in C^\infty(M)$ に対し $\iota_{X_f}\omega=df$ を満たす
+一意なベクトル場 $X_f$ をHamiltonベクトル場とし，
+$\{f,g\}=\omega(X_f,X_g)$ をPoisson括弧と定める．
+\end{definition}
+\begin{theorem}[Poisson括弧のJacobi恒等式]
+任意の $f,g,h\in C^\infty(M)$ に対して
+\[
+ \{f,\{g,h\}\}+\{g,\{h,f\}\}
+ +\{h,\{f,g\}\}=0
+\]
+が成立する．また各変数でLeibniz則を満たす．
+\end{theorem}
+\begin{proof}
+Leibniz則は $d(gh)=g\,dh+h\,dg$ と非退化性から従う．
+Cartanの公式により
+$\mathcal L_{X_f}\omega=d\iota_{X_f}\omega+\iota_{X_f}d\omega=0$．
+また $\iota_{[X_f,X_g]}\omega
+=\mathcal L_{X_f}(\iota_{X_g}\omega)
+ -\iota_{X_g}(\mathcal L_{X_f}\omega)
+=d(X_fg)=-d\{f,g\}$ なので
+$[X_f,X_g]=-X_{\{f,g\}}$ である．
+Lie微分の積の法則を二形式に適用すると
+\[
+ \begin{aligned}
+ X_f\{g,h\}
+ &=\omega([X_f,X_g],X_h)+\omega(X_g,[X_f,X_h])\\
+ &=-\{\{f,g\},h\}-\{g,\{f,h\}\}.
+\end{aligned}
+\]
+左辺は $X_f\{g,h\}=\{\{g,h\},f\}$ である．
+反対称性を用いて整理すればJacobi恒等式を得る．
+\end{proof}
+\begin{theorem}[シンプレクティック体積の保存]
+$2n$ 次元シンプレクティック多様体のHamilton流 $\Phi_t$ は
+定義される範囲で $\omega$ と体積形式 $\omega^n/n!$ を保存する．
+\end{theorem}
+\begin{proof}
+$\mathcal L_{X_H}\omega=0$ により
+$\frac d{dt}\Phi_t^*\omega=0$ だから $\Phi_t^*\omega=\omega$．
+引き戻しは外積と可換なので
+$\Phi_t^*(\omega^n/n!)=(\Phi_t^*\omega)^n/n!=\omega^n/n!$ である．
+非退化性から $\omega^n$ はどの点でも零でないため体積形式である．
+\end{proof}
+
+\section{一自由度の作用角変数}
+質量 $m>0$ の一自由度Hamilton系
+\[
+ H(q,p)=\frac{p^2}{2m}+V(q)
+\]
+を考える．$V\in C^3$ とし，エネルギー区間 $J$ の各 $E$ について
+$V(q)=E$ の単純な二つの解 $q_-(E)<q_+(E)$ があり，
+その間で $V(q)<E$，$V'(q_-)<0<V'(q_+)$ であると仮定する．
+この条件で $H=E$ は一つの正則な閉曲線をなす．
+\begin{definition}
+その曲線上の作用を
+\[
+ I(E)=\frac1{2\pi}\oint_{H=E}p\,dq
+ =\frac1\pi\int_{q_-(E)}^{q_+(E)}
+ \sqrt{2m(E-V(q))}\,dq
+\]
+と定める．閉曲線はHamilton流の正向きに積分する．
+\end{definition}
+\begin{theorem}[周期と作用の微分]
+$T(E)$ をエネルギー $E$ の周期とすると
+\[
+ \frac{dI}{dE}=\frac{T(E)}{2\pi}>0.
+\]
+従って $I$ は局所的にエネルギーの座標となり，
+$\omega(I)=dE/dI=2\pi/T(E)$ である．
+\end{theorem}
+\begin{proof}
+$P(q,E)=\sqrt{2m(E-V(q))}$ とする．
+単純な転回点の近傍では $V'(q_\pm)\ne0$ であるから，
+$E-V(q)$ を局所座標として使える．
+この座標変換により被積分関数は端点近くで
+定数倍の $u^{1/2}$ と同程度，$E$ 微分は $u^{-1/2}$ と同程度であり，
+後者も可積分である．端点の値 $P(q_\pm,E)=0$ だから，
+積分の微分を正当化すると境界項は消えて
+\[
+ I'(E)=\frac1\pi\int_{q_-}^{q_+}
+ \frac{m}{\sqrt{2m(E-V(q))}}\,dq.
+\]
+Hamilton方程式は $\dot q=p/m$ なので，上側の枝を
+$q_-$ から $q_+$ へ進む時間は
+$\int_{q_-}^{q_+}m/P(q,E)\,dq$ である．
+下降側にも同じ時間を要するため
+$T(E)=2\int_{q_-}^{q_+}m/P(q,E)\,dq$．
+従って $I'(E)=T(E)/(2\pi)$．
+\end{proof}
+\begin{theorem}[作用角座標の局所的構成]
+上の正則な閉エネルギー曲線の近傍には
+$\theta\in\mathbb R/2\pi\mathbb Z$ と $I$ の滑らかな座標が存在し，
+\[
+ dq\wedge dp=d\theta\wedge dI,\qquad
+ \dot I=0,\quad\dot\theta=\omega(I)
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$E=E(I)$ と書く．上側の枝 $p=P(q,E)>0$ において
+\[
+ S_+(q,I)=\int_{q_-(E(I))}^{q}P(s,E(I))\,ds,
+ \quad p=\frac{\partial S_+}{\partial q},\quad
+ \theta=\frac{\partial S_+}{\partial I}
+\]
+と置く．$dS_+=p\,dq+\theta\,dI$ を外微分すると
+$dp\wedge dq+d\theta\wedge dI=0$，すなわち
+$dq\wedge dp=d\theta\wedge dI$ を得る．
+$\theta$ は $q=q_-$ で0，$q=q_+$ で
+$\partial_I(\pi I)=\pi$ となる．
+下側の枝 $p=-P(q,E)$ では
+$S_-(q,I)=2\pi I-S_+(q,I)$ と置くと
+$\partial_qS_-=-P$，$\theta=\partial_I S_-$ は
+$q=q_+$ で $\pi$，$q=q_-$ で $2\pi$ となる．
+この二つの局所表示は角度を $2\pi$ を法として貼り合わせ，
+転回点の近傍では軌道上の時間座標により滑らかに延長できる．
+実際 $\partial_E S_+=\int_{q_-}^q m/P\,ds$ は左転回点からの
+経過時間に等しく，$\theta=(2\pi/T)$ 倍の時間である．
+従って $\theta$ は軌道を一周する間に $2\pi$ 増える．
+$H=E(I)$ は $\theta$ に依存しないので，
+正準Hamilton方程式から
+$\dot I=-\partial_\theta H=0$，
+$\dot\theta=\partial_I H=2\pi/T$ を得る．
+\end{proof}
+\begin{example}[調和振動子]
+$V(q)=m\omega_0^2q^2/2$（$\omega_0>0$）では
+$T(E)=2\pi/\omega_0$ なので
+$I'(E)=1/\omega_0$，$I(0)=0$ から $I=E/\omega_0$ である．
+\end{example}
+\begin{remark}
+ここでは正則な閉曲線を持つ一自由度に限って作用角座標を構成した．
+多自由度のLiouville--Arnold定理にはコンパクト連結正則共通等位集合と
+独立な可換第一積分が必要であり，後続の補遺でこれを仮定して完全な証明を与える．
+\end{remark}
+
+
+
+\section{補遺の位置付け}
+後続の補遺では，コンパクト連結正則共通等位集合の近傍における多自由度のLiouville--Arnoldの定理を証明する．
+
+\section{可積分Hamilton系と定理の仮定}
+本稿は，Liouville--Arnoldの定理をコンパクトな正則共通等位集合の
+近傍で証明する．局所的な作用角座標の存在について，
+周期格子の滑らかな変化とシンプレクティック形式の標準化まで論証する．
+
+必要な既習事項は，多様体の逆函数・陰函数定理，
+常微分方程式の局所存在定理，微分形式のCartan公式・Poincar\'e補題，
+閉多様体上のベクトル場の完備性，および
+有限生成自由Abel群の構造定理である．
+最後の事実は既存ノート15.010のSmith標準形からも得られる．
+
+$M$ を $2n$ 次元滑らかな多様体とし，
+$\omega\in\Omega^2(M)$ は閉じた非退化二形式とする．
+函数 $f\in C^\infty(M)$ のHamiltonベクトル場 $X_f$ を
+\[
+ \iota_{X_f}\omega=df
+\]
+で定める．Poisson括弧は
+$\{f,g\}=\omega(X_f,X_g)$ とする．
+これは70.020の規約と一致する．
+
+\begin{definition}[Liouville可積分性]
+$F=(F_1,\ldots,F_n):M\to\mathbb R^n$ が
+\emph{完全可積分な系}であるとは
+$\{F_i,F_j\}=0$（全ての $i,j$）であり，
+$dF_1,\ldots,dF_n$ がある開集合で一次独立であることをいう．
+$F^{-1}(c)$ の連結成分がコンパクトで，
+その上で $dF_1,\ldots,dF_n$ が独立なら，
+その成分をコンパクト正則共通等位集合と呼ぶ．
+\end{definition}
+
+\begin{theorem}[Liouville--Arnold]
+$F_1,\ldots,F_n$ をPoisson可換な滑らかな函数とし，
+$c_0\in\mathbb R^n$ に対して
+$L=F^{-1}(c_0)$ が空でないコンパクト連結集合で，
+全 $x\in L$ において $\operatorname{rank}dF_x=n$ と仮定する．
+このとき次が成立する．
+\begin{enumerate}
+ \item $L$ は $n$ 次元Lagrange部分多様体で，$L\simeq\mathbb T^n$．
+ \item $L$ のある近傍 $W$ で，$F$ の値だけに依存する座標
+       $I=(I_1,\ldots,I_n)$ と円周値の座標
+       $\theta\in(\mathbb R/\mathbb Z)^n$ が存在し，
+       \[
+       \omega=\sum_{j=1}^n d\theta_j\wedge dI_j
+       \]
+       が成り立つ．ここで $W$ は積 $B\times\mathbb T^n$ に
+       微分同相で，$B$ は $\mathbb R^n$ の小さな球である．
+ \item $\{H,F_i\}=0$ を満たす滑らかなHamilton函数 $H$ は，
+       $W$ を必要なら縮小して $H=h(I)$ と書け，
+       \[
+          \dot I_j=0,\qquad
+          \dot\theta_j=\frac{\partial h}{\partial I_j}
+       \]
+       を満たす．
+\end{enumerate}
+\end{theorem}
+
+以下，補題を順に証明して定理を導く．
+
+\section{共通等位集合はLagrangeトーラスである}
+\begin{lemma}[Hamiltonベクトル場の可換性]
+Poisson可換な $F_i,F_j$ に対し，
+$[X_{F_i},X_{F_j}]=0$ が成り立つ．
+\end{lemma}
+\begin{proof}
+Cartanの公式と $d\omega=0$ から
+$\mathcal L_{X_f}\omega=d\iota_{X_f}\omega=0$ である．
+従って
+\[
+ \begin{aligned}
+ \iota_{[X_f,X_g]}\omega
+ &=\mathcal L_{X_f}(\iota_{X_g}\omega)
+   -\iota_{X_g}(\mathcal L_{X_f}\omega)\\
+ &=d(X_fg)=-d\{f,g\}.
+ \end{aligned}
+\]
+非退化性により $[X_f,X_g]=-X_{\{f,g\}}$ である．
+$\{F_i,F_j\}=0$ を代入すればよい．
+\end{proof}
+
+\begin{lemma}[Lagrange性]
+定理の仮定のもとで，$L$ は滑らかな $n$ 次元部分多様体で，
+$\omega|_L=0$ である．さらに
+$X_{F_1},\ldots,X_{F_n}$ は各点の $T_xL$ の基底となる．
+\end{lemma}
+\begin{proof}
+正則値定理によって $L$ は $2n-n=n$ 次元部分多様体であり
+$T_xL=\bigcap_i\ker dF_i(x)$ である．
+$X_{F_j}(F_i)=dF_i(X_{F_j})
+=\omega(X_{F_i},X_{F_j})=\{F_i,F_j\}=0$ なので
+各 $X_{F_j}$ は $T_xL$ に属する．
+線形結合 $\sum_ja_jX_{F_j}=0$ なら非退化性によって
+$\sum_ja_jdF_j=0$，従って全 $a_j=0$ である．
+よってこれらは $T_xL$ の基底をなす．
+$\omega(X_{F_i},X_{F_j})=0$ なので $\omega|_L=0$ である．
+半次元の等方部分空間はLagrange部分空間である．
+\end{proof}
+
+\begin{lemma}[周期格子によるトーラス表示]
+上の $L$ は滑らかな $n$ 次元トーラスと微分同相である．
+\end{lemma}
+\begin{proof}
+$L$ はコンパクトだからその上の各滑らかなベクトル場は完備である．
+可換性によりHamilton流が $\mathbb R^n$ の滑らかな作用
+\[
+ \Phi_t=\Phi_{t_1}^{X_{F_1}}\circ\cdots\circ
+                \Phi_{t_n}^{X_{F_n}}
+\]
+を定める．任意の $x\in L$ で
+$t\mapsto\Phi_t(x)$ の微分は $t=0$ で同型だから，
+軌道は $L$ の開集合である．各軌道が開で $L$ が連結なので
+軌道は一つである．
+
+基点 $x_0\in L$ を固定して
+$\Lambda=\{t\in\mathbb R^n:\Phi_t(x_0)=x_0\}$ とする．
+軌道写像の局所微分同相性から $\Lambda$ は離散部分群である．
+$\mathbb R^n/\Lambda\to L$ は全単射な局所微分同相，
+従って微分同相である．$L$ がコンパクトなので
+$\mathbb R^n/\Lambda$ もコンパクトである．
+
+$\Lambda$ の実線形包が真部分空間 $V$ なら，
+$\mathbb R^n/\Lambda\to\mathbb R^n/V$ は全射連続写像となり，
+コンパクト空間から非コンパクトな空間へ全射する矛盾を生む．
+ゆえに $\Lambda$ は $\mathbb R^n$ を張る．
+一次独立な $n$ 個の元 $\lambda_1,\ldots,\lambda_n\in\Lambda$ を取り，
+$\Lambda'=\sum_j\mathbb Z\lambda_j$ とする．
+$\Lambda/\Lambda'$ は有界な基本平行多面体の中の $\Lambda$ の元で
+代表でき，$\Lambda$ が離散なので有限集合である．
+従って $\Lambda$ は有限生成，しかも $\mathbb R^n$ の部分群なので
+ねじれを持たない．有限生成Abel群の構造定理により
+$\Lambda\simeq\mathbb Z^n$．
+従って $L\simeq\mathbb R^n/\mathbb Z^n=\mathbb T^n$ である．
+\end{proof}
+
+\section{正則トーラスの近傍の自明化}
+\begin{lemma}[局所積構造]
+$L$ のある開近傍 $W$ と $c_0$ の開球 $B\subset\mathbb R^n$ が存在し，
+$W\simeq L\times B$ が $F$ と第二成分の射影を可換にする
+微分同相である．各 $L_c=W\cap F^{-1}(c)$ は
+コンパクト連結なトーラスである．
+\end{lemma}
+\begin{proof}
+$L$ はコンパクトで $dF$ がその上で全射だから，
+$L$ の開近傍 $V$ を縮小すれば $dF$ は $V$ の全点で全射である．
+補助Riemann計量を一つ選ぶ．$dF_x$ の随伴 $dF_x^*$ を用いると
+\[
+ R_x=dF_x^*(dF_xdF_x^*)^{-1}:\mathbb R^n\to T_xM
+\]
+が滑らかに定まり，$dF_xR_x=I$ を満たす．
+$V_j(x)=R_xe_j$ と置けば $dF(V_j)=e_j$ である．
+$L$ のコンパクト性と常微分方程式の存在定理により，
+これらの局所流は $L$ の一様な小時間区間で定義できる．
+$V_1,\ldots,V_n$ の流を順に合成して
+\[
+ \Psi(x,c)=\Phi_{c_n-c_{0,n}}^{V_n}\circ\cdots\circ
+   \Phi_{c_1-c_{0,1}}^{V_1}(x)
+\]
+と置く．$dF(V_j)=e_j$ だから
+$F(\Psi(x,c))=c$ である．
+各 $c$ に対し $\Psi(\cdot,c)$ は流の合成として埋め込みである．
+$\Psi$ の微分は各点で同型だから局所微分同相となる．
+異なる $c$ では $F$ の値が異なるので像は交わらず，
+同じ $c$ では埋め込みの単射性による．
+従って $\Psi:L\times B\to W=\Psi(L\times B)$ は微分同相である．
+$L_c=\Psi(L,c)$ はコンパクト連結である．
+\end{proof}
+
+\section{周期格子の滑らかな選択}
+\begin{lemma}[周期基底の滑らかな延長]
+$B$ を十分縮小すると，任意の $c\in B$ の周期格子
+$\Lambda_c\subset\mathbb R^n$ に対して，
+滑らかな写像 $\lambda_1,\ldots,\lambda_n:B\to\mathbb R^n$ が存在し，
+$\lambda_1(c),\ldots,\lambda_n(c)$ は $\Lambda_c$ の
+$\mathbb Z$-基底となる．
+\end{lemma}
+\begin{proof}
+前節の自明化から滑らかな断面 $s(c)=\Psi(x_0,c)$ を選ぶ．
+Hamiltonベクトル場 $X_{F_i}$ は各 $L_c$ 上で接空間の基底となり，
+$L_c$ がコンパクトなので完備である．よって $\mathbb R^n$ 作用が
+各 $L_c$ 上に定まる．
+$\Lambda_{c_0}$ の基底を
+$\lambda_1^0,\ldots,\lambda_n^0$ とする．
+
+$\Psi$ によって各 $L_c$ を $L$ と同一視し，
+\[
+ G(c,t)=\Psi(\cdot,c)^{-1}\bigl(\Phi_t(s(c))\bigr)\in L
+\]
+と置く．$G(c_0,\lambda_j^0)=x_0$ である．
+$\partial_tG$ は各 $(c_0,\lambda_j^0)$ において同型であるから，
+陰函数定理により $G(c,\lambda_j(c))=x_0$ を満たす
+滑らかな $\lambda_j(c)$ を基底の近くで一意に取れる．
+$B$ を縮小すればこれらは実線形独立である．
+
+$\Lambda'_c=\sum_j\mathbb Z\lambda_j(c)$ と置くと
+$\Phi_t(s(c))$ は滑らかな全射局所微分同相
+\[
+   \varphi_c:\mathbb R^n/\Lambda'_c\longrightarrow L_c
+\]
+を誘導する．左辺を $\mathbb T^n$ と同一視して
+$\Psi$ で右辺を $L$ と同一視すれば，
+$\varphi_c$ は $c$ に滑らかに依存するコンパクト多様体間の写像である．
+$c=c_0$ では $\lambda_j^0$ が格子の基底だから微分同相である．
+
+コンパクト多様体上の微分同相写像は $C^1$ 小摂動に対して
+微分同相のままである．この事実を確認するには，
+まず逆函数定理とコンパクト性から摂動写像は局所微分同相で，
+その像は開かつ閉だから連結な $L$ の全体である．
+単射性が失われる小摂動列があるなら，
+相異なる $x_k,y_k$ が同じ像をもち，コンパクト性により
+$x_k\to x,y_k\to y$ となる．極限では元の写像が単射だから $x=y$．
+しかし $x$ の近くでは逆函数定理を一様に適用できるので，
+十分大きい $k$ では $x_k=y_k$ となり矛盾する．
+従って $\varphi_c$ は $c_0$ の近くで微分同相であり，
+$\Lambda'_c=\Lambda_c$ が従う．
+\end{proof}
+
+\section{周期一のHamilton流と作用変数}
+前節の周期基底を用いて，$W$ 上の滑らかなベクトル場
+\[
+ Y_j=\sum_{k=1}^n\lambda_{jk}(F)X_{F_k},
+ \qquad\lambda_j=(\lambda_{j1},\ldots,\lambda_{jn})
+\]
+を定める．各 $Y_j$ は $F$ の各等位トーラスに接し，
+互いに可換で，その時間1の流は恒等写像である．
+
+\begin{lemma}[周期一の流はシンプレクティックである]
+各 $j$ に対し
+\[
+ \beta_j=\sum_{k=1}^n\lambda_{jk}(c)\,dc_k
+\]
+を $B$ 上の一形式とすると $d\beta_j=0$ である．
+従って $B$ の滑らかな函数 $I_j$ で $dI_j=\beta_j$ が存在し，
+$Y_j=X_{I_j\circ F}$ となる．
+\end{lemma}
+\begin{proof}
+$i_{X_{F_k}}\omega=dF_k$ の規約から
+\[
+ \iota_{Y_j}\omega=F^*\beta_j.
+\]
+Cartanの公式により
+$\mathcal L_{Y_j}\omega=F^*(d\beta_j)$ である．
+$Y_j$ の流 $\Xi_t$ は $F$ を不変に保つので
+$\Xi_t^*F^*(d\beta_j)=F^*(d\beta_j)$ となる．
+従って
+\[
+ \frac d{dt}\Xi_t^*\omega=F^*(d\beta_j),\qquad
+ \Xi_1^*\omega=\omega+F^*(d\beta_j).
+\]
+$\Xi_1=\operatorname{id}$ だから $F^*(d\beta_j)=0$．
+$F:W\to B$ は全射部分沈め込みなので引戻しは単射であり，
+$d\beta_j=0$ を得る．$B$ は球だからPoincar\'e補題により
+$\beta_j=dI_j$ と書ける．従って
+$\iota_{Y_j}\omega=d(I_j\circ F)$ であり，
+非退化性から $Y_j=X_{I_j\circ F}$ となる．
+\end{proof}
+
+\begin{lemma}[作用変数の独立性]
+$B$ を縮小すると $c\mapsto I(c)$ は局所微分同相である．
+\end{lemma}
+\begin{proof}
+$\partial I_j/\partial c_k=\lambda_{jk}(c)$ であり，
+その行列は周期基底が実線形独立であるから可逆である．
+逆函数定理によって結論が従う．
+\end{proof}
+
+\section{角変数と形式の標準化}
+\begin{lemma}[角座標の存在]
+$W$ を縮小すれば，滑らかな座標
+$(I,\theta):W\to B'\times\mathbb T^n$ が存在して，
+$Y_j=\partial/\partial\theta_j$ となる．
+\end{lemma}
+\begin{proof}
+局所積構造の断面 $s(c)$ を固定する．
+周期基底から得た周期一の流 $\Xi_t$ を使い
+\[
+ \Theta(c,\theta)=\Xi_{\theta_1}^{Y_1}\circ\cdots\circ
+                        \Xi_{\theta_n}^{Y_n}(s(c))
+\]
+と置く．$Y_j$ が可換であり各周期が1で，周期格子が正確に
+$\mathbb Z^n$ に規格化されているから，
+各 $c$ について $\theta\mapsto\Theta(c,\theta)$ は
+$\mathbb T^n\to L_c$ の微分同相である．
+局所積構造によって全体も微分同相である．
+作用変数は $c\mapsto I(c)$ の局所微分同相なので
+$(I,\theta)$ を座標とできる．流の定義から
+$Y_j=\partial/\partial\theta_j$ である．
+\end{proof}
+
+\begin{lemma}[シンプレクティック標準形]
+上の座標で，角変数を $I$ のみの函数だけ変更すると
+\[
+ \omega=\sum_{j=1}^n d\theta_j\wedge dI_j
+\]
+が成立する．
+\end{lemma}
+\begin{proof}
+$\iota_{Y_j}\omega=dI_j$ で，$Y_j=\partial_{\theta_j}$ だから
+座標表示には $d\theta_j\wedge d\theta_k$ 項がなく，
+$d\theta_j\wedge dI_k$ の係数は $\delta_{jk}$ である．従って
+\[
+ \omega=\sum_jd\theta_j\wedge dI_j+\gamma,
+ \qquad\gamma=\tfrac12\sum_{j,k}c_{jk}(I,\theta)dI_j\wedge dI_k.
+\]
+各 $Y_j$ はHamiltonベクトル場なので $\mathcal L_{Y_j}\omega=0$．
+よって $\partial_{\theta_j}c_{k\ell}=0$，すなわち
+$\gamma$ は基底 $B'$ の二形式である．
+$d\omega=0$ と $d(d\theta_j\wedge dI_j)=0$ から
+$d\gamma=0$．$B'$ は球なのでPoincar\'e補題により
+$\gamma=d\alpha$，$\alpha=\sum_j a_j(I)dI_j$ と書ける．
+新しい角変数を $\theta'_j=\theta_j+a_j(I)$ とすれば
+\[
+ \sum_jd\theta'_j\wedge dI_j
+ =\sum_jd\theta_j\wedge dI_j+d\alpha=\omega.
+\]
+$\theta'_j$ は従来と同じ周期1の円周値座標である．
+\end{proof}
+
+\section{Liouville--Arnoldの定理の証明}
+\begin{proof}[Liouville--Arnoldの定理の証明]
+Lagrange性とトーラス表示は第2節の補題による．
+局所積構造，周期基底の滑らかな選択，作用変数の独立性，
+および角座標の標準化を順に用いれば第2項が従う．
+
+$\{H,F_i\}=0$ を仮定する．
+$X_{F_i}$ は各 $L_c$ の接空間を張り，
+$X_{F_i}H=-\{F_i,H\}=0$ なので $H$ は連結な $L_c$ 上で定数である．
+断面 $s(c)$ を取れば $h(c)=H(s(c))$ は滑らかで
+$H=h(F)$ である．$I=I(c)$ が局所微分同相だから
+$H$ は $I$ のみの滑らかな函数である．
+$\omega=\sum_jd\theta_j\wedge dI_j$ に対し
+\[
+ \iota_{X_H}\omega=dH=\sum_j\frac{\partial H}{\partial I_j}dI_j
+\]
+を解けば $\dot I_j=0$，
+$\dot\theta_j=\partial H/\partial I_j$ を得る．
+\end{proof}
+
+\begin{example}[独立な調和振動子]
+$M=\mathbb R^{2n}$ の標準座標 $(q_j,p_j)$ に
+$\omega=\sum_jdq_j\wedge dp_j$ を取り，
+$F_j=(p_j^2+q_j^2)/2$ とする．
+$F_j$ はPoisson可換で，$F_j>0$ の共通等位集合はトーラスである．
+\[
+ q_j=\sqrt{2I_j}\cos(2\pi\theta_j),\quad
+ p_j=-\sqrt{2I_j}\sin(2\pi\theta_j)
+\]
+と置くと
+$\omega=2\pi\sum_jd\theta_j\wedge dI_j$ となるため，
+周期1の正準作用変数は $J_j=2\pi I_j$ とする必要がある．
+$H=\sum_jF_j$ なら $H=\sum_jJ_j/(2\pi)$ であり，
+$\dot\theta_j=1/(2\pi)$ となる．
+\end{example}
+
+\begin{remark}
+局所作用角座標の存在は一般の非コンパクト共通等位集合や
+特異等位集合にまで主張できない．また大域的な作用角座標には
+モノドロミーなどの位相的障害が生じ得る．
+本稿の証明はコンパクト連結正則等位集合の\emph{近傍}に限る．
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{arnold} V. I. Arnold,
+ \emph{Mathematical Methods of Classical Mechanics},
+ 2nd ed., Springer, 1989.
+\bibitem{duistermaat} J. J. Duistermaat,
+ ``On global action-angle coordinates,''
+ \emph{Comm. Pure Appl. Math.} 33 (1980), 687--706.
+\end{thebibliography}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{Hamilton系としての調和振動子．}
+\begin{proposition}
+$H(q,p)=\frac12(q^2+p^2)$ のHamilton方程式は
+$\dot q=p$，$\dot p=-q$ であり，
+\[
+q(t)=q_0\cos t+p_0\sin t,\qquad
+p(t)=-q_0\sin t+p_0\cos t.
+\]
+\end{proposition}
+\begin{proof}
+Hamilton方程式に
+$\partial H/\partial p=p$，
+$\partial H/\partial q=q$ を代入する．
+得られる線形系の行列は
+$J=\left(\begin{smallmatrix}0&1\\-1&0\end{smallmatrix}\right)$
+で，$J^2=-I$．
+従って $e^{tJ}=I\cos t+J\sin t$ となり，
+表示式が従う．
+この行列は直交行列なので
+$q(t)^2+p(t)^2=q_0^2+p_0^2$ を保つ．
+\end{proof}
+\noindent\textbf{到達確認．}
+初期値 $(q_0,p_0)=(1,0)$ の軌道と周期を求めよ．
+\par\noindent\textbf{解答．}
+$(q(t),p(t))=(\cos t,-\sin t)$ であり，
+周期は $2\pi$ である．
+\end{document}
