@@ -1963,6 +1963,66 @@
       "related": [
         "94.100"
       ]
+    },
+    {
+      "id": "97.030",
+      "summary": "東京大学2025年度理科数学の対数積分極限と京都大学2023年度の合成関数の最適化を、関数空間・一様Taylor展開・凸性から解く。",
+      "summary_basis": "reviewed_note",
+      "prerequisites": [],
+      "successors": [],
+      "related": [
+        "28.020"
+      ]
+    },
+    {
+      "id": "97.050",
+      "summary": "東京大学2025年度理科数学の長方形面積の最大化と京都大学2024年度の複素数領域の問題を、二次形式とMinkowski和で解く。",
+      "summary_basis": "reviewed_note",
+      "prerequisites": [],
+      "successors": [],
+      "related": [
+        "97.130"
+      ]
+    },
+    {
+      "id": "97.120",
+      "summary": "東京大学2025年度理科数学の平方数判定問題を約数集合の対合とBurnside補題で処理し、平方数条件の個数の公式を証明する。",
+      "summary_basis": "reviewed_note",
+      "prerequisites": [],
+      "successors": [],
+      "related": [
+        "97.170"
+      ]
+    },
+    {
+      "id": "97.130",
+      "summary": "東京大学2017・2025年度の複素数平面の問題を、Möbius変換の円・直線保存性と複素数の反転によって解く。",
+      "summary_basis": "reviewed_note",
+      "prerequisites": [],
+      "successors": [],
+      "related": [
+        "97.050"
+      ]
+    },
+    {
+      "id": "97.170",
+      "summary": "京都大学2023年度の多項式の剰余問題と東京大学2015年度の二項係数の偶奇を、有限Fourier解析、1の冪根、Frobenius写像で解く。",
+      "summary_basis": "reviewed_note",
+      "prerequisites": [],
+      "successors": [],
+      "related": [
+        "97.120"
+      ]
+    },
+    {
+      "id": "97.200",
+      "summary": "東京大学2025年度理科数学の隣接交換問題を0-Heckeモノイドの作用として捉え、成功する順列数の漸化式と母関数を導く。",
+      "summary_basis": "reviewed_note",
+      "prerequisites": [],
+      "successors": [],
+      "related": [
+        "97.170"
+      ]
     }
   ]
 }
