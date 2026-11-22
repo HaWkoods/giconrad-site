@@ -1,0 +1,628 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{算術関数・Dirichlet畳み込みとゼータ関数}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，算術関数，約数和，Dirichlet畳み込み．
+本稿の具体的な到達課題は，Dirichlet反転を使って算術関数を復元し，具体的な値を計算する．
+
+
+\section{算術関数と乗法性}
+
+本稿では自然数は $1$ から始まるものとする．
+複素数値算術関数とは，写像
+$f:\mathbb N_{\ge1}\to\mathbb C$ をいう．
+
+\begin{definition}
+算術関数 $f$ が\emph{乗法的}であるとは
+$f(1)=1$ かつ
+\[
+ f(mn)=f(m)f(n)\qquad(\gcd(m,n)=1)
+\]
+を満たすことをいう．
+また全ての自然数 $m,n$ について上の等式が成立するとき
+\emph{完全乗法的}という．
+\end{definition}
+
+\begin{definition}
+$n$ の正の約数の個数を $d(n)$，
+正の約数の総和を $\sigma(n)$，
+$n$ と互いに素な $1\le k\le n$ の個数を
+$\varphi(n)$ と書く．
+\end{definition}
+
+\begin{proposition}[素数冪上の値]\label{prop:basic-values}
+素数 $p$ と整数 $a\ge1$ に対して
+\[
+ d(p^a)=a+1,\qquad
+ \sigma(p^a)=\frac{p^{a+1}-1}{p-1},\qquad
+ \varphi(p^a)=p^a-p^{a-1}.
+\]
+さらに $d,\sigma,\varphi$ は乗法的である．
+\end{proposition}
+\begin{proof}
+$p^a$ の正の約数は
+$1,p,\ldots,p^a$ なので前二式を得る．
+$1\le k\le p^a$ のうち $p$ と互いに素でないものは
+$p$ の倍数であり，その個数は $p^{a-1}$ だから
+$\varphi(p^a)=p^a-p^{a-1}$ となる．
+$\gcd(m,n)=1$ なら任意の $mn$ の約数は一意に
+$m$ の約数と $n$ の約数の積に分解される．
+従って $d,\sigma$ は乗法的である．
+また中国剰余定理によって
+$(\mathbb Z/mn\mathbb Z)^\times$ と
+$(\mathbb Z/m\mathbb Z)^\times
+ \times(\mathbb Z/n\mathbb Z)^\times$
+が同型となる．
+両群の位数を比較すれば
+$\varphi(mn)=\varphi(m)\varphi(n)$ を得る．
+\end{proof}
+
+\section{Dirichlet畳み込み}
+
+\begin{definition}
+算術関数 $f,g$ の\emph{Dirichlet畳み込み}を
+\[
+ (f*g)(n)=\sum_{d\mid n}f(d)g(n/d)
+\]
+と定める．
+また
+$\mathbf1(n)=1$，
+$\varepsilon(1)=1$，
+$\varepsilon(n)=0$（$n>1$）と置く．
+\end{definition}
+
+\begin{proposition}[畳み込みの代数構造]\label{prop:convolution-ring}
+算術関数全体は点ごとの加法と
+Dirichlet畳み込みについて可換環をなす．
+その乗法単位元は $\varepsilon$ である．
+\end{proposition}
+\begin{proof}
+畳み込みの交換律は約数 $d$ と $n/d$ の
+置換によって従う．
+結合律は
+\[
+ ((f*g)*h)(n)=\sum_{abc=n}f(a)g(b)h(c)
+ =(f*(g*h))(n)
+\]
+から従う．この和は有限であるため，
+和の順序の変更に問題はない．
+分配律は有限和の線形性による．
+また
+\[
+ (f*\varepsilon)(n)
+ =\sum_{d\mid n}f(d)\varepsilon(n/d)=f(n)
+\]
+だから $\varepsilon$ は単位元である．
+\end{proof}
+
+\begin{lemma}[畳み込みの逆元]\label{lem:unit}
+算術関数 $f$ がDirichlet畳み込みについて
+逆元を持つための必要十分条件は $f(1)\ne0$ である．
+\end{lemma}
+\begin{proof}
+$f*g=\varepsilon$ なら
+$f(1)g(1)=1$ なので $f(1)\ne0$ である．
+逆に $f(1)\ne0$ とし，
+$g(1)=1/f(1)$ と定める．
+$n>1$ では
+\[
+ 0=(f*g)(n)
+ =f(1)g(n)+\sum_{\substack{d\mid n\\d>1}}
+ f(d)g(n/d)
+\]
+となることを要求する．
+$1\le n/d<n$ だから，
+右辺の和は帰納的に既に定まった $g(k)$ だけを含む．
+従って
+\[
+ g(n)=-\frac1{f(1)}
+ \sum_{\substack{d\mid n\\d>1}}f(d)g(n/d)
+\]
+によって $g(n)$ を一意に定義できる．
+この帰納法は全ての $n$ で
+$f*g=\varepsilon$ を保証する．
+\end{proof}
+
+\begin{proposition}[乗法性の保存]\label{prop:multiplicative}
+$f,g$ が乗法的なら $f*g$ も乗法的である．
+\end{proposition}
+\begin{proof}
+$\gcd(m,n)=1$ とする．
+$mn$ の約数は一意に $a\mid m$，$b\mid n$ に対して
+$ab$ と書けるので
+\begin{align*}
+ (f*g)(mn)
+ &=\sum_{a\mid m}\sum_{b\mid n}
+ f(ab)g(mn/(ab))\\
+ &=\sum_{a\mid m}\sum_{b\mid n}
+ f(a)f(b)g(m/a)g(n/b)\\
+ &=(f*g)(m)(f*g)(n).
+\end{align*}
+また $(f*g)(1)=f(1)g(1)=1$ である．
+\end{proof}
+
+\section{M\"obius反転}
+
+\begin{definition}
+\emph{M\"obius関数} $\mu$ を
+\[
+ \mu(1)=1,\qquad
+ \mu(n)=\begin{cases}
+ (-1)^r&\text{$n$ が相異なる $r$ 個の素数の積},\\
+ 0&\text{$n$ が平方因子を持つ}
+ \end{cases}
+\]
+と定める．
+\end{definition}
+
+\begin{lemma}[M\"obius関数の基本恒等式]\label{lem:mu}
+\[
+ \sum_{d\mid n}\mu(d)
+ =\begin{cases}1&(n=1),\\0&(n>1)\end{cases}.
+\]
+すなわち $\mathbf1*\mu=\varepsilon$ である．
+\end{lemma}
+\begin{proof}
+$n=1$ では左辺は $\mu(1)=1$ である．
+$n>1$ では相異なる素因数を
+$p_1,\ldots,p_r$ とすると $r\ge1$ である．
+$\mu(d)\ne0$ となる約数 $d$ は
+$p_1,\ldots,p_r$ の部分集合の積に限られる．
+従って
+\[
+ \sum_{d\mid n}\mu(d)
+ =\sum_{k=0}^r(-1)^k\binom rk
+ =(1-1)^r=0.
+\]
+\end{proof}
+
+\begin{theorem}[M\"obius反転公式]\label{thm:mobius}
+算術関数 $f,g$ について
+\[
+ g(n)=\sum_{d\mid n}f(d)
+\]
+が全ての $n$ で成立するための必要十分条件は
+\[
+ f(n)=\sum_{d\mid n}\mu(d)g(n/d)
+\]
+が全ての $n$ で成立することである．
+\end{theorem}
+\begin{proof}
+最初の等式は $g=\mathbf1*f$ と書ける．
+両辺に $\mu$ を畳み込むと
+\[
+ \mu*g=(\mu*\mathbf1)*f
+ =\varepsilon*f=f
+\]
+となる．
+逆に $f=\mu*g$ なら
+$\mathbf1*f=(\mathbf1*\mu)*g
+ =\varepsilon*g=g$ である．
+\end{proof}
+
+\begin{corollary}[Euler関数の約数恒等式]\label{cor:phi}
+任意の自然数 $n$ について
+\[
+ \sum_{d\mid n}\varphi(d)=n,\qquad
+ \varphi(n)=n\sum_{d\mid n}\frac{\mu(d)}d
+ =n\prod_{p\mid n}\left(1-\frac1p\right)
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+$1\le k\le n$ を $\gcd(k,n)=d$ によって分類する．
+$d\mid n$ を固定すると
+$k=du$，$1\le u\le n/d$，
+$\gcd(u,n/d)=1$ となる $u$ は
+$\varphi(n/d)$ 個である．
+よって $n=\sum_{d\mid n}\varphi(n/d)$ を得る．
+M\"obius反転から
+\[
+ \varphi(n)=\sum_{d\mid n}\mu(d)\frac nd
+ =n\sum_{d\mid n}\frac{\mu(d)}d.
+\]
+最後の和は，$\mu(d)$ が非零となる約数を
+素因数の部分集合で指定することにより
+$\prod_{p\mid n}(1-1/p)$ に等しい．
+\end{proof}
+
+\section{Dirichlet級数}
+
+\begin{definition}
+算術関数 $f$ に対して，
+複素数 $s$ を変数とする級数
+\[
+ D_f(s)=\sum_{n=1}^\infty\frac{f(n)}{n^s}
+\]
+を\emph{Dirichlet級数}という．
+ここで $n^{-s}=e^{-s\log n}$ とする．
+\end{definition}
+
+\begin{lemma}[絶対収束領域と正則性]\label{lem:dirichlet-holo}
+ある $\sigma_0\in\mathbb R$ について
+$\sum_n|f(n)|n^{-\sigma_0}<\infty$ とする．
+このとき $\operatorname{Re}s>\sigma_0$ で
+$D_f(s)$ は正則であり，
+任意の非負整数 $k$ に対して
+\[
+ D_f^{(k)}(s)=\sum_{n=1}^\infty
+ \frac{(-\log n)^kf(n)}{n^s}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+コンパクト集合 $C\subset\{\operatorname{Re}s>\sigma_0\}$
+を固定する．ある $\delta>0$ が存在して
+$\operatorname{Re}s\ge\sigma_0+\delta$ が
+全ての $s\in C$ で成り立つ．
+任意の $k$ について
+$(\log n)^kn^{-\delta}$ は $n\ge1$ で有界だから，
+\[
+ \left|\frac{(-\log n)^kf(n)}{n^s}\right|
+ \le C_{k,\delta}|f(n)|n^{-\sigma_0}.
+\]
+右辺の級数は収束するので，
+WeierstrassのM判定法によって
+元の級数と全ての微分級数は
+$C$ 上で一様収束する．
+正則関数の局所一様収束定理と項別微分定理を
+繰り返し適用すると結論が従う．
+\end{proof}
+
+\begin{proposition}[畳み込みは積に対応する]\label{prop:series-product}
+$f,g$ のDirichlet級数がある $s$ で絶対収束するとき，
+\[
+ D_{f*g}(s)=D_f(s)D_g(s)
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+絶対収束の仮定から
+\[
+ \sum_{a,b\ge1}
+ \left|\frac{f(a)g(b)}{(ab)^s}\right|
+ =\left(\sum_a\frac{|f(a)|}{a^{\operatorname{Re}s}}\right)
+  \left(\sum_b\frac{|g(b)|}{b^{\operatorname{Re}s}}\right)
+ <\infty.
+\]
+従って二重級数の和の順序を変更でき，
+\begin{align*}
+ D_f(s)D_g(s)
+ &=\sum_{a,b\ge1}\frac{f(a)g(b)}{(ab)^s}\\
+ &=\sum_{n\ge1}\frac1{n^s}
+   \sum_{ab=n}f(a)g(b)
+ =D_{f*g}(s).
+\end{align*}
+\end{proof}
+
+\section{Riemannゼータ関数とEuler積}
+
+\begin{definition}
+$\operatorname{Re}s>1$ に対して
+\[
+ \zeta(s)=\sum_{n=1}^\infty n^{-s}
+\]
+と定める．
+これをRiemannゼータ関数という．
+\end{definition}
+
+\begin{theorem}[Euler積]\label{thm:euler-product}
+$\operatorname{Re}s>1$ において
+\[
+ \zeta(s)=\prod_{p\ {\rm prime}}(1-p^{-s})^{-1}
+\]
+が成立し，右辺は有限個の素数による部分積の極限として
+局所一様収束する．
+特にこの半平面で $\zeta(s)\ne0$ である．
+\end{theorem}
+\begin{proof}
+$\sigma=\operatorname{Re}s>1$ とする．
+有限集合の素数 $P$ について
+\[
+ \prod_{p\in P}(1-p^{-s})^{-1}
+ =\prod_{p\in P}\sum_{k=0}^\infty p^{-ks}
+ =\sum_{\substack{n\ge1\\
+   \text{全ての素因数が }P\text{ に属する}}}n^{-s}.
+\]
+各幾何級数は絶対収束しており，
+有限個の積と和の入れ替えは正当化される．
+整数の素因数分解の一意性を用いると，
+全ての素数を順に追加した極限は
+$\sum_{n\ge1}n^{-s}=\zeta(s)$ に等しい．
+なぜなら除外された項の絶対値の和は
+$\sum_{n>N}n^{-\sigma}$ によって上から評価でき，
+$P$ が $N$ 以下の全ての素数を含む場合には
+その和は $N\to\infty$ で零となるからである．
+$\sigma\ge1+\delta$ となるコンパクト集合上では
+同じ評価により局所一様収束する．
+
+零点を持たないことを示す．
+$|p^{-s}|\le p^{-\sigma}<1$ なので，
+\[
+ \prod_p(1-p^{-s})
+\]
+は $\sum_pp^{-\sigma}<\infty$ から
+非零の極限に収束する．
+実際十分大きい $p$ では
+$|\log(1-p^{-s})|\le2p^{-\sigma}$ であり，
+対数級数が絶対収束するからである．
+従ってEuler積の極限も非零であり，
+$\zeta(s)\ne0$ となる．
+\end{proof}
+
+\begin{corollary}[M\"obius関数のDirichlet級数]
+\label{cor:mu-dirichlet}
+$\operatorname{Re}s>1$ では
+\[
+ \sum_{n=1}^\infty\frac{\mu(n)}{n^s}
+ =\frac1{\zeta(s)}
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+$|\mu(n)|\le1$ なので左辺は絶対収束する．
+$\mathbf1*\mu=\varepsilon$ と
+命題\ref{prop:series-product}から
+\[
+ \zeta(s)\sum_n\mu(n)n^{-s}
+ =\sum_n\varepsilon(n)n^{-s}=1.
+\]
+Euler積によって $\zeta(s)\ne0$ なので結論が従う．
+\end{proof}
+
+\begin{proposition}[対数微分]\label{prop:log-derivative}
+$\operatorname{Re}s>1$ では
+\[
+ -\frac{\zeta'(s)}{\zeta(s)}
+ =\sum_p\sum_{k=1}^\infty
+ \frac{\log p}{p^{ks}}
+ =\sum_{n=1}^\infty\frac{\Lambda(n)}{n^s}
+\]
+が成立する．
+ここで $\Lambda(n)=\log p$（$n=p^k,\ k\ge1$），
+それ以外は $\Lambda(n)=0$ とする．
+\end{proposition}
+\begin{proof}
+$\operatorname{Re}s\ge1+\delta$ のコンパクト集合上で
+\[
+ \sum_p\sum_{k\ge1}
+ \frac{\log p}{p^{k\operatorname{Re}s}}
+ \le\sum_{n\ge2}\frac{\log n}{n^{1+\delta}}
+      \frac1{1-2^{-(1+\delta)}}
+ <\infty
+\]
+と評価できる．
+従ってEuler積に対して
+絶対収束する対数級数の項別微分を適用してよい．
+$\log\zeta(s)=-\sum_p\log(1-p^{-s})$ と
+$\frac d{ds}p^{-s}=-(\log p)p^{-s}$
+から
+\[
+ \frac{\zeta'(s)}{\zeta(s)}
+ =-\sum_p\frac{(\log p)p^{-s}}{1-p^{-s}}
+ =-\sum_p\sum_{k\ge1}(\log p)p^{-ks}.
+\]
+最後に素数冪 $p^k$ に対応する項をまとめれば
+$\Lambda(n)$ による表示式となる．
+\end{proof}
+
+\section{素数の逆数和}
+
+\begin{theorem}[Eulerの定理]\label{thm:prime-reciprocals}
+素数全体にわたる級数
+\[
+ \sum_{p\ {\rm prime}}\frac1p
+\]
+は発散する．
+\end{theorem}
+\begin{proof}
+$\sigma>1$ とする．Euler積の対数を取ると
+\[
+ \log\zeta(\sigma)
+ =\sum_p\sum_{k=1}^\infty
+ \frac{p^{-k\sigma}}k
+ =\sum_pp^{-\sigma}+R(\sigma),
+\]
+ただし
+\[
+ 0\le R(\sigma)
+ =\sum_p\sum_{k=2}^\infty\frac{p^{-k\sigma}}k
+ \le\sum_{n=2}^\infty
+     \frac{n^{-2\sigma}}{1-n^{-\sigma}}
+ \le\frac1{1-2^{-1}}
+     \sum_{n=2}^\infty n^{-2}
+\]
+である．従って $R(\sigma)$ は
+$\sigma>1$ で一様に有界である．
+一方，単調減少関数の積分比較により
+\[
+ \zeta(\sigma)=\sum_{n=1}^\infty n^{-\sigma}
+ \ge\int_1^\infty t^{-\sigma}\,dt
+ =\frac1{\sigma-1}
+\]
+だから $\sigma\downarrow1$ で
+$\log\zeta(\sigma)\to\infty$ である．
+ゆえに $\sum_pp^{-\sigma}\to\infty$ となる．
+もし $\sum_pp^{-1}$ が収束するなら
+$p^{-\sigma}\le p^{-1}$ によって
+$\sum_pp^{-\sigma}$ は一様有界になるはずで矛盾する．
+従って結論を得る．
+\end{proof}
+
+\section{約数関数の平均}
+
+\begin{lemma}[調和数列]\label{lem:harmonic}
+\[
+ H_N=\sum_{n=1}^N\frac1n
+ =\log N+\gamma+O(N^{-1})
+\]
+となる実定数 $\gamma$ が存在する．
+\end{lemma}
+\begin{proof}
+$a_N=H_N-\log N$ と置く．
+\[
+ a_{N+1}-a_N
+ =\frac1{N+1}-\log\left(1+\frac1N\right)
+\]
+である．
+積分表示
+$\log(1+t)=\int_0^t(1+u)^{-1}du$ と
+$1-u\le(1+u)^{-1}\le1$（$0\le u\le1$）
+から $|a_{N+1}-a_N|\le C/N^2$ が従う．
+従って $(a_N)$ はCauchy列であり，
+ある実数 $\gamma$ へ収束する．
+また
+\[
+ |a_N-\gamma|
+ \le\sum_{k=N}^\infty|a_{k+1}-a_k|
+ \le C\sum_{k=N}^\infty k^{-2}=O(N^{-1}).
+\]
+よって表示式が成立する．
+\end{proof}
+
+\begin{theorem}[Dirichletの約数問題の初等評価]
+\label{thm:divisor-average}
+$x\ge2$ とし，
+$D(x)=\sum_{n\le x}d(n)$ と置く．
+このとき
+\[
+ D(x)=x\log x+(2\gamma-1)x+O(\sqrt x)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$d(n)=\sum_{ab=n}1$ なので
+\[
+ D(x)=\#\{(a,b)\in\mathbb N^2:ab\le x\}.
+\]
+$m=\lfloor\sqrt x\rfloor$ と置く．
+$ab\le x$ なら $a\le m$ または $b\le m$ である．
+二つの集合を数え，重なりの $m^2$ 個を引くと
+\[
+ D(x)=2\sum_{a=1}^m\left\lfloor\frac xa\right\rfloor-m^2.
+\]
+各項について $\lfloor x/a\rfloor=x/a+O(1)$ なので
+\[
+ D(x)=2xH_m-m^2+O(m).
+\]
+補題\ref{lem:harmonic}から
+$H_m=\log m+\gamma+O(1/m)$ である．
+$m=\sqrt x+O(1)$ だから
+\[
+ \log m=\tfrac12\log x+O(x^{-1/2}),\qquad
+ m^2=x+O(\sqrt x).
+\]
+従って
+\[
+ D(x)=x\log x+2\gamma x-x+O(\sqrt x)
+\]
+となり，結論を得る．
+\end{proof}
+
+\begin{remark}
+本稿で得たEuler積と対数微分は
+解析的整数論の出発点である．
+Dirichletの算術級数定理では指標と $L$ 関数が，
+素数定理では $\zeta(s)$ の境界上の零点の情報が
+さらに必要となる．
+本稿ではこれらの深い定理を証明したことにはしない．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Möbius反転の計算．}
+\begin{proposition}
+$\mathbf1(n)=1$，$\varepsilon(1)=1$，
+$\varepsilon(n)=0$（$n>1$）とすると
+$\mathbf1*\mu=\varepsilon$ である．
+\end{proposition}
+\begin{proof}
+$(\mathbf1*\mu)(n)=\sum_{d\mid n}\mu(d)$．
+$n=1$ の値は1である．
+$n>1$ の相異なる素因子が $r\ge1$ 個あれば，
+平方因子を含まない約数の寄与は
+$\sum_{j=0}^r\binom rj(-1)^j=(1-1)^r=0$ である．
+\end{proof}
+\begin{proposition}
+$\sum_{d\mid n}\varphi(d)=n$ から
+$\varphi(n)=n\prod_{p\mid n}(1-1/p)$ が従う．
+\end{proposition}
+\begin{proof}
+$\varphi*\mathbf1=\mathrm{id}$ と表せるので
+$\varphi=\mathrm{id}*\mu$．従って
+$\varphi(n)=\sum_{d\mid n}d\mu(n/d)
+=n\sum_{d\mid n}\mu(d)/d$．
+平方因子を含まない約数に分けると有限積を得る．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\varphi(60)$ を計算せよ．
+\par\noindent\textbf{解答．}
+$60=2^2\cdot3\cdot5$ より
+$\varphi(60)=60(1-1/2)(1-1/3)(1-1/5)=16$．
+\end{document}

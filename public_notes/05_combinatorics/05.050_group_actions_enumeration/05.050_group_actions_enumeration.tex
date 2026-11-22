@@ -1,0 +1,1544 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{群作用と数え上げ}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，有限群作用，Burnsideの補題，巡回分解．
+本稿の具体的な到達課題は，回転による彩色の同値類を固定点計数で求める．
+
+\section{有限群作用と軌道}
+本稿では，群は有限群とし，作用する集合も有限集合とする．
+第1節から第4節では群作用に関する基本定理を証明し，
+以降で色塗り，首飾り，非同型グラフの計数に応用する．
+色の名称は区別し，対称操作は位置だけに作用するものとする．
+
+\begin{definition}[左作用]
+群 $G$ と集合 $X$ に対し，写像
+$G\times X\to X$, $(g,x)\mapsto gx$ が
+$ex=x$ および $(gh)x=g(hx)$ を満たすとき，
+$G$ の $X$ への左作用という．
+$x\in X$ に対し
+\[
+ Gx=\{gx:g\in G\},\qquad
+ G_x=\{g\in G:gx=x\}
+\]
+をそれぞれ軌道，安定化部分群と呼ぶ．
+$X/G$ は軌道全体の集合である．
+\end{definition}
+
+\begin{lemma}[軌道による分割]\label{lem:orbitpartition}
+$G_x$ は $G$ の部分群である．
+$X$ は互いに交わらない軌道の合併に一意的に分解される．
+\end{lemma}
+\begin{proof}
+$ex=x$ だから $e\in G_x$ である．
+$gx=x,hx=x$ なら $(gh)x=x$ であり，
+$gx=x$ に $g^{-1}$ を作用させると $g^{-1}x=x$ である．
+従って $G_x$ は部分群となる．
+$y=gx$ なら，任意の $h\in G$ に対し
+$hy=(hg)x\in Gx$ だから $Gy\subset Gx$．
+逆に $x=g^{-1}y$ より $Gx\subset Gy$．
+よって二つの軌道は一致するか交わらないかのいずれかである．
+全ての $x$ は $Gx$ に属するので，分割が得られる．
+\end{proof}
+
+\begin{theorem}[軌道・安定化部分群の定理]\label{thm:orbitstab}
+$x\in X$ に対し，左剰余類の集合 $G/G_x$ から
+$Gx$ への写像
+\[
+  gG_x\longmapsto gx
+\]
+は全単射である．特に
+$|Gx|=[G:G_x]=|G|/|G_x|$ である．
+\end{theorem}
+\begin{proof}
+$gG_x=hG_x$ と $h^{-1}g\in G_x$ は同値であり，
+後者は $h^{-1}gx=x$，すなわち $gx=hx$ と同値である．
+従って写像は矛盾なく定まり，しかも単射である．
+軌道の定義から全射でもある．
+$G$ は $G_x$ の左剰余類に分割され，各剰余類の濃度は
+$|G_x|$ に等しいから濃度の等式が従う．
+\end{proof}
+
+\begin{corollary}[軌道の個数と大きさ]\label{cor:orbitsize}
+軌道の代表元を $x_1,\ldots,x_r$ とすると
+\[
+  |X|=\sum_{i=1}^r\frac{|G|}{|G_{x_i}|}.
+\]
+特に各軌道の濃度は $|G|$ の約数である．
+\end{corollary}
+\begin{proof}
+補題~\ref{lem:orbitpartition} による分割を数え，
+定理~\ref{thm:orbitstab} を適用する．
+\end{proof}
+
+\begin{example}[正方形の頂点]
+正方形の回転群 $C_4$ は四頂点に推移的に作用する．
+一つの頂点を固定する回転は恒等変換だけなので
+$|C_4x|=4$ である．一方，対角線の集合は二元で，
+$90^\circ$ 回転が二本の対角線を入れ替える．
+この作用の軌道は一つで，安定化部分群の位数は $2$ となる．
+\end{example}
+
+\begin{proposition}[共役作用と類等式]\label{prop:classeq}
+$G$ は自身に $g\cdot x=gxg^{-1}$ で作用する．
+$x$ の安定化部分群は中心化群
+$C_G(x)=\{g:gx=xg\}$ である．
+中心 $Z(G)$ の元を除く共役類の代表元を
+$x_1,\ldots,x_s$ とすれば
+\[
+ |G|=|Z(G)|+
+ \sum_{j=1}^s[G:C_G(x_j)].
+\]
+\end{proposition}
+\begin{proof}
+作用公理は群演算から従う．
+$gxg^{-1}=x$ と $gx=xg$ は同値である．
+一元からなる共役類は $x\in Z(G)$ に対応する．
+残りの共役類に定理~\ref{thm:orbitstab} を適用し，
+分割の濃度を加えればよい．
+\end{proof}
+
+\section{Burnsideの補題}
+\begin{definition}
+$g\in G$ の固定点集合を
+$\operatorname{Fix}_X(g)=\{x\in X:gx=x\}$ と記す．
+\end{definition}
+
+\begin{theorem}[Burnsideの補題]\label{thm:burnside}
+有限群 $G$ が有限集合 $X$ に作用するとき
+\begin{equation}\label{eq:burnside}
+ |X/G|=\frac1{|G|}\sum_{g\in G}|\operatorname{Fix}_X(g)|.
+\end{equation}
+\end{theorem}
+\begin{proof}
+集合 $S=\{(g,x)\in G\times X:gx=x\}$ を二通りに数える．
+第一成分 $g$ を固定して数えると
+$|S|=\sum_{g\in G}|\operatorname{Fix}_X(g)|$ である．
+第二成分 $x$ を固定すれば
+$|S|=\sum_{x\in X}|G_x|$ である．
+一つの軌道 $O=Gx$ について
+$|G_y|=|G|/|O|$ が全ての $y\in O$ で成立するので
+\[
+ \sum_{y\in O}|G_y|
+ =|O|\frac{|G|}{|O|}=|G|.
+\]
+全ての軌道について足せば $|S|=|G|\,|X/G|$．
+これを第一の表示と比べて結論を得る．
+\end{proof}
+
+\begin{remark}
+$|\operatorname{Fix}_X(e)|=|X|$ である．
+他の元も恒等変換と同じ置換を誘導することがあるが，
+式~\eqref{eq:burnside} の分母は作用の核によらず $|G|$ である．
+特に非忠実な作用にも定理はそのまま適用できる．
+\end{remark}
+
+\begin{proposition}[共役類による計算]\label{prop:conjfix}
+$g,h\in G$ が共役なら
+$|\operatorname{Fix}_X(g)|=|\operatorname{Fix}_X(h)|$ である．
+共役類の代表元を $g_1,\ldots,g_r$ とすれば
+\[
+ |X/G|=\sum_{j=1}^r
+ \frac{|\operatorname{Fix}_X(g_j)|}{|C_G(g_j)|}.
+\]
+\end{proposition}
+\begin{proof}
+$h=aga^{-1}$ とする．$gx=x$ と
+$h(ax)=a(gx)=ax$ は同値だから，
+$x\mapsto ax$ は二つの固定点集合の全単射である．
+共役類の大きさは $|G|/|C_G(g_j)|$ だから，
+Burnsideの公式で類ごとにまとめれば表示を得る．
+\end{proof}
+
+\begin{example}[共役類の個数]
+$G$ の共役作用の軌道は共役類であり，
+$\operatorname{Fix}_G(g)=C_G(g)$ である．
+従って共役類の個数 $k(G)$ は
+\[
+ k(G)=\frac1{|G|}\sum_{g\in G}|C_G(g)|
+\]
+に等しい．これはBurnsideの補題を共役作用に適用した結果である．
+\end{example}
+
+\section{対称性を持つ彩色}
+位置の集合を $X$，色の集合を $C$ とし，
+彩色を写像 $f:X\to C$ と定義する．
+$G$ の $X$ への作用から，彩色全体 $C^X$ への作用を
+\[
+ (g\cdot f)(x)=f(g^{-1}x)
+\]
+によって定める．この逆元は $(gh)\cdot f=g\cdot(h\cdot f)$ を保証する．
+
+\begin{lemma}[彩色の固定条件]\label{lem:colorfix}
+$f\in C^X$ に対して $g\cdot f=f$ であることと，
+$f$ が $g$ の置換としての各巡回上で一定であることは同値である．
+$g$ の巡回の個数を $c(g)$，$|C|=q$ とすると
+\[
+ |\operatorname{Fix}_{C^X}(g)|=q^{c(g)}.
+\]
+\end{lemma}
+\begin{proof}
+固定条件は全ての $x$ で $f(x)=f(g^{-1}x)$，
+すなわち $f(gx)=f(x)$ である．これを繰り返すと，
+同一巡回上の全ての位置に同じ色を割り当てねばならない．
+逆に各巡回で一定なら固定される．
+異なる巡回には独立に $q$ 通りの色を選べるから結論を得る．
+\end{proof}
+
+\begin{theorem}[色塗りの軌道数]\label{thm:colororbits}
+$G\curvearrowright X$ と $|C|=q$ に対し，
+位置の対称性によって同一視した $q$ 色彩色の個数は
+\[
+ \frac1{|G|}\sum_{g\in G}q^{c(g)}
+\]
+に等しい．
+\end{theorem}
+\begin{proof}
+補題~\ref{lem:colorfix} を
+定理~\ref{thm:burnside} に代入する．
+\end{proof}
+
+\begin{example}[四隅の二色彩色]
+正方形の回転群 $C_4$ が四頂点に作用するとき，
+恒等変換の巡回数は $4$，半回転は $2$，
+二つの四分の一回転はいずれも $1$ である．
+従って二色彩色の軌道数は
+\[
+ \frac{2^4+2^2+2\cdot2}{4}=6
+\]
+となる．鏡映も同一視すると値は異なるので，
+どの対称群を採用するかを指定することが必要である．
+\end{example}
+
+\section{巡回指数とP\'olyaの定理}
+\begin{definition}[巡回指数]
+$g$ の長さ $j$ の巡回の個数を $c_j(g)$ とし，
+$N=|X|$ とする．このとき
+\[
+ \sum_{j=1}^N j c_j(g)=N,
+ \qquad c(g)=\sum_{j=1}^N c_j(g).
+\]
+$G$ の $X$ への作用の\emph{巡回指数}を
+\begin{equation}\label{eq:cycleindex}
+ Z_G(a_1,\ldots,a_N)
+ =\frac1{|G|}\sum_{g\in G}
+  \prod_{j=1}^N a_j^{c_j(g)}
+\end{equation}
+で定める．これは有理数係数の多項式である．
+\end{definition}
+
+\begin{proposition}[巡回指数の基本性質]
+$Z_G(1,\ldots,1)=1$ であり，
+$Z_G(q,\ldots,q)$ は $q$ 色彩色の軌道数である．
+また $Z_G$ は各単項式に
+$\deg a_j=j$ を与える重み次数で斉次次数 $N$ となる．
+\end{proposition}
+\begin{proof}
+各 $g$ に対する積は，全ての変数を1とすれば1である．
+全てを $q$ とすれば $q^{\sum c_j(g)}=q^{c(g)}$ となるので，
+定理~\ref{thm:colororbits} を適用できる．
+重み次数の主張は各巡回が $X$ の各点をちょうど一つずつ含むためである．
+\end{proof}
+
+\begin{theorem}[P\'olyaの彩色定理]\label{thm:polya}
+$q$ 色を $1,\ldots,q$ とし，
+色 $i$ に可換な不定元 $u_i$ を対応させる．
+彩色 $f$ の重みを
+$w(f)=\prod_{x\in X}u_{f(x)}$ とする．
+彩色の軌道ごとにこの重みを一度ずつ加えた多項式は
+\begin{equation}\label{eq:polya}
+ \sum_{[f]\in C^X/G}w(f)
+ =Z_G\!\left(\sum_i u_i,\sum_i u_i^2,
+ \ldots,\sum_i u_i^N\right)
+\end{equation}
+で与えられる．
+\end{theorem}
+\begin{proof}
+重み $w(f)$ は位置を入れ替えても変わらないので，
+一つの軌道上で一定である．
+Burnsideの補題の証明と同じ二重計数を重み付きで行うと
+\[
+ \sum_{[f]}w(f)
+ =\frac1{|G|}\sum_{g\in G}
+  \sum_{f:g\cdot f=f}w(f)
+\]
+を得る．実際，右辺で各軌道 $O$ に属する元の寄与は
+\[
+ \frac1{|G|}\sum_{f\in O}|G_f|w(f)=w(f)
+\]
+となる．
+固定彩色は $g$ の各巡回上で一定である．
+長さ $j$ の巡回に色 $i$ を置いたときの重みは $u_i^j$ なので，
+その巡回からの総和は $\sum_i u_i^j$ である．
+全巡回の選択は独立であるから
+\[
+ \sum_{f:g\cdot f=f}w(f)
+ =\prod_{j=1}^N\left(\sum_i u_i^j\right)^{c_j(g)}.
+\]
+これを $g$ について平均すれば式~\eqref{eq:polya} を得る．
+\end{proof}
+
+\begin{corollary}[色の使用個数を指定する計数]
+$n_1+\cdots+n_q=N$ とすると，
+色 $i$ をちょうど $n_i$ 回使う彩色の軌道数は
+\[
+ [u_1^{n_1}\cdots u_q^{n_q}]
+ Z_G\!\left(\sum_i u_i,\ldots,\sum_i u_i^N\right)
+\]
+に等しい．
+\end{corollary}
+\begin{proof}
+式~\eqref{eq:polya} の左辺では各軌道の重みが
+色の使用個数を記録しているので，対応する係数を比較する．
+\end{proof}
+
+\begin{remark}
+右辺に $u_i=1$ を代入すれば通常の色塗りの軌道数が戻る．
+一方，異なる色を区別しない彩色問題では
+色集合自体にも群を作用させる必要があり，
+式~\eqref{eq:polya} をそのまま適用してはいけない．
+\end{remark}
+
+\section{巡回群と首飾り}
+長さ $n\ge1$ の首飾りを，位置集合
+$\mathbb Z/n\mathbb Z$ の彩色とする．
+回転による同一視には巡回群 $C_n$ を用いる．
+位置 $x$ を $x+r$ へ送る回転を $\rho_r$ とする．
+
+\begin{lemma}[回転の巡回構造]\label{lem:rotcycles}
+$0\le r<n$ に対して $\rho_r$ の巡回数は
+$\gcd(n,r)$ であり，その全ての巡回の長さは
+$n/\gcd(n,r)$ に等しい．ただし $\gcd(n,0)=n$ とする．
+\end{lemma}
+\begin{proof}
+$x$ に $\rho_r$ を $k$ 回作用させると $x+kr$ になる．
+元に戻る最小の正整数 $k$ は $n\mid kr$ を満たす最小の数であり，
+$n/\gcd(n,r)$ に等しい．
+この値は $x$ によらないから，全ての巡回の長さは同じである．
+$n$ 個の位置をこの長さで分割するので巡回数は $\gcd(n,r)$ である．
+\end{proof}
+
+\begin{definition}
+Eulerの $\varphi$ 関数を
+$\varphi(d)=|\{1\le s\le d:\gcd(s,d)=1\}|$ と定める．
+特に $\varphi(1)=1$ である．
+\end{definition}
+
+\begin{theorem}[首飾りの計数公式]\label{thm:necklaces}
+$q\ge1$ 色，長さ $n\ge1$ の首飾りの個数は
+\begin{equation}\label{eq:neck}
+ N_n(q)=\frac1n\sum_{d\mid n}
+ \varphi(d)q^{n/d}
+\end{equation}
+である．さらに巡回指数は
+\begin{equation}\label{eq:cyclicindex}
+ Z_{C_n}=\frac1n\sum_{d\mid n}
+ \varphi(d)a_d^{n/d}
+\end{equation}
+となる．
+\end{theorem}
+\begin{proof}
+補題~\ref{lem:rotcycles} によれば
+$\rho_r$ の巡回の長さを $d$ としたとき，
+巡回数は $n/d$ である．
+$\rho_r$ が巡回の長さ $d$ を持つ条件は
+$\gcd(n,r)=n/d$ であり，これは
+$r=(n/d)s$，$0\le s<d$，$\gcd(s,d)=1$ と同値である．
+そのような $r$ は $\varphi(d)$ 個である．
+巡回指数の定義にこれを代入して式~\eqref{eq:cyclicindex} を得る．
+次に全変数を $q$ と置くと式~\eqref{eq:neck} が従う．
+\end{proof}
+
+\begin{example}[長さ六の二色首飾り]
+$6$ の約数は $1,2,3,6$ であるから
+\[
+ N_6(2)=\frac16(2^6+2^3+2\cdot2^2+2\cdot2)=14.
+\]
+式の各項は巡回長 $1,2,3,6$ の回転が固定する彩色数を表す．
+\end{example}
+
+\begin{proposition}[二色のうち一色の個数を指定]
+長さ $n$ の位置のうち，黒をちょうど $k$ 個用いる首飾りの数は
+\begin{equation}\label{eq:binaryneck}
+ \frac1n\sum_{d\mid\gcd(n,k)}
+ \varphi(d){n/d\choose k/d}
+\end{equation}
+に等しい．ここで $0\le k\le n$ とする．
+\end{proposition}
+\begin{proof}
+式~\eqref{eq:cyclicindex} に
+$a_d=1+z^d$ を代入すれば
+\[
+ \frac1n\sum_{d\mid n}\varphi(d)(1+z^d)^{n/d}
+\]
+が，黒の使用個数を記録する多項式となる．
+$z^k$ の係数は $d\mid k$ の項でのみ非零で，
+そのとき二項係数 ${n/d\choose k/d}$ である．
+係数を取って結論を得る．
+\end{proof}
+
+\section{周期とM\"obius反転}
+\begin{definition}[最小周期]
+長さ $n$ の語 $w=(w_0,\ldots,w_{n-1})$ の周期が
+$d\mid n$ であるとは，$w_{j+d}=w_j$
+（添字は $n$ を法として読む）が全ての $j$ で成り立つことをいう．
+最小の正の周期が $n$ である語を\emph{非周期的語}または
+\emph{原始語}と呼ぶ．
+\end{definition}
+
+\begin{lemma}[最小周期の存在と割り切り]\label{lem:minperiod}
+長さ $n$ の語には，$n$ の約数である最小周期 $d$ が存在する．
+さらに任意の周期 $r$ は $d$ の倍数である．
+\end{lemma}
+\begin{proof}
+語を固定する回転全体は $C_n$ の部分群 $H$ である．
+$\mathbb Z/n\mathbb Z$ の部分群は
+$d\mathbb Z/n\mathbb Z$（$d\mid n$）の形に一意に書ける．
+実際，$H$ の元を整数で代表させたときの
+正の代表元の最小値 $d$ が存在すれば，
+Euclidの除法によって全ての代表元は $d$ の倍数であり，
+$n$ も $d$ で割り切れる．
+$H=\{0\}$ なら $d=n$ とすれば同じ結論となる．
+この $d$ が最小の正の周期であり，他の周期はその倍数である．
+\end{proof}
+
+\begin{definition}[算術的M\"obius関数]
+$\mu(1)=1$ とし，$m>1$ では
+\[
+ \mu(m)=\begin{cases}
+ (-1)^r & (m\text{ が相異なる }r\text{ 個の素数の積}),\\
+ 0 & (m\text{ が素数の平方で割り切れる})
+ \end{cases}
+\]
+と定める．
+\end{definition}
+
+\begin{lemma}[整除順序の反転]\label{lem:arithinvert}
+正整数上の関数 $A,B$ について
+$A(n)=\sum_{d\mid n}B(d)$ が全ての $n$ で成り立つことと
+\[
+ B(n)=\sum_{d\mid n}\mu(d)A(n/d)
+\]
+が全ての $n$ で成り立つことは同値である．
+\end{lemma}
+\begin{proof}
+$n>1$ の相異なる素因数を $p_1,\dots,p_s$ とすると
+\[
+ \sum_{d\mid n}\mu(d)
+ =\sum_{J\subset\{1,\dots,s\}}(-1)^{|J|}
+ =(1-1)^s=0.
+\]
+$n=1$ でこの和は1である．
+最初の式を第二の右辺へ代入し有限和を交換すると
+\[
+ \sum_{d\mid n}\mu(d)\sum_{e\mid n/d}B(e)
+ =\sum_{e\mid n}B(e)\sum_{d\mid n/e}\mu(d)=B(n).
+\]
+逆方向は同じ畳み込みの単位元との関係を用いて得られる．
+直接には第二式を第一式の右辺へ代入し，
+$\sum_{d\mid m}\mu(d)$ を用いればよい．
+\end{proof}
+
+\begin{theorem}[原始語と原始首飾り]\label{thm:primitive}
+$q$ 色からなる長さ $n$ の原始語の数を $P_n(q)$ とすると
+\begin{equation}\label{eq:primitiveword}
+ P_n(q)=\sum_{d\mid n}\mu(d)q^{n/d}.
+\end{equation}
+その回転による軌道の数は $P_n(q)/n$ に等しい．
+\end{theorem}
+\begin{proof}
+長さ $n$ の語には補題~\ref{lem:minperiod} により
+一意の最小周期 $d\mid n$ がある．
+最初の $d$ 文字は長さ $d$ の原始語であり，
+それを $n/d$ 回繰り返すことによって元の語が一意に得られる．
+従って
+$ q^n=\sum_{d\mid n}P_d(q)$ が成立する．
+補題~\ref{lem:arithinvert} を適用すると
+式~\eqref{eq:primitiveword} を得る．
+原始語を固定する回転は恒等元に限られるので，
+定理~\ref{thm:orbitstab} より各軌道の大きさは $n$ である．
+故に軌道数は $P_n(q)/n$ となる．
+\end{proof}
+
+\begin{corollary}[首飾りの周期による分解]
+全首飾りの数と原始首飾りの数の間に
+\[
+ N_n(q)=\sum_{d\mid n}\frac{P_d(q)}d
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+最小周期 $d$ の長さ $n$ の語は，
+長さ $d$ の原始語を繰り返したものと一対一に対応する．
+回転同値性も周期 $d$ の上での回転同値性と一致する．
+従って最小周期別に軌道を数えればよい．
+\end{proof}
+
+\section{二面体群と腕輪}
+長さ $n\ge3$ の腕輪では回転に加えて反転も同一視する．
+位置 $x\in\mathbb Z/n\mathbb Z$ に対し
+$\rho(x)=x+1$，$\tau(x)=-x$ と置く．
+$D_n=\langle\rho,\tau\mid \rho^n=e,\tau^2=e,
+\tau\rho\tau=\rho^{-1}\rangle$ は位数 $2n$ の二面体群である．
+その元は $\rho^r$ と $\rho^r\tau$（$0\le r<n$）で尽くされる．
+
+\begin{lemma}[反転の巡回構造]\label{lem:reflections}
+$\rho^r\tau$ は $x\mapsto r-x$ を誘導する．
+$n$ が奇数なら，任意の $r$ で固定点が1個であり，
+残り $(n-1)/2$ 個の巡回は長さ2である．
+$n$ が偶数なら，$r$ 偶数のとき固定点2個，
+$r$ 奇数のとき固定点0個である．残りの巡回は長さ2である．
+\end{lemma}
+\begin{proof}
+固定点の条件は $2x\equiv r\pmod n$ である．
+$n$ が奇数なら2は $n$ を法として可逆なので解は一つである．
+$n$ が偶数なら $r$ が偶数のとき解が二つ，
+奇数のとき解はない．
+$\rho^r\tau$ の二乗は恒等写像だから，
+固定されない位置は二点からなる巡回に分かれる．
+\end{proof}
+
+\begin{theorem}[腕輪の計数公式]\label{thm:bracelets}
+$q$ 色，長さ $n\ge3$ の腕輪の数を $B_n(q)$ とすると
+\[
+ B_n(q)=\frac1{2n}\left(
+ \sum_{d\mid n}\varphi(d)q^{n/d}+R_n(q)\right),
+\]
+ただし
+\[
+ R_n(q)=\begin{cases}
+ nq^{(n+1)/2}& (n\text{ 奇数}),\\
+ \dfrac n2\left(q^{n/2+1}+q^{n/2}\right)
+ &(n\text{ 偶数})
+ \end{cases}
+\]
+である．
+\end{theorem}
+\begin{proof}
+Burnsideの補題を $D_n$ に適用する．
+回転元 $n$ 個の固定彩色数の総和は
+定理~\ref{thm:necklaces} により
+$\sum_{d\mid n}\varphi(d)q^{n/d}$ である．
+$n$ が奇数のとき，各反転の巡回数は
+$1+(n-1)/2=(n+1)/2$ であり，反転元は $n$ 個ある．
+$n$ が偶数のとき，固定点2個の反転は $n/2$ 個で
+巡回数は $2+(n-2)/2=n/2+1$，
+固定点を持たない反転は $n/2$ 個で巡回数は $n/2$ である．
+各固定彩色数は巡回数の $q$ 乗なので，上記の和が得られる．
+最後に $|D_n|=2n$ で割ればよい．
+\end{proof}
+
+\begin{example}[長さ六の腕輪]
+二色で長さ6の場合，回転の寄与は $6N_6(2)=84$ である．
+反転の寄与は
+$3\cdot2^4+3\cdot2^3=72$ だから
+\[
+ B_6(2)=\frac{84+72}{12}=13.
+\]
+回転だけの首飾りは14種類なので，
+ちょうど二種類の首飾りが鏡映により一組に同一視される．
+\end{example}
+
+\section{対称群の巡回指数}
+$S_n$ を $\{1,\ldots,n\}$ の置換群とする．
+整数 $m_j\ge0$ が $\sum_{j=1}^n j m_j=n$ を満たすとき，
+長さ $j$ の巡回が $m_j$ 本ある置換の型を
+$1^{m_1}2^{m_2}\cdots n^{m_n}$ と記す．
+
+\begin{lemma}[巡回型ごとの置換数]\label{lem:cycletypes}
+型 $1^{m_1}\cdots n^{m_n}$ の置換の個数は
+\begin{equation}\label{eq:permutationcount}
+ \frac{n!}{\prod_{j=1}^n j^{m_j}m_j!}
+\end{equation}
+である．
+\end{lemma}
+\begin{proof}
+$n$ 個のラベルを一列に並べる方法は $n!$ 通りである．
+最初の $m_1$ 個を長さ1，次の $2m_2$ 個を
+長さ2の $m_2$ 個のブロックとし，以下同様に切れば
+巡回の順序付き表示を得る．
+長さ $j$ の各巡回は，その開始位置を $j$ 通りに変えても
+同じ巡回になる．同じ長さの $m_j$ 個の巡回の並べ方も
+$m_j!$ 通りである．
+この重複は各型について正確に
+$\prod_j j^{m_j}m_j!$ 通りだから，除して式を得る．
+\end{proof}
+
+\begin{theorem}[対称群の巡回指数]\label{thm:sncycle}
+$S_n$ の自然な作用の巡回指数は
+\[
+ Z_{S_n}(a_1,\dots,a_n)
+ =\sum_{\substack{m_1,\ldots,m_n\ge0\\
+ \sum jm_j=n}}
+ \prod_{j=1}^n\frac{a_j^{m_j}}{j^{m_j}m_j!}.
+\]
+\end{theorem}
+\begin{proof}
+式~\eqref{eq:cycleindex} の和を巡回型ごとに分ける．
+型 $1^{m_1}\cdots n^{m_n}$ の置換は
+補題~\ref{lem:cycletypes} により
+$n!/\prod_j j^{m_j}m_j!$ 個あり，
+それぞれ巡回指数の単項式
+$\prod_j a_j^{m_j}$ を寄与する．
+$|S_n|=n!$ で割れば表示式となる．
+\end{proof}
+
+\begin{proposition}[巡回指数の生成関数]\label{prop:snexp}
+$Z_{S_0}=1$ と置くと，形式的冪級数の恒等式
+\begin{equation}\label{eq:snexp}
+ \sum_{n\ge0}Z_{S_n}(a_1,\ldots,a_n)z^n
+ =\exp\left(\sum_{j\ge1}\frac{a_jz^j}{j}\right)
+\end{equation}
+が成り立つ．ここで右辺は有理数係数の形式的冪級数である．
+\end{proposition}
+\begin{proof}
+各 $j$ について
+\[
+ \exp(a_jz^j/j)
+ =\sum_{m_j\ge0}\frac{a_j^{m_j}z^{jm_j}}{j^{m_j}m_j!}.
+\]
+無限個の因子の積は，$z^n$ までの係数を求める際には
+$j\le n$ だけを考えればよいので形式的に定まる．
+因子を掛け合わせ，$z^n$ の係数を集めると
+定理~\ref{thm:sncycle} の表示になる．
+従って等式が成り立つ．
+\end{proof}
+
+\begin{corollary}[重複を許す選択]
+$n$ 箇所の全ての順列を同一視した $q$ 色彩色の軌道数は
+\[
+ {n+q-1\choose n}
+\]
+である．
+\end{corollary}
+\begin{proof}
+置換によって二つの彩色が同一視されるのは
+各色の使用個数が一致するとき，かつそのときに限る．
+従って軌道は
+$n_1+\cdots+n_q=n$，$n_i\ge0$ の解と一対一に対応する．
+$\sum_i n_i=n$ の非負整数解は
+$n$ 個の印と $q-1$ 個の仕切りの並べ方によって
+${n+q-1\choose n}$ 通りである．
+また巡回指数の観点からは式~\eqref{eq:snexp} の
+$a_j=q$ とした右辺が
+$\exp(q\sum_{j\ge1}z^j/j)=(1-z)^{-q}$ となり，
+同じ係数を得る．
+\end{proof}
+
+\begin{proposition}[巡回指数の再帰式]
+$Z_n=Z_{S_n}$ と書き，$Z_0=1$ とすると
+\[
+ nZ_n=\sum_{j=1}^n a_jZ_{n-j}\qquad(n\ge1)
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+式~\eqref{eq:snexp} の両辺を $z$ で形式微分する．
+右辺の微分は
+\[
+ \left(\sum_{j\ge1}a_j z^{j-1}\right)
+ \exp\left(\sum_{j\ge1}\frac{a_jz^j}{j}\right)
+\]
+である．
+係数 $z^{n-1}$ を比較すれば，左辺は $nZ_n$，
+右辺は $\sum_{j=1}^n a_j Z_{n-j}$ である．
+\end{proof}
+
+\section{一般の部分集合の数え上げ}
+位置集合 $X$ の部分集合 $A\subset X$ は
+二色彩色（$A$ を黒，補集合を白）と同一視できる．
+部分集合の大きさを保持したまま，軌道を数える問題を考える．
+
+\begin{theorem}[固定される部分集合の母関数]\label{thm:subsetorbit}
+$G\curvearrowright X$ とし，$b_k$ を $G$ の作用による
+$k$ 元部分集合の軌道の個数とする．このとき
+\begin{equation}\label{eq:subsetorbit}
+ \sum_{k=0}^{|X|}b_kz^k
+ =\frac1{|G|}\sum_{g\in G}
+ \prod_{j=1}^{|X|}(1+z^j)^{c_j(g)}.
+\end{equation}
+\end{theorem}
+\begin{proof}
+$g$ によって固定される部分集合は，
+$g$ の各巡回を全て含むか全て含まないかのいずれかである．
+長さ $j$ の巡回を含める選択は $z^j$，含めない選択は1に対応する．
+よって固定部分集合の大きさを記録する多項式は
+$\prod_j(1+z^j)^{c_j(g)}$ である．
+重み付きBurnsideの二重計数を $z^{|A|}$ に適用して
+式~\eqref{eq:subsetorbit} を得る．
+\end{proof}
+
+\begin{example}[四角形の二頂点の選択]
+四頂点の回転群 $C_4$ に対し，二頂点を選ぶ軌道を数える．
+巡回指数は
+$Z_{C_4}=(a_1^4+a_2^2+2a_4)/4$ だから
+\[
+ b_2=\frac14[z^2]\bigl((1+z)^4+(1+z^2)^2
+ +2(1+z^4)\bigr)=2.
+\]
+二つの軌道は隣り合う頂点の組と，向かい合う頂点の組である．
+\end{example}
+
+\begin{proposition}[別々の位置集合の独立な作用]
+$G\curvearrowright X$，$H\curvearrowright Y$ とし，
+$X\cap Y=\varnothing$ とする．
+$G\times H$ が $X\sqcup Y$ に
+$(g,h)x=gx$，$(g,h)y=hy$ で作用するなら
+\[
+ Z_{G\times H,\,X\sqcup Y}=Z_{G,X}\,Z_{H,Y}.
+\]
+\end{proposition}
+\begin{proof}
+$(g,h)$ の $X\sqcup Y$ 上の巡回は
+$g$ の $X$ 上の巡回と $h$ の $Y$ 上の巡回を合わせたものである．
+従って各 $j$ に対して
+$c_j(g,h)=c_j(g)+c_j(h)$．
+式~\eqref{eq:cycleindex} の積を分解し，
+$g$ と $h$ に関する平均を別々に取ればよい．
+\end{proof}
+
+\section{グラフの自己同型と彩色}
+$\Gamma=(V,E)$ を有限単純無向グラフとし，
+$\operatorname{Aut}(\Gamma)$ を辺の有無を保つ頂点の置換群とする．
+彩色 $f:V\to\{1,\ldots,q\}$ が\emph{適正}であるとは
+$\{u,v\}\in E$ なら $f(u)\ne f(v)$ となることをいう．
+
+\begin{definition}[彩色多項式]
+グラフ $\Gamma$ の適正 $q$ 色彩色の個数を $P_\Gamma(q)$ と記す．
+ここでは $q$ を正整数として定義する．
+辺のないグラフでは $P_\Gamma(q)=q^{|V|}$ とし，
+ループを許すグラフに拡張した場合にはループを持つグラフの
+適正彩色数を0と定める．
+\end{definition}
+
+\begin{lemma}[削除・縮約公式]\label{lem:delcontr}
+ループでない辺 $e=\{u,v\}$ を持つグラフについて
+\[
+ P_\Gamma(q)=P_{\Gamma-e}(q)-P_{\Gamma/e}(q)
+\]
+が成り立つ．$\Gamma/e$ は $u,v$ を一点に同一視したグラフであり，
+重複辺は無視してよい．
+\end{lemma}
+\begin{proof}
+$\Gamma-e$ の適正彩色を $f(u)\ne f(v)$ と
+$f(u)=f(v)$ に分割する．前者は $\Gamma$ の適正彩色である．
+後者は $u,v$ を同じ頂点として塗ったことに対応し，
+$\Gamma/e$ の適正彩色と一対一に対応する．
+従って濃度を引けば結論を得る．
+\end{proof}
+
+\begin{corollary}[彩色数の多項式性]
+$P_\Gamma(q)$ は $q$ に関する整数係数多項式である．
+ループのない頂点数 $n$ のグラフに対し，最高次係数は1で次数は $n$ である．
+\end{corollary}
+\begin{proof}
+辺の数に関する帰納法を用いる．
+辺がない場合は $q^n$ である．
+辺 $e$ を選んで補題~\ref{lem:delcontr} を用いると，
+$\Gamma-e$ は辺が一つ少なく，
+$\Gamma/e$ も縮約によって頂点が一つ減る．
+両者の辺数が減少するようループは0と扱えば，
+帰納的に整数係数多項式となる．
+$\Gamma/e$ の次数は高々 $n-1$，
+$\Gamma-e$ の最高次項は $q^n$ だから，
+$P_\Gamma$ の最高次項も $q^n$ である．
+\end{proof}
+
+\begin{definition}[巡回による商グラフ]
+$g\in\operatorname{Aut}(\Gamma)$ に対し，
+$g$ の頂点集合上の巡回全体を頂点とするグラフ
+$\Gamma/g$ を考える．元の辺の両端が同じ巡回に属するときは
+商グラフにループを置き，異なる巡回に属するときは
+対応する頂点を結ぶ辺を置く．重複辺は一本にまとめる．
+\end{definition}
+
+\begin{theorem}[対称性の下での適正彩色]\label{thm:graphpolya}
+$A\le\operatorname{Aut}(\Gamma)$ とする．
+$A$ によって同一視した適正 $q$ 色彩色の個数は
+\begin{equation}\label{eq:graphpolya}
+ \frac1{|A|}\sum_{g\in A}P_{\Gamma/g}(q)
+\end{equation}
+で与えられる．
+\end{theorem}
+\begin{proof}
+適正彩色の集合は $A$ の作用で保たれる．
+$g$ に固定された彩色は各巡回上で一定であるから，
+商グラフの頂点に色を割り当てることと同じである．
+元の辺の両端が同じ巡回にあるなら，その彩色は適正ではなく，
+この場合に商にループがある．
+そうでなければ，元の各辺に沿った異色条件は商の各辺での異色条件に一致する．
+従って $g$ が固定する適正彩色の数は
+$P_{\Gamma/g}(q)$ に等しい．
+これをBurnsideの補題に代入すればよい．
+\end{proof}
+
+\begin{example}[三角形の適正彩色]
+三角形 $K_3$ に対し頂点の全置換 $S_3$ を作用させる．
+適正彩色は三頂点で相異なる色を必要とするので
+$P_{K_3}(q)=q(q-1)(q-2)$ である．
+恒等元以外の置換は，隣接する二頂点を同じ巡回に含むため，
+商グラフにループを持ち，固定する適正彩色は存在しない．
+従って軌道数は $q(q-1)(q-2)/6={q\choose3}$ である．
+\end{example}
+
+\section{ラベルを外したグラフの個数}
+$n$ 頂点の単純無向グラフは，
+$\binom n2$ 個の二元部分集合の各々が辺であるか否かによって決まる．
+$S_n$ は頂点を置換することで辺候補の集合
+$E_n=\{\{i,j\}:1\le i<j\le n\}$ に作用する．
+
+\begin{theorem}[同型を除いたグラフの計数]\label{thm:unlabeledgraphs}
+$n$ 頂点の非同型な単純無向グラフの個数を $u_n$ とすると
+\[
+ u_n=\frac1{n!}\sum_{\sigma\in S_n}
+ 2^{c_{E_n}(\sigma)}
+\]
+である．ただし $c_{E_n}(\sigma)$ は
+$\sigma$ が二元部分集合の集合 $E_n$ に誘導する置換の巡回数である．
+\end{theorem}
+\begin{proof}
+グラフの辺集合は $E_n$ の部分集合であり，
+各辺候補について有無を二色で塗ったものとみなせる．
+二つのグラフが同型であることと，
+この二色彩色が $S_n$ の頂点置換によって同一の軌道に属することは同値である．
+$S_n\curvearrowright E_n$ に
+定理~\ref{thm:colororbits} を適用すれば式を得る．
+\end{proof}
+
+\begin{example}[四頂点の非同型グラフ]
+$S_4$ の共役類と，六つの辺候補への誘導置換の巡回数を示す．
+\[
+\begin{array}{c|ccccc}
+ \text{頂点置換の型}&1^4&2\,1^2&2^2&3\,1&4\\\hline
+ \text{元の個数}&1&6&3&8&6\\
+ c_{E_4}(\sigma)&6&4&4&2&2
+\end{array}
+\]
+例えば四巡回 $(1234)$ は辺候補に
+$(12\ 23\ 34\ 14)(13\ 24)$ を誘導するので
+巡回数は2である．他の型も辺候補を直接追えば上表を得る．
+よって
+\[
+ u_4=\frac{2^6+6\cdot2^4+3\cdot2^4+
+ 8\cdot2^2+6\cdot2^2}{24}=11.
+\]
+\end{example}
+
+\section{線形代数によるBurnside公式}
+有限集合 $X$ の各元を基底とする複素ベクトル空間
+$V=\mathbb C^X$ を考え，$\{e_x\}_{x\in X}$ を標準基底とする．
+$G$ は $\rho(g)e_x=e_{gx}$ で $V$ に線形に作用する．
+
+\begin{lemma}[置換表現の跡]\label{lem:trace}
+$g\in G$ について
+$\operatorname{tr}\rho(g)=|\operatorname{Fix}_X(g)|$ である．
+\end{lemma}
+\begin{proof}
+標準基底に関する $\rho(g)$ の行列は置換行列である．
+対角成分の $(x,x)$ 成分が1となるのは $gx=x$ のとき，
+それ以外は0である．跡は対角成分の和だから固定点数に等しい．
+\end{proof}
+
+\begin{theorem}[平均作用素と不変部分空間]\label{thm:reynolds}
+$G$ の表現 $\rho:G\to\operatorname{GL}(V)$ に対し
+\[
+ \Pi=\frac1{|G|}\sum_{g\in G}\rho(g)
+\]
+と置く．このとき $\Pi^2=\Pi$ であり，
+像は不変部分空間
+$V^G=\{v:\rho(g)v=v\ (g\in G)\}$ に一致する．
+特に $V=\mathbb C^X$ の置換表現について
+\[
+ \dim V^G=|X/G|
+ =\frac1{|G|}\sum_{g\in G}\operatorname{tr}\rho(g).
+\]
+\end{theorem}
+\begin{proof}
+任意の $h\in G$ に対し
+$\rho(h)\Pi=|G|^{-1}\sum_g\rho(hg)=\Pi$ である．
+従って $\operatorname{im}\Pi\subset V^G$．
+一方 $v\in V^G$ なら
+$\Pi v=|G|^{-1}\sum_gv=v$ だから
+$V^G\subset\operatorname{im}\Pi$ であり，
+同時に $\Pi^2=\Pi$ となる．
+置換表現では不変ベクトルとは係数が各軌道上で一定なベクトルであり，
+その自由度は軌道の個数に等しい．
+射影 $\Pi$ は最小多項式が $t(t-1)$ を割るので対角化可能であり，
+その跡は像の次元に等しい．
+跡の線形性と補題~\ref{lem:trace} によって最後の式を得る．
+\end{proof}
+
+\section{正多面体の面の彩色例}
+正六面体（立方体）の六つの面を，
+向きを保つ空間回転によって同一視する問題を考える．
+ここで反射は同一視しない．
+
+\begin{proposition}[立方体の回転彩色]\label{prop:cubefaces}
+立方体の回転群による六面の $q$ 色彩色の軌道数は
+\[
+ \frac{q^6+3q^4+12q^3+8q^2}{24}
+\]
+に等しい．
+\end{proposition}
+\begin{proof}
+立方体の向きを保つ回転は，各頂点で交わる三面の像を指定すると一意に決まる．
+一つの頂点の像は8通り，その回りの三面の巡回的な対応は3通りなので
+回転群の位数は24である．
+回転軸によって場合分けすると次の通りとなる．
+\begin{enumerate}
+\item 恒等回転1個：六面を全て固定するので巡回数6．
+\item 向かい合う面の中心を通る軸の四分の一回転6個：
+軸の両端の面を固定し，残り四面を一巡回にするので巡回数3．
+\item 同じ軸の半回転3個：
+両端の二面を固定し，残り四面を二組交換するので巡回数4．
+\item 向かい合う辺の中点を通る軸の半回転6個：
+六面を三組交換するので巡回数3．
+\item 向かい合う頂点を通る軸の三分の一回転8個：
+六面を長さ3の二巡回にするので巡回数2．
+\end{enumerate}
+回転数の合計は $1+6+3+6+8=24$ である．
+彩色の固定点数はそれぞれ $q$ の巡回数乗だから，
+Burnsideの補題で平均して結論を得る．
+\end{proof}
+
+\begin{example}
+立方体の六面を二色で塗る場合，回転による軌道数は
+\[
+ \frac{2^6+3\cdot2^4+12\cdot2^3+8\cdot2^2}{24}=10
+\]
+となる．色の使用個数も指定したい場合は，
+前節の巡回型によってP\'olyaの式~\eqref{eq:polya} を使う．
+\end{example}
+
+\section{二色腕輪の精密計数}
+前節では使用可能な色数だけを指定した．
+今度は黒をちょうど $k$ 個使う腕輪を数える．
+この計数では，単に巡回数を知るだけでなく，各巡回の長さが必要である．
+
+\begin{theorem}[指定した黒数の腕輪]\label{thm:fixedblackbracelet}
+$n\ge3$，$0\le k\le n$ とする．
+長さ $n$ で黒をちょうど $k$ 個持つ二色腕輪の数を $B_{n,k}$ とする．
+\[
+ B_{n,k}=\frac1{2n}\left(
+ \sum_{d\mid\gcd(n,k)}\varphi(d){n/d\choose k/d}
+ +[z^k]Q_n(z)\right),
+\]
+ただし
+\[
+ Q_n(z)=\begin{cases}
+ n(1+z)(1+z^2)^{(n-1)/2}&(n\text{ 奇数}),\\
+ \dfrac n2\left\{(1+z)^2(1+z^2)^{(n-2)/2}
+ +(1+z^2)^{n/2}\right\}&(n\text{ 偶数})
+ \end{cases}
+\]
+である．
+\end{theorem}
+\begin{proof}
+固定される黒頂点集合は対称操作の各巡回の合併である．
+$g$ の長さ $j$ の巡回を含めるか否かの選択は
+$1+z^j$ で記録されるので，
+黒の使用数を数える固定点多項式は
+$\prod_j(1+z^j)^{c_j(g)}$ に等しい．
+回転元の平均の分子については
+式~\eqref{eq:cyclicindex} に $a_j=1+z^j$ を代入する．
+$z^k$ の係数は式~\eqref{eq:binaryneck} の計算と同様に
+$\sum_{d\mid\gcd(n,k)}\varphi(d){n/d\choose k/d}$ となる．
+$n$ が奇数のとき，反転は固定点1個と長さ2の巡回
+$(n-1)/2$ 本を持つので，固定部分集合多項式は
+$(1+z)(1+z^2)^{(n-1)/2}$ である．
+反転は $n$ 個あるから総和は $Q_n(z)$ に一致する．
+$n$ が偶数のとき，反転は固定点2個のものが $n/2$ 個，
+固定点を持たないものが $n/2$ 個あり，
+それぞれの固定部分集合多項式は
+$(1+z)^2(1+z^2)^{(n-2)/2}$ と
+$(1+z^2)^{n/2}$ である．
+これらを加えて $Q_n(z)$ を得る．
+最後に位数 $2n$ の群に関してBurnsideの補題を適用し，
+$z^k$ の係数を取れば結論となる．
+\end{proof}
+
+\begin{example}
+$n=6$，$k=3$ とする．回転について
+$\gcd(6,3)=3$ なので
+\[
+ \sum_{d\mid3}\varphi(d){6/d\choose3/d}
+ ={6\choose3}+2{2\choose1}=24.
+\]
+反転について
+\[
+ [z^3]Q_6(z)
+ =3[z^3]\bigl((1+z)^2(1+z^2)^2
+ +(1+z^2)^3\bigr)=12.
+\]
+従って $B_{6,3}=(24+12)/12=3$ である．
+この値は各色の個数を固定したときの軌道数であり，
+二色全体の $B_6(2)=13$ とは異なる．
+\end{example}
+
+\section{色名の入れ替えも許す場合}
+これまでは色の名称を固定してきた．
+位置の置換に加え，色集合 $C$ 自体の置換を同一視するときは，
+二つの群の積作用を考える必要がある．
+
+\begin{definition}[位置と色の同時作用]
+$G\curvearrowright X$，$H\curvearrowright C$ とする．
+$G\times H$ の彩色 $f:X\to C$ への作用を
+\[
+ ((g,h)\cdot f)(x)=h\bigl(f(g^{-1}x)\bigr)
+\]
+で定める．
+\end{definition}
+
+\begin{lemma}[同時作用の固定彩色]\label{lem:doubleactionfix}
+$g\in G$ が $X$ に長さ $j$ の巡回を $c_j(g)$ 本持つとする．
+$(g,h)$ に固定される彩色の個数は
+\begin{equation}\label{eq:doubleactionfix}
+ \prod_{j=1}^{|X|}
+ |\operatorname{Fix}_C(h^j)|^{c_j(g)}
+\end{equation}
+である．
+\end{lemma}
+\begin{proof}
+固定彩色の条件は
+$f(gx)=h f(x)$ である．
+$g$ の一つの巡回を $(x,gx,\ldots,g^{j-1}x)$ とする．
+最初の色 $c=f(x)$ を選べば残りは
+$f(g^rx)=h^rc$ と一意に決まる．
+巡回を一周して矛盾しない条件は $h^jc=c$ である．
+従ってこの巡回には
+$|\operatorname{Fix}_C(h^j)|$ 通りの選択があり，
+異なる巡回の選択は独立だから積公式が成り立つ．
+\end{proof}
+
+\begin{theorem}[色名も同一視する彩色の軌道数]\label{thm:doubleaction}
+上の記号の下で，同時作用による彩色の軌道数は
+\[
+ \frac1{|G||H|}\sum_{g\in G}\sum_{h\in H}
+ \prod_{j=1}^{|X|}|\operatorname{Fix}_C(h^j)|^{c_j(g)}
+\]
+に等しい．
+\end{theorem}
+\begin{proof}
+$G\times H$ の作用にBurnsideの補題を適用し，
+各 $(g,h)$ の固定点数として
+補題~\ref{lem:doubleactionfix} の式を用いる．
+\end{proof}
+
+\begin{example}[二色の名前を区別しない四角形]
+四頂点を $C_4$ で回転させ，二色の交換群 $C_2$ も許す．
+色名を固定した回転軌道は六つあり，
+そのうち全て黒と全て白は色交換で同一視される．
+黒が一つと黒が三つの軌道も色交換で対応する．
+黒が二つの場合は隣接配置と対角配置の二軌道があり，
+どちらも色交換後は適当な回転で元に戻る．
+従って色交換も同一視した軌道は四つとなる．
+定理~\ref{thm:doubleaction} による直接計算でも同じ値を得る．
+\end{example}
+
+\section{黒数を固定した原始語}
+最小周期によるM\"obius反転を，
+黒の使用回数を固定した語にも適用できる．
+
+\begin{theorem}[原始二色語の二変数計数]\label{thm:binaryprimitive}
+長さ $n$ の二色語のうち，黒をちょうど $k$ 個使い，
+最小周期が $n$ であるものの個数を $P_{n,k}$ とする．
+$0\le k\le n$ なら
+\begin{equation}\label{eq:primitivefixedk}
+ P_{n,k}=\sum_{d\mid\gcd(n,k)}
+ \mu(d){n/d\choose k/d}
+\end{equation}
+が成立する．これらの語の回転軌道数は $P_{n,k}/n$ である．
+\end{theorem}
+\begin{proof}
+全ての長さ $n$，黒 $k$ 個の二色語は ${n\choose k}$ 個ある．
+その最小周期が $n/d$ であるなら，
+短い原始語を $d$ 回繰り返した形であり，
+黒の個数も $d$ の倍数でなければならない．
+逆に $d\mid\gcd(n,k)$ なら，長さ $n/d$，黒 $k/d$ 個の原始語から
+長さ $n$ の語が一意にできる．従って
+\[
+ {n\choose k}=\sum_{d\mid\gcd(n,k)}P_{n/d,k/d}.
+\]
+この関係の反転を確かめるため，式~\eqref{eq:primitivefixedk} の右辺を
+上の和に代入すると
+\[
+ \begin{aligned}
+ &\sum_{d\mid\gcd(n,k)}
+  \sum_{e\mid\gcd(n/d,k/d)}
+  \mu(e){n/(de)\choose k/(de)}\\
+ &\quad=\sum_{h\mid\gcd(n,k)}
+ \left(\sum_{e\mid h}\mu(e)\right){n/h\choose k/h}
+ ={n\choose k}.
+ \end{aligned}
+\]
+最後の等式は補題~\ref{lem:arithinvert} の証明で示した
+M\"obius関数の和による．
+この反転は約数上の三角形の連立関係の一意な解を与えるので，
+$P_{n,k}$ は式~\eqref{eq:primitivefixedk} に一致する．
+原始語は恒等回転以外には固定されないから，
+軌道・安定化部分群の定理により各軌道の大きさは $n$ である．
+\end{proof}
+
+\begin{corollary}[原始二色語の整除性]
+$n\ge1$，$0\le k\le n$ に対し
+\[
+ n\;\bigm|\;\sum_{d\mid\gcd(n,k)}
+ \mu(d){n/d\choose k/d}
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+定理~\ref{thm:binaryprimitive} によって表示式は
+$n$ 個ずつの回転軌道に分かれる原始語の個数に等しい．
+\end{proof}
+
+\section{直積集合上の巡回構造}
+二つの置換を直積集合で同時に作用させる場合には，
+長さの最小公倍数と最大公約数が現れる．
+
+\begin{lemma}[二巡回の直積]\label{lem:productcycles}
+$g$ が集合 $X$ の長さ $a$ の巡回を一つ持ち，
+$h$ が集合 $Y$ の長さ $b$ の巡回を一つ持つとする．
+$(g,h)$ が対応する $a\times b$ 個の点に作用するとき，
+巡回は $\gcd(a,b)$ 本あり，
+それぞれの長さは $\operatorname{lcm}(a,b)$ である．
+\end{lemma}
+\begin{proof}
+点 $(x,y)$ が $(g,h)$ の $k$ 回の作用で元に戻る条件は
+$g^kx=x$ および $h^ky=y$ である．
+これは $a\mid k$ かつ $b\mid k$ に等しい．
+従って最小の正の戻り回数は $\operatorname{lcm}(a,b)$ である．
+$ab$ 個の点が等しい長さの巡回に分かれるから，
+巡回数は
+$ab/\operatorname{lcm}(a,b)=\gcd(a,b)$ となる．
+\end{proof}
+
+\begin{theorem}[直積作用の巡回指数]\label{thm:productcycleindex}
+$G\curvearrowright X$，$H\curvearrowright Y$ とする．
+直積群 $G\times H$ は $X\times Y$ に
+$(g,h)(x,y)=(gx,hy)$ で作用する．その巡回指数は
+\[
+ \frac1{|G||H|}\sum_{g\in G,h\in H}
+ \prod_{a=1}^{|X|}\prod_{b=1}^{|Y|}
+ a_{\operatorname{lcm}(a,b)}^ {
+ \gcd(a,b)c_a(g)c_b(h)}
+\]
+である．
+\end{theorem}
+\begin{proof}
+$g$ の長さ $a$ の巡回と $h$ の長さ $b$ の巡回の組は
+$c_a(g)c_b(h)$ 通りである．
+それぞれの組の直積には補題~\ref{lem:productcycles} により
+長さ $\operatorname{lcm}(a,b)$ の巡回が
+$\gcd(a,b)$ 本ある．
+各巡回の寄与を巡回指数の変数へ記録すると積の表示となる．
+最後に全ての $(g,h)$ について平均する．
+\end{proof}
+
+\begin{example}[格子上の平行移動]
+$X=\mathbb Z/3\mathbb Z$，$Y=\mathbb Z/4\mathbb Z$ とし，
+$(x,y)\mapsto(x+1,y+1)$ を考える．
+一方の回転は長さ3の巡回，他方は長さ4の巡回である．
+その直積は $\operatorname{lcm}(3,4)=12$ の巡回を
+$\gcd(3,4)=1$ 本持つ．
+従って12個の格子点を全て巡回する．
+\end{example}
+
+\section{頂点置換から辺置換の巡回数へ}
+頂点ラベルを外したグラフの計数を具体化するには，
+頂点の置換から辺候補への誘導置換の巡回数を求める必要がある．
+
+\begin{lemma}[辺候補の巡回数公式]\label{lem:edgecycles}
+$\sigma\in S_n$ の長さ $j$ の巡回数を $m_j$ とする．
+二元部分集合への誘導置換の巡回数は
+\begin{equation}\label{eq:edgecycles}
+ \begin{aligned}
+ c_{E_n}(\sigma)
+ &=\sum_{j\ge1}m_j\left\lfloor\frac j2\right\rfloor
+ +\sum_{j\ge1}j{m_j\choose2}\\
+ &\quad+\sum_{1\le a<b}m_am_b\gcd(a,b)
+ \end{aligned}
+\end{equation}
+となる．
+\end{lemma}
+\begin{proof}
+辺候補を二つの場合に分ける．
+最初は両端が同じ頂点巡回に属する場合である．
+長さ $j$ の巡回を $\{0,1,\ldots,j-1\}$ と見れば，
+その中の辺は $\{x,x+d\}$ と書ける．
+無向辺なので距離 $d$ と $j-d$ は同一視され，
+距離は $1\le d\le\lfloor j/2\rfloor$ と選べる．
+回転 $x\mapsto x+1$ で同じ距離の辺同士は一つの軌道をなす．
+従って一つの長さ $j$ の頂点巡回から
+$\lfloor j/2\rfloor$ 本の辺候補の巡回が生じ，
+この寄与を全巡回について足したものが第一項である．
+第二は両端が異なる二つの頂点巡回に属する場合である．
+長さ $a,b$ の二巡回の間の $ab$ 個の辺は
+二巡回の直積集合と一対一に対応する．
+補題~\ref{lem:productcycles} により辺の巡回は $\gcd(a,b)$ 本である．
+同じ長さ $j$ の二巡回の組は ${m_j\choose2}$ 組で，
+各組が $j$ 本の巡回を寄与するから第二項を得る．
+異なる長さ $a<b$ の二巡回の組は $m_am_b$ 組であり，
+各組が $\gcd(a,b)$ 本を寄与するので第三項が得られる．
+これらは全ての辺候補を漏れなく一度ずつ数えている．
+\end{proof}
+
+\begin{theorem}[非同型グラフ数の分割和]\label{thm:graphsbytype}
+$n\ge1$ とする．$\sum_{j=1}^n jm_j=n$ を満たす
+非負整数列 $\mathbf m=(m_1,\ldots,m_n)$ に対して，
+式~\eqref{eq:edgecycles} の右辺を $e(\mathbf m)$ と書く．
+$n$ 頂点の非同型単純グラフの個数は
+\[
+ u_n=\sum_{\substack{m_j\ge0\\\sum jm_j=n}}
+ \frac{2^{e(\mathbf m)}}{\prod_{j=1}^n j^{m_j}m_j!}
+\]
+で与えられる．
+\end{theorem}
+\begin{proof}
+定理~\ref{thm:unlabeledgraphs} の和を
+$S_n$ の巡回型ごとに分ける．
+型 $\mathbf m$ の置換の個数は
+補題~\ref{lem:cycletypes} により
+$n!/\prod_j j^{m_j}m_j!$ であり，
+その各置換の辺候補の巡回数は
+補題~\ref{lem:edgecycles} によって $e(\mathbf m)$ である．
+従って型 $\mathbf m$ の寄与を足して $n!$ で除すればよい．
+\end{proof}
+
+\begin{remark}
+$n$ が増えると $n!$ 個の元を逐一調べる方法は現実的ではなくなる．
+上の式は，$n$ の整数分割と一対一に対応する巡回型に和を整理したものである．
+グラフの非同型数の計算において，群作用と整数分割が結び付く理由が
+ここにある．
+\end{remark}
+
+\section{隣り合う位置を異色とする円形彩色}
+$V=\mathbb Z/n\mathbb Z$（$n\ge3$）を頂点集合とする
+巡回グラフ $C_n$ を考える．
+各 $x$ と $x+1$ の間に辺を置く．
+位置の対称性と適正彩色条件を組み合わせると，
+一般のP\'olya彩色とは異なる固定点計算が必要になる．
+
+\begin{lemma}[巡回グラフの彩色多項式]\label{lem:cyclechromatic}
+$n\ge3$ とする．巡回グラフ $C_n$ の適正 $q$ 色彩色数は
+\begin{equation}\label{eq:chromaticcycle}
+ P_{C_n}(q)=(q-1)^n+(-1)^n(q-1)
+\end{equation}
+である．
+\end{lemma}
+\begin{proof}
+色集合を $\{1,\ldots,q\}$ とし，
+$q\times q$ 行列 $A=(a_{ij})$ を
+$a_{ij}=1$（$i\ne j$），$a_{ii}=0$ と置く．
+長さ $n$ の円形の適正彩色は
+$i_0,i_1,\ldots,i_{n-1},i_n=i_0$ で
+各 $i_{j-1}\ne i_j$ を満たす色の列と一対一に対応する．
+従って彩色数は行列積の定義から
+\[
+ P_{C_n}(q)=\sum_{i_0=1}^q(A^n)_{i_0i_0}
+ =\operatorname{tr}(A^n)
+\]
+である．
+$J$ を全成分が1の行列，$I$ を単位行列とすると
+$A=J-I$．
+全成分が等しいベクトルの張る一次元部分空間上では
+$J$ は固有値 $q$ を持ち，
+成分和が0の $(q-1)$ 次元部分空間上では
+$J$ は零作用素である．
+従って $A$ の固有値は $q-1$ が一つと
+$-1$ が $q-1$ 個である．
+跡は固有値の和なので
+$\operatorname{tr}(A^n)=(q-1)^n+(q-1)(-1)^n$ を得る．
+$q=1$ の場合も右辺は0であり，直接数えて同じ結論となる．
+\end{proof}
+
+\begin{definition}
+$d\ge1$ に対し
+\[
+ F_d(q)=(q-1)^d+(-1)^d(q-1)
+\]
+と置く．特に $F_1(q)=0$，$F_2(q)=q(q-1)$ である．
+これは長さ1のループ付き円形配置，長さ2の両方向に辺を持つ配置にも
+適正彩色数として拡張できる．
+\end{definition}
+
+\begin{theorem}[適正円形彩色の回転軌道]\label{thm:propernecklace}
+$n\ge3$，$q\ge1$ とし，
+長さ $n$ の円形配置で隣接位置が異色となる彩色を
+回転で同一視する．その軌道数は
+\begin{equation}\label{eq:properneck}
+ \frac1n\sum_{d\mid n}\varphi(n/d)F_d(q)
+\end{equation}
+である．
+\end{theorem}
+\begin{proof}
+$\rho_r(x)=x+r$ を固定する．
+$\rho_r$ に固定される彩色は
+$\gcd(n,r)=d$ とおくと $d$ 周期であり，
+最初の $d$ 個の色の列を繰り返した形となる．
+その色列が隣接位置の異色条件を満たすためには，
+$d$ の位置を円形に並べたときの全ての隣接条件を満たす必要がある．
+$d\ge3$ ならこれは巡回グラフ $C_d$ の適正彩色であり，
+補題~\ref{lem:cyclechromatic} より $F_d(q)$ 個である．
+$d=1$ なら同色の隣接が生じるので0個，
+$d=2$ なら二色の位置に異なる色を割り当てるため
+$q(q-1)=F_2(q)$ 個である．
+$\gcd(n,r)=d$ を満たす $r$ は $\varphi(n/d)$ 個だから，
+Burnsideの補題を用いて式~\eqref{eq:properneck} を得る．
+\end{proof}
+
+\begin{theorem}[適正円形彩色の二面体軌道]\label{thm:properbracelet}
+$n\ge3$ の位置を円形に配置し，隣接位置が異色となる $q$ 色彩色を
+回転と鏡映の両方で同一視する．その軌道数は
+\[
+ \frac1{2n}\left\{
+ \sum_{d\mid n}\varphi(n/d)F_d(q)+S_n(q)\right\},
+\]
+ただし
+\[
+ S_n(q)=\begin{cases}
+ 0&(n\text{ 奇数}),\\
+ \dfrac n2q(q-1)^{n/2}&(n\text{ 偶数})
+ \end{cases}
+\]
+である．
+\end{theorem}
+\begin{proof}
+回転元についての固定適正彩色数の総和は
+定理~\ref{thm:propernecklace} より
+\[
+ \sum_{d\mid n}\varphi(n/d)F_d(q)
+\]
+である．次に反転を調べる．
+$n$ が奇数のとき，どの反転も一頂点と
+その対側に位置する一辺の中点を固定する．
+その辺の両端は入れ替わるので，
+反転に固定された彩色では辺の両端が同色となってしまう．
+従って適正な固定彩色はない．
+$n$ が偶数のとき，反転のうち $n/2$ 個は
+向かい合う二辺の中点を通る軸を持ち，
+やはりある辺の両端を入れ替えるから適正な固定彩色を持たない．
+残り $n/2$ 個は向かい合う二頂点を固定する軸を持つ．
+この型の反転に固定される適正彩色は，
+二つの固定頂点の間を結ぶ片側の道の彩色によって一意に決まる．
+この道には $n/2$ 本の辺があり，
+最初の頂点には $q$ 通り，次の各頂点には直前と異なる色が
+$q-1$ 通りずつ選べるので $q(q-1)^{n/2}$ 通りである．
+反転元の寄与を加えて $2n$ で割れば結論となる．
+\end{proof}
+
+\begin{example}[円形三色彩色]
+$n=4$，$q=3$ とする．
+$F_1(3)=0$，$F_2(3)=6$，$F_4(3)=18$ である．
+従って回転だけで同一視した適正彩色は
+\[
+ \frac14(F_4(3)+F_2(3)+2F_1(3))=6
+\]
+軌道ある．反転元の固定適正彩色の総数は
+$(4/2)\cdot3\cdot2^2=24$ なので，
+二面体作用の軌道数は $(24+24)/8=6$ である．
+この例では鏡映を追加しても軌道数は減らない．
+\end{example}
+
+\section{色名の同一視と集合分割}
+色の置換で同一視する問題は，有限集合の分割の数え上げに帰着する．
+この関係は色名が付いている場合との違いを明確にする．
+
+\begin{definition}[第二種Stirling数]
+$n\ge0$，$0\le k\le n$ に対して，
+$n$ 元集合を空でない $k$ 個の番号のない部分集合に分割する方法の数を
+$S(n,k)$ とする．
+$S(0,0)=1$，$S(n,0)=0$（$n>0$）と約束する．
+\end{definition}
+
+\begin{lemma}[Stirling数の漸化式]\label{lem:stirling}
+$n,k\ge1$ に対して
+\[
+ S(n,k)=S(n-1,k-1)+kS(n-1,k)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$n$ 番目の元が一つだけからなる部分集合を作る場合には，
+残り $n-1$ 元を $k-1$ 個に分割する．
+そのような部分集合を作らない場合には，
+最初の $n-1$ 元を $k$ 個に分割してから，
+$n$ 番目の元をその $k$ 個のいずれかに加える．
+この二場合は互いに排反で全ての分割を尽くすので，
+個数の和を取れば漸化式となる．
+\end{proof}
+
+\begin{theorem}[色名を区別しない彩色]\label{thm:colorsunlabeled}
+$n$ 個の区別された位置を $q$ 色で塗り，
+色名の全置換を同一視する．ただし位置の置換は行わない．
+このとき彩色の軌道数は
+\begin{equation}\label{eq:stirlingorbits}
+ \sum_{k=0}^{\min(n,q)}S(n,k)
+\end{equation}
+である．
+\end{theorem}
+\begin{proof}
+彩色 $f:[n]\to[q]$ に対し，
+実際に使われた各色の逆像 $f^{-1}(i)$ を集めると，
+$[n]$ の空でない部分集合への分割が得られる．
+使われた色の数 $k$ は $k\le\min(n,q)$ を満たす．
+色名を置換しても逆像の分割は変わらない．
+逆に二つの彩色が同じ分割を与えるなら，
+使用された色同士を対応させる全単射を，
+未使用の色を含めた $[q]$ の置換へ拡張できる．
+従って二つの彩色は同じ $S_q$ の軌道に属する．
+よって軌道は，$k\le\min(n,q)$ の各 $k$ 個のブロックへの分割と
+一対一に対応し，総数は式~\eqref{eq:stirlingorbits} となる．
+\end{proof}
+
+\begin{proposition}[全射からの計数]
+$n\ge1$，$1\le k\le n$ に対して
+\[
+ S(n,k)=\frac1{k!}\sum_{j=0}^k(-1)^j
+ {k\choose j}(k-j)^n
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+$[n]$ から $[k]$ への写像は $k^n$ 個ある．
+各 $i\in[k]$ に対し，値 $i$ を一度も取らない写像の集合を $A_i$ とする．
+包除原理によって全射の個数は
+\[
+ \sum_{J\subset[k]}(-1)^{|J|}(k-|J|)^n
+ =\sum_{j=0}^k(-1)^j{k\choose j}(k-j)^n
+\]
+である．
+各 $k$ ブロックへの分割の各ブロックに $[k]$ の番号を
+付ける方法は $k!$ 通りであり，これは全射と一対一に対応する．
+従って全射の個数を $k!$ で割ると $S(n,k)$ を得る．
+\end{proof}
+
+\section{応用上の注意とまとめ}
+\begin{proposition}[数え上げの整除性]
+任意の正整数 $q$ と有限置換群 $G\curvearrowright X$ について
+\[
+ |G|\;\bigm|\;\sum_{g\in G}q^{c(g)}
+\]
+が成立する．特に式~\eqref{eq:neck} の分子は $n$ で割り切れ，
+式~\eqref{eq:primitiveword} の右辺も $n$ で割り切れる．
+\end{proposition}
+\begin{proof}
+前者は定理~\ref{thm:colororbits} の左辺が整数であることによる．
+後者の第二の主張は，原始語の回転軌道が全てちょうど $n$ 個の語からなることを
+定理~\ref{thm:primitive} で示したことによる．
+\end{proof}
+
+具体的な数え上げでは，最初に位置集合 $X$ と作用群 $G$ を明示し，
+次に作用が保存する彩色の条件を定める．その後で固定彩色を数える．
+単なる彩色なら巡回指数，色の使用回数を指定するならP\'olyaの定理，
+適正彩色のように位置間の制約がある場合は商グラフを用いる．
+群の選択（回転のみか，鏡映も含むか）は，結論を左右する仮定である．
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{二色の長さ4の首飾りを数える．}
+\begin{proposition}
+位置を四つ持つ円形の首飾りを二色で塗る．
+回転のみを同一視すると，異なる彩色は6通りである．
+\end{proposition}
+\begin{proof}
+巡回群 $C_4=\{1,r,r^2,r^3\}$ が位置集合に作用する．
+彩色の集合への誘導作用を考える．
+恒等回転の固定彩色は $2^4=16$ 個．
+$180^\circ$ 回転は二つの2-cycleを持つので
+固定彩色は $2^2=4$ 個．
+$90^\circ$ と $270^\circ$ の回転は
+それぞれ一つの4-cycleを持つので
+固定彩色は各 $2$ 個である．
+Burnsideの補題より軌道数は
+\[
+\frac{16+4+2+2}{4}=6
+\]
+となる．
+\end{proof}
+\begin{remark}
+鏡映まで同一視すると作用群が二面体群へ変わる．
+したがってこの6という数は
+「回転のみ」の仮定に依存する．
+\end{remark}
+\noindent\textbf{到達確認．}
+長さ3の二色首飾りを回転だけで同一視すると何通りか．
+\par\noindent\textbf{解答．}
+恒等元の固定彩色は $2^3=8$，
+二つの非自明回転の固定彩色は各2個なので
+$(8+2+2)/3=4$ 通りである．
+\section*{参考文献}
+\begin{enumerate}[label={[\arabic*]},leftmargin=3.3zw]
+\item J.~H. van Lint and R.~M. Wilson, \textit{A Course in Combinatorics}, 2nd ed., Cambridge University Press, 2001.
+\item G. P\'olya and R.~C. Read, \textit{Combinatorial Enumeration of Groups, Graphs, and Chemical Compounds}, Springer, 1987.
+\item F. Harary and E.~M. Palmer, \textit{Graphical Enumeration}, Academic Press, 1973.
+\end{enumerate}
+\end{document}

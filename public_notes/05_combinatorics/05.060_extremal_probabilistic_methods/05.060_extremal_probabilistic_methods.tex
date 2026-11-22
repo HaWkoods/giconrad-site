@@ -1,0 +1,1609 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{極値組合せ論と確率的方法}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Ramsey数，グラフの補グラフ，鳩ノ巣原理．
+本稿の具体的な到達課題は，小さいRamsey数を上下双方から評価して厳密に決定する．
+
+\section{極値問題の定式化}
+本稿では有限単純無向グラフと有限集合族を扱う．
+極値組合せ論では，特定の部分構造を禁じる条件の下で
+辺や部分集合の最大数を決定する．
+確率的方法では，構成したい対象を確率空間から選び，
+その存在を期待値や確率不等式によって証明する．
+本稿では Ramsey の定理，Tur\'an の定理，Sperner の定理を証明し，
+確率的方法と局所補題まで扱う．
+
+\begin{definition}[グラフの基本量]
+$G=(V,E)$ を有限単純無向グラフとする．
+頂点数を $n=|V|$，辺数を $m=|E|$ とし，
+頂点 $v$ の隣接点集合を $N(v)$，次数を $d(v)=|N(v)|$ とする．
+全ての頂点が互いに隣接する $r$ 頂点部分グラフを
+$r$-クリーク（$K_r$）という．
+互いに隣接しない頂点集合を独立集合という．
+最大独立集合の濃度を $\alpha(G)$ とする．
+\end{definition}
+
+\begin{lemma}[握手補題]\label{lem:handshake}
+任意の有限無向グラフについて
+\[
+ \sum_{v\in V}d(v)=2m
+\]
+が成立する．
+\end{lemma}
+\begin{proof}
+各辺は二つの異なる端点を持ち，
+左辺ではそれぞれの端点で一度ずつ数えられる．
+従って各辺の寄与は2である．
+\end{proof}
+
+\begin{definition}[禁止部分グラフと極値数]
+固定したグラフ $H$ に対し，
+$H$ と同型な部分グラフを含まない $n$ 頂点グラフの
+辺数の最大値を $\operatorname{ex}(n,H)$ と記す．
+部分グラフは誘導部分グラフである必要はない．
+\end{definition}
+
+\section{Ramsey数と有限Ramsey定理}
+\begin{definition}[二色Ramsey数]
+正整数 $s,t$ に対し，
+$R(s,t)$ は，どの $n$ 頂点グラフも
+$s$-クリークまたは $t$ 頂点独立集合を持つことを保証する
+最小の正整数 $n$ とする．
+この数の存在は以下で証明する．
+\end{definition}
+
+\begin{lemma}[Ramsey数の再帰不等式]\label{lem:ramseyrec}
+$s,t\ge2$ に対して
+\begin{equation}\label{eq:ramseyrec}
+ R(s,t)\le R(s-1,t)+R(s,t-1)
+\end{equation}
+が成り立つ．また $R(1,t)=R(s,1)=1$ である．
+\end{lemma}
+\begin{proof}
+$A=R(s-1,t)$，$B=R(s,t-1)$ とし，
+$A+B$ 頂点の任意のグラフ $G$ を考える．
+一頂点 $v$ の次数を $d(v)$ とする．
+$d(v)\ge A$ なら，$N(v)$ の中には
+$(s-1)$-クリークまたは $t$ 頂点独立集合がある．
+前者の場合に $v$ を加えれば $s$-クリークとなり，
+後者の場合は既に目的を達する．
+一方 $d(v)<A$ なら $v$ に隣接しない他の頂点は
+\[
+ A+B-1-d(v)\ge B
+\]
+個ある．その中には $s$-クリークまたは
+$(t-1)$ 頂点独立集合がある．
+後者に $v$ を加えれば $t$ 頂点独立集合になる．
+従っていずれの場合も目的の構造が存在する．
+$s=1$ または $t=1$ は一頂点だけで自明である．
+\end{proof}
+
+\begin{theorem}[有限Ramsey定理]\label{thm:ramsey}
+任意の $s,t\ge1$ に対して $R(s,t)$ は有限であり，
+\begin{equation}\label{eq:ramseybinom}
+ R(s,t)\le {s+t-2\choose s-1}
+\end{equation}
+が成立する．
+\end{theorem}
+\begin{proof}
+$s+t$ に関する帰納法を用いる．
+$s=1$ または $t=1$ では両辺は1である．
+$s,t\ge2$ なら補題~\ref{lem:ramseyrec} と帰納法の仮定より
+\begin{align*}
+ R(s,t)&\le R(s-1,t)+R(s,t-1)\\
+ &\le {s+t-3\choose s-2}+{s+t-3\choose s-1}\\
+ &= {s+t-2\choose s-1}
+\end{align*}
+となる．最後はPascalの恒等式である．
+これにより各 $R(s,t)$ の存在も帰納的に確立される．
+\end{proof}
+
+\begin{corollary}[有限辺二色Ramsey定理]
+任意の $k\ge1$ に対し，
+完全グラフの頂点数を十分大きくすると，
+辺を赤と青の二色に塗るいかなる方法でも，
+単色の $K_k$ が存在する．
+\end{corollary}
+\begin{proof}
+赤い辺だけからなるグラフ $G$ を考える．
+$G$ の $K_k$ は赤の単色完全グラフである．
+$G$ の $k$ 頂点独立集合は，青の単色完全グラフに対応する．
+定理~\ref{thm:ramsey} を $s=t=k$ に適用すればよい．
+\end{proof}
+
+\begin{proposition}[小さいRamsey数]\label{prop:r33}
+$R(3,3)=6$ が成立する．
+\end{proposition}
+\begin{proof}
+$R(2,3)=R(3,2)=3$ である．
+実際，三頂点グラフが辺を持てば $2$-クリークが存在し，
+辺を持たなければ三頂点独立集合が存在する．
+二頂点の空グラフはどちらも持たないので最小は3である．
+補題~\ref{lem:ramseyrec} より $R(3,3)\le6$．
+逆に五頂点の巡回グラフ $C_5$ は三角形を持たず，
+独立集合の最大濃度は2である．
+従って $R(3,3)>5$ であり，等式を得る．
+\end{proof}
+
+\begin{corollary}[大きなグラフの斉次部分集合]
+$n$ 頂点グラフには，$n\ge {2k-2\choose k-1}$ なら
+$k$-クリークまたは $k$ 頂点独立集合が存在する．
+特に
+\[
+ R(k,k)\le {2k-2\choose k-1}<4^{k-1}
+\]
+が $k\ge2$ に対して成り立つ．
+\end{corollary}
+\begin{proof}
+第一の主張は定理~\ref{thm:ramsey} の $s=t=k$ の場合である．
+二項定理から
+$\sum_{j=0}^{2k-2}{2k-2\choose j}=2^{2k-2}=4^{k-1}$．
+二項係数は全て正で，$k\ge2$ なら和に少なくとも二項あるので
+中央の一項は全体より真に小さい．
+\end{proof}
+
+\section{Tur\'anグラフと極値辺数}
+\begin{definition}[完全多部グラフ]
+頂点集合を互いに素な $r$ 個の集合
+$V_1,\ldots,V_r$ に分け，異なる部分の二頂点間にのみ
+全ての辺を置いたグラフを完全 $r$ 部グラフと呼ぶ．
+各部分の大きさの差が高々1である $n$ 頂点完全 $r$ 部グラフを
+$T_r(n)$ と書き，辺数を $t_r(n)$ と書く．
+空の部分を許し，$r>n$ の場合にも同じ定義とする．
+\end{definition}
+
+\begin{lemma}[完全多部グラフの辺数]\label{lem:multipartite}
+部分の大きさを $n_1,\ldots,n_r$，$\sum n_i=n$ とすると
+\begin{equation}\label{eq:multipartite}
+ |E|=\sum_{i<j}n_in_j
+ =\frac12\left(n^2-\sum_{i=1}^r n_i^2\right).
+\end{equation}
+この値は $n_i$ の差が高々1のとき最大となる．
+\end{lemma}
+\begin{proof}
+異なる部分 $i,j$ の間には $n_in_j$ 本の辺があり，
+同じ部分には辺がないから第一式が成り立つ．
+$n^2=(\sum n_i)^2=\sum n_i^2+2\sum_{i<j}n_in_j$
+より第二式が従う．
+仮に $n_i\ge n_j+2$ なら，部分 $i$ から一点を部分 $j$ へ移して
+$(n_i,n_j)$ を $(n_i-1,n_j+1)$ にすることで，
+辺数の増分は
+\[
+ n_i n_j\longmapsto(n_i-1)(n_j+1),\qquad
+ n_i-n_j-1>0
+\]
+となる．ほかの部分との辺数の合計は変わらない．
+従って差が2以上の組がある限り改善できる．
+有限回の改善の後，全ての部分の大きさの差が高々1となる．
+この条件を満たす大きさの組は順序を除き一意であるから最大値を与える．
+\end{proof}
+
+\begin{lemma}[頂点の複製操作]\label{lem:clone}
+$G$ を $K_{r+1}$ を含まないグラフとし，
+互いに隣接しない頂点 $u,v$ を取る．
+$u$ に接する辺を全て削除した後，
+$u$ を $v$ の全ての隣接点へ結ぶ操作を考える．
+この操作後も $K_{r+1}$ は存在せず，辺数は
+$d(v)-d(u)$ だけ増加する．
+\end{lemma}
+\begin{proof}
+$u,v$ は隣接しないので，新しく設ける辺は $u$ を端点とし，
+操作で消去する辺と重ならない．
+従って辺数の差は $d(v)-d(u)$ である．
+新しいグラフが $K_{r+1}$ を持つなら，
+そのクリークが $u$ を含まない場合は元のグラフにも存在する．
+$u$ を含む場合は，$u$ を $v$ に置き換えても
+他の頂点間の辺は変わらず，$v$ はそれら全てと隣接する．
+これも元のグラフの $K_{r+1}$ に矛盾する．
+\end{proof}
+
+\begin{lemma}[多部グラフへの変形]\label{lem:symmetrization}
+$K_{r+1}$ を含まない任意の $n$ 頂点グラフは，
+辺数を減らすことなく $n$ 頂点の完全 $r$ 部グラフに変形できる．
+\end{lemma}
+\begin{proof}
+頂点数に関する帰納法を，許されるクリークの上限 $r$ とともに行う．
+$G$ が空なら自明である．
+$G$ の中で次数最大の頂点 $v$ を選び，
+$W=N(v)$，$U=V\setminus W$ と置く．
+$U$ に属する $v$ 以外の各頂点 $u$ を，
+順に補題~\ref{lem:clone} によって $v$ の複製に置き換える．
+この操作中，$v$ の次数は変わらず，
+まだ置き換えていない $U$ の頂点の次数は増加しない．
+なぜなら新しい複製頂点は $v$ の非隣接点には隣接せず，
+それらとの既存の辺が消えることがあるだけだからである．
+従って各操作時に $d(v)\ge d(u)$ が保たれ，
+辺数は減少しない．また $K_{r+1}$ を生じない．
+操作後は $U$ が独立集合で，全ての $U$ の頂点が
+$W$ の全頂点に隣接する．
+$G[W]$ が $K_r$ を含むなら，$v$ と合わせて
+$K_{r+1}$ が生じるので，$G[W]$ は $K_r$ を含まない．
+帰納法によって $G[W]$ を，辺数を減らすことなく
+完全 $(r-1)$ 部グラフに変形する．
+$U$ と $W$ の間の辺は全て残しておくから，
+最終的に $U$ と $W$ の各部分を合わせた完全 $r$ 部グラフとなる．
+$r=1$ では元のグラフは辺を持たず，帰納法の始点となる．
+\end{proof}
+
+\begin{theorem}[Tur\'anの定理]\label{thm:turan}
+$r,n\ge1$ とする．$K_{r+1}$ を含まない $n$ 頂点グラフの
+辺数は高々 $t_r(n)$ であり，この値は $T_r(n)$ によって達成される．
+すなわち
+\[
+ \operatorname{ex}(n,K_{r+1})=t_r(n).
+\]
+$n=qr+a$（$0\le a<r$）と書けば
+\begin{equation}\label{eq:turanformula}
+ t_r(n)=\frac12\{n^2-(r-a)q^2-a(q+1)^2\}.
+\end{equation}
+特に
+\begin{equation}\label{eq:turanupper}
+ t_r(n)\le\frac12\left(1-\frac1r\right)n^2.
+\end{equation}
+\end{theorem}
+\begin{proof}
+任意の $K_{r+1}$ を含まないグラフ $G$ を取る．
+補題~\ref{lem:symmetrization} により，
+辺数を減らさず完全 $r$ 部グラフに変形できる．
+補題~\ref{lem:multipartite} によれば，
+完全 $r$ 部グラフの辺数は均等な部分のとき最大である．
+従って $|E(G)|\le t_r(n)$．
+$T_r(n)$ は一つのクリークから各部分の頂点を高々一つしか選べないので
+$K_{r+1}$ を含まず，等号を達成する．
+$n=qr+a$ のとき部分の大きさは
+$q+1$ が $a$ 個，$q$ が $r-a$ 個だから，
+式~\eqref{eq:multipartite} を適用して式~\eqref{eq:turanformula} を得る．
+さらにCauchy--Schwarzの不等式より
+$\sum_i n_i^2\ge n^2/r$ であるから
+式~\eqref{eq:turanupper} が従う．
+\end{proof}
+
+\begin{corollary}[Mantelの定理]\label{cor:mantel}
+三角形を持たない $n$ 頂点グラフの辺数は
+高々 $\lfloor n^2/4\rfloor$ であり，この値は
+完全二部グラフ $K_{\lfloor n/2\rfloor,\lceil n/2\rceil}$ で達成される．
+\end{corollary}
+\begin{proof}
+定理~\ref{thm:turan} を $r=2$ に適用する．
+均等二部分の間の辺数は
+$\lfloor n/2\rfloor\lceil n/2\rceil=\lfloor n^2/4\rfloor$ である．
+\end{proof}
+
+\begin{proposition}[Mantelの定理の別証明]
+三角形を含まないグラフで $m>0$ とすると
+\[
+ \sum_{v\in V}d(v)^2\le nm
+\]
+であり，従って $m\le n^2/4$ である．
+\end{proposition}
+\begin{proof}
+辺 $\{u,v\}$ があるとき，共通隣接点は三角形を作るので
+$N(u)\cap N(v)=\varnothing$．従って $d(u)+d(v)\le n$．
+全辺について和を取ると
+\[
+ \sum_{\{u,v\}\in E}(d(u)+d(v))
+ =\sum_{v\in V}d(v)^2\le nm.
+\]
+Cauchy--Schwarzの不等式と握手補題から
+\[
+ \sum_vd(v)^2\ge\frac{(\sum_vd(v))^2}{n}
+ =\frac{4m^2}{n}.
+\]
+故に $4m^2/n\le nm$ であり，$m>0$ を除して結論を得る．
+$m=0$ の場合も明らかである．
+\end{proof}
+
+\section{四角形を禁じた極値問題}
+\begin{lemma}[長さ二の道の二重計数]\label{lem:c4count}
+$G$ が長さ4の単純閉路 $C_4$ を持たないなら
+\begin{equation}\label{eq:c4count}
+ \sum_{v\in V}{d(v)\choose2}\le {n\choose2}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+左辺は中央の頂点 $v$ と，$v$ の相異なる隣接点二つの組を数える．
+すなわち二つの端点を指定し中央を選ぶ長さ二の道の数である．
+同じ端点の組が相異なる中央頂点を二つ持つなら，
+それら四頂点は長さ4の閉路を作る．
+従って各端点組に対して中央は高々一つである．
+端点組は ${n\choose2}$ 個なので不等式を得る．
+\end{proof}
+
+\begin{theorem}[$C_4$-freeグラフの辺数]\label{thm:c4}
+$n\ge1$ とし，$G$ を $n$ 頂点の $C_4$ を含まないグラフとする．
+このとき
+\begin{equation}\label{eq:c4upper}
+ m\le\frac n4\left(1+\sqrt{4n-3}\right)
+\end{equation}
+が成立する．特に $m=O(n^{3/2})$ である．
+\end{theorem}
+\begin{proof}
+握手補題より $\sum_v d(v)=2m$．
+Cauchy--Schwarzの不等式によって
+\[
+ \sum_v{d(v)\choose2}
+ =\frac12\left(\sum_vd(v)^2-2m\right)
+ \ge\frac12\left(\frac{4m^2}{n}-2m\right).
+\]
+補題~\ref{lem:c4count} の右辺と比較して
+\[
+ \frac{4m^2}{n}-2m\le n(n-1)
+\]
+を得る．両辺に $n$ を掛けて整理すると
+$4m^2-2nm-n^2(n-1)\le0$ となる．
+$m\ge0$ なのでこの二次不等式の正の根以下であり，
+解の公式から
+\[
+ m\le\frac{2n+\sqrt{4n^2+16n^2(n-1)}}8
+ =\frac n4(1+\sqrt{4n-3})
+\]
+を得る．
+\end{proof}
+
+\section{二部グラフとK\H{o}v\'ari--S\'os--Tur\'an型評価}
+\begin{definition}
+$A,B$ を頂点の二部とする二部グラフに対し，
+$K_{s,t}$ は $A$ 側に $s$ 頂点，$B$ 側に $t$ 頂点を持つ
+完全二部グラフとする．
+\end{definition}
+
+\begin{lemma}[共通隣接点の計数]\label{lem:kstdouble}
+$|A|=a$, $|B|=b$ の二部グラフが
+$A$ 側 $s$ 頂点，$B$ 側 $t$ 頂点からなる $K_{s,t}$ を含まないとする．
+$B$ の頂点 $v$ の $A$ 側への次数を $d(v)$ とすると
+\begin{equation}\label{eq:kstdouble}
+ \sum_{v\in B}{d(v)\choose s}
+ \le (t-1){a\choose s}
+\end{equation}
+が成り立つ．
+\end{lemma}
+\begin{proof}
+左辺は $s$ 頂点部分集合 $S\subset A$ と，
+$S$ の全頂点に隣接する $v\in B$ の組 $(S,v)$ を数える．
+各 $S$ に対する共通隣接点が $t$ 個以上なら
+$K_{s,t}$ が存在する．従って共通隣接点は高々 $t-1$ 個である．
+$S$ は ${a\choose s}$ 通りあるので結論を得る．
+\end{proof}
+
+\begin{theorem}[完全二部グラフの禁止による上界]\label{thm:kst}
+$s,t\ge1$ とし，$|A|=a$，$|B|=b\ge1$ の
+$K_{s,t}$ を持たない二部グラフの辺数を $m$ とする．このとき
+\[
+ m\le (t-1)^{1/s}a b^{1-1/s}+(s-1)b.
+\]
+\end{theorem}
+\begin{proof}
+任意の非負整数 $d$ に対して
+\[
+ {d\choose s}\ge \frac{(d-s+1)_+^s}{s!},
+ \qquad y_+=\max\{y,0\}
+\]
+が成り立つ．$d\ge s$ なら左辺の分子の
+$s$ 個の因子 $d,d-1,\ldots,d-s+1$ が
+それぞれ $d-s+1$ 以上だからである．
+$d<s$ の場合は右辺が0である．
+関数 $x\mapsto(x-s+1)_+^s$ は $[0,\infty)$ 上で凸だから，
+Jensenの不等式と握手補題により
+\[
+ \begin{aligned}
+ \sum_{v\in B}{d(v)\choose s}
+ &\ge\frac1{s!}\sum_{v\in B}(d(v)-s+1)_+^s\\
+ &\ge\frac b{s!}\left(\frac mb-s+1\right)_+^s.
+ \end{aligned}
+\]
+一方，補題~\ref{lem:kstdouble} と
+${a\choose s}\le a^s/s!$ から
+\[
+ b\left(\frac mb-s+1\right)_+^s
+ \le (t-1)a^s.
+\]
+$s$ 乗根を取って整理すれば
+$m\le (t-1)^{1/s}ab^{1-1/s}+(s-1)b$ となる．
+\end{proof}
+
+\section{Spernerの定理とLYM不等式}
+\begin{definition}[反鎖]
+$[n]=\{1,\ldots,n\}$ の部分集合族
+$\mathcal A\subset2^{[n]}$ が\emph{反鎖}であるとは，
+異なる $A,B\in\mathcal A$ の間に包含関係
+$A\subset B$ も $B\subset A$ も成り立たないことをいう．
+\end{definition}
+
+\begin{lemma}[一様ランダムな極大鎖]\label{lem:randomchain}
+$[n]$ の順列 $\pi=(\pi_1,\ldots,\pi_n)$ を一様に選び，
+$C_k=\{\pi_1,\ldots,\pi_k\}$（$0\le k\le n$）とする．
+$|A|=k$ なる固定した $A\subset[n]$ に対して
+\[
+ \mathbb P(A=C_k)={n\choose k}^{-1}.
+\]
+\end{lemma}
+\begin{proof}
+各 $k$ 元集合が最初の $k$ 個に現れる確率は対称性で等しい．
+これら ${n\choose k}$ 個の事象は互いに排反で，
+その和事象は全事象なので，確率はその逆数である．
+直接には順列の数を数えると $k!(n-k)!/n!$ である．
+\end{proof}
+
+\begin{theorem}[LYM不等式]\label{thm:lym}
+$\mathcal A$ を $2^{[n]}$ の反鎖とする．
+このとき
+\begin{equation}\label{eq:lym}
+ \sum_{A\in\mathcal A}{n\choose|A|}^{-1}\le1
+\end{equation}
+が成立する．
+\end{theorem}
+\begin{proof}
+補題~\ref{lem:randomchain} のランダムな極大鎖
+$C_0\subset C_1\subset\cdots\subset C_n$ を取る．
+反鎖はこの鎖と高々一つの元でしか交わらないから
+$\sum_{A\in\mathcal A}\mathbf1_{\{A\in\{C_k\}\}}\le1$ である．
+両辺の期待値を取ると，期待値の線形性により
+\[
+ \sum_{A\in\mathcal A}\mathbb P(A=C_{|A|})\le1.
+\]
+各確率を補題の式で置き換えれば結論を得る．
+\end{proof}
+
+\begin{corollary}[Spernerの定理]\label{cor:sperner}
+反鎖 $\mathcal A\subset2^{[n]}$ に対して
+\[
+ |\mathcal A|\le{n\choose\lfloor n/2\rfloor}
+\]
+が成り立つ．この上界は
+$\mathcal A=\{A\subset[n]:|A|=\lfloor n/2\rfloor\}$
+によって達成される．
+\end{corollary}
+\begin{proof}
+二項係数 ${n\choose k}$ は $k=\lfloor n/2\rfloor$ で最大となる．
+実際，隣接する比は
+${n\choose k+1}/{n\choose k}=(n-k)/(k+1)$ である．
+従って $M={n\choose\lfloor n/2\rfloor}$ とすると
+$1/{n\choose|A|}\ge1/M$ が全ての $A$ で成立する．
+LYM不等式から $|\mathcal A|/M\le1$．
+同じ大きさの集合どうしは真の包含関係を持たないので，
+中央の層は反鎖で，濃度はちょうど $M$ である．
+\end{proof}
+
+\section{交差集合族とErd\H{o}s--Ko--Radoの定理}
+\begin{definition}[交差族]
+$\mathcal F\subset{[n]\choose k}$ が交差族であるとは，
+任意の $A,B\in\mathcal F$ に対して
+$A\cap B\ne\varnothing$ が成り立つことをいう．
+\end{definition}
+
+\begin{lemma}[円周上の連続区間]\label{lem:katona}
+$n\ge2k\ge2$ とし，$n$ 個の位置を円周状に配置する．
+長さ $k$ の連続区間からなる交差族には
+高々 $k$ 個の区間しか含まれない．
+\end{lemma}
+\begin{proof}
+交差族が空なら自明である．
+一つの区間 $I$ を選び，その位置を
+$0,1,\ldots,k-1$ と書く．円周上の位置は $n$ を法として読む．
+$I$ と交わる長さ $k$ の区間の始点は
+$-k+1,-k+2,\ldots,-1,0,1,\ldots,k-1$ に限られる．
+$I$ 自身の始点は0である．
+残り $2k-2$ 個の始点を
+\[
+ (i,\,i-k)\qquad(1\le i\le k-1)
+\]
+の $k-1$ 組に分ける．
+始点が $i$ と $i-k$ の二つの長さ $k$ の区間は，
+$n\ge2k$ の下で互いに交わらない．
+従って交差族は各組から高々一つしか選べない．
+$I$ と合わせて高々 $1+(k-1)=k$ 個である．
+\end{proof}
+
+\begin{theorem}[Erd\H{o}s--Ko--Radoの定理]\label{thm:ekr}
+$n\ge2k\ge2$ とし，
+$\mathcal F\subset{[n]\choose k}$ を交差族とする．
+このとき
+\begin{equation}\label{eq:ekr}
+ |\mathcal F|\le{n-1\choose k-1}
+\end{equation}
+が成立する．
+\end{theorem}
+\begin{proof}
+$[n]$ の一様ランダムな円周配置を考える．
+$n$ 個の互いに異なる位置にラベルを置き，
+回転を同一視する円周配置は $(n-1)!$ 通りであり，
+いずれも同じ確率で選ぶ．
+固定した $A\in{[n]\choose k}$ が円周上で連続する確率を $p$ とする．
+対称性によってこの確率は $A$ によらない．
+どの配置も長さ $k$ の連続区間をちょうど $n$ 個持つので，
+全 $k$ 元集合について存在指示変数を足して期待値を取ると
+${n\choose k}p=n$，従って
+$p=n/{n\choose k}$ である．
+一方，任意の円周配置において，
+$\mathcal F$ に属する連続区間は
+補題~\ref{lem:katona} により高々 $k$ 個である．
+この個数の期待値は線形性により
+$|\mathcal F|p$ だから
+\[
+ |\mathcal F|\frac n{{n\choose k}}\le k.
+\]
+整理すると $|\mathcal F|\le(k/n){n\choose k}={n-1\choose k-1}$ となる．
+\end{proof}
+
+\begin{example}[上界の達成]
+一つの頂点 $v\in[n]$ を固定し，
+$\mathcal F=\{A\in{[n]\choose k}:v\in A\}$ と置く．
+全ての二集合は $v$ を共有するので交差族であり，
+濃度は ${n-1\choose k-1}$ である．
+従って定理~\ref{thm:ekr} の上界は最良である．
+\end{example}
+
+\section{確率的方法の基本原理}
+有限確率空間 $(\Omega,\mathbb P)$ を考える．
+実確率変数 $X:\Omega\to\mathbb R$ の期待値は
+$\mathbb EX=\sum_{\omega\in\Omega}X(\omega)\mathbb P(\omega)$ とする．
+
+\begin{lemma}[期待値の線形性]\label{lem:linearity}
+任意の確率変数 $X_1,\ldots,X_r$ と実数 $a_i$ について
+\[
+ \mathbb E\Bigl[\sum_{i=1}^ra_iX_i\Bigr]
+ =\sum_{i=1}^ra_i\mathbb EX_i
+\]
+が成立する．独立性は必要ない．
+\end{lemma}
+\begin{proof}
+期待値の定義の有限和を交換すれば
+\[
+ \sum_\omega\Bigl(\sum_i a_iX_i(\omega)\Bigr)\mathbb P(\omega)
+ =\sum_i a_i\sum_\omega X_i(\omega)\mathbb P(\omega)
+\]
+となる．
+\end{proof}
+
+\begin{lemma}[第一モーメント法]\label{lem:firstmoment}
+$X$ が非負整数値の確率変数で $\mathbb EX<1$ なら，
+$X=0$ となる標本点が存在する．
+また任意の実確率変数 $Y$ について
+$Y\ge\mathbb EY$ となる標本点が存在する．
+\end{lemma}
+\begin{proof}
+全ての標本点で $X\ge1$ なら $\mathbb EX\ge1$ となり矛盾する．
+同様に，全ての標本点で $Y<\mathbb EY$ なら有限個の値の最大値も
+$\mathbb EY$ より小さくなり，期待値の定義に矛盾する．
+\end{proof}
+
+\begin{lemma}[Markovの不等式と和事象の評価]\label{lem:markov}
+非負確率変数 $X$ と $a>0$ について
+\[
+ \mathbb P(X\ge a)\le\frac{\mathbb EX}{a}
+\]
+が成り立つ．さらに事象 $A_1,\ldots,A_r$ に対して
+\[
+ \mathbb P\Bigl(\bigcup_{i=1}^rA_i\Bigr)
+ \le\sum_{i=1}^r\mathbb P(A_i)
+\]
+が成立する．
+\end{lemma}
+\begin{proof}
+標本点ごとに $X\ge a\mathbf1_{\{X\ge a\}}$ が成り立つので，
+期待値を取って第一の不等式を得る．
+また $\mathbf1_{\cup A_i}\le\sum_i\mathbf1_{A_i}$ だから，
+補題~\ref{lem:linearity} を適用して第二の不等式を得る．
+\end{proof}
+
+\begin{proposition}[二次モーメント法]\label{prop:secondmoment}
+$X\ge0$，$\mathbb E(X^2)<\infty$ とし，
+$\mathbb E(X^2)>0$ とする．このとき
+\[
+ \mathbb P(X>0)\ge\frac{(\mathbb EX)^2}{\mathbb E(X^2)}.
+\]
+\end{proposition}
+\begin{proof}
+$X=X\mathbf1_{\{X>0\}}$ だから，
+Cauchy--Schwarzの不等式により
+\[
+ (\mathbb EX)^2
+ =\bigl(\mathbb E[X\mathbf1_{\{X>0\}}]\bigr)^2
+ \le\mathbb E(X^2)\,\mathbb P(X>0).
+\]
+両辺を $\mathbb E(X^2)>0$ で除すればよい．
+\end{proof}
+
+\section{ランダムグラフによるRamsey数の下界}
+$n$ 頂点の全ての二元部分集合について，
+独立に確率 $1/2$ で辺を置くランダムグラフを
+$G(n,1/2)$ と書く．
+ある $k$ 頂点集合がクリークになる確率は
+$2^{-{k\choose2}}$ であり，
+独立集合になる確率も同じである．
+
+\begin{theorem}[Ramsey数の確率的下界]\label{thm:ramseylower}
+正整数 $n,k\ge2$ が
+\begin{equation}\label{eq:ramseylowercondition}
+ {n\choose k}2^{1-{k\choose2}}<1
+\end{equation}
+を満たせば $R(k,k)>n$ である．
+\end{theorem}
+\begin{proof}
+$G(n,1/2)$ で $k$ 頂点クリークの数を $X$，
+$k$ 頂点独立集合の数を $Y$ とする．
+各 $k$ 頂点集合 $S$ の指示変数を用いると
+\[
+ X=\sum_{|S|=k}\mathbf1_{\{S\text{ がクリーク}\}},
+ \qquad
+ Y=\sum_{|S|=k}\mathbf1_{\{S\text{ が独立}\}}.
+\]
+期待値の線形性と辺の独立性から
+\[
+ \mathbb E(X+Y)=2{n\choose k}2^{-{k\choose2}}<1.
+\]
+第一モーメント法によって $X+Y=0$ の実現が存在する．
+すなわち，クリークも独立集合も大きさ $k$ のものを持たない
+$n$ 頂点グラフがある．従って $R(k,k)>n$ である．
+\end{proof}
+
+\begin{corollary}[指数的な下界]
+$k\ge4$ に対して
+\[
+ R(k,k)>\lfloor 2^{k/2}\rfloor
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+$n=\lfloor2^{k/2}\rfloor$ とする．
+${n\choose k}\le n^k/k!\le2^{k^2/2}/k!$ だから
+\[
+ {n\choose k}2^{1-{k\choose2}}
+ \le \frac{2^{1+k/2}}{k!}.
+\]
+$k=4$ では右辺は $8/24<1$ である．
+$k$ を一つ増すと右辺の比は
+$\sqrt2/(k+1)<1$ だから，$k\ge4$ の全てで右辺は1未満である．
+定理~\ref{thm:ramseylower} によって結論を得る．
+\end{proof}
+
+\section{独立集合の確率的構成}
+\begin{theorem}[削除法による独立集合]\label{thm:alteration}
+$n$ 頂点 $m$ 辺の任意のグラフに対し，
+全ての $p\in[0,1]$ について
+\begin{equation}\label{eq:alteration}
+ \alpha(G)\ge pn-p^2m
+\end{equation}
+が成り立つ．
+\end{theorem}
+\begin{proof}
+各頂点を独立に確率 $p$ で選び，得られた集合を $S$ とする．
+選ばれた頂点の数を $X=|S|$，
+$G[S]$ の辺数を $Y$ とすると，
+各頂点が選ばれる確率は $p$，
+各辺の両端が選ばれる確率は $p^2$ なので
+\[
+ \mathbb EX=pn,\qquad \mathbb EY=p^2m.
+\]
+期待値の線形性から
+$\mathbb E(X-Y)=pn-p^2m$ である．
+従って $X-Y\ge pn-p^2m$ の標本点が存在する．
+この $S$ から $G[S]$ の各辺について端点の少なくとも一つを削除する操作を
+辺が残らなくなるまで繰り返す．
+一操作で辺が少なくとも一本減るので，高々 $Y$ 回で終了する．
+残った集合は独立であり，頂点数は少なくとも $X-Y$ である．
+従って $\alpha(G)\ge X-Y\ge pn-p^2m$ である．
+\end{proof}
+
+\begin{corollary}[辺数による独立集合の下界]
+$m>0$ とする．$m\ge n/2$ なら
+\[
+ \alpha(G)\ge\frac{n^2}{4m}
+\]
+である．$m<n/2$ なら
+$\alpha(G)\ge n-m$ である．
+\end{corollary}
+\begin{proof}
+前者では $p=n/(2m)\le1$ を式~\eqref{eq:alteration} に代入する．
+後者では $p=1$ とすればよい．
+\end{proof}
+
+\begin{theorem}[Caro--Weiの不等式]\label{thm:carowei}
+任意の有限単純グラフに対して
+\begin{equation}\label{eq:carowei}
+ \alpha(G)\ge\sum_{v\in V}\frac1{d(v)+1}
+ \ge\frac{n^2}{2m+n}
+\end{equation}
+が成り立つ．
+\end{theorem}
+\begin{proof}
+頂点の一様ランダムな全順序を選ぶ．
+頂点 $v$ が自身とその隣接点の中で最初に現れるとき $v$ を採用する．
+採用頂点全体を $S$ とすると，$S$ は独立集合である．
+実際，隣接する二頂点 $u,v$ が共に採用されるなら，
+$u$ が $v$ より先であると同時に $v$ が $u$ より先でなければならず矛盾する．
+各 $v$ について集合 $\{v\}\cup N(v)$ の $d(v)+1$ 頂点の順序は
+同様に確からしいので，採用確率は $1/(d(v)+1)$ である．
+従って
+\[
+ \mathbb E|S|=\sum_v\frac1{d(v)+1}.
+\]
+$|S|\le\alpha(G)$ が全ての標本点で成り立つから第一の不等式を得る．
+次にCauchy--Schwarzの不等式から
+\[
+ \left(\sum_v\frac1{d(v)+1}\right)
+ \left(\sum_v(d(v)+1)\right)\ge n^2.
+\]
+$\sum_v(d(v)+1)=2m+n$ なので第二の不等式が従う．
+\end{proof}
+
+\section{大きなgirthと彩色数の両立}
+\begin{definition}
+グラフの\emph{girth}を，最短の単純閉路の長さとする．
+閉路を持たない場合は girth を $\infty$ と定める．
+グラフの\emph{彩色数} $\chi(G)$ は適正頂点彩色に必要な色数の最小値である．
+\end{definition}
+
+\begin{lemma}[独立集合と彩色数]\label{lem:chiind}
+空でないグラフについて
+\[
+ \chi(G)\ge\frac{|V(G)|}{\alpha(G)}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+適正 $\chi(G)$ 色彩色の各色類は独立集合なので，
+各色類の大きさは $\alpha(G)$ 以下である．
+全色類の大きさの和は $|V(G)|$ だから
+$|V(G)|\le\chi(G)\alpha(G)$ となる．
+\end{proof}
+
+\begin{theorem}[Erd\H{o}sの高girth・高彩色数定理]\label{thm:erdosgirth}
+任意の整数 $g\ge3$ と $k\ge1$ に対し，
+$\operatorname{girth}(G)>g$ かつ $\chi(G)>k$ を満たす
+有限グラフ $G$ が存在する．
+\end{theorem}
+\begin{proof}
+$n$ を十分大きく取り，$p=n^{-1+1/(2g)}$ とする．
+$n$ 頂点ランダムグラフ $G(n,p)$ を考える．
+長さ $\ell$（$3\le\ell\le g$）の単純閉路の個数を $Y_\ell$ とし，
+$Y=\sum_{\ell=3}^gY_\ell$ と置く．
+長さ $\ell$ の閉路は高々
+$n(n-1)\cdots(n-\ell+1)/(2\ell)$ 通りあり，
+各閉路に必要な $\ell$ 本の辺が全て存在する確率は $p^\ell$ である．
+従って
+\[
+ \mathbb EY
+ \le\sum_{\ell=3}^g\frac{n^\ell p^\ell}{2\ell}
+ =\sum_{\ell=3}^g\frac{n^{\ell/(2g)}}{2\ell}
+ \le C_g n^{1/2}
+\]
+となる．ここで $C_g=\sum_{\ell=3}^g(2\ell)^{-1}$ は定数である．
+Markovの不等式より
+\[
+ \mathbb P(Y\ge n/2)\le 2C_gn^{-1/2}\longrightarrow0.
+\]
+一方 $s=\lfloor n/(2k)\rfloor$ とし，
+大きさ $s$ の独立集合の個数を $Z$ とする．
+固定された $s$ 頂点集合が独立集合になる確率は
+$(1-p)^{{s\choose2}}$ だから
+\[
+ \mathbb EZ={n\choose s}(1-p)^{{s\choose2}}
+ \le2^n\exp\left(-p{s\choose2}\right).
+\]
+最後は $1-p\le e^{-p}$ と ${n\choose s}\le2^n$ を用いた．
+固定した $g,k$ について $s\sim n/(2k)$ だから
+$ p{s\choose2}$ は $n^{1+1/(2g)}$ の正の定数倍以上となり，
+$n\log2-p{s\choose2}\to-\infty$．
+従って $\mathbb EZ\to0$ である．
+Markovの不等式から $\mathbb P(Z\ge1)\le\mathbb EZ\to0$．
+$n$ を十分大きく取れば二つの悪い事象の確率の和は1未満となる．
+ゆえに $Y<n/2$ かつ $Z=0$ を満たすグラフが存在する．
+そのグラフから長さ $g$ 以下の各閉路を破壊するように，
+各閉路につき一つずつ頂点を取り除く．
+高々 $Y<n/2$ 個の頂点を除けばよく，
+得られた誘導部分グラフ $H$ は
+$|V(H)|>n/2$，$\operatorname{girth}(H)>g$ を満たす．
+誘導部分グラフの独立集合は元のグラフの独立集合でもあるため，
+$Z=0$ より $\alpha(H)<s$ である．
+特に $s\ge1$ の範囲では補題~\ref{lem:chiind} により
+\[
+ \chi(H)\ge\frac{|V(H)|}{\alpha(H)}
+ >\frac{n/2}{s}\ge k.
+\]
+従って $H$ が求めるグラフである．
+\end{proof}
+
+\begin{remark}
+この存在証明は，初めから大きなgirthのグラフを直接生成するのではない．
+短い閉路が少なく，かつ大きな独立集合がないグラフをまず作り，
+少数の頂点を削除してgirthの条件を満たす．
+これが\emph{改変法}（alteration）の典型例である．
+\end{remark}
+
+\section{事象の依存性と局所補題}
+\begin{definition}[依存グラフ]
+事象 $A_1,\ldots,A_N$ に対するグラフ $D$ が
+\emph{依存グラフ}であるとは，
+各 $i$ について，$A_i$ が $D$ で $i$ に隣接しない
+全ての $A_j$ から生成される事象族と独立であることをいう．
+単に各 $A_j$ と二事象ごとに独立であるだけでは不十分である．
+\end{definition}
+
+\begin{theorem}[非対称Lov\'asz局所補題]\label{thm:lll}
+事象 $A_1,\ldots,A_N$ の依存グラフを $D$ とする．
+各頂点 $i$ に対して $0\le x_i<1$ を選び，
+\begin{equation}\label{eq:lll}
+ \mathbb P(A_i)\le x_i\prod_{j\sim i}(1-x_j)
+\end{equation}
+が成立すると仮定する．このとき
+\[
+ \mathbb P\left(\bigcap_{i=1}^N A_i^c\right)
+ \ge\prod_{i=1}^N(1-x_i)>0
+\]
+である．
+\end{theorem}
+\begin{proof}
+まず，全ての $i$ と $i\notin S\subset\{1,\ldots,N\}$ について
+\begin{equation}\label{eq:lllconditional}
+ \mathbb P\left(A_i\mid\bigcap_{j\in S}A_j^c\right)\le x_i
+\end{equation}
+を，$|S|$ に関する帰納法で証明する．
+条件付き確率は分母が正の場合に定義されるが，
+その正値性も同時に帰納法で示す．
+$S=\varnothing$ の場合は
+$\mathbb P(A_i)\le x_i\prod_{j\sim i}(1-x_j)\le x_i$ である．
+$|S|$ が小さい場合について主張が成立すると仮定する．
+先に $\bigcap_{j\in S}A_j^c$ の確率が正であることを確かめる．
+$S$ の元を任意に並べ，事象を順に避ける条件付き確率を掛けると，
+各段階での条件付けに用いる添字の個数は $|S|$ より小さい．
+従って帰納法の仮定によって，その条件付き確率は
+対応する $1-x_j>0$ 以上であり，積も正である．
+$S_1=\{j\in S:j\sim i\}$，
+$S_2=S\setminus S_1$ と置く．
+依存グラフの定義より $A_i$ は
+$\bigcap_{j\in S_2}A_j^c$ と独立である．
+従って確率の基本公式から
+\[
+ \begin{aligned}
+ &\mathbb P\left(A_i\mid\bigcap_{j\in S}A_j^c\right)\\
+ &\quad\le
+ \frac{\mathbb P(A_i\mid\bigcap_{j\in S_2}A_j^c)}
+ {\mathbb P(\bigcap_{j\in S_1}A_j^c\mid
+ \bigcap_{j\in S_2}A_j^c)}
+ =\frac{\mathbb P(A_i)}
+ {\mathbb P(\bigcap_{j\in S_1}A_j^c\mid
+ \bigcap_{j\in S_2}A_j^c)}.
+ \end{aligned}
+\]
+$S_1$ の元を任意の順に $j_1,\ldots,j_r$ と並べる．
+連鎖律によって分母は
+\[
+ \prod_{h=1}^r
+ \left(1-\mathbb P\left(A_{j_h}\mid
+ \bigcap_{j\in S_2\cup\{j_1,\ldots,j_{h-1}\}}A_j^c\right)\right)
+\]
+となる．各条件付けに使う添字集合は $S$ より小さいので，
+帰納法の仮定によって各因子は
+$1-x_{j_h}>0$ 以上である．
+従って式~\eqref{eq:lll} により
+\[
+ \mathbb P\left(A_i\mid\bigcap_{j\in S}A_j^c\right)
+ \le\frac{\mathbb P(A_i)}{\prod_{j\in S_1}(1-x_j)}
+ \le x_i.
+\]
+最後の不等式は $S_1\subset\{j:j\sim i\}$ と
+$0<1-x_j\le1$ に注意すれば従う．
+分母の各因子が正であることも確認できた．
+これで式~\eqref{eq:lllconditional} が全ての $S$ で成立する．
+最後に $1,\ldots,N$ の順に事象を避ける条件付き確率を掛けると
+\[
+ \begin{aligned}
+ \mathbb P\left(\bigcap_{i=1}^N A_i^c\right)
+ &=\prod_{i=1}^N
+ \left(1-\mathbb P\left(A_i\mid
+ \bigcap_{j<i}A_j^c\right)\right)\\
+ &\ge\prod_{i=1}^N(1-x_i)>0
+ \end{aligned}
+\]
+となり結論を得る．
+\end{proof}
+
+\begin{corollary}[対称Lov\'asz局所補題]\label{cor:symmetriclll}
+全ての事象が確率高々 $p$ を持ち，
+依存グラフの各頂点の次数が高々 $D$ であるとする．
+$e p(D+1)\le1$ なら
+\[
+ \mathbb P\left(\bigcap_i A_i^c\right)>0
+\]
+である．
+\end{corollary}
+\begin{proof}
+$D\ge1$ なら $x_i=x=1/(D+1)$ と置く．
+$\log(1+1/D)\le1/D$ だから
+\[
+ x(1-x)^D
+ =\frac1{D+1}\left(\frac D{D+1}\right)^D
+ \ge\frac1{e(D+1)}\ge p.
+\]
+従って定理~\ref{thm:lll} の条件を満たす．
+$D=0$ なら全事象は他の全事象族と独立であり，
+$ep\le1$ より $p<1$ なので
+$\mathbb P(\cap A_i^c)=\prod_i(1-\mathbb P(A_i))>0$ である．
+\end{proof}
+
+\section{超グラフの二色化への応用}
+\begin{definition}[一様超グラフ]
+有限集合 $V$ とその部分集合の族 $\mathcal E$ の組
+$\mathcal H=(V,\mathcal E)$ を超グラフと呼ぶ．
+各 $E\in\mathcal E$ がちょうど $r$ 個の頂点を持つなら
+$r$-一様という．
+頂点を赤と青で塗り，各超辺に両方の色が現れるようにできるとき，
+超グラフは\emph{二色化可能}であるという．
+\end{definition}
+
+\begin{proposition}[第一モーメント法による二色化]\label{prop:hyperfirst}
+$r\ge1$ の $r$-一様超グラフ $\mathcal H=(V,\mathcal E)$ において
+\[
+ |\mathcal E|<2^{r-1}
+\]
+なら二色化可能である．
+\end{proposition}
+\begin{proof}
+各頂点を独立に確率 $1/2$ で赤または青に塗る．
+固定した超辺 $E$ の全頂点が同色となる確率は
+$2(1/2)^r=2^{1-r}$ である．
+同色となる超辺の数を $X$ とすると期待値の線形性から
+$\mathbb EX=|\mathcal E|2^{1-r}<1$ である．
+従って補題~\ref{lem:firstmoment} により，
+同色の超辺が一つもない彩色が存在する．
+\end{proof}
+
+\begin{theorem}[局所補題による二色化]\label{thm:hyperlll}
+$r\ge2$ の $r$-一様超グラフ $\mathcal H=(V,\mathcal E)$ において，
+どの超辺も他の高々 $D$ 本の超辺としか交わらないとする．
+\begin{equation}\label{eq:hyperlllcondition}
+ e\,2^{1-r}(D+1)\le1
+\end{equation}
+なら $\mathcal H$ は二色化可能である．
+\end{theorem}
+\begin{proof}
+独立な一様ランダム二色彩色を考え，
+各超辺 $E$ に対して $A_E=$「$E$ が単色となる」事象を定める．
+どの $A_E$ も確率 $2^{1-r}$ である．
+互いに交わらない超辺に関する事象族は
+互いに異なる頂点の色だけに依存するので独立である．
+従って，交わる超辺どうしを結ぶグラフは
+事象族 $\{A_E\}$ の依存グラフになる．
+その最大次数は仮定より $D$ 以下であり，
+式~\eqref{eq:hyperlllcondition} の下で
+系~\ref{cor:symmetriclll} を適用できる．
+よって全ての $A_E$ を同時に避ける彩色が正の確率で存在する．
+\end{proof}
+
+\begin{corollary}[頂点の超辺次数による条件]
+$r\ge2$ の $r$-一様超グラフで，各頂点が属する超辺の数が
+高々 $\Delta$ であるとする．
+\[
+ e\,2^{1-r}\bigl(r(\Delta-1)+1\bigr)\le1
+\]
+なら二色化可能である．
+\end{corollary}
+\begin{proof}
+固定した超辺 $E$ は $r$ 個の頂点を持ち，
+各頂点を通じて交わる他の超辺は高々 $\Delta-1$ 本である．
+同じ超辺が複数回数えられても上界として使えるので，
+$E$ と交わる他の超辺は高々 $r(\Delta-1)$ 本である．
+定理~\ref{thm:hyperlll} を適用する．
+\end{proof}
+
+\section{Erd\H{o}s--Szekeresの単調部分列定理}
+Ramsey型の有限性は，グラフの辺の彩色以外にも現れる．
+ここでは相異なる実数の列を考える．
+
+\begin{theorem}[単調部分列定理]\label{thm:erdosszekeres}
+$r,s\ge2$ とする．
+相異なる実数からなる長さ $(r-1)(s-1)+1$ の列には，
+長さ $r$ の狭義単調増加部分列または
+長さ $s$ の狭義単調減少部分列が存在する．
+ここで部分列は元の添字の順序を保つものとする．
+\end{theorem}
+\begin{proof}
+列を $a_1,\ldots,a_N$ とする．
+各 $i$ に対し，$a_i$ を最後の元とする狭義単調増加部分列の
+最大長を $p_i$，狭義単調減少部分列の最大長を $q_i$ とする．
+仮に結論にある長さの部分列が存在しなければ
+$1\le p_i\le r-1$ および $1\le q_i\le s-1$ となる．
+ところが，二つの相異なる添字 $i<j$ を取ると，
+$a_i<a_j$ の場合は $a_i$ で終わる増加部分列の後ろに
+$a_j$ を付け足せるので $p_j\ge p_i+1$ である．
+$a_i>a_j$ の場合は同様に $q_j\ge q_i+1$ である．
+従って二つの組 $(p_i,q_i)$ と $(p_j,q_j)$ は必ず異なる．
+一方，$(p_i,q_i)$ が取り得る組は
+高々 $(r-1)(s-1)$ 個しかない．
+$N=(r-1)(s-1)+1$ だから鳩の巣原理に矛盾する．
+\end{proof}
+
+\begin{proposition}[長さの鋭さ]
+$r,s\ge2$ とすると，長さ $(r-1)(s-1)$ であって，
+長さ $r$ の増加部分列も長さ $s$ の減少部分列も持たない
+相異なる実数列が存在する．
+\end{proposition}
+\begin{proof}
+$r-1$ 個のブロックを用意し，各ブロックに
+$s-1$ 個の整数を狭義単調減少の順に並べる．
+各ブロックの値は，後のブロックの全ての値が
+前のブロックの全ての値より大きくなるように選ぶ．
+例えばブロック $j$（$0\le j<r-1$）を
+\[
+ (j(s-1)+s-1,\ldots,j(s-1)+1)
+\]
+とすればよい．
+増加部分列は同一ブロックから高々一つしか選べないので
+長さは高々 $r-1$ である．
+減少部分列は異なるブロックをまたいで選べないので
+長さは高々 $s-1$ である．
+従って定理~\ref{thm:erdosszekeres} の列長は最良である．
+\end{proof}
+
+\section{Rademacher和の指数型評価}
+独立な確率変数 $\varepsilon_1,\ldots,\varepsilon_m$ が
+各々 $+1$ または $-1$ を確率 $1/2$ ずつで取るとき，
+これらをRademacher確率変数と呼ぶ．
+
+\begin{lemma}[指数母関数の上界]\label{lem:cosh}
+$\varepsilon$ をRademacher確率変数とする．
+任意の $t\in\mathbb R$ に対し
+\[
+ \mathbb E e^{t\varepsilon}
+ =\cosh t\le e^{t^2/2}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+定義から
+$\mathbb Ee^{t\varepsilon}=(e^t+e^{-t})/2=\cosh t$ である．
+後者の不等式を証明する．
+$f(t)=t^2/2-\log\cosh t$ と置くと
+$f(0)=0$，$f'(t)=t-\tanh t$ である．
+$t\ge0$ に対し
+$\tanh t\le t$ が成立する．実際
+$\frac{d}{dt}(t-\tanh t)=1-\operatorname{sech}^2t
+ =\tanh^2t\ge0$ であり，$t=0$ で0だからである．
+従って $f(t)\ge0$ が $t\ge0$ で成り立つ．
+$f$ は偶関数なので，全ての実数で不等式が成り立つ．
+\end{proof}
+
+\begin{theorem}[Hoeffding型不等式]\label{thm:hoeffding}
+$\varepsilon_1,\ldots,\varepsilon_m$ を独立なRademacher確率変数，
+$S=\sum_{i=1}^m\varepsilon_i$ とする．
+任意の $a>0$ について
+\begin{equation}\label{eq:hoeffding}
+ \mathbb P(S\ge a)\le e^{-a^2/(2m)},
+ \qquad
+ \mathbb P(|S|\ge a)\le2e^{-a^2/(2m)}.
+\end{equation}
+\end{theorem}
+\begin{proof}
+任意の $t>0$ について
+$S\ge a$ なら $e^{tS}\ge e^{ta}$ である．
+Markovの不等式と独立性を用いると
+\[
+ \begin{aligned}
+ \mathbb P(S\ge a)
+ &\le e^{-ta}\mathbb Ee^{tS}\\
+ &=e^{-ta}\prod_{i=1}^m\mathbb Ee^{t\varepsilon_i}\\
+ &\le\exp(-ta+mt^2/2).
+ \end{aligned}
+\]
+右辺の指数の最小値は $t=a/m$ のとき $-a^2/(2m)$ である．
+従って第一の不等式を得る．
+$-S$ も同じ分布を持つので
+$\mathbb P(S\le-a)\le e^{-a^2/(2m)}$．
+二つの事象の和の上界を取れば第二の不等式が従う．
+\end{proof}
+
+\begin{remark}
+上の証明における $\mathbb Ee^{tS}=\prod_i\mathbb Ee^{t\varepsilon_i}$
+には独立性が必要である．
+一方，最後に二つの事象を合わせる際の和事象の不等式には
+独立性を必要としない．
+\end{remark}
+
+\section{集合族の不均衡度}
+集合族の各元を二色に塗ったとき，
+各集合の中で赤と青の個数をできるだけ近くする問題を考える．
+
+\begin{definition}[不均衡度]
+$V$ の二色彩色 $\chi:V\to\{-1,+1\}$ と
+$E\subset V$ に対して
+\[
+ \operatorname{disc}_\chi(E)
+ =\left|\sum_{v\in E}\chi(v)\right|
+\]
+と定める．集合族 $\mathcal F$ に対する彩色の不均衡度を
+$\max_{E\in\mathcal F}\operatorname{disc}_\chi(E)$ とする．
+\end{definition}
+
+\begin{theorem}[ランダム彩色による不均衡度の上界]\label{thm:discrepancy}
+$\mathcal F$ を空でない $V$ の部分集合族とし，
+$M=|\mathcal F|\ge1$，$r=\max_{E\in\mathcal F}|E|\ge1$ とする．
+このとき，ある二色彩色 $\chi:V\to\{-1,+1\}$ が存在して
+\begin{equation}\label{eq:discrepancy}
+ \max_{E\in\mathcal F}\operatorname{disc}_\chi(E)
+ <\sqrt{2r\log(4M)}
+\end{equation}
+を満たす．
+\end{theorem}
+\begin{proof}
+各頂点に独立にRademacher確率変数を割り当て，
+その値を彩色 $\chi(v)$ とする．
+固定した非空集合 $E$ について
+$S_E=\sum_{v\in E}\chi(v)$ と置けば，
+定理~\ref{thm:hoeffding} により任意の $a>0$ について
+\[
+ \mathbb P(|S_E|\ge a)
+ \le2\exp\left(-\frac{a^2}{2|E|}\right)
+ \le2\exp\left(-\frac{a^2}{2r}\right).
+\]
+$E=\varnothing$ なら $S_E=0$ なので，同じ上界は自明に成立する．
+全 $E\in\mathcal F$ について和事象の不等式を用いると
+\[
+ \mathbb P\left(\max_{E\in\mathcal F}|S_E|\ge a\right)
+ \le2M\exp\left(-\frac{a^2}{2r}\right).
+\]
+$a=\sqrt{2r\log(4M)}$ を選べば右辺は $1/2<1$ である．
+従って全ての集合で $|S_E|<a$ となる彩色が存在する．
+\end{proof}
+
+\begin{corollary}[二色の個数の差]
+$\mathcal F$ の各集合の大きさが高々 $r$ で，
+集合の個数が $M$ であるとき，
+全ての集合における赤の個数と青の個数の差を
+同時に $\sqrt{2r\log(4M)}$ 未満にする二色彩色が存在する．
+\end{corollary}
+\begin{proof}
+赤を $+1$，青を $-1$ に対応させれば，
+赤の個数と青の個数の差の絶対値は
+$\operatorname{disc}_\chi(E)$ に等しい．
+定理~\ref{thm:discrepancy} を適用する．
+\end{proof}
+
+\section{確率的被覆集合の構成}
+\begin{definition}[横断集合]
+集合族 $\mathcal F\subset2^V$ に対し，
+$T\subset V$ が\emph{横断集合}（hitting set）であるとは，
+全ての $E\in\mathcal F$ に対して
+$T\cap E\ne\varnothing$ を満たすことをいう．
+\end{definition}
+
+\begin{theorem}[一様ランダム抽出による横断集合]\label{thm:hittingset}
+$|V|=n\ge1$，$|\mathcal F|=M\ge1$ とし，
+$\alpha\in(0,1]$ について全ての $E\in\mathcal F$ が
+$|E|\ge\alpha n$ を満たすとする．
+正整数 $t$ が
+\begin{equation}\label{eq:hitting}
+ M(1-\alpha)^t<1
+\end{equation}
+を満たせば，濃度高々 $t$ の横断集合が存在する．
+\end{theorem}
+\begin{proof}
+$V$ から復元抽出によって一様ランダムに
+$t$ 回頂点を選び，得られた頂点の集合を $T$ とする．
+重複選択を許すので $|T|\le t$ である．
+固定した $E\in\mathcal F$ が一度も選ばれない確率は
+\[
+ \left(1-\frac{|E|}{n}\right)^t\le(1-\alpha)^t.
+\]
+和事象の不等式から，少なくとも一つの集合が選択されない確率は
+$M(1-\alpha)^t$ 以下である．
+式~\eqref{eq:hitting} によりこの確率は1未満なので，
+全ての $E\in\mathcal F$ と交わる $T$ が存在する．
+\end{proof}
+
+\begin{corollary}[指数関数による簡単な条件]
+$\alpha\in(0,1]$，$M\ge1$ について
+\[
+ t>\frac{\log M}{\alpha}
+\]
+なら，定理~\ref{thm:hittingset} の条件を満たす．
+\end{corollary}
+\begin{proof}
+$1-\alpha\le e^{-\alpha}$ だから
+$M(1-\alpha)^t\le Me^{-\alpha t}<1$．
+従って定理~\ref{thm:hittingset} が適用できる．
+\end{proof}
+
+\section{ランダムグラフの三角形出現閾値}
+確率的方法は単に対象の存在を示すだけでなく，
+確率的に生成した対象がいつ典型的にある性質を持つかを調べる際にも使われる．
+辺の出現確率を $p=p(n)$ とするランダムグラフ $G(n,p)$ を考える．
+
+\begin{definition}[高確率での成立]
+$n\to\infty$ のとき事象 $A_n$ の確率が1に収束するなら，
+$A_n$ は\emph{高確率で}成立するという．
+関数 $f(n),g(n)>0$ について
+$f=o(g)$ は $f/g\to0$，$f=\omega(g)$ は $f/g\to\infty$ を意味する．
+\end{definition}
+
+\begin{lemma}[Chebyshevの不等式]\label{lem:chebyshev}
+二次モーメントが有限な実確率変数 $X$ に対し
+$\operatorname{Var}(X)=\mathbb E[(X-\mathbb EX)^2]$ と定める．
+任意の $a>0$ について
+\[
+ \mathbb P(|X-\mathbb EX|\ge a)
+ \le\frac{\operatorname{Var}(X)}{a^2}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+非負確率変数 $(X-\mathbb EX)^2$ に
+Markovの不等式を閾値 $a^2$ で適用する．
+\end{proof}
+
+\begin{theorem}[三角形の出現閾値]\label{thm:trianglethreshold}
+$G(n,p)$ に三角形が存在する事象を $A_n$ とする．
+\begin{enumerate}
+\item $p=o(n^{-1})$ なら $\mathbb P(A_n)\to0$．
+\item $p=\omega(n^{-1})$ なら $\mathbb P(A_n)\to1$．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+三角形の数を $X$ とする．
+頂点三元集合 $S$ に対して，そこに三角形が現れる指示変数を $I_S$ と書けば
+$X=\sum_{|S|=3}I_S$ である．
+辺が独立に生じるので
+\[
+ \mathbb EX={n\choose3}p^3.
+\]
+$p=o(n^{-1})$ の場合は $\mathbb EX=o(1)$ であり，
+Markovの不等式によって
+$\mathbb P(A_n)=\mathbb P(X\ge1)\le\mathbb EX\to0$ となる．
+次に $p=\omega(n^{-1})$ とする．
+二つの異なる三角形指示変数が独立でなくなるのは，
+二つの三角形が辺を共有するときに限る．
+頂点を一つ共有するだけでは使用する辺が互いに素であるため独立である．
+各 $I_S$ はBernoulli確率変数なので
+$\operatorname{Var}(I_S)\le\mathbb EI_S=p^3$．
+辺を共有する異なる二三角形の組は
+$n$ の多項式で $O(n^4)$ 個である．
+このとき双方に必要な辺は合計5本なので
+$\mathbb E(I_SI_T)=p^5$ であり，
+共分散は $p^5-p^6\le p^5$ である．
+従ってある絶対定数 $C$ に対して
+\[
+ \operatorname{Var}(X)
+ \le {n\choose3}p^3+Cn^4p^5.
+\]
+一方 $n\ge4$ では $\mathbb EX$ は $n^3p^3$ の正の定数倍以上なので
+\[
+ \frac{\operatorname{Var}(X)}{(\mathbb EX)^2}
+ \le C'\left(\frac1{n^3p^3}+\frac1{n^2p}\right)
+ \longrightarrow0
+\]
+となる．実際 $np\to\infty$ より
+$n^3p^3\to\infty$，$n^2p\to\infty$ である．
+$X=0$ のとき $|X-\mathbb EX|\ge\mathbb EX$ だから，
+Chebyshevの不等式によって
+\[
+ \mathbb P(X=0)
+ \le\frac{\operatorname{Var}(X)}{(\mathbb EX)^2}\to0.
+\]
+従って $\mathbb P(A_n)\to1$ である．
+\end{proof}
+
+\begin{remark}
+定理~\ref{thm:trianglethreshold} は，$p$ が $n^{-1}$ より
+十分小さい場合と十分大きい場合を記述する．
+$p\asymp n^{-1}$ の境界領域の極限分布までは主張していない．
+確率しきい値の厳密な意味は対象とする事象によって異なるため，
+漸近記号の仮定を明記することが重要である．
+\end{remark}
+
+\section{多色Ramsey定理}
+二色Ramsey定理を任意個の色に拡張する．
+
+\begin{definition}[多色Ramsey数]
+$r\ge2$，$k_1,\ldots,k_r\ge1$ に対して
+$R(k_1,\ldots,k_r)$ は，十分多くの頂点を持つ完全グラフの辺を
+$r$ 色でどのように塗っても，
+ある色 $i$ の単色 $K_{k_i}$ が現れることを保証する
+最小頂点数とする．
+\end{definition}
+
+\begin{theorem}[有限多色Ramsey定理]\label{thm:multicolorramsey}
+任意の $r\ge2$ および $k_1,\ldots,k_r\ge1$ に対して
+多色Ramsey数は有限である．
+全ての $k_i\ge2$ なら
+\begin{equation}\label{eq:multirrec}
+ R(k_1,\ldots,k_r)
+ \le\sum_{i=1}^r
+ R(k_1,\ldots,k_i-1,\ldots,k_r)-r+2
+\end{equation}
+が成立する．
+\end{theorem}
+\begin{proof}
+$K=\sum_i k_i$ に関する帰納法を行う．
+ある $k_i=1$ なら一つの頂点だけでその色の $K_1$ が存在するから
+$R(k_1,\ldots,k_r)=1$ と定めればよい．
+全て $k_i\ge2$ とし，右辺を $N$ と書く．
+$N$ 頂点完全グラフの辺を任意に $r$ 色で塗り，一頂点 $v$ を固定する．
+$v$ から色 $i$ で結ばれる他の頂点数を $d_i$ とする．
+これらは $\sum_i d_i=N-1$ を満たす．
+もし全ての $i$ について
+$d_i\le R(k_1,\ldots,k_i-1,\ldots,k_r)-1$
+なら
+\[
+ \sum_i d_i\le\sum_i R(k_1,\ldots,k_i-1,\ldots,k_r)-r
+ =N-2
+\]
+となって矛盾する．従って少なくとも一つの $i$ で
+\[
+ d_i\ge R(k_1,\ldots,k_i-1,\ldots,k_r)
+\]
+が成り立つ．
+その色 $i$ の隣接点集合の中で帰納法の仮定を適用すると，
+色 $j\ne i$ の単色 $K_{k_j}$ または
+色 $i$ の単色 $K_{k_i-1}$ が存在する．
+前者は既に目的の構造であり，後者には $v$ を加えて
+色 $i$ の単色 $K_{k_i}$ を得る．
+これにより $N$ 頂点で目的の条件が保証され，帰納法が完了する．
+\end{proof}
+
+\begin{corollary}
+正整数 $r,k$ を任意に固定すると，
+十分大きな完全グラフの辺の任意の $r$ 色彩色は
+単色の $K_k$ を含む．
+\end{corollary}
+\begin{proof}
+定理~\ref{thm:multicolorramsey} において
+$k_1=\cdots=k_r=k$ とすればよい．
+\end{proof}
+
+\section{長い鎖を禁止した集合族}
+反鎖は長さ二の包含鎖を持たない集合族である．
+より長い包含鎖を禁止した場合にも，
+LYM不等式と同じ考え方が使える．
+
+\begin{definition}[鎖の長さ]
+集合族 $\mathcal F\subset2^{[n]}$ の中の
+相異なる集合 $A_1,\ldots,A_t$ が
+\[
+ A_1\subsetneq A_2\subsetneq\cdots\subsetneq A_t
+\]
+を満たすとき，長さ $t$ の鎖という．
+\end{definition}
+
+\begin{theorem}[Erd\H{o}sの鎖禁止定理]\label{thm:chainfree}
+$1\le t\le n+1$ とする．
+$\mathcal F\subset2^{[n]}$ が長さ $t+1$ の鎖を持たないなら
+\begin{equation}\label{eq:chainlym}
+ \sum_{A\in\mathcal F}{n\choose|A|}^{-1}\le t
+\end{equation}
+である．特に $|\mathcal F|$ は
+${n\choose0},\ldots,{n\choose n}$ のうち
+大きい方から $t$ 個を選んだ和以下である．
+この上界は，中央から $t$ 個の大きさを選んだ
+部分集合の層の合併で達成される．
+\end{theorem}
+\begin{proof}
+補題~\ref{lem:randomchain} の一様ランダムな極大鎖
+$C_0\subset C_1\subset\cdots\subset C_n$ を考える．
+$\mathcal F$ が長さ $t+1$ の鎖を持たないので，
+この極大鎖に含まれる $\mathcal F$ の元は高々 $t$ 個である．
+その個数の期待値を計算すると
+\[
+ \sum_{A\in\mathcal F}\mathbb P(A=C_{|A|})
+ =\sum_{A\in\mathcal F}{n\choose|A|}^{-1}\le t
+\]
+となり第一の主張が従う．
+第二の主張を証明するため，
+$a_k=|\{A\in\mathcal F:|A|=k\}|$，
+$b_k={n\choose k}$ と置く．
+$0\le a_k\le b_k$，
+$\sum_k a_k/b_k\le t$，
+$|\mathcal F|=\sum_k a_k$ である．
+$b_k$ を大きい順に並べ替えた列を
+$b_{(1)}\ge\cdots\ge b_{(n+1)}$ とする．
+$w_k=a_k/b_k$ と置けば $0\le w_k\le1$，$\sum w_k\le t$．
+$\sum_k a_k=\sum_k b_kw_k$ は，重みの総量が高々 $t$ のもとで
+係数が大きい $t$ 項に1を割り当てたとき最大となる．
+実際，$b_i>b_j$ で $w_i<1$，$w_j>0$ なら，
+$\delta=\min(1-w_i,w_j)$ だけ重みを $j$ から $i$ へ移すと
+目的関数は $\delta(b_i-b_j)\ge0$ 増加する．
+この移動を繰り返せば最大値は
+$\sum_{i=1}^t b_{(i)}$ 以下である．
+二項係数は中央で最大となるので，
+中央から選んだ $t$ 層の合併はこの濃度を持つ．
+同じ層からは高々一つしか厳密包含鎖に入らないから，
+$t$ 層の合併は長さ $t+1$ の鎖を持たない．
+従って上界は達成される．
+\end{proof}
+
+\section{Sunflower補題}
+集合族の極値問題では，互いに交わる形が揃った部分族を見つけることが重要である．
+
+\begin{definition}[Sunflower]
+相異なる集合 $F_1,\ldots,F_r$ が\emph{sunflower}（ひまわり）をなすとは，
+ある集合 $C$ が存在して
+$F_i\cap F_j=C$ が全ての $i\ne j$ で成り立つことをいう．
+$C$ を芯，$F_i\setminus C$ を花弁と呼ぶ．
+芯が空の場合は集合が互いに素である．
+\end{definition}
+
+\begin{theorem}[Erd\H{o}s--Radoのsunflower補題]\label{thm:sunflower}
+$k\ge1$，$r\ge2$ とし，
+$\mathcal F$ を相異なる $k$ 元集合の族とする．
+\begin{equation}\label{eq:sunflower}
+ |\mathcal F|>k!(r-1)^k
+\end{equation}
+なら，$\mathcal F$ は大きさ $r$ のsunflowerを含む．
+\end{theorem}
+\begin{proof}
+$k$ に関する帰納法で証明する．
+$k=1$ なら $|\mathcal F|>r-1$ なので，
+$r$ 個の異なる一元集合を選べる．
+それらは互いに素であり，空の芯を持つsunflowerである．
+次に $k\ge2$ とし，$k-1$ の場合を仮定する．
+$\mathcal F$ から互いに素な集合を貪欲に選んで，
+極大な部分族 $F_1,\ldots,F_t$ を取る．
+$t\ge r$ なら，この中の $r$ 個が空芯のsunflowerである．
+従って $t\le r-1$ としてよい．
+$U=F_1\cup\cdots\cup F_t$ と置くと $|U|=kt\le k(r-1)$ である．
+極大性により，任意の $F\in\mathcal F$ は $U$ と交わる．
+そこで各 $x\in U$ に対し
+$\mathcal F_x=\{F\in\mathcal F:x\in F\}$ と置けば
+\[
+ \sum_{x\in U}|\mathcal F_x|\ge|\mathcal F|
+ >k!(r-1)^k.
+\]
+鳩の巣原理により，ある $x\in U$ に対して
+\[
+ |\mathcal F_x|>
+ \frac{k!(r-1)^k}{k(r-1)}
+ =(k-1)!(r-1)^{k-1}
+\]
+となる．
+$\mathcal F_x$ の各元から $x$ を取り除いた集合族
+$\mathcal F'_x=\{F\setminus\{x\}:F\in\mathcal F_x\}$ を考える．
+元は相異なる $(k-1)$ 元集合であり，
+濃度は $|\mathcal F_x|$ に等しい．
+帰納法の仮定から $\mathcal F'_x$ は
+大きさ $r$ のsunflower $F'_1,\ldots,F'_r$ を含む．
+その芯を $C'$ とすると，
+元の集合 $F'_1\cup\{x\},\ldots,F'_r\cup\{x\}$ は
+全て $\mathcal F$ に属し，
+任意の二つの共通部分が $C'\cup\{x\}$ に等しい．
+従って大きさ $r$ のsunflowerを得る．
+\end{proof}
+
+\begin{corollary}[sunflowerを禁じた族]
+$r\ge2$ とする．$k$-一様集合族が大きさ $r$ のsunflowerを
+持たないなら，その濃度は高々 $k!(r-1)^k$ である．
+\end{corollary}
+\begin{proof}
+定理~\ref{thm:sunflower} の対偶である．
+\end{proof}
+
+\begin{remark}
+上界 $k!(r-1)^k$ は一般に最適とは限らない．
+本稿で証明したのは，$k,r$ のみに依存し
+基礎集合の濃度には依存しない明示的な閾値の存在である．
+改良された上界を導くには，ここでの貪欲法を超える議論を要する．
+\end{remark}
+
+\section{確率的方法の適用条件}
+\begin{remark}[独立性の位置づけ]
+期待値の線形性自体は独立性を必要としない．
+一方，ランダムグラフで指定した辺が全て出現する確率を
+$p^{\ell}$ と書いたり，局所補題の依存グラフを作ったりする際には
+独立性の確認が必要である．
+また第一モーメント法は単に期待値が小さいという理由だけで
+各個の事象が同時に避けられると言うのではない．
+禁じたい構造の\emph{個数}を非負整数確率変数として数える点が本質である．
+\end{remark}
+
+\begin{remark}[存在と構成]
+Ramsey数の下界，高girth・高彩色数の定理，局所補題の応用は
+いずれも対象の存在を証明するが，その証明だけでは一般に
+決定的な効率的構成法を与えない．
+一方，Tur\'anの定理の複製操作は有限の手続きであり，
+Spernerの定理の極値族は中央の層として明示される．
+存在証明と構成的算法を区別して用いる必要がある．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{Ramsey数 $R(3,3)$ の決定．}
+\begin{theorem}
+$R(3,3)=6$ である．
+\end{theorem}
+\begin{proof}
+まず6頂点の任意の単純グラフ $G$ を考える．
+一つの頂点 $v$ は5個の他頂点を持つから，
+隣接点が3個以上あるか，非隣接点が3個以上ある．
+前者ではその三つの隣接点の間に辺があれば
+$v$ と合わせて三角形を作る．
+どの二つの間にも辺がなければ3頂点独立集合となる．
+後者も補グラフで同じ議論を行えば，
+$G$ に三角形または3頂点独立集合が存在する．
+従って $R(3,3)\le6$．
+一方5頂点の閉路 $C_5$ は三角形を持たず，
+任意の3頂点のうち少なくとも二つが隣接するので
+独立数は2である．
+よって $R(3,3)>5$ であり，等号が従う．
+\end{proof}
+\noindent\textbf{到達確認．}
+$R(2,4)$ を求めよ．
+\par\noindent\textbf{解答．}
+任意の4頂点グラフは辺があるか，
+辺がなければ4頂点独立集合である．
+3頂点の空グラフには2-cliqueがなく
+4頂点独立集合もないので $R(2,4)=4$．
+\section*{参考文献}
+\begin{enumerate}[label={[\arabic*]},leftmargin=3.3zw]
+\item N. Alon and J.~H. Spencer, \textit{The Probabilistic Method}, 4th ed., Wiley, 2016.
+\item B. Bollob\'as, \textit{Extremal Graph Theory}, Dover, 2004.
+\item S. Jukna, \textit{Extremal Combinatorics}, 2nd ed., Springer, 2011.
+\item R. Diestel, \textit{Graph Theory}, 5th ed., Springer, 2017.
+\end{enumerate}
+\end{document}

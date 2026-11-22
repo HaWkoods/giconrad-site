@@ -1,0 +1,554 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{マッチングとネットワークフロー}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，二部グラフ，Hallの結婚定理，最大流最小カット定理．
+本稿の具体的な到達課題は，具体的な二部グラフに完全マッチングがあるか判定する．
+
+\section{二部グラフとマッチング}
+本稿では有限グラフだけを扱う．第1節から第4節までは無向グラフを用い，後半では有限有向グラフに移る．集合の濃度は $|S|$ で表す．
+
+\begin{definition}
+グラフ $G=(V,E)$ の\emph{マッチング}とは，どの二つも端点を共有しない辺の部分集合 $M\subset E$ をいう．$M$ の辺に接する頂点を\emph{飽和された}頂点といい，それ以外を\emph{未飽和}という．マッチングの辺数の最大値を $\nu(G)$ とする．$V=L\sqcup R$ に分けられ，全ての辺が $L$ と $R$ を一つずつ結ぶグラフを二部グラフと呼ぶ．
+\end{definition}
+
+\begin{definition}
+マッチング $M$ に関する\emph{交互道}とは，その辺が $M$ と $E\setminus M$ に交互に属する道をいう．両端が $M$ に関して未飽和で，最初と最後の辺が $M$ に属さない交互道を\emph{増大道}という．
+\end{definition}
+
+\begin{lemma}[増大道による改善]\label{lem:augment}
+$P$ を $M$ に関する増大道とすると，$M'=M\triangle E(P)$ はマッチングであり，$|M'|=|M|+1$ である．
+\end{lemma}
+\begin{proof}
+$P$ の内部頂点は $M$ に属する辺と属さない辺がそれぞれ一つずつ接している．両端は未飽和で，$P$ の最初と最後の辺は $M$ に属さない．従って $P$ 上で辺の所属を入れ替えても各頂点に接する選択辺は高々一つであり，$P$ の外では $M$ と変わらない．よって $M'$ はマッチングとなる．交互道では選ばれていない辺が $M$ の辺よりちょうど一つ多いので，$|M'|=|M|+1$ である．
+\end{proof}
+
+\begin{lemma}[二つのマッチングの対称差]\label{lem:symdiff}
+二つのマッチング $M,N$ に対して，グラフ $(V,M\triangle N)$ の各連結成分は，孤立頂点，道，または偶数長の閉路であり，非自明な成分の辺は $M$ と $N$ に交互に属する．
+\end{lemma}
+\begin{proof}
+一つの頂点には $M$ の辺が高々一本，$N$ の辺も高々一本接するので，対称差の各頂点の次数は高々二である．有限グラフで最大次数が二以下の連結成分は孤立頂点，道，閉路のいずれかである．次数が二の頂点に接する二辺は同じマッチングに属することができないので，交互になる．閉路では交互に元の色へ戻る必要があるから長さは偶数である．
+\end{proof}
+
+\begin{theorem}[Bergeの増大道定理]\label{thm:berge}
+マッチング $M$ が最大であることと，$M$ に関する増大道が存在しないことは同値である．
+\end{theorem}
+\begin{proof}
+増大道があれば補題~\ref{lem:augment} により辺数を一つ増やせるので，最大ではない．
+逆に $M$ が最大でないとする．$|N|>|M|$ を満たすマッチング $N$ を取る．補題~\ref{lem:symdiff} によって $M\triangle N$ は交互な道と閉路に分解される．各閉路では $M,N$ の辺数が等しく，各道では辺数の差の絶対値が高々一である．全体で $|N|>|M|$ だから，ある道の成分では $N$ の辺が $M$ の辺より一つ多い．この道の両端は $N$ の辺に接し $M$ の辺に接しないので，$M$ の増大道である．
+\end{proof}
+
+\begin{corollary}[増大道算法の停止]
+任意のマッチングから始め，増大道が見つかるたびに対称差を取って更新する操作は高々 $\lfloor |V|/2\rfloor$ 回で停止し，停止時には最大マッチングを与える．
+\end{corollary}
+\begin{proof}
+更新のたびにマッチングの辺数は一つ増加し，どのマッチングにも高々 $\lfloor|V|/2\rfloor$ 本の辺しかない．従って有限回で停止する．停止時に増大道がないなら定理~\ref{thm:berge} により最大である．
+\end{proof}
+
+\section{Hallの結婚定理}
+二部グラフ $G=(L\sqcup R,E)$ について，$S\subset L$ の\emph{近傍集合}を
+\[
+ N(S)=\{v\in R:\text{ある }u\in S\text{ に対し }uv\in E\}
+\]
+と定める．
+\begin{theorem}[Hallの結婚定理]\label{thm:hall}
+有限二部グラフ $G=(L\sqcup R,E)$ において，$L$ の全頂点を飽和するマッチングが存在することと
+\[
+ |N(S)|\ge |S|\qquad(S\subset L)
+ \tag{1}\label{eq:hall}
+\]
+が成り立つことは同値である．
+\end{theorem}
+\begin{proof}
+$L$ を飽和するマッチング $M$ があれば，$S$ の各頂点にはマッチングの異なる相手が対応し，それらは $N(S)$ に含まれる．従って $|S|\le|N(S)|$ である．
+
+逆に式~\eqref{eq:hall} を仮定し，$M$ を最大マッチングとする．$M$ が $L$ を飽和しないと仮定して矛盾を導く．$M$ に関して未飽和の左頂点全体を $U\ne\varnothing$ とする．$U$ の頂点から出発し，$L$ から $R$ へは $M$ にない辺，$R$ から $L$ へは $M$ の辺だけをたどる交互歩道で到達できる左頂点全体を $S$，右頂点全体を $T$ とする．$U\subset S$ である．
+
+$S$ の各頂点から出るマッチングに属さない辺の行先は $T$ に含まれる．マッチングに属する辺については，$S\setminus U$ の頂点はこのような辺を最後に通って到達したので，その相手も $T$ に含まれる．$U$ の頂点にはマッチング辺がない．よって $N(S)\subset T$．逆に $T$ へ到達する最後の辺は $S$ からの辺なので $T\subset N(S)$ である．従って $N(S)=T$．
+
+$M$ が最大であるから増大道はない．定理~\ref{thm:berge} により $T$ の各頂点は $M$ で飽和されていなければならない．各 $v\in T$ のマッチング相手は $S\setminus U$ に属し，逆に $S\setminus U$ の頂点は必ず $T$ の頂点と組になる．従って $|T|=|S\setminus U|<|S|$ となる．これは $|N(S)|\ge|S|$ に反する．ゆえに $M$ は $L$ を飽和する．
+\end{proof}
+
+\begin{example}[Hall条件が破れる例]
+$L=\{a,b,c\}$，$R=\{1,2,3\}$ とし，$a,b$ の近傍がともに $\{1\}$，$c$ の近傍が $\{2,3\}$ であるとする．$S=\{a,b\}$ なら $|N(S)|=1<2=|S|$ だから，$L$ を飽和するマッチングは存在しない．
+\end{example}
+
+\section{Hall条件の不足量}
+\begin{definition}
+二部グラフ $G=(L\sqcup R,E)$ に対して
+\[
+ \delta(G)=\max_{S\subset L}(|S|-|N(S)|)
+\]
+を $L$ 側の\emph{不足量}という．空集合を取れば $\delta(G)\ge0$ である．
+\end{definition}
+\begin{theorem}[不足量の公式]\label{thm:deficiency}
+任意の有限二部グラフについて
+\[
+ \nu(G)=|L|-\delta(G).
+\]
+\end{theorem}
+\begin{proof}
+任意のマッチング $M$ と $S\subset L$ を考える．$S$ のうち $M$ によって飽和される頂点は高々 $|N(S)|$ 個であるから，$L$ の未飽和頂点は少なくとも $|S|-|N(S)|$ 個存在する．従って $|M|\le|L|-\delta(G)$ を得る．
+
+逆向きの不等式を示すため，$R$ に $\delta(G)$ 個の新しい右頂点 $D$ を付け加え，その各頂点を $L$ の全頂点と結ぶ拡大二部グラフ $\widetilde G$ を作る．空でない任意の $S\subset L$ について
+\[
+ |N_{\widetilde G}(S)|=|N_G(S)|+|D|
+ \ge|S|
+\]
+が成立する．$S=\varnothing$ の場合も $0\ge0$ だからHall条件を満たす．Hallの結婚定理によって $\widetilde G$ には $L$ を全て飽和するマッチングがある．新しい右頂点と結ばれた辺を全て除けば，$G$ に少なくとも $|L|-|D|=|L|-\delta(G)$ 本の辺を持つマッチングが得られる．従って等号が成立する．
+\end{proof}
+
+\section{K\H{o}nigの定理と頂点被覆}
+\begin{definition}
+$C\subset V$ が\emph{頂点被覆}であるとは，全ての辺に少なくとも一つの端点が $C$ に属することをいう．最小の頂点被覆の頂点数を $\tau_V(G)$ と書く．
+\end{definition}
+\begin{lemma}[弱双対性]
+任意のグラフについて $\nu(G)\le\tau_V(G)$ が成立する．
+\end{lemma}
+\begin{proof}
+マッチングの各辺は互いに端点を共有しない．頂点被覆は各マッチング辺から少なくとも一つの端点を選ばなければならないので，その頂点数はマッチングの辺数以上である．
+\end{proof}
+\begin{theorem}[K\H{o}nigの定理]\label{thm:konig}
+有限二部グラフ $G$ に対して
+\[
+ \nu(G)=\tau_V(G)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+二部グラフを $L\sqcup R$ と書き，最大マッチング $M$ を取る．$M$ で未飽和の左頂点を始点として交互歩道で到達できる左・右頂点の集合をそれぞれ $Z_L,Z_R$ とする．Hallの定理の証明と同様に，任意の $u\in Z_L$ の隣接頂点は $Z_R$ に含まれる．従って
+\[
+ C=(L\setminus Z_L)\cup Z_R
+\]
+は頂点被覆である．実際，$u\in L\setminus Z_L$ なら $uv$ は左端点で覆われ，$u\in Z_L$ なら $v\in Z_R$ で右端点が覆う．
+
+最大マッチングに増大道はないから，$Z_R$ の頂点は全て $M$ で飽和される．その相手は $Z_L$ に含まれる．逆に $Z_L$ のうちマッチングで飽和された頂点は $Z_R$ の頂点と対をなす．従って $M$ の辺は，両端が $Z_L\sqcup Z_R$ に属するものと，左端が $L\setminus Z_L$ に属するものとに分かれ，前者の個数は $|Z_R|$，後者の個数は $|L\setminus Z_L|$ である．よって
+\[
+ |C|=|L\setminus Z_L|+|Z_R|=|M|=\nu(G).
+\]
+弱双対性から $C$ は最小被覆であり，結論を得る．
+\end{proof}
+
+\begin{remark}
+Hallの定理は一方の頂点集合を全てマッチできるかを判定し，K\H{o}nigの定理は最適化問題の二つの値が一致することを主張する．両者の証明に共通する交互道探索は，最大マッチングの証明可能な停止条件を与えている．
+\end{remark}
+
+\section{ネットワークと流量}
+\begin{definition}
+\emph{ネットワーク}とは，有限有向グラフ $D=(V,A)$ と，異なる二頂点 $s,t\in V$，および各有向辺 $e\in A$ に対する\emph{容量} $c_e\in[0,\infty)$ の組である．有向辺は端点が同じであっても区別されるものとする．\emph{流量}とは関数 $f:A\to\mathbb R$ で
+\[
+ 0\le f_e\le c_e\quad(e\in A)
+\]
+を満たし，$v\in V\setminus\{s,t\}$ に対して\emph{流量保存則}
+\[
+ \sum_{e:\,e^+=v}f_e=\sum_{e:\,e^-=v}f_e
+\]
+を満たすものをいう．ここで $e^-,e^+$ は辺の始点と終点である．流量の\emph{値}を
+\[
+ |f|=\sum_{e:\,e^-=s}f_e-\sum_{e:\,e^+=s}f_e
+\]
+と定める．
+\end{definition}
+
+\begin{definition}
+$S\subset V$ が $s\in S$，$t\notin S$ を満たすとき，$s$-$t$ \emph{カット}という．カットの容量を
+\[
+ c(S)=\sum_{e:\,e^-\in S,\ e^+\notin S}c_e
+\]
+とする．また同じ添字条件の流量の和を $f(S,V\setminus S)$ と書く．
+\end{definition}
+\begin{lemma}[カットを通る流量]\label{lem:cutidentity}
+任意の流量 $f$ とカット $S$ について
+\[
+ |f|=f(S,V\setminus S)-f(V\setminus S,S)\le c(S)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$S$ に属する全頂点の「出る流量から入る流量」を加える．$S$ 内部に両端を持つ辺の寄与は相殺し，$s$ を除く各頂点の寄与は保存則で零になる．残る和は左辺 $|f|$ である．$S$ から外へ向かう辺では $f_e\le c_e$，外から $S$ へ向かう辺では $f_e\ge0$ だから不等式を得る．
+\end{proof}
+
+\begin{definition}
+流量 $f$ に対して，元の辺 $e:u\to v$ には，$f_e<c_e$ のとき残余容量 $c_e-f_e$ の\emph{順方向の残余辺} $u\to v$ を，$f_e>0$ のとき残余容量 $f_e$ の\emph{逆方向の残余辺} $v\to u$ を用意する．これらからなる有向多重グラフを残余ネットワーク $D_f$ と呼ぶ．$D_f$ の $s$ から $t$ への有向道を\emph{残余増大道}という．
+\end{definition}
+\begin{lemma}[残余増大道による流量増加]\label{lem:flowaugment}
+流量 $f$ に残余増大道 $P$ が存在するなら，ある $\varepsilon>0$ と流量 $f'$ が存在して $|f'|=|f|+\varepsilon$ を満たす．
+\end{lemma}
+\begin{proof}
+$P$ を頂点の重複のない有向道に短縮する．道上の残余辺の残余容量の最小値を $\varepsilon>0$ とする．元の辺の順方向に進むときその流量を $\varepsilon$ 増やし，逆方向に進むとき $\varepsilon$ 減らす．単純な道は同じ元の辺を二方向で同時に使用しないから，変更は矛盾なく定まる．残余容量の定義により $0\le f'_e\le c_e$ を保つ．道の内部頂点では入る流量と出る流量がそれぞれ同量変化するから保存則を保ち，$s$ での純流出だけが $\varepsilon$ 増す．
+\end{proof}
+
+\section{最大流最小カット定理}
+\begin{theorem}[最大流最小カット]\label{thm:maxflow}
+有限ネットワークでは最大値をもつ流量が存在し，
+\[
+ \max_f |f|=\min_{S:\,s\in S,\ t\notin S}c(S)
+ \tag{2}\label{eq:maxflow}
+\]
+が成り立つ．容量は任意の非負実数でよい．
+\end{theorem}
+\begin{proof}
+流量の集合は有限次元の直方体 $\prod_{e\in A}[0,c_e]$ と各頂点の流量保存則（線形等式）との共通部分である．零流量を含む空でないコンパクト集合だから，連続な線形関数 $f\mapsto|f|$ は最大値を取る．最大流量を $f$ とする．
+
+最大性と補題~\ref{lem:flowaugment} により，残余ネットワーク $D_f$ に $s$ から $t$ への有向道は存在しない．$s$ から残余有向道で到達できる頂点全体を $S$ と置く．$s\in S$ であり $t\notin S$ だから，$S$ はカットである．
+
+$S$ からその外へ向かう元の辺 $e$ では，$f_e<c_e$ であれば順方向の残余辺が存在してその終点も $S$ に入るため矛盾する．従って全て $f_e=c_e$ である．逆に外から $S$ へ向かう元の辺 $e$ では，$f_e>0$ なら逆方向の残余辺が存在し，やはり外の頂点が $S$ に到達可能となって矛盾する．従って全て $f_e=0$ である．補題~\ref{lem:cutidentity} より
+\[
+ |f|=f(S,V\setminus S)-f(V\setminus S,S)=c(S).
+\]
+任意の流量とカットについては $|f|\le c(S)$ が成り立つので，ここで得た流量とカットはそれぞれ最大・最小であり，等式~\eqref{eq:maxflow} を得る．
+\end{proof}
+
+\begin{corollary}[最適性の証明書]
+流量 $f$ が最大であることと，残余ネットワーク $D_f$ に $s$ から $t$ への有向道が存在しないことは同値である．
+\end{corollary}
+\begin{proof}
+最大なら増大道がないことは補題~\ref{lem:flowaugment} による．逆に増大道がなければ，前定理の証明と同じ到達可能集合 $S$ を構成すると $|f|=c(S)$ となる．弱双対性から $f$ は最大である．
+\end{proof}
+
+\begin{remark}
+定理~\ref{thm:maxflow} は実数容量についても成立するが，残余増大道を任意に選ぶ算法が有限回で停止するとは限らない．次節では整数容量に限って有限停止を証明する．最大流の存在証明と特定の算法の停止証明は区別しなければならない．
+\end{remark}
+
+\section{整数容量とFord--Fulkerson算法}
+\begin{theorem}[流量の整数性]\label{thm:integerflow}
+全ての容量 $c_e$ が非負整数ならば，最大流量 $f$ で全ての $f_e$ が整数となるものが存在する．零流量から始めて，残余増大道に沿う流量増加を残余容量の最小値だけ行う算法は有限回で停止し，最大流を与える．
+\end{theorem}
+\begin{proof}
+零流量は整数値である．現在の流量が整数値なら，残余容量も非負整数であり，増大道があればその上の残余容量の最小値 $\varepsilon$ は正整数である．補題~\ref{lem:flowaugment} の変更で次の流量も整数値となり，その値は少なくとも $1$ 増加する．
+任意の流量の値は $s$ から出る全辺の容量和 $C=\sum_{e:e^-=s}c_e$ 以下である．従って流量増加は高々 $C$ 回しか実行されず，算法は有限回で終了する．その時点で残余増大道が存在しないので，最大流最小カット定理の系により最大流を得る．
+\end{proof}
+
+\begin{remark}
+この停止回数の上界は容量の数値 $C$ に依存する．したがって容量を二進法で入力したとき，この上界は入力ビット長の多項式とは限らない．「整数容量に対して有限回で停止する」という主張だけでは，多項式時間算法であることは示されない．
+\end{remark}
+
+\section{流量分解とMengerの定理}
+\begin{lemma}[流量の道・閉路分解]\label{lem:decomp}
+非負流量 $f$ は，$s$ から $t$ への有限個の有向道に沿う正の流量と，有向閉路に沿う正の循環流量の和として表せる．ただし $|f|\ge0$ の場合を考え，$s,t$ に入出する循環も許す．整数流量なら各道・閉路の係数を正整数に取れる．
+\end{lemma}
+\begin{proof}
+$|f|>0$ なら，$f_e>0$ の辺だけからなる有向グラフに $s$ から $t$ への有向道が存在する．実際，$s$ から正流量辺をたどって到達できる頂点集合を $S$ とし，$t\notin S$ と仮定すると，$S$ から外へ向かう正流量辺はないため，カットの恒等式から $|f|=-f(V\setminus S,S)\le0$ となる．矛盾である．
+
+そのような道上の流量の最小値 $\varepsilon>0$ を選び，道の全辺から $\varepsilon$ を差し引く．残余流量は各中間頂点の保存則を保ち，値が $\varepsilon$ 減る．少なくとも一辺の正流量が零となるので，この操作は有限回で $|f|=0$ に至る．
+
+値が零となった非負流量で正流量辺が残れば，その中の一辺から出発して正流量辺に沿って歩く．$s,t$ を含め全頂点で入出流量の合計は等しい（$s$ では値が零，$t$ でもカット恒等式から純流入が零）から，正流量辺で入った頂点には正流量辺で出られる．有限グラフなので頂点を再訪し，有向閉路を得る．閉路上の最小正流量を差し引く操作を繰り返せば，有限回で全流量が零となる．整数流量の場合，各最小値は整数である．
+\end{proof}
+
+\begin{definition}
+有向グラフの $s$ から $t$ への有向道の族が\emph{辺素}であるとは，異なる道が辺を共有しないことをいう．$s$-$t$ 辺カットとは，除去すると $s$ から $t$ への有向道がなくなるような辺集合をいう．
+\end{definition}
+\begin{theorem}[Mengerの定理：辺版]\label{thm:menger}
+有限有向グラフで $s\ne t$ とする．$s$ から $t$ への互いに辺素な有向道の最大本数は，$s$-$t$ 辺カットの最小辺数に等しい．
+\end{theorem}
+\begin{proof}
+全ての有向辺の容量を $1$ としたネットワークを考える．定理~\ref{thm:integerflow} により，値が整数で各辺の流量が $0$ または $1$ の最大流量 $f$ が存在する．補題~\ref{lem:decomp} により $f$ の正の流量は有向道と有向閉路に分解される．各正の流量は整数で，一つの辺の流量は高々 $1$ であるから，有向道の係数は全て $1$ で，異なる有向道は辺を共有しない．道の本数は $|f|$ である．
+
+一方，このネットワークのカット容量は，$S$ から $V\setminus S$ へ向かう有向辺の本数である．その辺を全て除去すれば $s$ から $t$ への道は存在しない．逆に任意の $s$-$t$ 辺カット $F$ を除去した後，$s$ から到達できる頂点集合を $S$ とすれば，$S$ から外への元の有向辺は全て $F$ に属する．従って最小辺カットの大きさは最小容量カットに一致する．最大流最小カット定理により両者は等しい．
+\end{proof}
+
+\section{二部マッチングと最大流の対応}
+\begin{theorem}[二部マッチングの流量表示]\label{thm:matching-flow}
+有限二部グラフ $G=(L\sqcup R,E)$ に対し，新しい頂点 $s,t$ を加え，$s\to u$（$u\in L$），$u\to v$（$uv\in E$），$v\to t$（$v\in R$）という有向辺を作る．各辺の容量を $1$ とすると，このネットワークの最大流量の値は $\nu(G)$ に等しい．
+\end{theorem}
+\begin{proof}
+マッチング $M$ があれば，各 $uv\in M$ に対する $s\to u\to v\to t$ の三辺に流量 $1$ を流し，他の辺を零とする．マッチングの辺は端点を共有しないので，頂点 $u,v$ における容量と保存則を満たす．流量の値は $|M|$ だから，最大流量は $\nu(G)$ 以上である．
+
+逆に容量が全て整数なので，整数値の最大流量 $f$ が存在する．各左頂点 $u$ では入る辺 $s\to u$ の容量が $1$ であり，各右頂点 $v$ では出る辺 $v\to t$ の容量が $1$ である．保存則により $u\to v$ に流量 $1$ が流れる辺の集合は互いに端点を共有せず，マッチングをなす．その辺数は $s$ から出る流量の総和 $|f|$ に等しい．従って $\nu(G)\ge|f|$ であり，等号が成立する．
+\end{proof}
+
+\begin{corollary}[K\H{o}nigの定理の流量的説明]
+二部グラフの最大マッチングの大きさと最小頂点被覆の大きさが等しいことは，前定理のネットワークにおける最大流最小カット定理からも得られる．
+\end{corollary}
+\begin{proof}
+$s$-$t$ カット $S$ に対し，$A=S\cap L$，$B=S\cap R$ と置くと容量は
+\[
+ c(S)=|L\setminus A|+|\{uv\in E:u\in A,v\in R\setminus B\}|+|B|.
+\]
+$C=(L\setminus A)\cup B$ が全辺を覆うなら中項は零であり $c(S)=|C|$ である．逆に任意のカットについて，中項に数えられる辺を持つ $u\in A$ を $S$ から除くと，その $u$ から外へ向かう辺による容量は消え，$s\to u$ の容量 $1$ が増えるが，辺の数が少なくとも一つであるため容量は増えない．この操作を繰り返せば中項が零となり，ある頂点被覆 $C$ から定まるカットが同じか小さい容量を持つ．従って最小カット容量は最小頂点被覆数に等しい．最大流の値は前定理から最大マッチング数に等しいので，両値は一致する．
+\end{proof}
+
+\begin{remark}
+最大マッチング，最小頂点被覆，最大流，最小カットは個別には異なる組合せ最適化問題である．二部性や容量の整数性を用いることで，それらの間に厳密な対応が生まれる．特に最大流最小カット定理そのものには整数容量の仮定は不要であるが，マッチングへの復元には整数値最大流の存在が用いられる．
+\end{remark}
+
+
+\section{Hall条件と最小カットの不足量}
+\begin{theorem}[Hallの定理の流量的証明]
+二部グラフ $G=(L\sqcup R,E)$ に対して，
+$s\to u$（$u\in L$）と $v\to t$（$v\in R$）の容量を $1$，
+$u\to v$（$uv\in E$）の容量を $M=|L|+1$ としたネットワークを作る．
+このとき最大流量は
+\[
+ \min_{A\subset L}\bigl(|L\setminus A|+|N(A)|\bigr)
+ =|L|-\delta(G)
+\]
+である．特にHall条件が成り立つことと最大流量が $|L|$ であることは同値である．
+\end{theorem}
+\begin{proof}
+任意の $A\subset L$ に対し
+$S_A=\{s\}\cup A\cup N(A)$ と置くと，
+$S_A$ から外へ向かう容量 $M$ の辺は存在せず，
+\[
+ c(S_A)=|L\setminus A|+|N(A)|.
+\]
+従って最小カット容量はこの値の最小値以下であり，
+$A=\varnothing$ を取れば高々 $|L|$ である．
+
+逆に，最小カット $S$ の容量は $|L|<M$ 以下なので，
+$S$ から外へ向かう容量 $M$ の辺は存在しない．
+$A=S\cap L$，$B=S\cap R$ とすると $N(A)\subset B$ であり，
+\[
+ c(S)=|L\setminus A|+|B|
+ \ge |L\setminus A|+|N(A)|.
+\]
+これと先の構成からカット容量の最小値は主張した式に一致する．
+最大流最小カット定理によって最大流量も同じ値となる．
+最後の式は不足量の定義
+$\delta(G)=\max_{A\subset L}(|A|-|N(A)|)$ による．
+\end{proof}
+\begin{remark}
+このネットワークでは中間の辺の容量を $M$ とした．
+マッチングと最大流の対応の節のように全てを容量 $1$ とする場合とは，
+最適流量の値は同じでも，最小カットの形の直接の解釈が異なる．
+ここではHall条件をカットの不等式そのものに表すために大容量を用いた．
+\end{remark}
+
+\section{Edmonds--Karp算法の停止と計算量}
+\begin{definition}
+残余増大道のうち辺数が最小のものを\emph{最短残余増大道}という．
+残余ネットワークで幅優先探索を行い，毎回最短残余増大道を選ぶ
+Ford--Fulkerson算法を\emph{Edmonds--Karp算法}という．
+頂点数を $n$，元の有向辺数を $m$ とする．
+\end{definition}
+\begin{lemma}[残余距離の単調性]\label{lem:distances}
+最短残余増大道に沿って流量を増加させるとき，
+$s$ から到達可能な各頂点の最短残余距離は減少しない．
+到達できない頂点の距離は $\infty$ とする．
+\end{lemma}
+\begin{proof}
+増加の前後の残余ネットワークをそれぞれ $D,D'$ とし，
+距離を $d,d'$ とする．増大道 $P$ は最短なので，
+その各辺 $u\to v$ について $d(v)=d(u)+1$ である．
+流量の増加で新しく現れうる残余辺は，$P$ 上の辺の逆向き
+$v\to u$ だけである．従ってそれらは $d(v)=d(u)+1$ を満たす．
+
+$d'(x)<d(x)$ となる頂点が存在すると仮定し，
+$d'(x)$ が最小のそのような頂点 $x$ を取る．
+$x=s$ ではないから，$D'$ の最短道上で $x$ の直前にある頂点 $y$ を取る．
+$d'(y)=d'(x)-1$ であり，最小性から $d'(y)\ge d(y)$ である．
+辺 $y\to x$ が $D$ にも存在したなら
+\[
+ d'(x)=d'(y)+1\ge d(y)+1\ge d(x)
+\]
+となり矛盾する．新しく現れた残余辺なら，
+これは増大道の辺 $x\to y$ の逆であり，$d(y)=d(x)+1$ である．
+従って
+\[
+ d'(x)=d'(y)+1\ge d(y)+1=d(x)+2,
+\]
+これも矛盾する．よって $d'(x)\ge d(x)$ が全ての頂点で成立する．
+\end{proof}
+\begin{theorem}[Edmonds--Karpの多項式時間性]\label{thm:ek}
+Edmonds--Karp算法は，容量が任意の非負実数であっても
+$O(nm)$ 回の流量増加で終了する．
+各幅優先探索を $O(m)$ 時間で実行すれば，全計算時間は $O(nm^2)$ である．
+ここでは $m\ge1$ とし，孤立頂点は計算量の次数に影響しないものとする．
+\end{theorem}
+\begin{proof}
+各増大道上では残余容量が最小の残余辺が少なくとも一本消滅する．
+そのような辺を\emph{飽和した辺}と呼ぶ．
+同じ向きの残余辺 $u\to v$ が時刻 $i$ と，その後の時刻 $j$ で
+再び飽和したとする．時刻 $i$ では最短道上にあるから
+$d_i(v)=d_i(u)+1$ である．
+その後同じ向きの残余辺が復活するには，
+途中で逆向き $v\to u$ に流量を流す必要がある．
+その時刻 $k$ の最短増大道において
+$d_k(u)=d_k(v)+1$ である．
+補題~\ref{lem:distances} から
+\[
+ d_k(u)=d_k(v)+1\ge d_i(v)+1=d_i(u)+2.
+\]
+以後の距離も非減少なので，次に飽和する時刻 $j$ には
+$d_j(u)\ge d_i(u)+2$ である．
+到達可能な頂点の有限な距離は高々 $n-1$ なので，
+各向きの残余辺が飽和する回数は $O(n)$ 回に限られる．
+
+元の各有向辺からは高々二種類の向き付き残余辺が生じるので，
+増大道を選ぶ回数は $O(nm)$ 回である．
+幅優先探索では到達した頂点の隣接辺だけをたどる．したがって残余グラフの高々 $2m$ 本の辺を調べればよく，
+流量更新も道の長さ $O(n)$ 以内で実行できる．
+ただし $n$ が大きく $m$ が小さい場合でも，道は高々 $m$ 本の辺しか通らないから
+更新は $O(m)$ である．従って全体で $O(nm^2)$ を得る．
+終了時には増大道が存在しないので最適性の証明書の系から最大流である．
+\end{proof}
+\begin{remark}
+この算法では最短増大道を選ぶことが有限停止の鍵となる．
+整数容量でなければ停止を保証しない任意選択のFord--Fulkerson算法とは異なり，
+Edmonds--Karp算法の増加回数は容量の数値やその有理性に依存しない．
+\end{remark}
+
+\section{Mengerの定理：頂点版}
+\begin{definition}
+$s,t$ 以外の頂点を共有しない $s$ から $t$ への有向道を
+\emph{内部頂点素}という．
+$U\subset V\setminus\{s,t\}$ を除去したとき $s$ から $t$ への道が
+存在しなくなるなら，$U$ を\emph{内部頂点切断集合}という．
+\end{definition}
+\begin{theorem}[Mengerの定理：頂点版]\label{thm:vertex-menger}
+有限有向グラフで $s\ne t$ とし，$s\to t$ の直接の辺は存在しないとする．
+このとき互いに内部頂点素な $s$-$t$ 有向道の最大本数は，
+内部頂点切断集合の最小頂点数に等しい．
+\end{theorem}
+\begin{proof}
+各 $v\in V\setminus\{s,t\}$ を二頂点 $v_{\rm in},v_{\rm out}$ に分割し，
+容量 $1$ の辺 $v_{\rm in}\to v_{\rm out}$ を張る．
+元の有向辺 $u\to v$ は，
+$u=s$ の場合は $s$，そうでない場合は $u_{\rm out}$ を始点とし，
+$v=t$ の場合は $t$，そうでない場合は $v_{\rm in}$ を終点とする
+容量 $M=|V|+1$ の辺に置き換える．
+こうして得られたネットワークを $D^*$ とする．
+
+$s\to t$ に直接の辺がないので，全ての内部頂点の容量 $1$ の辺を
+除去すれば $s$-$t$ 道はなくなる．従って最小カット容量は高々 $|V|-2<M$ である．
+最小カットに容量 $M$ の辺は含まれないので，
+そのカットを横切る辺は分割頂点の内部辺だけであり，
+それに対応する元の頂点の集合 $U$ は内部頂点切断集合である．
+実際，$U$ を避ける元の $s$-$t$ 道があれば，$D^*$ には
+その内部辺を避ける道が生じ，カットを横切る容量 $M$ の辺を
+含まないまま $s$ から $t$ へ達することになり矛盾する．
+この構成から，最小カット容量は内部頂点切断集合の最小個数以上である．
+
+逆に任意の内部頂点切断集合 $U$ に対し，
+$D^*$ で $U$ に対応する容量 $1$ の辺を削除して
+$s$ から到達できる頂点集合を $S$ とする．
+$S$ から外へ向かう元の容量 $M$ の辺は存在しない．
+従って $S$ は容量が $|U|$ 以下のカットを与える．
+ゆえに最小カット容量は内部頂点切断集合の最小個数と等しい．
+
+容量は整数なので，整数値の最大流を取れる．
+道・閉路分解を適用すると，$s$-$t$ 道の係数は正整数であり，
+各内部頂点の容量 $1$ により異なる道は内部頂点を共有できない．
+各道の係数は $1$ である．従って最大流量の値だけ
+互いに内部頂点素な有向道が得られる．
+逆に内部頂点素な道の族から流量を作ると，
+元の有向辺に割り当てた容量 $M$ を超えず，
+内部辺の容量も高々 $1$ なので実行可能である．
+最大流最小カット定理によって結論を得る．
+\end{proof}
+\begin{remark}
+$s$ から $t$ へ直接の辺がある場合，その道は内部頂点を持たないため，
+$s,t$ 以外の頂点を除去しても遮断できない．
+そのため頂点版では直接の辺を除く仮定が必要である．
+無向グラフに対しても，各辺を両方向の有向辺で置き換えることで同様の定理が従う．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{Hall条件を全て検査する．}
+\begin{proposition}
+左頂点集合 $L=\{a,b,c\}$，右頂点集合
+$R=\{1,2,3\}$，隣接集合
+\[
+N(a)=\{1,2\},\quad N(b)=\{2\},\quad
+N(c)=\{2,3\}
+\]
+を持つ二部グラフは完全マッチングを持つ．
+\end{proposition}
+\begin{proof}
+辺 $(a,1),(b,2),(c,3)$ は端点を共有せず，
+左頂点と右頂点をすべて覆うので完全マッチングである．
+したがってHall条件も満たされる．
+直接確認するなら，一元部分集合の近傍は
+それぞれ2,1,2元，二元部分集合の近傍は
+それぞれ2,3,2元，$L$ 全体の近傍は3元である．
+いずれも $|N(S)|\ge|S|$ が成り立つ．
+\end{proof}
+\begin{proposition}[Hall条件が破れる例]
+$N(a)=N(b)=\{1\}$ ならば，
+左側全頂点を飽和するマッチングは存在しない．
+\end{proposition}
+\begin{proof}
+$S=\{a,b\}$ と置けば $|S|=2$ だが
+$|N(S)|=1$．Hallの必要条件に反する．
+\end{proof}
+\noindent\textbf{到達確認．}
+三頂点で $N(a)=\{1\}$，$N(b)=\{2,3\}$，
+$N(c)=\{3\}$ なら完全マッチングはあるか．
+\par\noindent\textbf{解答．}
+$(a,1),(b,2),(c,3)$ が完全マッチングである．
+\section*{参考文献}
+\begin{enumerate}
+\item L. Lov\'asz and M. D. Plummer, \textit{Matching Theory}, AMS Chelsea, 2009.
+\item A. Schrijver, \textit{Combinatorial Optimization: Polyhedra and Efficiency}, Springer, 2003.
+\item R. Diestel, \textit{Graph Theory}, 5th ed., Springer, 2017.
+\end{enumerate}
+\end{document}
