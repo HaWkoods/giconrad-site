@@ -1,0 +1,443 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Lorentz幾何と一般相対論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+Lorentz内積から時間的・光的・空間的な変位を判別し，
+世界線の固有時を計算できるようになることを主目標とする．
+特に平坦な時空では固定した両端点を結ぶ慣性運動が
+固有時を最大にすることを数学的に示す．
+前提は多変数微分積分と初等的な線形代数である．
+
+\section{Lorentz内積と因果構造}
+$\mathbb R^{1+n}$ の座標を $(t,x_1,\ldots,x_n)$ とし
+\[
+ g(v,w)=-v_0w_0+\sum_{i=1}^nv_iw_i
+\]
+をLorentz内積とする．
+\begin{definition}
+非零ベクトル $v$ が時間的・光的・空間的であるとは，それぞれ
+$g(v,v)<0$，$g(v,v)=0$，$g(v,v)>0$ を満たすことをいう．
+未来向きであるとは時間成分 $v_0>0$ とする．
+\end{definition}
+\begin{proposition}
+二つの未来向き時間的ベクトル $u,v$ の和は未来向き時間的である．
+\end{proposition}
+\begin{proof}
+$u_0>\norm{\mathbf u}$，$v_0>\norm{\mathbf v}$ だから
+$u_0+v_0>\norm{\mathbf u}+\norm{\mathbf v}\ge\norm{\mathbf u+\mathbf v}$．
+よって $g(u+v,u+v)<0$ であり時間成分も正である．
+\end{proof}
+\section{Lorentz変換}
+$|v|<1$ に対し $\gamma=(1-v^2)^{-1/2}$ と置く．
+\begin{theorem}
+二次元の線形変換
+\[
+ \begin{pmatrix}t'\\x'\end{pmatrix}
+ =\begin{pmatrix}\gamma&-\gamma v\\-\gamma v&\gamma\end{pmatrix}
+ \begin{pmatrix}t\\x\end{pmatrix}
+\]
+は $-dt^2+dx^2$ を保存する．
+\end{theorem}
+\begin{proof}
+$t'=\gamma(t-vx)$，$x'=\gamma(x-vt)$ を代入すると
+$-(t')^2+(x')^2=\gamma^2(1-v^2)(-t^2+x^2)=-t^2+x^2$．
+極化公式により双線形形式も保存する．
+\end{proof}
+\section{曲がった時空の測地線}
+滑らかなLorentz計量 $g_{ij}(x)$ を持つ多様体の局所座標で
+$\Gamma^k_{ij}=\frac12g^{k\ell}(\partial_i g_{j\ell}
++\partial_jg_{i\ell}-\partial_\ell g_{ij})$ とする．
+\begin{theorem}[測地線方程式]
+$g(\dot\gamma,\dot\gamma)\ne0$ の定速曲線について，
+エネルギー作用 $\frac12\int g_{ij}(x)\dot x^i\dot x^jdt$ の
+固定端点変分の停留条件は
+\[
+ \ddot x^k+\Gamma^k_{ij}(x)\dot x^i\dot x^j=0
+\]
+である．
+\end{theorem}
+\begin{proof}
+$L=\frac12g_{ij}\dot x^i\dot x^j$ のEuler--Lagrange方程式は
+$\frac d{dt}(g_{kj}\dot x^j)-\frac12\partial_k g_{ij}\dot x^i\dot x^j=0$．
+展開して逆行列 $g^{\ell k}$ を掛け，
+$\dot x^i\dot x^j$ の対称性を用いると表示式になる．
+\end{proof}
+\begin{remark}
+曲率テンソルとBianchi恒等式は後続の節で扱う．
+Einstein方程式は数学的定義から証明される定理ではなく，
+初期値問題の可解性は別の偏微分方程式論に属する．
+\end{remark}
+
+
+\section{Lorentz計量の接続と曲率}
+\begin{theorem}[Levi--Civita接続]
+滑らかなLorentz計量 $g$ を持つ多様体上には，
+$\nabla_XY-\nabla_YX=[X,Y]$ と $\nabla g=0$ を満たす
+接続 $\nabla$ がただ一つ存在する．局所座標での接続係数は
+\[
+ \Gamma^k_{ij}=\frac12g^{k\ell}
+ (\partial_i g_{j\ell}+\partial_jg_{i\ell}-\partial_\ell g_{ij})
+\]
+で与えられる．
+\end{theorem}
+\begin{proof}
+$\nabla g=0$ を用いて
+$Xg(Y,Z)=g(\nabla_XY,Z)+g(Y,\nabla_XZ)$ のように展開し，
+$X,Y,Z$ の循環置換で得られる式を加減する．
+捩率零の条件で $\nabla_YX=\nabla_XY-[X,Y]$ を代入すると
+\[
+\begin{aligned}
+2g(\nabla_XY,Z)={}&Xg(Y,Z)+Yg(X,Z)-Zg(X,Y)\\
+ &-g(X,[Y,Z])+g(Y,[Z,X])+g(Z,[X,Y]).
+\end{aligned}
+\]
+右辺は $g$ とLie括弧から一意に決まる．
+計量が非退化だからこの式は $\nabla_XY$ を一意に定める．
+右辺の $X,Y,Z$ に関する線形性とLeibniz則を直接確認すると，
+得られた $\nabla$ は接続であり，式を引き算・足し算して
+捩率零と計量両立性が成り立つことが確かめられる．
+座標ベクトル場は互いに可換だから，$X=\partial_i,Y=\partial_j,Z=\partial_\ell$
+を代入して逆計量を掛けると表示したChristoffel記号を得る．
+\end{proof}
+\begin{definition}
+曲率作用素を
+$R(X,Y)Z=\nabla_X\nabla_YZ-\nabla_Y\nabla_XZ-\nabla_{[X,Y]}Z$
+と定める．座標成分では
+\[
+ R^\ell{}_{kij}=\partial_i\Gamma^\ell_{jk}
+ -\partial_j\Gamma^\ell_{ik}
+ +\Gamma^m_{jk}\Gamma^\ell_{im}
+ -\Gamma^m_{ik}\Gamma^\ell_{jm}.
+\]
+Ricciテンソルを $\mathrm{Ric}_{kj}=R^i{}_{kij}$，
+スカラー曲率を $S=g^{kj}\mathrm{Ric}_{kj}$，
+Einsteinテンソルを $G=\mathrm{Ric}-\tfrac12Sg$ と定める．
+\end{definition}
+\begin{proposition}[Minkowski計量の平坦性]
+$g=-dt^2+\sum_i dx_i^2$ では $R=0$ であり，
+$\mathrm{Ric}=S=G=0$ である．
+\end{proposition}
+\begin{proof}
+定数係数計量では全ての $\partial_i g_{jk}$ が零なので
+全ての $\Gamma^k_{ij}=0$ である．曲率の座標公式へ代入すると
+全ての成分が零であり，縮約したテンソルも零となる．
+\end{proof}
+\begin{remark}
+Einstein方程式 $G+\Lambda g=8\pi T$ は，物質の応力エネルギーテンソル
+$T$ と時空の計量を結ぶ物理法則であり，数学的な接続の定義のみから
+「証明」されるものではない．その解の存在・一意性および
+Bianchi恒等式の一般的な証明は，なお別の議論を要する．
+\end{remark}
+
+\section{Bianchi恒等式とEinsteinテンソルの発散}
+\begin{lemma}[第一Bianchi恒等式]
+Levi--Civita接続の曲率は任意のベクトル場 $X,Y,Z$ に対して
+\[
+ R(X,Y)Z+R(Y,Z)X+R(Z,X)Y=0
+\]
+を満たす．
+\end{lemma}
+\begin{proof}
+左辺は各引数について $C^\infty(M)$-線形である．
+点 $p$ の正規座標を取ると $\Gamma^\ell_{ij}(p)=0$ である．
+曲率成分はその点で
+$R^\ell{}_{kij}=\partial_i\Gamma^\ell_{jk}
+-\partial_j\Gamma^\ell_{ik}$ となる．
+さらに捩率零から $\Gamma^\ell_{ij}=\Gamma^\ell_{ji}$ である．
+従って $R^\ell{}_{kij}+R^\ell{}_{ijk}+R^\ell{}_{jki}$ は
+\[
+ \partial_i\Gamma^\ell_{jk}-\partial_j\Gamma^\ell_{ik}
+ +\partial_j\Gamma^\ell_{ki}-\partial_k\Gamma^\ell_{ji}
+ +\partial_k\Gamma^\ell_{ij}-\partial_i\Gamma^\ell_{kj}=0.
+\]
+任意の $p$ でこの等式が成り立つから結論が従う．
+\end{proof}
+\begin{lemma}[第二Bianchi恒等式]
+$\nabla$ を捩率零のLevi--Civita接続とし，曲率を
+$R(X,Y)=[\nabla_X,\nabla_Y]-\nabla_{[X,Y]}$ とする．
+このとき任意のベクトル場 $X,Y,Z$ に対し
+\[
+ (\nabla_XR)(Y,Z)+(\nabla_YR)(Z,X)
+ +(\nabla_ZR)(X,Y)=0
+\]
+がEnd$(TM)$-値テンソルとして成立する．
+\end{lemma}
+\begin{proof}
+両辺は $X,Y,Z$ について $C^\infty(M)$-線形なので，
+点 $p$ で局所座標ベクトル場に代入して調べれば十分である．
+接続の正規座標を $p$ の近傍で選べば $\Gamma^k_{ij}(p)=0$ である．
+曲率成分は
+\[
+ R^\ell{}_{kij}=\partial_i\Gamma^\ell_{jk}
+ -\partial_j\Gamma^\ell_{ik}
+ +\Gamma^m_{jk}\Gamma^\ell_{im}
+ -\Gamma^m_{ik}\Gamma^\ell_{jm}.
+\]
+$p$ では共変微分は通常の偏微分となる．
+また右辺の二次項を偏微分すると，$p$ では
+$\Gamma(p)=0$ により零になる．従って
+$\nabla_aR^\ell{}_{kbc}+\nabla_bR^\ell{}_{kca}
+ +\nabla_cR^\ell{}_{kab}$ は，
+$\partial_a\partial_b\Gamma^\ell_{ck}$ などの
+二階偏微分を交代和したものに等しい．
+偏微分の交換可能性によってこの交代和は零となる．
+$p$ は任意だから恒等式が大域的に成立する．
+\end{proof}
+\begin{theorem}[縮約Bianchi恒等式]
+滑らかなLorentz計量 $g$ について
+$G_{ab}=\operatorname{Ric}_{ab}-\frac12Sg_{ab}$ と置くと
+\[
+ \nabla^aG_{ab}=0
+\]
+が恒等的に成立する．
+\end{theorem}
+\begin{proof}
+計量両立性 $\nabla g=0$ から曲率テンソルには
+$R_{abcd}=-R_{bacd}=-R_{abdc}=R_{cdab}$ の対称性がある．
+捩率零から生じる第一Bianchi恒等式も成立する．
+ここでは $R_{abcd}=g(R(\partial_a,\partial_b)\partial_c,\partial_d)$，
+$\operatorname{Ric}_{bd}=g^{ac}R_{abdc}$ と添字を定める．
+第二Bianchi恒等式を
+\[
+ \nabla_a R_{bcde}+\nabla_bR_{cade}
+ +\nabla_cR_{abde}=0
+\]
+と書き，$a,d$ を計量で縮約する．曲率の反対称性から
+$g^{ad}R_{cade}=\operatorname{Ric}_{ce}$，
+$g^{ad}R_{abde}=-\operatorname{Ric}_{be}$ なので
+\[
+ \nabla^dR_{bcde}=\nabla_c\operatorname{Ric}_{be}
+ -\nabla_b\operatorname{Ric}_{ce}.
+\]
+さらに $b,e$ を縮約する．左辺は
+$\nabla^d\operatorname{Ric}_{cd}$，右辺は
+$\nabla_cS-\nabla^b\operatorname{Ric}_{cb}$ である．
+従ってRicciテンソルの対称性を用いて
+\[
+ 2\nabla^a\operatorname{Ric}_{ab}=\nabla_bS
+\]
+となる．
+したがって $\nabla^ag_{ab}=0$ により
+$\nabla^aG_{ab}=\nabla^a\operatorname{Ric}_{ab}
+ -\frac12\nabla_bS=0$ である．
+\end{proof}
+\begin{remark}
+$G+\Lambda g=8\pi T$ を採用すれば
+$\nabla^aT_{ab}=0$ が数学的な整合条件として従う．
+これは方程式を定義から導出したという意味ではない．
+Lorentz計量についての幾何学的恒等式と，物理法則としての
+Einstein方程式は論理的に区別される．
+\end{remark}
+
+\section{Einstein方程式の明示的な解：de Sitter時空}
+四次元時空の座標を $(t,x^1,x^2,x^3)$ とし，
+$a(t)>0$ に対してLorentz計量
+\[
+ g=-dt^2+a(t)^2\bigl((dx^1)^2+(dx^2)^2+(dx^3)^2\bigr)
+\]
+を考える．以下の計算では $i,j=1,2,3$ とする．
+\begin{lemma}[平坦空間断面のRicciテンソル]
+上の計量の非零Christoffel記号は
+\[
+ \Gamma^0_{ij}=a\dot a\,\delta_{ij},\qquad
+ \Gamma^i_{0j}=\Gamma^i_{j0}=(\dot a/a)\delta^i_j
+\]
+であり，Ricciテンソルとスカラー曲率は
+\[
+ R_{00}=-3\ddot a/a,\quad R_{0i}=0,\quad
+ R_{ij}=(a\ddot a+2\dot a^2)\delta_{ij},\qquad
+ R=6\bigl(\ddot a/a+(\dot a/a)^2\bigr)
+\]
+を満たす．
+\end{lemma}
+\begin{proof}
+$g_{00}=-1$，$g_{ij}=a^2\delta_{ij}$ と
+$g^{00}=-1$，$g^{ij}=a^{-2}\delta^{ij}$ を
+Levi--Civita接続の公式に代入すると表示したChristoffel記号を得る．
+$H=\dot a/a$ と置く．Ricciテンソルの座標表示
+\[
+ R_{\mu\nu}=\partial_\alpha\Gamma^\alpha_{\mu\nu}
+ -\partial_\nu\Gamma^\alpha_{\mu\alpha}
+ +\Gamma^\alpha_{\mu\nu}\Gamma^\beta_{\alpha\beta}
+ -\Gamma^\beta_{\mu\alpha}\Gamma^\alpha_{\nu\beta}
+\]
+により，$R_{00}=-3\dot H-3H^2=-3\ddot a/a$ を得る．
+空間成分については
+\[
+ R_{ij}=(a\ddot a+\dot a^2)\delta_{ij}
+ +3\dot a^2\delta_{ij}-2\dot a^2\delta_{ij}
+ =(a\ddot a+2\dot a^2)\delta_{ij}
+\]
+となり，交差成分 $R_{0i}$ は零である．
+$R=g^{\mu\nu}R_{\mu\nu}$ を計算すれば
+スカラー曲率の表示式を得る．
+\end{proof}
+\begin{theorem}[正の宇宙項を持つ真空解]
+$\Lambda>0$ とし $H_0=\sqrt{\Lambda/3}$ と置く．
+$a(t)=e^{H_0t}$ と定めれば
+\[
+ \operatorname{Ric}(g)=\Lambda g,\qquad
+ G_{\mu\nu}+\Lambda g_{\mu\nu}=0,
+ \quad G_{\mu\nu}=R_{\mu\nu}-\frac12 Rg_{\mu\nu}
+\]
+が成立する．従って上の計量は宇宙項 $\Lambda$ を持つ真空Einstein方程式の
+明示的なLorentz解である．
+\end{theorem}
+\begin{proof}
+$\dot a=H_0a$，$\ddot a=H_0^2a$ だから前補題より
+$R_{00}=-3H_0^2=-\Lambda=\Lambda g_{00}$，
+$R_{ij}=3H_0^2a^2\delta_{ij}=\Lambda g_{ij}$ となり，
+$R_{0i}=0=\Lambda g_{0i}$ である．よって
+$\operatorname{Ric}(g)=\Lambda g$．
+四次元なので $R=4\Lambda$ が従い，
+$G=\Lambda g-\frac12(4\Lambda)g=-\Lambda g$ である．
+\end{proof}
+\begin{remark}
+これは対称性の高い仮定の下で方程式を直接解いた例である．
+任意のEinstein初期データから局所解を構成する一般Cauchy問題は
+調和ゲージによる準線形双曲型方程式の理論を要し，本節では未証明である．
+\end{remark}
+
+
+\section{固有時を計算する：平坦時空の比較原理}
+ここでは光速を $1$ とする単位系を用いる．
+\begin{definition}
+$T>0$，$x:[0,T]\to\mathbb R^n$ を
+区分的に $C^1$ 級で，
+$|\dot x(t)|<1$ を各滑らかな区間で満たす世界線とする．
+その\emph{固有時}を
+\[
+ \tau(x)=\int_0^T\sqrt{1-|\dot x(t)|^2}\,dt
+\]
+と定める．積分は区分的に定義する．
+\end{definition}
+\begin{theorem}[直線世界線の固有時最大性]
+$x(0)=0$，$x(T)=a$ とすると，$|a|<T$ であり
+\[
+ \tau(x)\le\sqrt{T^2-|a|^2}
+\]
+が成立する．等号が成り立つのは
+$x(t)=ta/T$ のとき，かつそのときに限る．
+\end{theorem}
+\begin{proof}
+単位開球上の $F(v)=\sqrt{1-|v|^2}$ を考える．
+Hesse行列は
+\[
+ D^2F(v)=-\frac{I}{\sqrt{1-|v|^2}}
+ -\frac{vv^T}{(1-|v|^2)^{3/2}}
+\]
+であり，任意の非零ベクトルに対して負定値となる．
+従って $F$ は狭義凹関数である．
+速度の平均は微積分学の基本定理より
+\[
+ \frac1T\int_0^T\dot x(t)\,dt=\frac aT.
+\]
+平均速度は開単位球に属し，Jensenの不等式から
+\[
+ \frac{\tau(x)}T
+ \le F\left(\frac1T\int_0^T\dot x(t)\,dt\right)
+ =\sqrt{1-\frac{|a|^2}{T^2}}.
+\]
+これが所望の評価である．狭義凹性から
+等号なら速度はほとんど至る所一定であり，
+区分的な連続性から各区間で $\dot x=a/T$，
+端点条件から $x(t)=ta/T$ となる．
+逆向きは直接代入で確かめられる．
+\end{proof}
+\begin{example}[往復する時計と静止する時計]
+一次元で $a=0$ とし，$0<v<1$ とする．
+$[0,T/2]$ では速度 $v$，
+$[T/2,T]$ では速度 $-v$ の世界線は
+出発点へ戻る．その固有時は
+\[
+ \tau=T\sqrt{1-v^2}<T.
+\]
+同じ出発点・到着点をもつ静止世界線 $x=0$ の
+固有時は $T$ である．この不等式は
+両端点が一致する場合の上の定理の具体例である．
+\end{example}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+$T=5$，$a=3$ の一次元平坦時空で，
+両端を結ぶ慣性世界線の速度と固有時を求めよ．
+
+\medskip\noindent\textbf{解答．}
+$x(t)=3t/5$ で速度 $3/5$．
+固有時は
+$\int_0^5\sqrt{1-9/25}\,dt=4$ である．
+上の定理によって他の未来向き時間的世界線の固有時は
+これを超えない．
+\section*{射程}
+上の最大性は平坦時空における固定端点問題である．
+曲がった時空全体に同じ大域的結論を移すことはできず，
+共役点や大域因果構造を別途考察する必要がある．
+
+\end{document}

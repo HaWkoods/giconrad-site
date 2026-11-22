@@ -1,0 +1,681 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{凸双対性とLegendre--Fenchel変換}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+凸共役と劣微分による最適性条件を証明し，
+その条件から具体的な凸最適化問題の解を構成できるようになる．
+双対問題は答えの正当性を検算する道具として用いる．
+前提は実解析，連続線形汎関数，凸関数の初歩である．
+
+\section{拡張実数値凸関数}
+
+以下，$X$ を実Banach空間，$X^*$ を連続双対空間とし，
+双対対合を $\langle x^*,x\rangle=x^*(x)$ と書く．
+
+\begin{definition}
+関数 $f:X\to(-\infty,+\infty]$ が
+\emph{真}であるとは，恒等的に $+\infty$ ではなく，
+$-\infty$ を値に取らないことをいう．
+有効定義域を
+$\operatorname{dom}f=\{x:f(x)<+\infty\}$ と書く．
+$f$ が\emph{凸}であるとは
+\[
+ f((1-t)x+ty)\le(1-t)f(x)+tf(y)
+\]
+が $x,y\in X$，$0\le t\le1$ に対して成立することをいう．
+$f$ が\emph{下半連続}であるとは
+$\{x:f(x)\le a\}$ が全ての実数 $a$ について閉であることをいう．
+\end{definition}
+
+\begin{definition}
+$f$ の\emph{エピグラフ}を
+\[
+ \operatorname{epi}f
+ =\{(x,t)\in X\times\mathbb R:f(x)\le t\}
+\]
+と定義する．
+\end{definition}
+
+\begin{proposition}\label{prop:epi}
+$f$ が凸であることと，
+$\operatorname{epi}f$ が $X\times\mathbb R$ の凸集合であることは同値である．
+また $f$ が下半連続であることと，
+$\operatorname{epi}f$ が閉集合であることは同値である．
+\end{proposition}
+\begin{proof}
+$(x,s),(y,t)\in\operatorname{epi}f$ なら
+$f(x)\le s,f(y)\le t$ である．
+凸性から
+\[
+ f((1-\lambda)x+\lambda y)
+ \le(1-\lambda)f(x)+\lambda f(y)
+ \le(1-\lambda)s+\lambda t
+\]
+となるのでエピグラフは凸である．
+逆に $(x,f(x))$，$(y,f(y))$ に凸性を適用すれば，
+$f$ の凸性を得る（有限値を持つ点について示せば十分）．
+
+下半連続なら
+$(x_n,t_n)\to(x,t)$ かつ $f(x_n)\le t_n$ に対し
+$f(x)\le\liminf_nf(x_n)\le t$ であるから，
+エピグラフは閉である．
+逆にエピグラフが閉なら，任意の $a\in\mathbb R$ について
+$\{x:f(x)\le a\}$ は
+$\operatorname{epi}f\cap(X\times\{a\})$
+の $X$ への同一視によって閉となり，下半連続である．
+\end{proof}
+
+\section{Legendre--Fenchel変換}
+
+\begin{definition}
+真な関数 $f:X\to(-\infty,+\infty]$ に対し，
+\emph{凸共役関数} $f^*:X^*\to(-\infty,+\infty]$ を
+\[
+ f^*(x^*)=\sup_{x\in X}
+ \{\langle x^*,x\rangle-f(x)\}
+\]
+によって定める．
+\end{definition}
+
+\begin{proposition}[凸共役関数の基本性質]\label{prop:conjugate-basic}
+$f$ が真なら $f^*$ は凸かつ弱*下半連続である．
+特にノルム下半連続でもある．
+\end{proposition}
+\begin{proof}
+固定した $x\in\operatorname{dom}f$ に対し
+$x^*\mapsto\langle x^*,x\rangle-f(x)$ は
+弱*連続なアフィン関数である．
+$f^*$ はこれらの関数の上限なので凸である．
+任意の実数 $a$ について
+\[
+ \{x^*:f^*(x^*)\le a\}
+ =\bigcap_{x\in\operatorname{dom}f}
+ \{x^*:\langle x^*,x\rangle-f(x)\le a\}
+\]
+は弱*閉である．
+従って $f^*$ は弱*下半連続である．
+弱*位相はノルム位相より弱いので，
+弱*閉集合はノルム閉でもある．
+\end{proof}
+
+\begin{theorem}[Fenchel--Youngの不等式]\label{thm:fy}
+任意の $x\in X$，$x^*\in X^*$ について
+\[
+ f(x)+f^*(x^*)\ge\langle x^*,x\rangle
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$f^*(x^*)$ は
+$\langle x^*,y\rangle-f(y)$（$y\in X$）
+の上限なので，
+特に $y=x$ として
+$f^*(x^*)\ge\langle x^*,x\rangle-f(x)$ となる．
+$f(x)=+\infty$ の場合は不等式は自明である．
+\end{proof}
+
+\section{劣微分と等号成立条件}
+
+\begin{definition}
+$f$ を真凸関数とする．$x\in\operatorname{dom}f$ に対し，
+\[
+ \partial f(x)=
+ \{x^*\in X^*:f(y)\ge f(x)+\langle x^*,y-x\rangle
+ \text{ for all }y\in X\}
+\]
+を $f$ の $x$ における\emph{劣微分}という．
+\end{definition}
+
+\begin{theorem}[Fenchel--Youngの等号]\label{thm:subgrad}
+$f$ を真凸関数，$x\in\operatorname{dom}f$，
+$x^*\in X^*$ とする．次は同値である．
+\begin{enumerate}
+\item $x^*\in\partial f(x)$．
+\item $f(x)+f^*(x^*)=\langle x^*,x\rangle$．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+$x^*\in\partial f(x)$ なら
+$f(y)\ge f(x)+\langle x^*,y-x\rangle$ なので
+$\langle x^*,y\rangle-f(y)
+ \le\langle x^*,x\rangle-f(x)$ が全ての $y$ で成立する．
+$y=x$ で等号となるため，
+上限を取って
+$f^*(x^*)=\langle x^*,x\rangle-f(x)$ を得る．
+逆にこの等号が成り立つなら，
+任意の $y$ に対して
+$\langle x^*,y\rangle-f(y)\le f^*(x^*)$
+を用いれば
+$f(y)\ge f(x)+\langle x^*,y-x\rangle$ となる．
+従って $x^*\in\partial f(x)$ である．
+\end{proof}
+
+\begin{proposition}[内点での劣勾配の存在]\label{prop:subgrad-exists}
+$f$ を真凸関数とし，$x\in\operatorname{int}(\operatorname{dom}f)$
+で $f$ が $x$ の近傍で連続であるとする．
+このとき $\partial f(x)\ne\varnothing$ である．
+\end{proposition}
+\begin{proof}
+方向 $h\in X$ に対し
+\[
+ p(h)=\lim_{t\downarrow0}
+ \frac{f(x+th)-f(x)}t
+\]
+と置く．$x$ は有効定義域の内点なので，
+十分小さい正数 $t$ について分子は有限である．
+凸関数の割線の傾きは $t$ について単調非減少であるから，
+この極限は存在する．
+$f$ が $x$ の近傍で連続だから，
+ある $r>0$ について
+$|f(x+u)-f(x)|\le1$ が $\norm u\le r$ で成り立つ．
+これと凸性から $p(h)$ は有限であり，
+$|p(h)|\le C\norm h$ となる定数 $C$ が存在する．
+
+$p(th)=tp(h)$（$t\ge0$）は定義から従う．
+また凸性から
+\[
+ f(x+t(h+k))
+ \le\frac12f(x+2th)+\frac12f(x+2tk)
+\]
+となり，$t\downarrow0$ として
+$p(h+k)\le p(h)+p(k)$ を得る．
+従って $p$ は連続な劣線形汎関数である．
+実Hahn--Banachの定理を零部分空間上の零汎関数に
+適用すると，連続線形汎関数 $x^*$ で
+$\langle x^*,h\rangle\le p(h)$
+が全ての $h$ で成り立つものが存在する．
+任意の $y\in\operatorname{dom}f$ について
+凸性から
+$p(y-x)\le f(y)-f(x)$ なので
+$f(y)\ge f(x)+\langle x^*,y-x\rangle$ を得る．
+$y\notin\operatorname{dom}f$ の場合は自明である．
+従って $x^*\in\partial f(x)$ となる．
+\end{proof}
+
+\begin{corollary}[凸関数の最小値判定]\label{cor:optimality}
+$f$ を真凸関数とし，$x\in\operatorname{dom}f$ とする．
+$x$ が大域的最小点であることと
+$0\in\partial f(x)$ は同値である．
+\end{corollary}
+\begin{proof}
+$0\in\partial f(x)$ は
+$f(y)\ge f(x)+0$ が全ての $y$ で成立することと同値であり，
+これは $x$ が大域的最小点であることに他ならない．
+\end{proof}
+
+\section{Fenchel--Moreauの定理}
+
+\begin{definition}
+$f$ の\emph{双共役}を
+\[
+ f^{**}(x)=
+ \sup_{x^*\in X^*}
+ \{\langle x^*,x\rangle-f^*(x^*)\}
+ \qquad(x\in X)
+\]
+と定める．
+これは自然な埋め込み $X\hookrightarrow X^{**}$ を通じて
+通常の二重共役を $X$ 上に制限したものである．
+\end{definition}
+
+\begin{lemma}[連続アフィン下界の存在]\label{lem:affine-minorant}
+$f:X\to(-\infty,+\infty]$ を真・下半連続・凸関数とする．
+このときある $x_0^*\in X^*$，$c\in\mathbb R$ が存在して
+\[
+ f(x)\ge\langle x_0^*,x\rangle+c
+ \qquad(x\in X)
+\]
+となる．
+\end{lemma}
+\begin{proof}
+$x_0\in\operatorname{dom}f$ を取り，
+$a<f(x_0)$ とする．
+$(x_0,a)$ は閉凸集合
+$C=\operatorname{epi}f\subset X\times\mathbb R$ の外にある．
+Hahn--Banachの強分離定理から，
+$0$ でない連続線形汎関数
+$\ell(x,t)=\langle y^*,x\rangle+\lambda t$ と
+$\alpha\in\mathbb R$ が存在して
+\[
+ \ell(x,t)\le\alpha<\ell(x_0,a)
+ \qquad((x,t)\in C)
+\]
+となる．
+$C$ は $(x,t)\in C$ なら $(x,t+s)\in C$（$s\ge0$）
+を満たすので $\lambda\le0$ である．
+もし $\lambda=0$ なら，
+$(x_0,f(x_0))\in C$ から
+$\langle y^*,x_0\rangle\le\alpha$
+となるが，右側の狭義不等式は
+$\alpha<\langle y^*,x_0\rangle$ となり矛盾する．
+従って $\lambda<0$ である．
+$t=f(x)$ として
+$\langle y^*,x\rangle+\lambda f(x)\le\alpha$
+を変形すると
+\[
+ f(x)\ge\left\langle\frac{y^*}{-\lambda},x\right\rangle
+             -\frac{\alpha}{-\lambda}.
+\]
+$f(x)=+\infty$ の点では自明だから，
+この不等式が全域で成立する．
+\end{proof}
+
+\begin{theorem}[Fenchel--Moreauの定理]\label{thm:fenchel-moreau}
+$f:X\to(-\infty,+\infty]$ を真・下半連続・凸関数とする．
+このとき
+\[
+ f^{**}(x)=f(x)\qquad(x\in X)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+Fenchel--Youngの不等式から
+$\langle x^*,x\rangle-f^*(x^*)\le f(x)$ なので
+$f^{**}(x)\le f(x)$ が全ての $x$ で成り立つ．
+逆向きを示すため，任意の $x_0\in X$ と
+$a<f(x_0)$（$a\in\mathbb R$）を取る．
+エピグラフ $C=\operatorname{epi}f$ は非空閉凸集合であり，
+$(x_0,a)\notin C$ なので，強分離定理によって
+\[
+ \ell(x,t)=\langle y^*,x\rangle+\lambda t
+ \le\alpha<\ell(x_0,a)
+ \qquad((x,t)\in C)
+ \tag{$*$}
+\]
+となる連続線形汎関数 $\ell$ と $\alpha$ が存在する．
+$C$ の上方向の閉性から $\lambda\le0$ である．
+
+$\lambda<0$ なら
+$\ell(x,f(x))\le\alpha$ を変形し，
+ある連続アフィン関数
+$h(x)=\langle z^*,x\rangle+c$ で
+$h\le f$ かつ $h(x_0)>a$ となるものが存在する．
+実際
+$z^*=y^*/(-\lambda)$，
+$c=-\alpha/(-\lambda)$ と置けばよい．
+このとき
+$\langle z^*,x\rangle-f(x)\le-c$ が全ての $x$ で成立するので
+$f^*(z^*)\le-c$ であり，
+\[
+ f^{**}(x_0)\ge\langle z^*,x_0\rangle-f^*(z^*)
+ \ge h(x_0)>a
+\]
+となる．
+
+$\lambda=0$ の場合は，
+補題\ref{lem:affine-minorant}によって
+既知のアフィン下界
+$h_0(x)=\langle z_0^*,x\rangle+c_0\le f(x)$ を取る．
+対応する汎関数
+$\ell_0(x,t)=\langle z_0^*,x\rangle-t$
+は $C$ 上で $\ell_0(x,t)\le-c_0$ を満たす．
+不等式 $(*)$ の狭義の余裕は正なので，
+十分小さい $\varepsilon>0$ に対して
+\[
+ \ell+\varepsilon\ell_0
+\]
+も $C$ 上の上界と $(x_0,a)$ との間で
+狭義の分離を保つ．
+実際，左辺の $C$ 上の上界は
+$\alpha-\varepsilon c_0$，
+右辺の値は
+$\ell(x_0,a)+\varepsilon\ell_0(x_0,a)$ であり，
+元の差 $\ell(x_0,a)-\alpha>0$ があるため
+十分小さい $\varepsilon$ で大小関係は保たれる．
+新しい汎関数の $t$ の係数は $-\varepsilon<0$ なので，
+直前の場合に帰着し $f^{**}(x_0)>a$ を得る．
+
+$a<f(x_0)$ は任意だったから
+$f^{**}(x_0)\ge f(x_0)$ が成り立つ．
+$f(x_0)=+\infty$ の場合にも，
+任意の実数 $a$ について同じ議論を適用することで
+$f^{**}(x_0)=+\infty$ を得る．
+よって全ての $x_0$ で等号が成り立つ．
+\end{proof}
+
+\section{基本的な凸共役の計算}
+
+\begin{example}[二次関数]\label{ex:quadratic}
+$H$ を実Hilbert空間とし，
+$f(x)=\frac12\norm x^2$ とする．
+Rieszの表現定理によって $H^*$ を $H$ と同一視すると
+\[
+ f^*(y)=\frac12\norm y^2
+\]
+となる．
+\end{example}
+\begin{proof}
+内積の平方完成によって
+\[
+ \langle y,x\rangle-\frac12\norm x^2
+ =\frac12\norm y^2-\frac12\norm{x-y}^2
+ \le\frac12\norm y^2.
+\]
+$x=y$ で等号となるので上限は $\norm y^2/2$ である．
+\end{proof}
+
+\begin{example}[ノルムの凸共役]\label{ex:norm-conjugate}
+$f(x)=\norm x$ とすると
+\[
+ f^*(x^*)=
+ \begin{cases}
+ 0&(\norm{x^*}\le1),\\
+ +\infty&(\norm{x^*}>1).
+ \end{cases}
+\]
+\end{example}
+\begin{proof}
+$\norm{x^*}\le1$ なら
+$\langle x^*,x\rangle-\norm x\le0$ であり，
+$x=0$ で零となる．
+$\norm{x^*}>1$ なら，
+ある $u\in X$，$\norm u=1$ について
+$\langle x^*,u\rangle>1$ となる．
+$x=tu$，$t>0$ とすると
+\[
+ \langle x^*,tu\rangle-\norm{tu}
+ =t(\langle x^*,u\rangle-1)\longrightarrow+\infty
+\]
+なので共役値は無限大である．
+\end{proof}
+
+\begin{example}[指示関数と支持関数]\label{ex:indicator}
+空でない集合 $C\subset X$ の指示関数を
+\[
+ \delta_C(x)=\begin{cases}0&(x\in C),\\+\infty&(x\notin C)\end{cases}
+\]
+とする．このとき
+\[
+ \delta_C^*(x^*)=\sup_{x\in C}\langle x^*,x\rangle
+\]
+となる．右辺を $C$ の支持関数という．
+\end{example}
+\begin{proof}
+凸共役の定義において $x\notin C$ では
+$\langle x^*,x\rangle-\delta_C(x)=-\infty$
+となるため，上限に寄与するのは $x\in C$ のみである．
+従って表示式を得る．
+\end{proof}
+
+\section{Fenchel双対性}
+
+以下の節では $X,Y$ を有限次元実線形空間とする．
+\begin{definition}
+線形写像 $A:X\to Y$ と真凸関数
+$f:X\to(-\infty,+\infty]$，
+$g:Y\to(-\infty,+\infty]$ に対し，
+主問題を
+\[
+ \inf_{x\in X}\{f(x)+g(Ax)\}
+ \tag{P}
+\]
+とする．双対問題を
+\[
+ \sup_{y^*\in Y^*}
+ \{-f^*(-A^*y^*)-g^*(y^*)\}
+ \tag{D}
+\]
+と定める．
+\end{definition}
+
+\begin{theorem}[弱双対性]\label{thm:weak-duality}
+任意の $x\in X$ と $y^*\in Y^*$ について
+\[
+ -f^*(-A^*y^*)-g^*(y^*)
+ \le f(x)+g(Ax)
+\]
+が成り立つ．従って双対問題の上限は
+主問題の下限を超えない．
+\end{theorem}
+\begin{proof}
+Fenchel--Youngの不等式を $f$ に適用すると
+\[
+ f(x)+f^*(-A^*y^*)\ge-\langle y^*,Ax\rangle
+\]
+であり，$g$ について
+\[
+ g(Ax)+g^*(y^*)\ge\langle y^*,Ax\rangle
+\]
+である．両式を足せば
+$f(x)+g(Ax)+f^*(-A^*y^*)+g^*(y^*)\ge0$
+となり，移項して結論を得る．
+\end{proof}
+
+\begin{theorem}[強双対性の十分条件]\label{thm:strong-duality}
+$X,Y$ を有限次元実線形空間とし，
+$f:X\to(-\infty,+\infty]$，
+$g:Y\to(-\infty,+\infty]$ を真・凸・下半連続関数，
+$A:X\to Y$ を線形写像とする．
+ある $x_0\in\operatorname{dom}f$ が存在して
+$g$ が $Ax_0$ の近傍で有限かつ連続であると仮定する．
+さらに主問題の下限 $v$ が有限であるとする．
+このとき主問題と双対問題の最適値は一致し，
+双対問題の上限は達成される．
+\end{theorem}
+\begin{proof}
+摂動値関数
+\[
+ \varphi(z)=\inf_{x\in X}\{f(x)+g(Ax+z)\}
+ \qquad(z\in Y)
+\]
+を定める．$f,g$ の凸性から $\varphi$ は凸である．
+実際 $x_1,x_2$ を選び，両方の項に凸性を適用して
+$z_1,z_2$ に関する不等式を得た後に下限を取ればよい．
+$\varphi(0)=v\in\mathbb R$ である．
+$g$ は $Ax_0$ の近傍で有限・連続なので，
+ある近傍 $U$ において
+\[
+ \varphi(z)\le f(x_0)+g(Ax_0+z)<\infty
+\]
+となり，$\varphi$ は $0$ の近傍で上に有界である．
+凸性と $\varphi(0)=v$ が有限であることから
+$\varphi$ はこの近傍で $-\infty$ を取れない．
+実際，もし $\varphi(z)=-\infty$ なら
+$\varphi(0)\le(\varphi(z)+\varphi(-z))/2=-\infty$
+となり矛盾する．
+従って $\varphi$ は $0$ の近傍で有限となり，
+有限次元空間上の有限値凸関数の局所連続性から
+$0$ で連続である．
+命題\ref{prop:subgrad-exists}を適用すると
+$y^*\in\partial\varphi(0)$ が存在し，
+\[
+ \varphi(z)\ge\varphi(0)+\langle y^*,z\rangle
+ =v+\langle y^*,z\rangle
+\]
+となる．
+任意の $x\in X$ と $w\in Y$ について
+$z=w-Ax$ と置くと
+\[
+ f(x)+g(w)\ge\varphi(w-Ax)
+ \ge v+\langle y^*,w-Ax\rangle.
+\]
+従って
+\[
+ f(x)+\langle A^*y^*,x\rangle
+ +g(w)-\langle y^*,w\rangle\ge v.
+\]
+$x$ と $w$ を独立に動かして下限を取ると
+\[
+ -f^*(-A^*y^*)-g^*(y^*)\ge v
+\]
+を得る．
+弱双対性によって逆向きの不等式が成り立つので
+等号であり，$y^*$ は双対問題の最大値を達成する．
+\end{proof}
+
+\begin{remark}
+強双対性の成立は正則性条件に依存する．
+本稿では有限次元で，$g$ がある実現可能点の像で
+連続となる条件を用いた．
+一般のBanach空間や相対内点による条件では，
+位相的閉性などをより慎重に扱う必要がある．
+\end{remark}
+
+\section{最適性条件}
+
+\begin{proposition}[双対等号の最適性条件]\label{prop:optimality}
+主問題の実現可能点 $x$ と双対変数 $y^*$ について，
+\[
+ -A^*y^*\in\partial f(x),\qquad
+ y^*\in\partial g(Ax)
+\]
+が成り立つなら，$x$ は主問題の最小点，
+$y^*$ は双対問題の最大点であり，
+両者の目的関数値は等しい．
+\end{proposition}
+\begin{proof}
+定理\ref{thm:subgrad}により
+\[
+ f(x)+f^*(-A^*y^*)=-\langle y^*,Ax\rangle,
+\]
+\[
+ g(Ax)+g^*(y^*)=\langle y^*,Ax\rangle
+\]
+が成り立つ．両式を足して整理すると
+\[
+ f(x)+g(Ax)
+ =-f^*(-A^*y^*)-g^*(y^*)
+\]
+となる．弱双対性から，この等号が成立する
+実現可能な $x,y^*$ はそれぞれ最適である．
+\end{proof}
+
+\begin{remark}
+凸双対性は，元の関数を線形汎関数による評価から
+再構成する理論である．
+Fenchel--Moreauの定理はこの再構成を厳密に保証し，
+強双対性は最適化問題において
+原問題と双対問題の値が一致する条件を与える．
+\end{remark}
+
+\section{凸双対を用いて閾値処理を導く}
+\begin{theorem}[絶対値正則化の厳密解]
+$a\in\mathbb R$，$\lambda>0$ とし
+\[
+ F(x)=\frac12(x-a)^2+\lambda|x|
+ \qquad(x\in\mathbb R)
+\]
+とおく．$F$ の最小点はただ一つで，
+\[
+ x_*=\operatorname{sgn}(a)(|a|-\lambda)_+
+\]
+に等しい（$a=0$ では右辺を0とする）．
+この最小化問題に対する双対問題は
+\[
+ \max_{|y|\le\lambda}\left(ay-\frac12y^2\right)
+\]
+であり，最適値は原問題と一致する．
+\end{theorem}
+\begin{proof}
+$|x|=\max_{|z|\le1}zx$ だから，
+任意の $|y|\le\lambda$ について
+\[
+ F(x)\ge\frac12(x-a)^2+yx
+       =\frac12(x-a+y)^2+ay-\frac12y^2.
+\]
+よって原問題の最小値は双対目的の最大値以上である．
+双対目的は $-(y-a)^2/2+a^2/2$ なので，
+唯一の最大点は
+\[
+ y_*=\begin{cases}
+   -\lambda&(a<-\lambda),\\
+   a&(|a|\le\lambda),\\
+   \lambda&(a>\lambda).
+ \end{cases}
+\]
+$x_*=a-y_*$ と置けば主張の表示式を得る．
+$|a|\le\lambda$ では $x_*=0$ であり
+$y_*x_*=\lambda|x_*|=0$．
+$|a|>\lambda$ では $x_*$ と $y_*$ の符号が一致し，
+$|y_*|=\lambda$ だから
+$y_*x_*=\lambda|x_*|$．
+従って上の二つの不等式はいずれも
+$x=x_*$，$y=y_*$ で等号となり，
+原問題と双対問題の最適値は一致する．
+$F$ の二次項が狭義凸なので最小点は一意である．
+\end{proof}
+\begin{example}[二つの数値例]
+$a=3$，$\lambda=1$ なら $y_*=1$，
+$x_*=2$ で，最小値は
+$F(2)=\frac12(2-3)^2+2=5/2$．
+$a=2/5$，$\lambda=1$ なら
+$y_*=2/5$，$x_*=0$ で最小値は $2/25$ である．
+\end{example}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+$a=-4$，$\lambda=2$ について
+原問題と双対問題の最適解および最適値を求めよ．
+
+\medskip\noindent\textbf{解答．}
+$y_*=-2$，$x_*=a-y_*=-2$．原問題の値は
+$\frac12(-2+4)^2+2|-2|=2+4=6$，
+双対の値は $(-4)(-2)-(-2)^2/2=8-2=6$ で一致する．
+
+\end{document}

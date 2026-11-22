@@ -1,0 +1,612 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{凸最適化とKarush--Kuhn--Tucker条件}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，凸関数，KKT条件，Slater条件．
+本稿の具体的な到達課題は，不等式制約付き問題の最適解と乗数を計算する．
+
+
+\section{凸最適化問題}
+
+本稿では有限次元実Euclid空間 $\mathbb R^n$ を考え，
+内積を $\langle\cdot,\cdot\rangle$ と書く．
+凸集合の分離定理と微分可能な凸関数の基本事項を前提とする．
+
+\begin{definition}
+凸集合 $C\subset\mathbb R^n$ と凸関数
+$f:C\to\mathbb R$ に対し，
+\[
+ \inf_{x\in C}f(x)
+\]
+を\emph{凸最適化問題}という．
+最小値を達成する $x_*\in C$ を\emph{最小点}という．
+\end{definition}
+
+\begin{proposition}[微分可能な凸関数の一次条件]\label{prop:first-order}
+$U\subset\mathbb R^n$ を開凸集合，
+$f:U\to\mathbb R$ を微分可能とする．
+$f$ が凸であることと
+\[
+ f(y)\ge f(x)+\langle\nabla f(x),y-x\rangle
+ \qquad(x,y\in U)
+\]
+が成り立つことは同値である．
+\end{proposition}
+\begin{proof}
+$f$ が凸なら $0<t<1$ について
+\[
+ f(x+t(y-x))\le(1-t)f(x)+tf(y)
+\]
+である．
+両辺から $f(x)$ を引き $t$ で割って
+$t\downarrow0$ とすれば
+$\langle\nabla f(x),y-x\rangle\le f(y)-f(x)$ を得る．
+逆に一次条件を $z=(1-t)x+ty$ に対して
+$x$ と $y$ で適用すると
+\[
+ f(x)\ge f(z)+\langle\nabla f(z),x-z\rangle,\qquad
+ f(y)\ge f(z)+\langle\nabla f(z),y-z\rangle.
+\]
+前者を $1-t$ 倍，後者を $t$ 倍して足すと，
+$(1-t)(x-z)+t(y-z)=0$ だから
+$(1-t)f(x)+tf(y)\ge f(z)$ となる．
+従って $f$ は凸である．
+\end{proof}
+
+\begin{proposition}[最小点の存在]\label{prop:existence}
+$C\subset\mathbb R^n$ を空でない閉集合，
+$f:C\to\mathbb R$ を連続とする．
+$f$ が $C$ 上で強制的，すなわち
+$\norm x\to\infty$（$x\in C$）なら
+$f(x)\to\infty$ を満たすとき，
+$f$ は $C$ 上で最小値を達成する．
+\end{proposition}
+\begin{proof}
+$x_0\in C$ を固定する．
+$f$ は強制的だから
+$S=\{x\in C:f(x)\le f(x_0)\}$ は有界である．
+$C$ は閉で $f$ は連続なので $S$ は閉でもあり，
+有限次元空間のHeine--Borelの定理から
+$S$ はコンパクトである．
+$S$ は $x_0$ を含むので空でない．
+連続関数 $f|_S$ は最小値を達成し，
+$C\setminus S$ の点では $f(x)>f(x_0)$ なので，
+この点は $C$ 全体でも最小点である．
+\end{proof}
+
+\section{劣微分と法錐}
+
+\begin{definition}
+$U$ を開凸集合，$f:U\to\mathbb R$ を凸関数とする．
+\[
+ \partial f(x)=
+ \{v\in\mathbb R^n:
+ f(y)\ge f(x)+\langle v,y-x\rangle
+ \text{ for all }y\in U\}
+\]
+を\emph{劣微分}という．
+また $C\subset\mathbb R^n$ を凸集合，
+$x\in C$ とするとき
+\[
+ N_C(x)=
+ \{v\in\mathbb R^n:
+ \langle v,y-x\rangle\le0
+ \text{ for all }y\in C\}
+\]
+を\emph{法錐}という．
+\end{definition}
+
+\begin{proposition}[劣微分と勾配]\label{prop:grad-subdiff}
+$f:U\to\mathbb R$ が凸で $x\in U$ で微分可能なら
+\[
+ \partial f(x)=\{\nabla f(x)\}.
+\]
+\end{proposition}
+\begin{proof}
+命題\ref{prop:first-order}から
+$\nabla f(x)\in\partial f(x)$ である．
+$v\in\partial f(x)$ とする．
+任意の $h\in\mathbb R^n$ に対して
+十分小さい正数 $t$ で $x\pm th\in U$ となる．
+劣勾配不等式により
+\[
+ \frac{f(x+th)-f(x)}t\ge\langle v,h\rangle,
+\]
+\[
+ \frac{f(x-th)-f(x)}{-t}\le\langle v,h\rangle
+\]
+となる．
+$t\downarrow0$ で両辺の差商は
+$\langle\nabla f(x),h\rangle$ に収束するので
+$\langle v,h\rangle=\langle\nabla f(x),h\rangle$ である．
+$h$ は任意だから $v=\nabla f(x)$ となる．
+\end{proof}
+
+\begin{theorem}[凸制約下の最適性条件]\label{thm:normal}
+$C\subset\mathbb R^n$ を空でない凸集合とし，
+$f:U\to\mathbb R$ を開凸集合 $U\supset C$ 上の
+微分可能な凸関数とする．
+$x_*\in C$ が $f$ の $C$ 上の大域的最小点であるための
+必要十分条件は
+\[
+ -\nabla f(x_*)\in N_C(x_*)
+\]
+である．
+\end{theorem}
+\begin{proof}
+$x_*$ が最小点とする．
+任意の $y\in C$，$0<t<1$ に対して
+$x_*+t(y-x_*)\in C$ だから
+\[
+ 0\le f(x_*+t(y-x_*))-f(x_*).
+\]
+$t$ で割って $t\downarrow0$ とすると
+$\langle\nabla f(x_*),y-x_*\rangle\ge0$ を得る．
+従って $-\nabla f(x_*)\in N_C(x_*)$ である．
+逆にこの法錐条件が成り立つなら，
+命題\ref{prop:first-order}により
+\[
+ f(y)\ge f(x_*)+
+ \langle\nabla f(x_*),y-x_*\rangle
+ \ge f(x_*)
+\]
+が全ての $y\in C$ に対して成立する．
+従って $x_*$ は大域的最小点である．
+\end{proof}
+
+\section{等式・不等式制約}
+
+以下，$f,g_1,\dots,g_m:\mathbb R^n\to\mathbb R$ は
+連続微分可能な凸関数，
+$A:\mathbb R^n\to\mathbb R^r$ は線形写像，
+$b\in\mathbb R^r$ とする．
+主問題を
+\[
+ \begin{array}{ll}
+ \text{最小化}&f(x),\\
+ \text{制約}&g_i(x)\le0\quad(1\le i\le m),\\
+             &Ax=b
+ \end{array}
+ \tag{P}
+\]
+と書く．
+
+\begin{definition}
+$\lambda=(\lambda_1,\dots,\lambda_m)\in[0,\infty)^m$，
+$\nu\in\mathbb R^r$ に対し
+\[
+ L(x,\lambda,\nu)
+ =f(x)+\sum_{i=1}^m\lambda_i g_i(x)
+  +\langle\nu,Ax-b\rangle
+\]
+を\emph{Lagrange関数}という．
+双対関数を
+\[
+ q(\lambda,\nu)=\inf_{x\in\mathbb R^n}
+ L(x,\lambda,\nu)
+\]
+と定める．
+\end{definition}
+
+\begin{proposition}[弱双対性]\label{prop:weak-duality}
+$x$ が (P) の実行可能点なら，
+任意の $\lambda\ge0$，$\nu\in\mathbb R^r$ に対して
+\[
+ q(\lambda,\nu)\le f(x)
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+実行可能点では $g_i(x)\le0$ かつ $Ax=b$ である．
+従って
+\[
+ q(\lambda,\nu)
+ \le L(x,\lambda,\nu)
+ =f(x)+\sum_i\lambda_i g_i(x)
+ \le f(x).
+\]
+これが主張である．
+\end{proof}
+
+\section{Slater条件と乗数の存在}
+
+\begin{definition}
+線形等式制約集合
+\[
+ S=\{x\in\mathbb R^n:Ax=b\}
+\]
+が空でなく，
+ある $x_0\in S$ が存在して
+\[
+ g_i(x_0)<0\qquad(1\le i\le m)
+\]
+となるとき，\emph{Slater条件}が成立するという．
+\end{definition}
+
+\begin{lemma}[開凸集合による分離]\label{lem:strict-separation}
+空でない開凸集合 $C\subset\mathbb R^d$ と
+$x_0\notin C$ に対し，
+零でない $v\in\mathbb R^d$ が存在して
+\[
+ \langle v,x\rangle\ge\langle v,x_0\rangle
+ \qquad(x\in C)
+\]
+となる．
+\end{lemma}
+\begin{proof}
+開凸集合とその外点の分離定理を適用すればよいが，
+その帰結を明示する．
+$D=C-x_0$ は原点を含まない開凸集合である．
+有限次元のHahn--Banach分離定理によって
+零でない線形汎関数 $\ell$ と実数 $\alpha$ が存在して
+$\ell(y)\ge\alpha\ge0$（$y\in D$）となる．
+$\ell(y)=\langle v,y\rangle$ と書き直せば
+$\langle v,x-x_0\rangle\ge0$ が従う．
+\end{proof}
+
+\begin{theorem}[Slater条件とLagrange乗数]\label{thm:slater}
+問題 (P) は最小点 $x_*$ を持ち，
+その最小値 $p_*=f(x_*)$ は有限であるとする．
+さらにSlater条件が成立すると仮定する．
+このとき
+$\lambda_i\ge0$ と $\nu\in\mathbb R^r$ が存在して，
+\[
+ \nabla f(x_*)+
+ \sum_{i=1}^m\lambda_i\nabla g_i(x_*)+
+ A^{\mathsf T}\nu=0,
+ \qquad
+ \lambda_i g_i(x_*)=0\quad(1\le i\le m)
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+等式制約集合 $S=\{x:Ax=b\}$ を考える．
+$\mathbb R^{m+1}$ の部分集合
+\[
+ C=\left\{(u_1,\dots,u_m,t):
+ \begin{array}{l}
+ \text{ある }x\in S\text{ が存在して}\\
+ g_i(x)<u_i\quad(1\le i\le m),\\
+ f(x)<t
+ \end{array}\right\}
+\]
+を定める．
+各点 $(u,t)\in C$ に対して不等式の余裕は正なので，
+その点の十分小さい開近傍も $C$ に含まれる．
+従って $C$ は開集合である．
+また $f,g_i$ の凸性と $S$ のアフィン性によって，
+二つの点を実現する $x,y\in S$ の凸結合を用いれば
+$C$ は凸集合である．
+$S$ は空でないので $C$ も空でない．
+$(0,\dots,0,p_*)\notin C$ である．
+実際，もし属すればある実行可能点 $x$ で
+$f(x)<p_*$ が成り立ち，最小性に反する．
+
+補題\ref{lem:strict-separation}から，
+零でない $(\alpha_1,\dots,\alpha_m,\beta)$ が存在して
+\[
+ \sum_i\alpha_i u_i+\beta t\ge\beta p_*
+ \qquad((u,t)\in C)
+ \tag{1}
+\]
+となる．
+$C$ は全ての座標について上方に閉じている：
+$(u,t)\in C$ なら，任意の $h_i,h\ge0$ に対し
+$(u_i+h_i,t+h)\in C$ である．
+従って (1) において
+$\alpha_i\ge0$，$\beta\ge0$ でなければならない．
+Slater点 $x_0\in S$ に対して
+$g_i(x_0)<0$ だから，
+$u_i$ を負で $g_i(x_0)<u_i<0$ となるように取り，
+$t>f(x_0)$ とすれば $(u,t)\in C$ である．
+もし $\beta=0$ なら
+零でない $\alpha\ge0$ について
+$\sum_i\alpha_i u_i<0$ となるが，
+(1) では $\sum_i\alpha_i u_i\ge0$ となり矛盾する．
+従って $\beta>0$ である．
+
+$\lambda_i=\alpha_i/\beta\ge0$ と置く．
+任意の $x\in S$ に対して
+$u_i\downarrow g_i(x)$，$t\downarrow f(x)$ として
+(1) を極限に移せば
+\[
+ f(x)+\sum_i\lambda_i g_i(x)\ge p_*
+ \qquad(x\in S)
+ \tag{2}
+\]
+となる．
+一方，$x_*$ は実行可能なので
+$g_i(x_*)\le0$ であり，
+\[
+ f(x_*)+\sum_i\lambda_i g_i(x_*)\le p_*.
+\]
+(2) を $x=x_*$ に適用すると逆向きの不等式を得るので，
+等号が成立する．
+$\lambda_i g_i(x_*)\le0$ の総和が零であるから，
+各項が零，すなわち
+$\lambda_i g_i(x_*)=0$ となる．
+
+さらに (2) の等号を $x_*$ が達成するので，
+$x_*$ は
+\[
+ h(x)=f(x)+\sum_i\lambda_i g_i(x)
+\]
+のアフィン空間 $S$ 上の最小点である．
+$S$ の方向空間は $\ker A$ なので，
+任意の $z\in\ker A$ に対し
+$t\mapsto h(x_*+tz)$ は $t=0$ で最小となる．
+従って
+$\langle\nabla h(x_*),z\rangle=0$
+が全ての $z\in\ker A$ で成り立つ．
+線形代数の基本恒等式
+$(\ker A)^\perp=\operatorname{im}A^{\mathsf T}$
+から，ある $\mu\in\mathbb R^r$ が存在して
+$\nabla h(x_*)=A^{\mathsf T}\mu$ となる．
+$\nu=-\mu$ と置けば
+\[
+ \nabla f(x_*)+\sum_i\lambda_i\nabla g_i(x_*)
+ +A^{\mathsf T}\nu=0
+\]
+となり，結論を得る．
+\end{proof}
+
+\section{KKT条件の必要十分性}
+
+\begin{definition}
+実行可能点 $x_*$ と
+$\lambda\in[0,\infty)^m$，$\nu\in\mathbb R^r$ が
+次の条件を満たすとき，\emph{KKT条件}を満たすという：
+\[
+ \begin{aligned}
+ &Ax_*=b,\qquad g_i(x_*)\le0,\\
+ &\lambda_i\ge0,\qquad \lambda_i g_i(x_*)=0,\\
+ &\nabla f(x_*)+\sum_i\lambda_i\nabla g_i(x_*)
+   +A^{\mathsf T}\nu=0.
+ \end{aligned}
+\]
+\end{definition}
+
+\begin{theorem}[凸問題におけるKKT条件の十分性]
+\label{thm:kkt-sufficient}
+$f,g_i$ が微分可能凸関数なら，
+KKT条件を満たす実行可能点 $x_*$ は
+問題 (P) の大域的最小点である．
+\end{theorem}
+\begin{proof}
+任意の実行可能点 $x$ を取る．
+凸関数の一次条件から
+\[
+ f(x)\ge f(x_*)+
+ \langle\nabla f(x_*),x-x_*\rangle
+\]
+である．
+KKTの停留条件と $A(x-x_*)=0$ を用いると
+\[
+ \langle\nabla f(x_*),x-x_*\rangle
+ =-\sum_i\lambda_i
+ \langle\nabla g_i(x_*),x-x_*\rangle.
+\]
+また $g_i$ の凸性によって
+\[
+ \langle\nabla g_i(x_*),x-x_*\rangle
+ \le g_i(x)-g_i(x_*).
+\]
+$\lambda_i\ge0$ と相補性
+$\lambda_i g_i(x_*)=0$ から
+\[
+ \langle\nabla f(x_*),x-x_*\rangle
+ \ge-\sum_i\lambda_i g_i(x)\ge0
+\]
+となる．従って $f(x)\ge f(x_*)$ であり，
+$x_*$ は大域的最小点である．
+\end{proof}
+
+\begin{corollary}[Slater条件下のKKT判定]
+\label{cor:kkt-iff}
+Slater条件が成り立ち，問題 (P) の最小値が
+ある実行可能点で達成されるとする．
+このとき実行可能点 $x_*$ が最小点であることと，
+ある $\lambda\ge0,\nu$ とともにKKT条件を満たすことは
+同値である．
+\end{corollary}
+\begin{proof}
+必要性は定理\ref{thm:slater}による．
+十分性は定理\ref{thm:kkt-sufficient}による．
+\end{proof}
+
+\section{双対性と具体例}
+
+\begin{theorem}[強双対性]\label{thm:strong-duality}
+定理\ref{thm:slater}の仮定のもとで
+\[
+ \inf_{x\ {\rm feasible}}f(x)
+ =\max_{\lambda\ge0,\ \nu\in\mathbb R^r}
+ q(\lambda,\nu)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+定理\ref{thm:slater}によって
+KKT乗数 $(\lambda_*,\nu_*)$ が存在する．
+$L(x,\lambda_*,\nu_*)$ は $x$ について
+微分可能な凸関数であり，
+停留条件から
+$\nabla_x L(x_*,\lambda_*,\nu_*)=0$
+である．
+命題\ref{prop:first-order}から
+$x_*$ は $L(\cdot,\lambda_*,\nu_*)$ の
+大域的最小点となる．
+従って
+\[
+ q(\lambda_*,\nu_*)
+ =L(x_*,\lambda_*,\nu_*)
+ =f(x_*)+\sum_i\lambda_{*,i}g_i(x_*)
+ =p_*,
+\]
+ここで最後の等号はKKTの相補性による．
+弱双対性から全ての双対実行可能点で $q\le p_*$ なので，
+$(\lambda_*,\nu_*)$ は双対問題の最大点となり，
+両最適値が一致する．
+\end{proof}
+
+\begin{proposition}[等式制約とFenchel共役]\label{prop:fenchel}
+$f:\mathbb R^n\to\mathbb R$ を凸関数，
+$A:\mathbb R^n\to\mathbb R^r$ を線形写像とし，
+等式制約 $Ax=b$ だけを考える．
+この場合の双対関数は
+\[
+ q(\nu)=-f^*(-A^{\mathsf T}\nu)-\langle\nu,b\rangle
+\]
+となる．
+\end{proposition}
+\begin{proof}
+定義により
+\begin{align*}
+ q(\nu)
+ &=\inf_x\{f(x)+\langle\nu,Ax-b\rangle\}\\
+ &=\inf_x\{f(x)+\langle A^{\mathsf T}\nu,x\rangle\}
+   -\langle\nu,b\rangle\\
+ &=-\sup_x\{\langle-A^{\mathsf T}\nu,x\rangle-f(x)\}
+   -\langle\nu,b\rangle\\
+ &=-f^*(-A^{\mathsf T}\nu)-\langle\nu,b\rangle.
+\end{align*}
+\end{proof}
+
+\begin{example}[単一の不等式制約]
+\[
+ \text{最小化 }(x-2)^2\quad\text{制約 }x\le1
+\]
+を考える．最小点は $x_*=1$ であり，
+KKT乗数は $\lambda=2$ である．
+\end{example}
+\begin{proof}
+$f'(x)=2(x-2)$，$g(x)=x-1$，$g'(x)=1$ である．
+$x_*=1$ では
+$f'(1)+\lambda g'(1)=-2+\lambda=0$
+となるため $\lambda=2$ である．
+$\lambda\ge0$，$g(1)=0$ なのでKKT条件を満たす．
+定理\ref{thm:kkt-sufficient}から最小点である．
+また $x_0=0$ は $g(x_0)<0$ を満たすので
+Slater条件も成立している．
+\end{proof}
+
+\begin{example}[Slater条件がない場合]
+$f(x)=x$，$g(x)=x^2$ とし，
+$g(x)\le0$ のもとで $f(x)$ を最小化する．
+唯一の実行可能点は $x_*=0$ だが，
+KKT乗数は存在しない．
+\end{example}
+\begin{proof}
+$x^2\le0$ なら $x=0$ なので $x_*=0$ が唯一の実行可能点である．
+停留条件は
+\[
+ f'(0)+\lambda g'(0)=1+\lambda\cdot0=0
+\]
+を要求するが，不可能である．
+また $g(x)<0$ を満たす実数 $x$ は存在しないので
+Slater条件は成立しない．
+\end{proof}
+
+\begin{remark}
+KKT条件の必要性は制約の正則性に依存する．
+本稿では有限次元の微分可能な凸問題に対し，
+Slater条件から乗数の存在を分離定理によって証明した．
+無限次元空間や非凸問題では，別の正則性条件と
+より慎重な議論が必要である．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{制約付き二次最適化のKKT計算．}
+\begin{proposition}
+\[
+\min_{x\ge0}(x+1)^2
+\]
+の唯一の解は $x_*=0$ であり，
+制約 $g(x)=-x\le0$ のKKT乗数は $\lambda_*=2$ である．
+\end{proposition}
+\begin{proof}
+$f(x)=(x+1)^2$ は $x\ge0$ で導関数
+$f'(x)=2(x+1)>0$ を持つから，
+最小値は境界点 $x=0$ で一意に達成される．
+Lagrange関数を $L(x,\lambda)=f(x)-\lambda x$
+とすると，停留条件は
+$2(x+1)-\lambda=0$，
+双対実行可能性は $\lambda\ge0$，
+相補性は $\lambda x=0$ である．
+$(x,\lambda)=(0,2)$ はこれらを満たす．
+凸問題で $x=1$ はSlater条件を満たすので，
+KKT条件は最適性の十分条件である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\min_{x\ge0}(x-1)^2$ の解とKKT乗数を求めよ．
+\par\noindent\textbf{解答．}
+最適解は内点 $x_*=1$，
+相補性から $\lambda_*=0$ である．
+\end{document}

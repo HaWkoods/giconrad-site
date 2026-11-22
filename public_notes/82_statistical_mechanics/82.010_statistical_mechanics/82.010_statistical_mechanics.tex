@@ -1,0 +1,380 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{統計力学の数学}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+有限状態のエネルギーからGibbs確率を構成し，
+観測された平均エネルギーを用いて温度を逆算する．
+さらに分配関数の微分によって揺らぎを計算する．
+熱力学極限の節は，有限状態での結果が
+無限系でどこまで拡張できるかを学ぶ発展部分である．
+前提は有限和，微分積分，確率分布の初歩である．
+
+\section{有限状態のGibbs分布}
+有限集合 $\Omega=\{1,\ldots,N\}$ にエネルギー $E_i\in\mathbb R$ を与える．
+温度の逆数を $\beta>0$ とする．
+\begin{definition}
+分配関数とGibbs確率を
+\[
+ Z(\beta)=\sum_{i=1}^Ne^{-\beta E_i},\qquad
+ q_i(\beta)=\frac{e^{-\beta E_i}}{Z(\beta)}
+\]
+と定める．
+\end{definition}
+\section{最大エントロピー原理}
+\begin{theorem}[Gibbsの変分原理]
+任意の確率分布 $p=(p_i)$ に対して
+\[
+ S(p)-\beta\sum_i p_iE_i\le\log Z(\beta),\qquad
+ S(p)=-\sum_i p_i\log p_i
+\]
+が成立し，等号は $p=q(\beta)$ のとき，かつそのときに限る．
+\end{theorem}
+\begin{proof}
+相対エントロピー
+$D(p\Vert q)=\sum_{p_i>0}p_i\log(p_i/q_i)$ は非負である．
+実際 $-\log t\ge1-t$ を $t=q_i/p_i$ に適用し，
+和を取れば $D(p\Vert q)\ge\sum_{p_i>0}(p_i-q_i)
+=\sum_{p_i=0}q_i\ge0$．
+等号は $p=q$ の場合に限る．
+$\log q_i=-\beta E_i-\log Z$ を代入すると
+$D(p\Vert q)=-S(p)+\beta\sum_i p_iE_i+\log Z$．
+整理して結論を得る．
+\end{proof}
+\section{分配関数の微分}
+\begin{proposition}
+Gibbs分布における平均エネルギー $U$ と分散は
+\[
+ U(\beta)=-\frac{d}{d\beta}\log Z(\beta),\qquad
+ \operatorname{Var}_\beta(E)=\frac{d^2}{d\beta^2}\log Z(\beta)
+\]
+を満たす．従って $U'(\beta)=-\operatorname{Var}_\beta(E)\le0$．
+\end{proposition}
+\begin{proof}
+有限和を微分し，
+$Z'=-\sum E_ie^{-\beta E_i}$，
+$Z''=\sum E_i^2e^{-\beta E_i}$ を得る．
+$-(\log Z)'=-Z'/Z$ と
+$(\log Z)''=Z''/Z-(Z'/Z)^2$ から式を得る．
+\end{proof}
+\begin{example}
+二準位系 $E_0=0,E_1=\Delta>0$ では
+$Z=1+e^{-\beta\Delta}$，
+$U=\Delta/(1+e^{\beta\Delta})$ である．
+\end{example}
+\begin{remark}
+熱力学極限と相転移には系のサイズを無限大にする極限操作が必要である．
+ここでの結果は有限状態空間に限定する．
+\end{remark}
+
+
+\section{熱力学極限とCurie--Weiss模型}
+\begin{definition}
+$J>0$，$h\in\mathbb R$ とし，$N$ 個のスピン $\sigma_i\in\{-1,1\}$ の
+Curie--Weissエネルギーを
+\[
+ H_N(\sigma)=-\frac{J}{2N}\left(\sum_{i=1}^N\sigma_i\right)^2
+ -h\sum_{i=1}^N\sigma_i
+\]
+とする．$Z_N(\beta,h)=\sum_\sigma e^{-\beta H_N(\sigma)}$ と置く．
+\end{definition}
+\begin{theorem}[圧力の熱力学極限]
+$s(p)=-p\log p-(1-p)\log(1-p)$（$s(0)=s(1)=0$）と置く．
+このとき
+\[
+ \lim_{N\to\infty}\frac1N\log Z_N(\beta,h)
+ =\max_{-1\le m\le1}\left\{
+ s\!\left(\frac{1+m}2\right)+\frac{\beta Jm^2}2+\beta hm
+ \right\}.
+\]
+\end{theorem}
+\begin{proof}
+$k$ 個のスピンが $+1$ のとき磁化は $m_k=2k/N-1$ で，
+その配置数は $\binom Nk$ である．従って
+\[
+ Z_N=\sum_{k=0}^N\binom Nk
+ \exp\!\left(N\left(\frac{\beta Jm_k^2}2+\beta hm_k\right)\right).
+\]
+$p=k/N$ と置くと二項係数に対する評価
+\[
+ \frac{e^{Ns(p)}}{N+1}\le\binom Nk\le e^{Ns(p)}
+\]
+が成り立つ．実際，$\mathrm{Bin}(N,p)$ の確率のうち $k$ が最頻値であり，
+その質量は $1/(N+1)$ 以上1以下であることを用いればよい
+（$k=0,N$ では直接確認する）．
+$F(m)=s((1+m)/2)+\beta Jm^2/2+\beta hm$ と置く．
+最大項を $N+1$ 個の和で挟むと
+\[
+ \max_kF(m_k)-\frac{\log(N+1)}N
+ \le\frac{\log Z_N}N
+ \le\max_kF(m_k)+\frac{\log(N+1)}N.
+\]
+$F$ は $[-1,1]$ で連続であり，格子 $\{m_k\}$ は稠密に近づくので
+$\max_kF(m_k)\to\max_{[-1,1]}F$．これで結論を得る．
+\end{proof}
+\begin{theorem}[零外場での対称性の破れ]
+$h=0$ とする．$\beta J\le1$ なら上記変分式の最大化点は $m=0$ のみである．
+$\beta J>1$ なら最大化点は $\pm m_*$ の二つで，$m_*>0$ は
+$m_*=\tanh(\beta Jm_*)$ の唯一の正の解である．
+\end{theorem}
+\begin{proof}
+$|m|<1$ で $F'(m)=\beta Jm-\operatorname{arctanh}m$，
+$F''(m)=\beta J-1/(1-m^2)$ である．
+$\beta J\le1$ なら $F''\le0$ で $F'$ は原点の左右で
+それぞれ正・負となり，零が唯一の最大点である．
+$\beta J>1$ では $F''(0)>0$ だから原点は極小である．
+正の区間で $F'(0)=0$，$F''$ は狭義減少し
+$F'(m)\to-\infty$（$m\uparrow1$）なので，
+$F'$ は正の区間でちょうど一度零になる．
+その零点 $m_*$ は正側で唯一の極大，対称性により $-m_*$ も極大である．
+両端点より内側の値が大きいことは $F'(m)\to-\infty$ から従う．
+$F'(m_*)=0$ と $\tanh$ の逆函数の関係から表示式を得る．
+\end{proof}
+
+
+\section{一次元Ising模型の無限体積極限}
+スピンを $s_i\in\{-1,1\}$ とし，$J,h\in\mathbb R$，$\beta>0$ を固定する．
+周期境界条件 $s_{n+1}=s_1$ における長さ $n$ のGibbs重みを
+\[
+ \exp\left\{\beta J\sum_{i=1}^n s_is_{i+1}
+                +\beta h\sum_{i=1}^ns_i\right\}
+\]
+と定義する．
+\begin{lemma}[転送行列の固有値]
+$T=(T_{st})_{s,t=\pm1}$ を
+$T_{st}=\exp\{\beta Jst+\beta h(s+t)/2\}$ と定める．
+$T$ は正の成分を持つ実対称行列で，その固有値は
+\[
+ \lambda_{\pm}=e^{\beta J}\cosh(\beta h)
+ \pm\sqrt{e^{2\beta J}\sinh^2(\beta h)+e^{-2\beta J}}
+\]
+であり，$\lambda_+>|\lambda_-|$ である．
+また $\lambda_+$ に対応する固有ベクトル
+$u=(u_+,u_-)^T$ は両成分が正となるよう選べる．
+\end{lemma}
+\begin{proof}
+$T$ は
+\[
+ \begin{pmatrix}e^{\beta J+\beta h}&e^{-\beta J}\\
+ e^{-\beta J}&e^{\beta J-\beta h}\end{pmatrix}
+\]
+なので，特性方程式を解けば表示した固有値を得る．
+$\lambda_+>0$ であり，固有値の和
+$\lambda_++\lambda_-=2e^{\beta J}\cosh(\beta h)>0$ と
+差 $\lambda_+-\lambda_->0$ から $\lambda_+>|\lambda_-|$．
+最大固有値の固有ベクトルは，二つの座標の符号が異なる場合に
+絶対値を取ると $u^TTu$ が厳密に増えることから，同符号に選べる．
+成分に零があれば $T$ の非対角成分が正なので固有方程式に矛盾する．
+よって両成分を正に選べる．
+\end{proof}
+\begin{theorem}[圧力と周期境界条件の無限体積極限]
+周期境界の分配関数 $Z_n$ に対して
+\[
+ Z_n=\operatorname{Tr}(T^n)=\lambda_+^n+\lambda_-^n,
+ \qquad\lim_{n\to\infty}\frac1n\log Z_n=\log\lambda_+
+\]
+が成り立つ．$\log\lambda_+$ は有限の $\beta>0$ と任意の $h$
+について実解析的であり，一次元有限温度では圧力の非解析的特異点はない．
+さらに任意の固定した長さ $r$ の連続するスピン列の分布は，
+$n\to\infty$ で定常Markov連鎖の分布に収束する．
+その遷移行列と定常分布は
+\[
+ P(s,t)=\frac{T_{st}u_t}{\lambda_+u_s},\qquad
+ \pi(s)=\frac{u_s^2}{u_+^2+u_-^2}
+\]
+で与えられる．
+\end{theorem}
+\begin{proof}
+周期境界における各スピン列の重みは
+$\prod_{i=1}^n T_{s_is_{i+1}}$ なので総和は
+$\operatorname{Tr}(T^n)$ に等しい．
+$|\lambda_-|<\lambda_+$ から圧力の極限が従う．
+固有値の平方根の中身は常に正であり，その正の平方根は
+$\beta,h$ の実解析関数である．$\lambda_+>0$ だから
+$\log\lambda_+$ も実解析的である．
+
+$u$ を $\norm{u}_2=1$ に規格化する．
+対称行列のスペクトル分解により
+\[
+ \lim_{m\to\infty}\lambda_+^{-m}(T^m)_{st}=u_su_t
+\]
+が成立する．周期系で最初の $r$ 個のスピンを固定した確率は
+\[
+ \frac{T_{s_1s_2}\cdots T_{s_{r-1}s_r}
+ (T^{n-r+1})_{s_rs_1}}{\operatorname{Tr}(T^n)}
+\]
+なので，極限は
+$u_{s_1}T_{s_1s_2}\cdots T_{s_{r-1}s_r}u_{s_r}/\lambda_+^{r-1}$
+となる．固有方程式 $Tu=\lambda_+u$ から
+$\sum_tP(s,t)=1$．$T$ の対称性により
+$\pi(s)P(s,t)=\pi(t)P(t,s)$ だから $\pi$ は定常分布である．
+上の極限は正に $\pi(s_1)\prod_{j<r}P(s_j,s_{j+1})$ に等しい．
+\end{proof}
+\begin{theorem}[一次元最近接模型のGibbs測度の一意性]
+同じ $\beta,J,h$ に対し，整数格子 $\mathbb Z$ 上の
+最近接Ising相互作用が与えるDLR条件を満たす無限体積Gibbs確率測度は
+ただ一つ存在する．それは前定理の定常Markov連鎖の両側無限版である．
+\end{theorem}
+\begin{proof}
+先に構成した定常Markov連鎖の有限次元分布は整合的だから，
+Kolmogorov拡張定理により $\mathbb Z$ 上の確率測度を定める．
+$P(s,t)=T_{st}u_t/(\lambda_+u_s)$ と
+$\pi(s)=u_s^2$ から，有限区間内のスピンを
+両端のスピンを固定して条件付けた確率では
+$u$ に関する因子がすべて約され，区間内と両端に沿った
+$T$ の積に比例する．ゆえにこの測度はDLR条件を満たす．
+
+一意性を示す．任意のDLR Gibbs測度 $\nu$ を取り，
+中央の $r$ 個のスピンを固定した事象 $B$ を考える．
+その外側の左右に $m$ 個ずつスピンを加えた有限区間で
+両端境界値を $a,b\in\{-1,1\}$ に固定する．
+DLR条件による $B=\{s_1,\ldots,s_r\}$ の条件付き確率は
+\[
+ \frac{(T^m)_{a,s_1}T_{s_1s_2}\cdots
+             T_{s_{r-1}s_r}(T^m)_{s_r,b}}
+ {(T^{2m+r-1})_{a,b}}
+\]
+に等しい．
+$\lambda_+^{-m}T^m\to uu^T$ の収束は
+$a,b$ の有限個の組に対して一様だから，
+その条件付き確率は $m\to\infty$ で前定理の
+$\pi(s_1)\prod_{j<r}P(s_j,s_{j+1})$ に一様に収束する．
+境界値に関して $\nu$ で平均しても同じ極限なので，
+$\nu(B)$ は先に構成した定常Markov連鎖の値に等しい．
+任意の有限個の連続座標に関する円筒事象で等しいため
+二つの確率測度は一致する．
+\end{proof}
+\begin{remark}
+この一意性は一次元・有限温度・有限範囲最近接模型の結果であり，
+高次元のIsing模型や長距離相互作用におけるGibbs測度の一意性は主張しない．
+\end{remark}
+
+
+\section{平均エネルギーから逆温度を決定する}
+\begin{proposition}[二準位系の逆問題]
+エネルギー $E_0=0,E_1=\Delta>0$ を持つ系を
+正の逆温度 $\beta$ のGibbs分布で記述する．
+平均エネルギー $U$ から $\beta$ が一意に定まる
+ための必要十分条件は $0<U<\Delta/2$ である．
+そのとき
+\[
+ \beta=\frac1\Delta\log\left(\frac\Delta U-1\right).
+\]
+\end{proposition}
+\begin{proof}
+分配関数は $Z=1+e^{-\beta\Delta}$，
+高エネルギー状態の確率は
+$q_1=1/(1+e^{\beta\Delta})$ なので
+$U=\Delta/(1+e^{\beta\Delta})$ である．
+$\beta>0$ を動かすと $U$ は狭義減少し，
+その値域は $(0,\Delta/2)$ となる．
+等式を解くと
+$e^{\beta\Delta}=\Delta/U-1$ を得るので，
+対数を取れば表示式になる．
+\end{proof}
+\begin{example}[観測値から温度と揺らぎを求める]
+$\Delta=2$ の二準位系で平均エネルギーが
+$U=1/2$ だったとする．前命題から
+$\beta=\frac12\log3$ であり，
+Gibbs分布は $(q_0,q_1)=(3/4,1/4)$ である．
+分散を直接計算すると
+\[
+ \operatorname{Var}(E)
+ =\Delta^2q_1(1-q_1)
+ =4\cdot\frac14\cdot\frac34=\frac34.
+\]
+一方，分配関数を二回微分した
+$(\log Z)''$ も同じ値を与える．
+したがって確率の直接計算と分配関数の計算は整合する．
+\end{example}
+\begin{proposition}[一般の有限系における単調性]
+有限状態のエネルギー $E_i$ が全て等しいのでなければ，
+平均エネルギー $U(\beta)$ は
+任意の有限な $\beta>0$ で狭義減少する．
+\end{proposition}
+\begin{proof}
+既に示した微分公式
+$U'(\beta)=-\operatorname{Var}_\beta(E)$ を使う．
+各Gibbs確率は正なので，
+エネルギーが全て等しくない場合には
+分散が厳密に正である．従って $U'(\beta)<0$．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+$\Delta=1$ の二準位系について，
+平均エネルギーが $1/4$ となる逆温度と
+エネルギー分散を求めよ．
+
+\medskip\noindent\textbf{解答．}
+$\beta=\log(1/(1/4)-1)=\log3$．
+高エネルギー状態の確率は $1/4$ だから，
+分散は $(1/4)(3/4)=3/16$ である．
+
+\end{document}
