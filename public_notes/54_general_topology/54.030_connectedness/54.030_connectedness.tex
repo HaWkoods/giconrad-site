@@ -1,0 +1,250 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{連結性と道連結性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，連結性と道連結性の定義，連続像の性質．
+本稿の具体的な到達課題は，連結性と道連結性を具体例で判定し，二つの概念の違いを証明する．
+
+
+\section{連結性の特徴づけ}
+\begin{definition}
+位相空間 $X$ が連結とは，
+互いに素な非空開集合 $U,V$ で $X=U\cup V$
+となるものが存在しないことをいう．
+\end{definition}
+\begin{theorem}[連結性の同値条件]\label{thm:connected}
+$X$ について次は同値である．
+\begin{enumerate}
+\item $X$ は連結である．
+\item 開かつ閉な部分集合は $\varnothing,X$ のみである．
+\item 離散二点空間 $\{0,1\}$ への連続写像は定数写像に限る．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+$X=U\cup V$ が非自明な分離なら
+$U=X\setminus V$ は開かつ閉であり，(2) に反する．
+逆に非自明な開閉集合 $U$ があれば
+$U$ と $X\setminus U$ が分離を与える．
+開閉集合 $U$ の特性関数 $\mathbf1_U:X\to\{0,1\}$ は
+離散二点空間への連続写像である．
+逆に非定数連続写像 $f:X\to\{0,1\}$ があれば
+$f^{-1}(\{1\})$ は非自明な開閉集合となる．
+\end{proof}
+\begin{proposition}[連結集合の連続像]
+連結空間 $X$ と連続写像 $f:X\to Y$ に対し，
+$f(X)$ は連結である．
+\end{proposition}
+\begin{proof}
+$f(X)$ の非自明な開閉集合 $B$ があれば
+$f^{-1}(B)$ は $X$ の非自明な開閉集合となり，
+定理\ref{thm:connected}に矛盾する．
+\end{proof}
+\begin{lemma}[共通部分を持つ連結集合の合併]\label{lem:union}
+連結部分集合族 $(C_i)$ が共通点 $p$ を持つなら
+$\bigcup_iC_i$ は連結である．
+\end{lemma}
+\begin{proof}
+合併が $U,V$ で分離されたと仮定する．
+$p\in U$ としてよい．
+各 $C_i$ は連結なので $U,V$ の双方に交わることはできず，
+$p\in C_i\cap U$ より $C_i\subset U$ となる．
+従って合併が $V$ と交わらず矛盾する．
+\end{proof}
+\begin{proposition}[連結集合の閉包]
+連結部分集合 $A\subset X$ の閉包 $\overline A$ は連結である．
+\end{proposition}
+\begin{proof}
+閉包を分離する相対開集合 $U,V$ があるとする．
+$A$ は連結なので一方，例えば $U$ に含まれる．
+すると $V$ の任意の点には $\overline A$ の相対開近傍が存在するが，
+それは $A$ と交わらない．
+閉包の特徴づけに矛盾する．
+\end{proof}
+\section{積空間と連結成分}
+\begin{theorem}[連結空間の積]\label{thm:products}
+連結空間族 $(X_i)_{i\in I}$ の積 $\prod_iX_i$ は連結である．
+\end{theorem}
+\begin{proof}
+空でない積の場合を考え，基点 $a=(a_i)$ を取る．
+まず二つの連結空間 $X,Y$ の積は連結である：
+各 $x$ について $\{x\}\times Y$ は連結であり，
+$X\times\{y_0\}$ も連結なので，
+それらと基点 $(x_0,y_0)$ を用いる合併は連結となり
+積全体を覆う．帰納法から有限積も連結である．
+積中で基点 $a$ と有限個の座標だけ異なる点全体を $D$ とする．
+$D$ は，各有限集合 $F\subset I$ について
+$\prod_{i\in F}X_i\times\prod_{i\notin F}\{a_i\}$
+という連結集合の共通点付き合併なので連結である．
+任意の基本開集合は有限座標でしか制限しないため
+$D$ と交わる．よって $\overline D=\prod_iX_i$ であり，
+連結集合の閉包は連結だから結論を得る．
+\end{proof}
+\begin{definition}
+$x$ を含む連結部分集合全体の合併を $x$ の連結成分という．
+\end{definition}
+\begin{proposition}
+連結成分は極大連結部分集合であり，閉集合である．
+異なる連結成分は交わらず，その全体は $X$ を分割する．
+\end{proposition}
+\begin{proof}
+各連結成分をなす集合族は $x$ を共通点とするので
+補題\ref{lem:union}より連結であり，極大である．
+閉包も連結なので極大性から成分は閉である．
+二つの成分が交わればその合併は連結だから極大性により一致する．
+各点は自分の成分に属するので分割となる．
+\end{proof}
+\section{道連結性}
+\begin{definition}
+$x,y\in X$ を結ぶ道とは，
+連続写像 $\gamma:[0,1]\to X$ で
+$\gamma(0)=x$，$\gamma(1)=y$ を満たすものをいう．
+任意の二点が道で結ばれる空間を道連結という．
+\end{definition}
+\begin{theorem}[道連結なら連結]
+道連結空間は連結である．
+\end{theorem}
+\begin{proof}
+もし非自明な開閉集合 $U$ があれば
+$x\in U$ と $y\notin U$ を選べる．
+両者を結ぶ道 $\gamma$ に対し
+$\gamma^{-1}(U)$ は $[0,1]$ の非自明な開閉集合となるが，
+区間は連結なので矛盾する．
+\end{proof}
+\begin{proposition}[局所道連結空間の成分]\label{prop:localpath}
+$X$ が局所道連結なら，
+各道連結成分は開集合かつ閉集合であり，
+連結成分と一致する．
+\end{proposition}
+\begin{proof}
+道連結成分 $C$ の点 $x$ は道連結な開近傍 $U$ を持つ．
+$U$ の各点は $x$ と道で結べるので $U\subset C$．
+従って $C$ は開である．
+道連結成分全体は分割をなすため，
+$X\setminus C$ も他の開成分の和として開であり $C$ は閉．
+連結部分集合はこの互いに素な開集合のうち一つに
+含まれなければならないので，
+連結成分は道連結成分と一致する．
+\end{proof}
+\section{連結性と道連結性の違い}
+\begin{example}
+\[
+ S=\{(x,\sin(1/x)):0<x\le1\}
+ \cup(\{0\}\times[-1,1])
+\]
+は連結であるが道連結ではない．
+\end{example}
+\begin{proof}
+第一項は区間 $(0,1]$ の連続像なので連結である．
+その閉包は $S$ であるから $S$ は連結となる．
+もし $(0,0)$ と $(x_0,\sin(1/x_0))$，$x_0>0$ を結ぶ
+道 $\gamma(t)=(u(t),v(t))$ があれば，
+$u$ が初めて正となる時刻 $t_0$ の直後で
+$u(t)>0$ の点が $t_0$ にいくらでも近く存在する．
+連続性と中間値性により，任意に大きい整数 $m$ について
+$u(t)=1/(2\pi m+\pi/2)$ および
+$u(s)=1/(2\pi m+3\pi/2)$ となる
+$t,s\downarrow t_0$ が取れる．
+すると $v(t)=1$，$v(s)=-1$ となり
+$v$ の $t_0$ での連続性に矛盾する．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{位相空間の連結性を実際に証明する．}
+\begin{proposition}[連結性は連続像で保存される]
+連結空間 $X$ から位相空間 $Y$ への連続写像
+$f$ の像 $f(X)$ は連結である．
+\end{proposition}
+\begin{proof}
+$f(X)$ が互いに素な非空相対開集合 $U,V$ の和に
+分離されるとする．
+$f^{-1}(U),f^{-1}(V)$ は $X$ の互いに素な
+非空開集合で，和は $X$ となり連結性に反する．
+\end{proof}
+\begin{proposition}[道連結なら連結]
+道連結空間は連結である．
+\end{proposition}
+\begin{proof}
+$X$ が $U,V$ に分離され，$u\in U,v\in V$
+とすると，$u$ と $v$ を結ぶ道
+$\gamma:[0,1]\to X$ が存在する．
+$[0,1]$ は連結なので，前命題により
+$\gamma([0,1])$ は連結である．
+しかし $\gamma([0,1])$ は $U,V$ の双方と交わり，
+その相対開分離を持つため矛盾する．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\mathbb R^2\setminus\{0\}$ は道連結であることを示せ．
+\par\noindent\textbf{解答．}
+二点 $x,y\ne0$ について線分 $[x,y]$ が原点を避ければ
+そのまま道となる．原点を通る場合は，
+$x,y$ と同じ直線上にない点 $z$ を取り，
+線分 $[x,z]$ と $[z,y]$ を連結すれば
+原点を避ける折れ線が得られる．
+\end{document}

@@ -1,0 +1,248 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{コンパクト性とTychonoffの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，開被覆，積位相，有限交叉性．
+本稿の具体的な到達課題は，コンパクト性の証明法を比較し，積空間での有限交叉性を使う．
+
+
+\section{コンパクト性と有限交叉性}
+\begin{definition}
+位相空間 $X$ がコンパクトであるとは，
+$X$ の任意の開被覆が有限部分被覆を持つことをいう．
+\end{definition}
+\begin{proposition}[閉集合の有限交叉性]\label{prop:fip}
+$X$ がコンパクトであることと，
+閉集合族 $(F_i)$ の任意の有限部分族の共通部分が
+非空なら全体の共通部分も非空となることは同値である．
+\end{proposition}
+\begin{proof}
+$\bigcap_iF_i=\varnothing$ と
+$\bigcup_i(X\setminus F_i)=X$ はDe Morganの法則で同値である．
+後者に有限部分被覆があることは
+前者が有限部分族について既に成立することを意味する．
+従って対偶を取ればよい．
+\end{proof}
+\section{フィルターと超フィルター}
+\begin{definition}
+$\mathcal F\subset\mathcal P(X)$ がフィルターであるとは，
+$\varnothing\notin\mathcal F$，
+上位集合に関して閉じ，有限交叉に関して閉じることをいう．
+極大フィルターを超フィルターという．
+$\mathcal F$ が $x$ に収束するとは，
+$x$ の近傍全てが $\mathcal F$ に含まれることをいう．
+\end{definition}
+\begin{lemma}[超フィルターへの拡張]\label{lem:ultra}
+集合 $X$ 上の任意のフィルター $\mathcal F$ は
+ある超フィルターに含まれる．
+\end{lemma}
+\begin{proof}
+$\mathcal F$ を含むフィルター全体を包含順序で考える．
+鎖の和集合は，任意の二つの元が鎖の一方のフィルターに
+共に含まれるため，有限交叉について閉じる．
+空集合を含まず上位集合についても閉じる．
+従って鎖は上界を持ち，Zornの補題から極大元が存在する．
+\end{proof}
+\begin{lemma}[超フィルターの二値性]\label{lem:dichotomy}
+超フィルター $\mathcal U$ と $A\subset X$ に対して
+$A\in\mathcal U$ または $X\setminus A\in\mathcal U$ の
+ちょうど一方が成立する．
+\end{lemma}
+\begin{proof}
+両方含めば空集合を含んでしまう．
+$A\notin\mathcal U$ なら，
+$\mathcal U\cup\{A\}$ が生成する族は
+超フィルターの極大性により真のフィルターでない．
+従ってある $B\in\mathcal U$ に対して
+$A\cap B=\varnothing$ となる．
+これより $B\subset X\setminus A$ なので
+上方閉性から $X\setminus A\in\mathcal U$ である．
+\end{proof}
+\begin{theorem}[コンパクト性の超フィルター判定]\label{thm:ultra}
+$X$ がコンパクトであることと，
+$X$ 上の全ての超フィルターが収束することは同値である．
+\end{theorem}
+\begin{proof}
+$X$ をコンパクトとし，$\mathcal U$ を超フィルターとする．
+$\{\,\overline A:A\in\mathcal U\,\}$ は有限交叉性を持つ：
+有限個の $A_i\in\mathcal U$ の共通部分は空でないからである．
+命題\ref{prop:fip}から
+$x\in\bigcap_{A\in\mathcal U}\overline A$ を選ぶ．
+もし $x$ の開近傍 $V$ が $\mathcal U$ に属さなければ，
+補題\ref{lem:dichotomy}から $X\setminus V\in\mathcal U$．
+だが $x\in\overline{X\setminus V}$ は
+$V$ が開であることと矛盾する．
+従って $\mathcal U\to x$ である．
+逆に $X$ がコンパクトでなければ，
+有限部分族が全体を覆わない開被覆 $(V_i)$ を取れる．
+閉集合 $(X\setminus V_i)$ は有限交叉性を持つので
+それらを含むフィルターを作り，
+補題\ref{lem:ultra}で超フィルター $\mathcal U$ に延長する．
+これが $x\in X$ に収束するとすれば
+$x\in V_i$ となる $i$ を取り，
+$V_i\in\mathcal U$ と $X\setminus V_i\in\mathcal U$
+が同時に成立して矛盾する．
+\end{proof}
+\section{Tychonoffの定理}
+\begin{theorem}[Tychonoff]\label{thm:tych}
+コンパクト位相空間族 $(X_i)_{i\in I}$ の積
+$\prod_{i\in I}X_i$ は積位相についてコンパクトである．
+\end{theorem}
+\begin{proof}
+空の積は一点空間である．ある $X_i$ が空なら
+積も空なのでコンパクトである．
+以下全ての $X_i$ が非空の場合を考える．
+積の上の超フィルター $\mathcal U$ を取る．
+各射影 $\pi_i$ による像のフィルター
+\[
+ (\pi_i)_*\mathcal U=
+ \{B\subset X_i:\pi_i^{-1}(B)\in\mathcal U\}
+\]
+は超フィルターである．
+$X_i$ はコンパクトなので
+定理\ref{thm:ultra}から
+$(\pi_i)_*\mathcal U\to x_i$ となる
+$x_i\in X_i$ が存在する．
+選択公理により $x=(x_i)_{i\in I}$ を取る．
+$x$ の積位相の基本近傍は
+有限個の添字 $F$ だけで
+$\pi_i(y)\in V_i$ を要求する形である．
+各 $V_i$ が像フィルターに属すれば
+$\pi_i^{-1}(V_i)\in\mathcal U$ であり，
+有限交叉も $\mathcal U$ に属する．
+従って $\mathcal U\to x$ である．
+再び定理\ref{thm:ultra}より積空間はコンパクトである．
+\end{proof}
+\section{標準的な帰結}
+\begin{proposition}[連続像・閉部分集合]
+コンパクト空間の連続像はコンパクトである．
+コンパクト空間の閉部分集合はコンパクトである．
+\end{proposition}
+\begin{proof}
+連続写像 $f:X\to Y$ と $f(X)$ の開被覆を取る．
+その逆像は $X$ の開被覆なので有限部分被覆があり，
+その像は $f(X)$ の有限被覆を与える．
+閉部分集合 $F\subset X$ の開被覆を取れば，
+被覆に $X\setminus F$ を一つ加えて $X$ の開被覆になる．
+有限部分被覆から $X\setminus F$ を除けば
+$F$ の有限部分被覆を得る．
+\end{proof}
+\begin{proposition}[Hausdorff空間のコンパクト集合]
+$Y$ がHausdorffなら任意のコンパクト部分集合 $K\subset Y$ は閉である．
+\end{proposition}
+\begin{proof}
+$x\notin K$ に対し，
+各 $y\in K$ に対して $x,y$ の互いに素な開近傍
+$U_y,V_y$ を取る．
+有限個の $V_{y_j}$ が $K$ を覆う．
+$U=\bigcap_jU_{y_j}$ は $x$ の開近傍であり，
+$K$ と交わらない．
+従って $Y\setminus K$ は開である．
+\end{proof}
+\begin{corollary}[コンパクトからHausdorffへの連続全単射]
+$X$ をコンパクト，$Y$ をHausdorffとする．
+連続全単射 $f:X\to Y$ は同相写像である．
+\end{corollary}
+\begin{proof}
+$X$ の閉集合 $F$ はコンパクトなので
+$f(F)$ はコンパクト，従って $Y$ で閉である．
+$f$ は閉写像であるから逆写像は連続となる．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{積空間のコンパクト性を使った具体的な存在証明．}
+\begin{proposition}[Cantorの積空間]
+$X=\{0,1\}^{\mathbb N}$ に積位相を入れると
+$X$ はコンパクトであり，各点を含む基本開集合は
+有限個の座標の指定だけで与えられる．
+\end{proposition}
+\begin{proof}
+各因子 $\{0,1\}$ は有限離散空間だからコンパクトである．
+Tychonoffの定理を適用して積 $X$ はコンパクトとなる．
+積位相の定義により基本開集合は，有限個の添字
+$i_1,\ldots,i_r$ の座標を所定の値に固定する集合である．
+\end{proof}
+\begin{proposition}[有限条件の整合性から無限列を構成する]
+$F_n\subset X$ を閉集合で，
+$F_1\supset F_2\supset\cdots$ とする．
+各 $F_n$ が非空なら $\bigcap_{n\ge1}F_n\ne\varnothing$．
+\end{proposition}
+\begin{proof}
+任意の有限個の $F_n$ の交叉は，
+添字が最大の集合そのものだから非空である．
+コンパクト空間での閉集合の有限交叉性により
+全体の交叉は非空である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$F_n=\{x\in X:x_1=\cdots=x_n=0\}$ の交叉を求めよ．
+\par\noindent\textbf{解答．}
+各座標が零である条件がすべて課されるので
+$\bigcap_nF_n=\{(0,0,\ldots)\}$ である．
+\end{document}

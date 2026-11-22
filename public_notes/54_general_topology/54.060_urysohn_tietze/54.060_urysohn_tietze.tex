@@ -1,0 +1,448 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Urysohnの補題とTietzeの拡張定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，正規空間，Urysohnの補題，Tietze拡張定理．
+本稿の具体的な到達課題は，閉集合の分離と連続関数の延長を具体的に構成する．
+
+\section{正規空間と閉集合の分離}
+
+本稿では，特に断らない限り位相空間は $T_1$ であるとする．
+\begin{definition}
+位相空間 $X$ が\emph{正規}であるとは，
+互いに交わらない任意の二つの閉集合 $A,B\subset X$ に対し，
+$A\subset U$，$B\subset V$，$U\cap V=\varnothing$
+を満たす開集合 $U,V$ が存在することをいう．
+\end{definition}
+
+\begin{lemma}[閉集合を縮める補題]\label{lem:shrink}
+$X$ を正規空間とし，
+$F\subset U\subset X$ を閉集合 $F$ と開集合 $U$ とする．
+このとき開集合 $V$ が存在して
+\[
+ F\subset V\subset\overline V\subset U
+\]
+となる．
+\end{lemma}
+\begin{proof}
+$F$ と $X\setminus U$ は互いに交わらない閉集合である．
+正規性によって，互いに交わらない開集合 $V,W$ で
+$F\subset V$，$X\setminus U\subset W$ となるものを取る．
+$V\subset X\setminus W$ であり，$X\setminus W$ は閉なので
+$\overline V\subset X\setminus W$ である．
+また $X\setminus U\subset W$ だから
+$X\setminus W\subset U$ が成り立つ．
+従って $F\subset V\subset\overline V\subset U$ を得る．
+\end{proof}
+
+\begin{corollary}\label{cor:shrink-chain}
+$X$ を正規空間とする．
+$F\subset G$ を閉集合，
+$F\subset U$ を開集合とし，
+$\overline U\subset G$ と仮定する．
+このとき開集合 $V$ で
+\[
+ F\subset V\subset\overline V\subset U
+\]
+となるものが存在する．
+\end{corollary}
+\begin{proof}
+補題\ref{lem:shrink}を $F\subset U$ に適用するだけでよい．
+$G$ はこの結論には不要な補助条件である．
+\end{proof}
+
+\section{Urysohnの補題}
+
+\begin{theorem}[Urysohnの補題]\label{thm:urysohn}
+$X$ を正規空間，
+$A,B\subset X$ を互いに交わらない閉集合とする．
+このとき連続関数 $f:X\to[0,1]$ で
+\[
+ f|_A=0,\qquad f|_B=1
+\]
+を満たすものが存在する．
+\end{theorem}
+\begin{proof}
+$A=\varnothing$ または $B=\varnothing$ のときは
+適切な定数関数を取ればよい．以下，両者が空でないとする．
+\[
+ D=\{k2^{-n}:n\ge0,\ 0\le k\le2^n\}
+\]
+を $[0,1]$ の二進有理数全体とする．
+各 $r\in D$ に対して開集合 $U_r$ を構成し，
+\[
+ A\subset U_0,\qquad U_1=X\setminus B,\qquad
+ \overline{U_r}\subset U_s\quad(r<s,\ r,s\in D)
+ \tag{$*$}
+\]
+を満たすようにする．
+まず補題\ref{lem:shrink}を
+$A\subset X\setminus B$ に適用して
+$A\subset U_0\subset\overline{U_0}\subset U_1$
+となる $U_0$ を取る．
+
+次に $n$ 番目の分母 $2^n$ を持つ全ての二進有理数について
+$U_r$ が構成済みとする．
+新たな点
+$r=(2k+1)/2^{n+1}$ は
+$r_- =k/2^n$ と $r_+=(k+1)/2^n$ の間にある．
+$\overline{U_{r_-}}\subset U_{r_+}$ であり，
+$\overline{U_{r_-}}$ は閉集合だから
+補題\ref{lem:shrink}によって
+\[
+ \overline{U_{r_-}}\subset U_r
+ \subset\overline{U_r}\subset U_{r_+}
+\]
+となる開集合 $U_r$ を取れる．
+有限個の新しい点それぞれについてこの操作を行えば，
+帰納的に全ての $r\in D$ の $U_r$ が定まる．
+構成により $(*)$ は全ての $r<s$ について成立する．
+
+\[
+ f(x)=\inf\bigl(\{r\in D:x\in U_r\}\cup\{1\}\bigr)
+\]
+と定める．$f(x)\in[0,1]$ である．
+$x\in A$ なら $x\in U_0$ なので $f(x)=0$ である．
+$x\in B$ なら $x\notin U_1$ であり，
+$U_r\subset U_1$（$r<1$）だから $f(x)=1$ である．
+
+連続性を示す．任意の $0<a\le1$ に対し
+\[
+ \{x:f(x)<a\}
+ =\bigcup_{\substack{r\in D\\r<a}}U_r
+\]
+が成り立つ．右辺は開である．
+一方，任意の $0\le a<1$ について
+\[
+ \{x:f(x)>a\}
+ =\bigcup_{\substack{r\in D\\r>a}}
+       (X\setminus\overline{U_r})
+ \tag{$**$}
+\]
+が成り立つ．実際，右辺に属する $x$ は
+ある $r>a$ について $x\notin\overline{U_r}$ を満たす．
+$r<s$ なら $U_r\subset U_s$ なので，
+$U_s$ に初めて入る可能性のある添字は $r$ 以上であり，
+$f(x)\ge r>a$ となる．
+逆に $f(x)>a$ なら
+$a<r<s<f(x)$ となる $r,s\in D$ を取れる．
+$x\notin U_s$ かつ
+$\overline{U_r}\subset U_s$ なので
+$x\notin\overline{U_r}$ となり右辺に属する．
+従って $(**)$ も開である．
+全ての実数 $a$ に対する開半直線の逆像が開なので
+$f$ は連続である．
+\end{proof}
+
+\begin{corollary}[正規性の特徴づけ]\label{cor:normal-equiv}
+$T_1$ 位相空間 $X$ について，次は同値である．
+\begin{enumerate}
+\item $X$ は正規である．
+\item 任意の互いに交わらない閉集合 $A,B$ に対し，
+$A$ 上で0，$B$ 上で1となる連続関数
+$f:X\to[0,1]$ が存在する．
+\end{enumerate}
+\end{corollary}
+\begin{proof}
+(1) から (2) は定理\ref{thm:urysohn}による．
+逆に (2) を仮定して $A,B$ を互いに交わらない閉集合とし，
+対応する $f$ を取る．
+\[
+ U=f^{-1}([0,1/3)),\qquad
+ V=f^{-1}((2/3,1])
+\]
+は $X$ の開集合で，$A\subset U$，
+$B\subset V$，$U\cap V=\varnothing$ である．
+従って $X$ は正規である．
+\end{proof}
+
+\section{Tietzeの拡張定理の準備}
+
+\begin{lemma}[有界関数の近似拡張]\label{lem:approx-extend}
+$X$ を正規空間，$F\subset X$ を閉集合，
+$h:F\to[-M,M]$ を連続関数とする（$M\ge0$）．
+このとき連続関数 $g:X\to[-M/3,M/3]$ が存在して
+\[
+ |h(x)-g(x)|\le\frac{2M}{3}\qquad(x\in F)
+\]
+となる．
+\end{lemma}
+\begin{proof}
+$M=0$ なら $g=0$ とする．$M>0$ とする．
+\[
+ A=\{x\in F:h(x)\le-M/3\},\qquad
+ B=\{x\in F:h(x)\ge M/3\}
+\]
+と置く．$h$ は連続で $F$ は閉なので，
+$A,B$ は $X$ の閉集合であり互いに交わらない．
+Urysohnの補題によって
+$f:X\to[0,1]$ で $f|_A=0$，$f|_B=1$
+となるものを取る．
+\[
+ g(x)=\frac M3(2f(x)-1)
+\]
+と置けば $g$ は連続で $|g(x)|\le M/3$ となる．
+$x\in A$ なら $g(x)=-M/3$ なので
+$|h(x)-g(x)|\le2M/3$ である．
+$x\in B$ のときも同様である．
+$x\in F\setminus(A\cup B)$ なら
+$|h(x)|<M/3$ かつ $|g(x)|\le M/3$ なので
+$|h(x)-g(x)|\le2M/3$ となる．
+\end{proof}
+
+\begin{theorem}[Tietzeの拡張定理：有界版]\label{thm:tietze-bounded}
+$X$ を正規空間，$F\subset X$ を閉集合，
+$f:F\to[-M,M]$ を連続関数とする．
+このとき連続関数 $F_0:X\to[-M,M]$ が存在して
+$F_0|_F=f$ となる．
+\end{theorem}
+\begin{proof}
+$M=0$ の場合は零関数でよい．$M>0$ とする．
+$f_0=f$ と置き，帰納的に連続関数
+$g_n:X\to\mathbb R$ と
+$f_{n+1}:F\to\mathbb R$ を
+\[
+ f_{n+1}=f_n-g_n|_F
+\]
+によって定める．
+補題\ref{lem:approx-extend}を
+$|f_n|\le M(2/3)^n$ のもとで適用すれば，
+\[
+ \norm{g_n}_\infty\le\frac M3(2/3)^n,
+ \qquad
+ \norm{f_{n+1}}_{\infty,F}\le M(2/3)^{n+1}
+\]
+となるように選べる．
+初期の $n=0$ では $|f_0|\le M$ であり，
+帰納的にこの評価が成立する．
+従って
+$\sum_n\norm{g_n}_\infty
+ \le M\sum_n(1/3)(2/3)^n=M<\infty$
+なので
+\[
+ F_0(x)=\sum_{n=0}^\infty g_n(x)
+\]
+は $X$ 上で絶対かつ一様収束し，連続関数となる．
+さらに
+$|F_0(x)|\le\sum_n\norm{g_n}_\infty\le M$
+が全ての $x\in X$ で成り立つ．
+$F$ 上では
+\[
+ f-\sum_{n=0}^{N}g_n|_F=f_{N+1}
+\]
+であり，右辺の一様ノルムが零へ収束するので
+$F_0|_F=f$ となる．
+\end{proof}
+
+\section{有界性を仮定しないTietzeの拡張定理}
+
+\begin{theorem}[Tietzeの拡張定理]\label{thm:tietze}
+$X$ を正規空間，$F\subset X$ を閉集合とする．
+任意の連続関数 $f:F\to\mathbb R$ は，
+$X$ 上の連続関数に拡張できる．
+\end{theorem}
+\begin{proof}
+$\psi:\mathbb R\to(-1,1)$ を
+\[
+ \psi(t)=\frac{t}{1+|t|}
+\]
+と定める．$\psi$ は連続な全単射であり，
+逆写像は
+\[
+ \psi^{-1}(s)=\frac{s}{1-|s|}\qquad(|s|<1)
+\]
+で連続である．
+$g=\psi\circ f:F\to(-1,1)$ は連続であるから，
+定理\ref{thm:tietze-bounded}によって
+$G:X\to[-1,1]$ で $G|_F=g$ となるものを取る．
+
+$E=\{x\in X:|G(x)|=1\}$ と置く．
+$E$ は閉であり，$G|_F=g$ は $(-1,1)$ に値を持つので
+$E\cap F=\varnothing$ である．
+Urysohnの補題から連続関数
+$\lambda:X\to[0,1]$ で
+$\lambda|_F=1$，$\lambda|_E=0$
+となるものが存在する．
+$H=\lambda G$ と置くと，任意の $x\in X$ について
+$|H(x)|<1$ が成り立つ．
+実際，$x\notin E$ なら $|G(x)|<1$ なので
+$|H(x)|\le|G(x)|<1$ であり，
+$x\in E$ なら $H(x)=0$ である．
+従って
+\[
+ \widetilde f(x)=\psi^{-1}(H(x))
+ =\frac{H(x)}{1-|H(x)|}
+\]
+は $X$ 上の連続な実数値関数であり，
+$F$ 上では $H=G=g$ なので
+$\widetilde f|_F=\psi^{-1}(g)=f$ である．
+\end{proof}
+
+\begin{corollary}[拡張性による正規性]\label{cor:tietze-normal}
+$T_1$ 位相空間 $X$ について，次は同値である．
+\begin{enumerate}
+\item $X$ は正規である．
+\item $X$ の任意の閉部分集合 $F$ 上の有界連続実数値関数は，
+$X$ 上の有界連続実数値関数に拡張できる．
+\end{enumerate}
+\end{corollary}
+\begin{proof}
+(1) から (2) は定理\ref{thm:tietze-bounded}による．
+逆に (2) とし，互いに交わらない閉集合 $A,B$ を取る．
+$F=A\cup B$ は閉であり，
+$F$ 上で $f|_A=0$，$f|_B=1$ と定めた関数は連続である．
+仮定により $X$ 上に有界連続な拡張 $F_0$ が存在する．
+必要なら $F_0$ を
+$\max\{0,\min\{1,F_0\}\}$ に置き換えれば
+値域を $[0,1]$ にできる．
+系\ref{cor:normal-equiv}によって $X$ は正規である．
+\end{proof}
+
+\section{距離空間への応用}
+
+\begin{theorem}[距離空間の正規性]\label{thm:metric-normal}
+任意の距離空間 $(X,d)$ は正規である．
+さらに互いに交わらない非空閉集合 $A,B\subset X$ に対して
+\[
+ f(x)=\frac{d(x,A)}{d(x,A)+d(x,B)}
+\]
+と定めれば，$f:X\to[0,1]$ は連続で
+$f|_A=0$，$f|_B=1$ を満たす．
+\end{theorem}
+\begin{proof}
+任意の非空集合 $C\subset X$ に対して
+$x\mapsto d(x,C)=\inf_{c\in C}d(x,c)$ は
+\[
+ |d(x,C)-d(y,C)|\le d(x,y)
+\]
+を満たす．これは三角不等式を
+$d(x,c)\le d(x,y)+d(y,c)$ に適用して下限を取れば従う．
+従って $d(x,A)$，$d(x,B)$ は連続である．
+両者が同時に零となる $x$ があれば，
+$A,B$ は閉であるから $x\in A\cap B$ となり矛盾する．
+よって分母は全ての $x$ で正であり，
+$f$ は連続である．
+$x\in A$ では $d(x,A)=0$，$d(x,B)>0$ だから
+$f(x)=0$ である．
+$x\in B$ では同様に $f(x)=1$ である．
+系\ref{cor:normal-equiv}から $X$ は正規である．
+\end{proof}
+
+\begin{example}[閉集合上の連続関数の延長]
+$F\subset\mathbb R^n$ を閉集合とし，
+$f:F\to\mathbb R$ を連続とする．
+このとき連続関数
+$\widetilde f:\mathbb R^n\to\mathbb R$ で
+$\widetilde f|_F=f$ となるものが存在する．
+\end{example}
+\begin{proof}
+Euclid空間 $\mathbb R^n$ は距離空間なので
+定理\ref{thm:metric-normal}から正規である．
+定理\ref{thm:tietze}を $X=\mathbb R^n$ に適用すればよい．
+\end{proof}
+
+\begin{remark}
+Tietzeの拡張定理は連続性を保った拡張を保証するが，
+一般に微分可能性やLipschitz定数の保存まで保証するものではない．
+連続性以外の正則性を保存したい場合には，
+別の拡張定理とその仮定が必要になる．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{閉集合を分離する連続関数．}
+\begin{proposition}
+$X=\mathbb R$，$A=(-\infty,0]$，
+$B=[1,\infty)$ とし，
+\[
+f(x)=
+\begin{cases}
+0&x\le0,\\
+x&0\le x\le1,\\
+1&x\ge1
+\end{cases}
+\]
+と定める．$f$ は連続で
+$f|_A=0$，$f|_B=1$ である．
+\end{proposition}
+\begin{proof}
+各区間の内部で連続であり，
+境界0と1で左右の式の値が一致するから
+全体で連続である．
+$0\le f\le1$ と両閉集合上の値は定義から明らかである．
+これはUrysohnの補題の結論の明示的な実現である．
+\end{proof}
+\noindent\textbf{到達確認．}
+閉集合 $F=\{0,1\}\subset\mathbb R$ 上の
+関数 $g(0)=0,g(1)=1$ を連続に延長せよ．
+\par\noindent\textbf{解答．}
+$G(x)=f(x)$ とすれば
+$G|_F=g$ であり，値域は $[0,1]$ である．
+\end{document}
