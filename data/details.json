@@ -470,6 +470,16 @@
       "related": []
     },
     {
+      "id": "28.020",
+      "summary": "一変数Lebesgue積分の変数変換から出発し、Tonelliの定理、座標ごとの局所分解と可算分割を用いて、多変数のC¹微分同相写像に対する変数変換公式を証明する。極座標・球面座標への応用を含む。",
+      "summary_basis": "verified_note",
+      "prerequisites": [],
+      "successors": [],
+      "related": [
+        "28.010"
+      ]
+    },
+    {
       "id": "30.010",
       "summary": "複素微分を実二次元の線形写像として捉え、Cauchy–Riemann方程式と等角性を考察する。",
       "summary_basis": "topic_guide",
