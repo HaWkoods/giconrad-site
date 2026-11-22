@@ -1,0 +1,287 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{97.170 有限Fourier解析}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section{二つの大学入試問題と方針}
+整数係数の多項式の剰余と二項係数の偶奇という高校数学の問題を，有限巡回群の指標と標数 $2$ の多項式環の両面から考える．
+有限Fourier変換に際しては複素数体上で議論し，標数が群の位数を割る場合には別の現象が生じることを明確にする．
+
+\begin{example}[京都大学2023年度理系数学第1問・第2小問（要約）]\label{ex:kyoto}
+$X^{2023}-1$ を $X^4+X^3+X^2+X+1$ で割った余りを求める．
+\end{example}
+\begin{example}[東京大学2015年度理科数学第5問（要約）]\label{ex:tokyo}
+$1\le m\le2015$ の範囲で $\binom{2015}{m}$ が偶数となる最小の $m$ を求める．
+\end{example}
+
+\section{有限巡回群の指標}
+\begin{definition}[巡回群の指標]
+$m\ge2$ を整数とし，$\zeta=\exp(2\pi i/m)$ とおく．
+加法群 $C_m=\mathbb Z/m\mathbb Z$ の指標を
+\[
+ \chi_j(k)=\zeta^{jk}\qquad(0\le j\le m-1)
+\]
+で定める．これは $\chi_j(k+\ell)=\chi_j(k)\chi_j(\ell)$ を満たす．
+\end{definition}
+\begin{lemma}[指標の直交性]\label{lem:orth}
+任意の整数 $a$ について
+\[
+ \frac1m\sum_{j=0}^{m-1}\zeta^{ja}=
+ \begin{cases}1&(a\equiv0\pmod m),\\0&(a\not\equiv0\pmod m)\end{cases}
+\]
+である．
+\end{lemma}
+\begin{proof}
+$a\equiv0$ のときは各項が $1$ である．
+そうでないとき $\zeta^a\ne1$ であり，等比数列の和から
+\[
+ \sum_{j=0}^{m-1}\zeta^{ja}=
+ \frac{1-\zeta^{ma}}{1-\zeta^a}=0
+\]
+となる．
+\end{proof}
+
+\begin{definition}[有限Fourier変換]
+$f:C_m\to\mathbb C$ に対して
+\[
+ \widehat f(j)=\sum_{k=0}^{m-1}f(k)\zeta^{jk}
+\]
+を有限Fourier変換とする．
+\end{definition}
+\begin{theorem}[Fourier反転]\label{thm:inversion}
+任意の $f:C_m\to\mathbb C$ と $r\in C_m$ に対し
+\[
+ f(r)=\frac1m\sum_{j=0}^{m-1}\widehat f(j)\zeta^{-jr}
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+右辺を展開すると
+\[
+ \frac1m\sum_{k=0}^{m-1}f(k)
+ \sum_{j=0}^{m-1}\zeta^{j(k-r)}
+\]
+となる．補題~\ref{lem:orth} より内側の和は $k=r$ のとき $m$，それ以外は $0$ である．
+\end{proof}
+
+\section{多項式の剰余としてのFourier変換}
+\begin{proposition}[巡回剰余]\label{prop:cyclic}
+$F(X)=\sum_{k=0}^{N}a_kX^k\in\mathbb C[X]$ とする．
+$0\le r<m$ に対し $b_r=\sum_{0\le k\le N,\ k\equiv r\pmod m}a_k$ とおく．
+$F$ を $X^m-1$ で割った余りは
+\[
+ R(X)=\sum_{r=0}^{m-1}b_rX^r
+\]
+であり，係数は
+\begin{equation}\label{eq:DFT}
+ b_r=\frac1m\sum_{j=0}^{m-1}F(\zeta^j)\zeta^{-rj}
+\end{equation}
+に等しい．
+\end{proposition}
+\begin{proof}
+$X^m\equiv1\pmod{X^m-1}$ により $F\equiv R$ であり，$\deg R<m$ なので余りは一意である．
+一方，$F(\zeta^j)=\sum_{r=0}^{m-1}b_r\zeta^{jr}$ である．
+この等式に定理~\ref{thm:inversion} を適用すれば式~\eqref{eq:DFT} を得る．
+\end{proof}
+
+\begin{lemma}[素数位数の円分多項式]\label{lem:cyclo}
+$p$ を素数とし，$\Phi_p(X)=1+X+\cdots+X^{p-1}$ とする．
+$F\in\mathbb Q[X]$ を $X^p-1$ で割った余りが $R=\sum_{r=0}^{p-1}b_rX^r$ であるとき，$F$ を $\Phi_p$ で割った余りは
+\[
+ S(X)=\sum_{r=0}^{p-2}(b_r-b_{p-1})X^r
+\]
+である．
+\end{lemma}
+\begin{proof}
+$X^p-1=(X-1)\Phi_p(X)$ より $F\equiv R\pmod{\Phi_p}$．
+また $X^{p-1}\equiv-\sum_{r=0}^{p-2}X^r\pmod{\Phi_p}$．
+これを $R$ に代入すると $F\equiv S$ となる．$\deg S\le p-2$ なので余りとして一意である．
+\end{proof}
+
+\begin{theorem}[京都大学の問題の解答]\label{thm:kyoto}
+$X^{2023}-1$ を $X^4+X^3+X^2+X+1$ で割った余りは $X^3-1$ である．
+\end{theorem}
+\begin{proof}
+$2023\equiv3\pmod5$ なので $X^{2023}-1\equiv X^3-1\pmod{X^5-1}$ である．
+従って補題~\ref{lem:cyclo} を $p=5$ に適用するか，直接 $X^5-1=(X-1)\Phi_5(X)$ を用いれば，求める余りは $X^3-1$ となる．
+$\deg(X^3-1)=3<4$ であることも確認できる．
+\end{proof}
+
+\begin{remark}[必要以上に高度な解法]
+この入試問題の計算だけなら $X^5-1$ による合同式で十分である．
+しかし，命題~\ref{prop:cyclic} は任意の多項式と任意の巡回法に対する同種の剰余計算を一括して説明している．
+この一般性が有限Fourier解析を導入する理由である．
+\end{remark}
+
+\section{二項係数の剰余類別和}
+\begin{theorem}[1の冪根による抽出]\label{thm:roots}
+$m\ge2,n\ge0$ を整数とする．$r\in\mathbb Z$ に対し
+\[
+ B_{n,r}=\sum_{\substack{0\le k\le n\\k\equiv r\pmod m}}\binom nk
+\]
+とおくと，
+\begin{equation}\label{eq:filter}
+ B_{n,r}=\frac1m\sum_{j=0}^{m-1}\zeta^{-rj}(1+\zeta^j)^n.
+\end{equation}
+\end{theorem}
+\begin{proof}
+二項定理を式~\eqref{eq:filter} の右辺に代入し，有限和の順序を交換すると
+\[
+ \sum_{k=0}^n\binom nk
+  \frac1m\sum_{j=0}^{m-1}\zeta^{j(k-r)}
+\]
+となる．補題~\ref{lem:orth} により $k\equiv r\pmod m$ の項だけが残る．
+\end{proof}
+
+\begin{example}[三つの剰余類]
+$m=3,n=6$ では
+\[
+ B_{6,0}=\binom60+\binom63+\binom66=22,\qquad
+ B_{6,1}=21,\quad B_{6,2}=21.
+\]
+総和は $22+21+21=64=2^6$ に等しく，式~\eqref{eq:filter} の $j=0$ の項は各類に共通する平均 $2^6/3$ を与える．
+\end{example}
+
+\begin{corollary}[三の倍数の二項係数和]
+$n\ge0$ に対し，$\omega=e^{2\pi i/3}$ とすれば
+\[
+ \sum_{\substack{0\le k\le n\\3\mid k}}\binom nk=
+ \frac{2^n+2\cos(n\pi/3)}3.
+\]
+\end{corollary}
+\begin{proof}
+定理~\ref{thm:roots} の $m=3,r=0$ において，
+$1+\omega=e^{i\pi/3}$，$1+\omega^2=e^{-i\pi/3}$ を用いる．
+\end{proof}
+
+\section{標数2の多項式と二項係数の偶奇}
+ここで東京大学2015年度の問題に移る．
+この題では係数を $\mathbb F_2$ で考え，特性が $2$ の多項式環の構造を用いる．
+\begin{lemma}[Frobeniusの恒等式]\label{lem:frob}
+$\mathbb F_2[X]$ において，任意の整数 $j\ge0$ に対し
+\[
+ (1+X)^{2^j}=1+X^{2^j}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+標数 $2$ では $(A+B)^2=A^2+B^2$ が成立する．
+$j=0$ は明らかであり，等式の両辺を二乗すれば帰納的に示される．
+\end{proof}
+
+\begin{theorem}[Lucasの合同式の二進版]\label{thm:lucas}
+$n,k\ge0$ を二進展開 $n=\sum_jn_j2^j$，$k=\sum_jk_j2^j$（$n_j,k_j\in\{0,1\}$）で表す．
+このとき
+\[
+ \binom nk\equiv\prod_j\binom{n_j}{k_j}\pmod2.
+\]
+特に $\binom nk$ が奇数であるための必要十分条件は，$k_j\le n_j$ がすべての $j$ について成立することである．
+\end{theorem}
+\begin{proof}
+補題~\ref{lem:frob} より
+\[
+ (1+X)^n=\prod_j(1+X^{2^j})^{n_j}
+\quad\text{in }\mathbb F_2[X].
+\]
+右辺の展開において，$X^k$ が現れるのは，各 $j$ で $X^{2^j}$ を選ぶか選ばないかを表す $k_j\le n_j$ が成立するとき，しかも二進表示の一意性によって一通りに限る．
+従って $X^k$ の係数は $\prod_j\binom{n_j}{k_j}$ であり，二項定理の係数 $\binom nk$ と等しい．
+\end{proof}
+
+\begin{theorem}[東京大学の問題の解答]
+$\binom{2015}{m}$ が偶数となる最小の正整数 $m$ は $32$ である．
+\end{theorem}
+\begin{proof}
+$2016=63\cdot32$ であるから $2015=62\cdot32+31$ であり，二進表示の下位5桁はすべて $1$，$2^5$ の位は $0$ である．
+従って $1\le m<32$ の二進表示の各 $1$ は $2015$ にも含まれるから，定理~\ref{thm:lucas} により $\binom{2015}{m}$ は奇数である．
+一方，$m=32=2^5$ では $2015$ の第5桁が $0$ なので，$\binom{2015}{32}\equiv0\pmod2$ となる．
+\end{proof}
+
+\section{二種類の代数構造の相違}
+\begin{remark}
+有限Fourier反転は $1/m$ を必要とする．標数が $m$ を割る体では $1/m$ は存在しない．
+例えば $\mathbb F_2$ における二元群の群環では
+$(X-1)^2=X^2-1$ となり，分解の重根を持つ．
+これに対し，$\mathbb C$ 上の $X^2-1$ は相異なる一次因子へ分解する．
+従って複素数上の指標による議論を，標数 $2$ の演算に無条件で移してはならない．
+\end{remark}
+\begin{remark}[理論の対比]
+京都大学の剰余問題は巡回作用によって指数を剰余類へ落とす問題であり，東京大学の偶奇問題は標数 $2$ におけるFrobenius写像によって二進桁へ分解する問題である．
+同じ二項定理が，基礎体によって異なる構造を表す．
+\end{remark}
+
+\section*{参考文献・出典}
+\begin{enumerate}[label={[\arabic*]}]
+\item 京都大学，2023年度前期日程・理系数学，第1問（第2小問）．
+\item 東京大学，2015年度前期日程・理科数学，第5問．
+\item S.~Lang, \textit{Algebra}, 3rd ed., Springer, 2002. Roots of unity, finite groups, polynomial rings.
+\item H.~Cohen, \textit{A Course in Computational Algebraic Number Theory}, Springer, 1993. Polynomial arithmetic over finite fields.
+\item 「なかけんの数学ノート」，京大理系2023年第1問，東大理系2015年第5問（出題事項の照合）．
+\end{enumerate}
+
+\end{document}

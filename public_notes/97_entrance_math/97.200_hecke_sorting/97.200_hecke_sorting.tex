@@ -1,0 +1,277 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{97.200 交換操作と0-Hecke}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section{隣接交換による入試問題}
+本ノートでは，隣接する二項を比較して昇順に並べ替える作用素を代数的に研究する．
+互換と比較交換作用素は似ているが，後者は可逆でなく，0-Heckeモノイドの関係式を満たす．
+
+\begin{example}[東京大学2025年度前期・理科数学第5問（問題の要約）]\label{ex:tokyo}
+相異なる数 $1,\ldots,n$ の順列 $A=(A_1,\ldots,A_n)$ に対し，隣接位置 $i,i+1$ が降順なら交換する作用素 $T_i$ を定める．
+$T_1,T_2,\ldots,T_{n-1}$ を順に行い，さらに $T_{n-1},\ldots,T_2,T_1$ を順に行う．
+最終的に昇順となる初期順列の個数を $c_n$ とするとき，$n\ge4$ について $c_n$ の漸化式を求める．
+また成功する順列では $A_1,A_2$ の少なくとも一方が $2$ 以下であることを示す．
+\end{example}
+
+\section{比較交換の代数}
+\begin{definition}[比較交換作用素]
+$n\ge2$ とし，$S_n$ を $\{1,\ldots,n\}$ の順列全体とする．
+$1\le i<n$ に対し
+\[
+ \pi_i(a_1,\ldots,a_n)=
+ \begin{cases}
+ (a_1,\ldots,a_{i+1},a_i,\ldots,a_n)&(a_i>a_{i+1}),\\
+ (a_1,\ldots,a_n)&(a_i<a_{i+1})
+ \end{cases}
+\]
+と定める．右辺の交換では位置 $i,i+1$ だけを交換する．
+\end{definition}
+
+\begin{lemma}[0-Hecke関係式]\label{lem:hecke}
+比較交換作用素は次を満たす．
+\begin{align*}
+ \pi_i^2&=\pi_i,\\
+ \pi_i\pi_j&=\pi_j\pi_i&&(|i-j|>1),\\
+ \pi_i\pi_{i+1}\pi_i&=\pi_{i+1}\pi_i\pi_{i+1}
+ &&(1\le i\le n-2).
+\end{align*}
+ここで作用素の合成は右から先に作用するものとする．
+\end{lemma}
+\begin{proof}
+比較した二項は一度目の作用後に昇順だから，同じ比較を繰り返しても変化しない．よって冪等関係が成り立つ．
+位置集合 $\{i,i+1\}$ と $\{j,j+1\}$ が交わらないときは作用が独立であるから可換である．
+
+組紐関係は三つの隣接位置だけについて確かめればよい．
+互いに異なる値を $x,y,z$ とすると，三比較の列 $(i,i+1,i)$ は
+「左二つを昇順，右二つを昇順，左二つを昇順」という操作で，三つ全体を昇順にする．
+実際，二回目の比較後には最大値が第3位置にあり，最後の比較が残る二つを昇順にする．
+列 $(i+1,i,i+1)$ も対称的な議論により同じ三つの値を昇順にする．
+他の位置は動かないため両作用素は等しい．
+\end{proof}
+
+\begin{definition}[0-Heckeモノイド]
+記号 $e_1,\ldots,e_{n-1}$ について補題~\ref{lem:hecke} の三種類の関係式を課して得るモノイドを，型 $A_{n-1}$ の0-Heckeモノイドという．
+補題~\ref{lem:hecke} により，$e_i\mapsto\pi_i$ はこのモノイドの $S_n$ 上の作用を定める．
+\end{definition}
+
+\begin{definition}[転倒数]
+順列 $A=(a_1,\ldots,a_n)$ の転倒数を
+\[
+ \operatorname{inv}(A)=\#\{(i,j):1\le i<j\le n,\ a_i>a_j\}
+\]
+と定める．
+\end{definition}
+\begin{lemma}[転倒数と比較交換]
+$\pi_i(A)\ne A$ のとき，$\operatorname{inv}(\pi_i A)=\operatorname{inv}(A)-1$ である．
+\end{lemma}
+\begin{proof}
+交換した二項の互いの順序は転倒から非転倒に変わる．
+それ以外の位置にある値と二つの交換値の関係は，その二項をまとめて数えると交換前後で同数である．
+従って転倒数はちょうど一つ減る．
+\end{proof}
+
+\section{一往復のソーティング作用素}
+\begin{definition}[往路・復路]
+$F_n$ を比較 $\pi_1,\pi_2,\ldots,\pi_{n-1}$ をこの順に実行する作用素，$B_n$ を $\pi_{n-1},\ldots,\pi_1$ をこの順に実行する作用素とする．
+$\mathcal S_n=B_n\circ F_n$ と置き，$\mathcal S_n(A)=(1,\ldots,n)$ のとき $A$ を成功順列という．
+$n=1$ では両作用素を恒等写像とする．
+\end{definition}
+
+\begin{lemma}[一往復で固定される両端]\label{lem:extremes}
+$n\ge2$ とする．任意の $A\in S_n$ に対し，$\mathcal S_n(A)$ の第1項は $1$，第 $n$ 項は $n$ である．
+また往路 $F_n(A)$ の第1項は $\min\{A_1,A_2\}$ であり，第 $n$ 項は $n$ である．
+\end{lemma}
+\begin{proof}
+往路では，位置 $i,i+1$ を比較した後，二項の最大値が位置 $i+1$ に来る．
+これを $i=1$ から帰納的に行えば，最後の位置には全体の最大値 $n$ が来る．
+往路で位置1が関与するのは最初の比較だけだから，最初の値は $\min\{A_1,A_2\}$ である．
+復路は $n$ を第 $n$ 位置から動かさず，後方から前方への比較で最小値 $1$ を左に運ぶ．
+最後の位置1には全体の最小値 $1$ が来る．
+\end{proof}
+
+\begin{lemma}[二つの小さい数の位置]\label{lem:necessary}
+$n\ge3$ とし，$A$ が成功順列ならば，$\min\{A_1,A_2\}\le2$ である．
+$1$ が最初の二位置に現れないならば $\min\{A_1,A_2\}=2$ である．
+\end{lemma}
+\begin{proof}
+$r=\min\{A_1,A_2\}$ とおく．補題~\ref{lem:extremes} より往路後の第1項は $r$ である．
+復路の最後の比較 $\pi_1$ の直前まで第1項は変わらない．
+最後の比較後の第1,2項が $(1,2)$ になるには，その直前の第1項は $1$ または $2$ でなければならない．
+よって $r\le2$．最初の二位置に $1$ がなければ $r\ne1$ なので $r=2$ である．
+\end{proof}
+
+\section{削除写像と成功順列の分類}
+\begin{definition}[標準化]
+相異なる整数からなる列 $A$ の各項を，その大小関係を保って $1,\ldots,m$ に置き換えた順列を $\operatorname{st}(A)$ と書く．
+\end{definition}
+
+\begin{lemma}[小さい札の削除]\label{lem:delete}
+$n\ge3$ とし，$A\in S_n$ について次が成立する．
+\begin{enumerate}
+\item $A_1=1$ または $A_2=1$ の場合，残りの $1$ を削除して標準化した順列 $A'$ が成功順列であることと $A$ が成功順列であることは同値である．
+\item $A_1=2$ かつ $A_2\ge3$ の場合，先頭の $2$ を削除して標準化した順列 $A'$ が成功順列であることと $A$ が成功順列であることは同値である．この場合 $A'_1\ne1$ である．
+\item $A_2=2$ かつ $A_1\ge3$ の場合は，最初の比較で $2$ が先頭に移るため，第二項の場合に還元される．
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(1) 最初の二位置の少なくとも一方が $1$ なら，最初の比較を行った直後の第1位置には $1$ がある．以後の往路・復路の比較のうち $\pi_1$ は何も変更せず，位置2から$n$の部分列への比較は，$1$ を削除した $(n-1)$ 項の一往復操作と一致する．
+従って残りの列が昇順になる条件は，$A'$ が成功する条件と等しい．
+
+(2) $A_1=2,A_2\ge3$ なら，往路の最初の比較では交換せず，以後の往路は位置2から$n$の部分列だけに作用する．
+復路の最後の $\pi_1$ を除けば同じ部分列に $(n-1)$ 項の一往復操作が施される．
+この部分列に含まれる数は $1,3,4,\ldots,n$ である．
+復路の最後の比較の直前には，第一項に $2$，残りの部分列には
+$\mathcal S_{n-1}(A')$ の各項を元の数字に戻した列が置かれている．
+最終状態が $(1,2,3,\ldots,n)$ になるための必要十分条件は，この時点の末尾 $n-1$ 項が $(1,3,4,\ldots,n)$ となることである．
+それは $\mathcal S_{n-1}(A')=(1,2,\ldots,n-1)$ と同値である．
+また $A_2\ge3$ なので $A'_1\ne1$ となる．
+
+(3) $A_1\ge3,A_2=2$ なら，$\pi_1$ によって冒頭が $(2,A_1)$ に入れ替わる．
+以後の操作は $(2,A_1,A_3,\ldots,A_n)$ に施され，(2)と同じ議論で判定できる．
+\end{proof}
+
+\begin{theorem}[成功順列の個数]\label{thm:recurrence}
+$c_n=\#\{A\in S_n:\mathcal S_n(A)=(1,\ldots,n)\}$ とする．
+$c_1=1,c_2=2,c_3=6$ であり，すべての $n\ge3$ に対して
+\begin{equation}\label{eq:recurrence}
+ c_n=4c_{n-1}-2c_{n-2}
+\end{equation}
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$n\ge3$ とする．補題~\ref{lem:necessary} により成功順列は，冒頭二項に関して次の互いに素な四つの場合のいずれかである：
+\[
+ A_1=1,\quad A_2=1,\quad
+ A_1=2,\ A_2\ge3,\quad
+ A_1\ge3,\ A_2=2.
+\]
+最初の二場合は補題~\ref{lem:delete}(1) により，それぞれ $c_{n-1}$ 個である．
+第三の場合は同補題(2) により，$n-1$ 項の成功順列のうち第1項が $1$ でないものと一対一に対応する．
+第1項が $1$ の成功順列は，さらに最初の $1$ を削除することで $n-2$ 項の成功順列と一対一に対応するので，この場合は $c_{n-1}-c_{n-2}$ 個である．
+第四の場合も最初の比較で第三の場合と一対一に対応するから，個数は同じである．
+以上を加えると
+\[
+ c_n=2c_{n-1}+2(c_{n-1}-c_{n-2})
+ =4c_{n-1}-2c_{n-2}
+\]
+を得る．$c_1=1,c_2=2$ は直接確かめられ，$c_3=4\cdot2-2\cdot1=6$ である．
+\end{proof}
+
+\section{漸化式の閉形式と母関数}
+\begin{corollary}[閉形式]\label{cor:closed}
+$n\ge1$ に対して
+\[
+ c_n=\frac{(2+\sqrt2)^{n-1}+(2-\sqrt2)^{n-1}}2
+\]
+である．
+\end{corollary}
+\begin{proof}
+漸化式~\eqref{eq:recurrence} の特性多項式は
+$X^2-4X+2=(X-2-\sqrt2)(X-2+\sqrt2)$ である．
+右辺の数列は同じ漸化式を満たし，$n=1,2$ で値がそれぞれ $1,2$ である．
+二階線形漸化式の解の一意性から等しい．
+\end{proof}
+
+\begin{corollary}[生成関数]
+形式的冪級数 $C(t)=\sum_{n\ge1}c_nt^n$ は
+\[
+ C(t)=\frac{t-2t^2}{1-4t+2t^2}
+\]
+である．
+\end{corollary}
+\begin{proof}
+漸化式に $t^n$ を掛けて $n\ge3$ について和を取り，
+$C(t)-c_1t-c_2t^2=4t(C(t)-c_1t)-2t^2C(t)$ と整理する．
+$C(t)(1-4t+2t^2)=t-2t^2$ より結論を得る．
+定数項 $1$ の級数は形式的冪級数環で可逆なので，この計算は収束を仮定しない．
+\end{proof}
+
+\section{比較交換列の順序による差}
+\begin{example}[二回の往路との比較]
+$\mathcal S_n$ と違って，往路 $F_n$ を二回行う演算では成功順列の個数が異なる．
+例えば $n=4$ では $\mathcal S_4$ で成功する順列は $c_4=20$ 個であるが，二回の往路だけなら $18$ 個である．
+実際，往路を一度行うと最大値 $4$ が第4位置に来る．二度目の往路では $4$ は動かず，残る三項の最大値 $3$ が第3位置に来る．最小値 $1$ は往路一回で左へ高々一位置移動するので，初期状態で第4位置にある6通りは二回では整列しない．それ以外では二回の往路で $1$ が第1位置へ到達し，さらに第3・4位置に $3,4$ があるから，全体が整列する．従って成功数は $4!-3!=18$ である．
+この相違は，0-Heckeモノイドでは生成元が冪等であっても，相異なる生成元の積が一般には可換でないことを反映する．
+\end{example}
+
+\begin{remark}[群とモノイドの違い]
+通常の隣接互換 $s_i$ は $s_i^2=1$ を満たし，対称群 $S_n$ を生成する．
+比較交換作用素 $\pi_i$ は $\pi_i^2=\pi_i$ を満たし，通常は逆写像を持たない．
+従って本題を単純な群作用の軌道計数として扱うことはできず，0-Heckeモノイドの作用と成功順列集合の組合せ的分解を区別する必要がある．
+\end{remark}
+
+\section*{参考文献・出典}
+\begin{enumerate}[label={[\arabic*]}]
+\item 東京大学，2025年度前期日程・理科数学，第5問．
+\item S.~Lang, \textit{Algebra}, revised 3rd ed., Springer, 2002. Symmetric groups and monoids.
+\item 「なかけんの数学ノート」，東京大学理系2025年第5問（操作順序および問題文の条件を照合）．
+\end{enumerate}
+
+\end{document}

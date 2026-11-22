@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "notes": {
+    "97.030": {
+      "pdf": "./public_notes/97_entrance_math/97.030_integral_limits/97.030_integral_limits.pdf",
+      "tex": "./public_notes/97_entrance_math/97.030_integral_limits/97.030_integral_limits.tex",
+      "status": "draft-review"
+    },
+    "97.050": {
+      "pdf": "./public_notes/97_entrance_math/97.050_quadratic_extrema/97.050_quadratic_extrema.pdf",
+      "tex": "./public_notes/97_entrance_math/97.050_quadratic_extrema/97.050_quadratic_extrema.tex",
+      "status": "draft-review"
+    },
+    "97.120": {
+      "pdf": "./public_notes/97_entrance_math/97.120_divisor_orbits/97.120_divisor_orbits.pdf",
+      "tex": "./public_notes/97_entrance_math/97.120_divisor_orbits/97.120_divisor_orbits.tex",
+      "status": "draft-review"
+    },
+    "97.130": {
+      "pdf": "./public_notes/97_entrance_math/97.130_mobius_circles/97.130_mobius_circles.pdf",
+      "tex": "./public_notes/97_entrance_math/97.130_mobius_circles/97.130_mobius_circles.tex",
+      "status": "draft-review"
+    },
+    "97.170": {
+      "pdf": "./public_notes/97_entrance_math/97.170_finite_fourier/97.170_finite_fourier.pdf",
+      "tex": "./public_notes/97_entrance_math/97.170_finite_fourier/97.170_finite_fourier.tex",
+      "status": "draft-review"
+    },
+    "97.200": {
+      "pdf": "./public_notes/97_entrance_math/97.200_hecke_sorting/97.200_hecke_sorting.pdf",
+      "tex": "./public_notes/97_entrance_math/97.200_hecke_sorting/97.200_hecke_sorting.tex",
+      "status": "draft-review"
+    }
+  }
+}

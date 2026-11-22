@@ -25,9 +25,9 @@ async function load(){
  const id=new URLSearchParams(window.location.search).get("id");
  if(!id||!/^\d{2}\.\d{3}$/.test(id)){showError("ノート番号が指定されていません。索引に戻ってノートを選択してください。");return;}
  try{
-   const response=await Promise.all(["./data/notes.json","./data/details.json","./data/taxonomy.json","./data/private_pdf_links.json"].map(url=>fetch(url)));
+   const response=await Promise.all(["./data/notes.json","./data/details.json","./data/taxonomy.json","./data/private_pdf_links.json","./data/public_pdf_links.json"].map(url=>fetch(url)));
    if(response.some(r=>!r.ok))throw Error("ノート情報の取得に失敗しました");
-   const [catalog,pages,taxonomy,pdfData]=await Promise.all(response.map(r=>r.json()));
+   const [catalog,pages,taxonomy,pdfData,publicData]=await Promise.all(response.map(r=>r.json()));
    const index=new Map(catalog.notes.map(n=>[n.id,n]));
    const details=new Map(pages.notes.map(n=>[n.id,n]));
    const info=index.get(id),detail=details.get(id);
@@ -41,10 +41,18 @@ async function load(){
    $("#noteNumber").textContent=id;
    $("#noteTitle").textContent=info.title;
    $("#noteSummary").textContent=detail.summary;
-   const pdfUrl=pdfData.links?.[id];
-   if(typeof pdfUrl==="string"&&/^https:\/\/github\.com\/HaWkoods\/giconrad\/blob\/main\/notes\/[A-Za-z0-9_./-]+\.pdf$/.test(pdfUrl)){
-     $("#privatePdfLink").href=pdfUrl;
-     $("#privatePdfPanel").hidden=false;
+   const publicRec=publicData.notes?.[id];
+   if(publicRec?.pdf&&publicRec?.tex&&publicRec.pdf.startsWith("./public_notes/")&&publicRec.tex.startsWith("./public_notes/")&&!publicRec.pdf.includes("..")&&!publicRec.tex.includes("..")){
+     $("#publicPdfLink").href=publicRec.pdf;
+     $("#publicTexLink").href=publicRec.tex;
+     $("#publicPdfPanel").hidden=false;
+     $("#privateNotice").textContent="このノートのPDF・pLaTeX原稿は公開されていますが、初稿・数学的校閲中であり完成認定ではありません。ほかの多くのノートは引き続き非公開です。";
+   }else{
+     const pdfUrl=pdfData.links?.[id];
+     if(typeof pdfUrl==="string"&&/^https:\/\/github\.com\/HaWkoods\/giconrad\/blob\/main\/notes\/[A-Za-z0-9_./-]+\.pdf$/.test(pdfUrl)){
+       $("#privatePdfLink").href=pdfUrl;
+       $("#privatePdfPanel").hidden=false;
+     }
    }
    $("#currentNumber").textContent=info.id;
    $("#currentTitle").textContent=info.title;

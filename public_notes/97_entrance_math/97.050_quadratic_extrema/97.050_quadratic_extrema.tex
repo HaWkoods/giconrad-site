@@ -1,0 +1,275 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{97.050 二次形式と極値}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section{入試の最大値問題を二次形式へ変換する}
+本ノートは，線形代数のスペクトル定理とRayleigh商を用いて，図形の最大値を求める．
+単なる二次式の平方完成ではなく，許容される向きの制約を持つ幾何学的な最適化を扱う．
+
+\begin{example}[東京大学2025年度・理科数学第3問（要約）]\label{ex:tokyo}
+$AB=a,BC=b$，$0<a\le b$，$\angle ABC=\pi/6$ の平行四辺形 $ABCD$ がある．
+その各頂点が一つずつ長方形の相異なる四辺上に載るとき，長方形の面積 $S$ を最大化する．
+出題では $\theta=\angle BCG$ を用いて面積を表示し，最大値を $a,b$ で記述することを求める．
+\end{example}
+
+\begin{example}[京都大学2024年度・理系数学第2問（要約）]\label{ex:kyoto}
+$|x|\le2$ と $|y-(8+6i)|=3$ を満たす複素数 $x,y$ に対し，$z=(x+y)/2$ の動く範囲を求め，その面積を計算する．
+\end{example}
+
+\section{実対称行列とRayleigh商}
+\begin{definition}[二次形式]
+実対称行列 $A\in M_n(\mathbb R)$ に対し，$Q_A(x)=x^{\mathsf T}Ax$ を二次形式という．
+$x\ne0$ に対する $\mathcal R_A(x)=Q_A(x)/(x^{\mathsf T}x)$ をRayleigh商という．
+\end{definition}
+
+\begin{theorem}[Rayleigh--Ritzの原理]\label{thm:rayleigh}
+$A$ を実対称 $n$ 次行列とする．その固有値を重複度込みで $\lambda_1\le\cdots\le\lambda_n$ と並べると
+\[
+ \min_{\norm{x}=1}x^{\mathsf T}Ax=\lambda_1,\qquad
+ \max_{\norm{x}=1}x^{\mathsf T}Ax=\lambda_n
+\]
+である．最大値は最大固有値の固有空間上の単位ベクトルにおいて，最小値は最小固有値の固有空間上の単位ベクトルにおいて，それぞれちょうど達せられる．
+\end{theorem}
+\begin{proof}
+実対称行列のスペクトル定理により，直交行列 $U$ を用いて
+$U^{\mathsf T}AU=\mathrm{diag}(\lambda_1,\ldots,\lambda_n)$ と書ける．
+$y=U^{\mathsf T}x$ とすると $\sum_jy_j^2=1$ であり，
+\[
+ x^{\mathsf T}Ax=\sum_{j=1}^n\lambda_jy_j^2
+\]
+となる．$y_j^2$ は非負で和が $1$ だから，右辺は固有値の凸結合であり，$\lambda_1\le Q_A(x)\le\lambda_n$ である．
+固有値の等号条件もこの式から直ちに従う．
+\end{proof}
+
+\begin{example}[単位円上の二次式]
+$x^2+y^2=1$ のとき $3x^2+4xy$ の最大値は $4$，最小値は $-1$ である．
+実際，$A=\begin{pmatrix}3&2\\2&0\end{pmatrix}$ の特性多項式は $\lambda^2-3\lambda-4=(\lambda-4)(\lambda+1)$ であり，定理~\ref{thm:rayleigh} を適用する．
+\end{example}
+
+\section{円弧上の制約付き二次形式}
+\begin{lemma}[二重角と対称行列]\label{lem:matrix}
+$A,B\in\mathbb R$，$R=\sqrt{A^2+B^2}>0$ とする．
+\[
+ M=\begin{pmatrix}A&B\\B&-A\end{pmatrix},\qquad
+ u(\theta)=\begin{pmatrix}\cos\theta\\\sin\theta\end{pmatrix}
+\]
+とおけば
+\[
+ u(\theta)^{\mathsf T}Mu(\theta)
+ =A\cos2\theta+B\sin2\theta.
+\]
+$M$ の固有値は $R$ と $-R$ である．
+\end{lemma}
+\begin{proof}
+二次形式を展開して $A(\cos^2\theta-\sin^2\theta)+2B\sin\theta\cos\theta$ とすれば前半が従う．
+$\det(M-\lambda I)=\lambda^2-(A^2+B^2)$ なので固有値は $\pm R$ である．
+\end{proof}
+
+\begin{proposition}[閉円弧上の最大値]\label{prop:arc}
+$A,B>0$，$0<\eta<\pi/2$ とし，$F(t)=A\cos t+B\sin t$ を $0\le t\le\eta$ 上で考える．
+$t_0=\arctan(B/A)$ とおくと
+\[
+ \max_{0\le t\le\eta}F(t)
+ =\begin{cases}
+ \sqrt{A^2+B^2}&(t_0\le\eta),\\
+ A\cos\eta+B\sin\eta&(t_0>\eta).
+ \end{cases}
+\]
+\end{proposition}
+\begin{proof}
+$R=\sqrt{A^2+B^2}$ とすれば $A=R\cos t_0,B=R\sin t_0$ だから $F(t)=R\cos(t-t_0)$ である．
+$0<t_0<\pi/2$ なので $[0,\eta]$ 上の最大値は，$t_0$ が区間内なら $R$，区間外なら右端 $t=\eta$ で得られる．
+\end{proof}
+
+\section{平行四辺形と外接長方形}
+\begin{lemma}[許容される角と辺の表示]\label{lem:geometry}
+例~\ref{ex:tokyo} の条件を満たす長方形について，ある $\theta\in[0,\pi/6]$ が存在し，長方形の横幅 $w$ と高さ $h$ は適当な直交座標系において
+\begin{align*}
+ w&=a\cos(\theta+\pi/3)+b\sin\theta,\\
+ h&=a\sin(\theta+\pi/3)+b\cos\theta
+\end{align*}
+である．逆にこの区間の任意の $\theta$ に対し，対応する長方形が構成できる．
+\end{lemma}
+\begin{proof}
+長方形の辺を座標軸に平行にとり，$B=(0,0)$ とする．
+$BC$ は長さ $b$ で第1象限に向かい，$\angle BCG=\theta$ であるから
+$C=(b\sin\theta,b\cos\theta)$ となる．
+$BA$ は $BC$ となす角が $\pi/6$ で，左上に向かう．従って
+$A=(-a\cos(\theta+\pi/3),a\sin(\theta+\pi/3))$ である．
+辺の両端を含むという条件から，横座標および縦座標で必要な射影は非負であり，
+$\theta\ge0$ と $\cos(\theta+\pi/3)\ge0$，すなわち $0\le\theta\le\pi/6$ が必要である．
+$D=A+C$ なので，四点の各座標の最小値・最大値を比較すると
+\[
+ x\text{ の範囲}=[-a\cos(\theta+\pi/3),b\sin\theta],
+\]
+\[
+ y\text{ の範囲}=[0,a\sin(\theta+\pi/3)+b\cos\theta]
+\]
+である．この最小外接長方形は，$A,B,C,D$ が順に左辺・下辺・右辺・上辺に乗る．
+元の四辺の命名をこの順序に合わせれば条件を満たす．
+逆に任意の $\theta\in[0,\pi/6]$ について上記座標で $A,B,C,D$ を構成すれば，各頂点は対応する辺に乗る．
+従って角度条件は必要十分である．
+\end{proof}
+
+\begin{proposition}[面積の二次形式表示]\label{prop:area}
+補題~\ref{lem:geometry} の設定において
+\begin{equation}\label{eq:area}
+ 2S-ab=\frac{\sqrt3 a^2}{2}\cos2\theta
+ +\left(b^2-\frac{a^2}{2}\right)\sin2\theta.
+\end{equation}
+\end{proposition}
+\begin{proof}
+$S=wh$ に補題~\ref{lem:geometry} の式を代入して展開する．
+交差項は
+$ab\{\cos(\theta+\pi/3)\cos\theta+\sin(\theta+\pi/3)\sin\theta\}
+=ab\cos(\pi/3)=ab/2$ である．
+二乗項はそれぞれ $a^2\sin(2\theta+2\pi/3)/2$ と $b^2\sin2\theta/2$ であり，
+$\sin(2\theta+2\pi/3)=\sin(\pi/3-2\theta)$ を用いて整理すると式~\eqref{eq:area} を得る．
+\end{proof}
+
+\begin{theorem}[東京大学の図形問題の解答]\label{thm:tokyo}
+$0<a\le b$ とする．例~\ref{ex:tokyo} の長方形の面積の最大値は
+\begin{equation}\label{eq:answer}
+ \max S=\begin{cases}
+ \displaystyle\frac{ab+\sqrt{a^4-a^2b^2+b^4}}{2}&(a\le b\le\sqrt2a),\\[4pt]
+ \displaystyle\frac{ab}{2}+\frac{\sqrt3 b^2}{4}&(b\ge\sqrt2a)
+ \end{cases}
+\end{equation}
+である．境界 $b=\sqrt2a$ では二つの表示は一致する．
+\end{theorem}
+\begin{proof}
+式~\eqref{eq:area} に対し
+$A=\sqrt3a^2/2>0$，$B=b^2-a^2/2>0$，$t=2\theta\in[0,\pi/3]$ とおく．
+補題~\ref{lem:matrix} により $2S-ab$ は単位ベクトル上の対称行列の二次形式で，固有値は $\pm R$，
+\[
+ R=\sqrt{A^2+B^2}=\sqrt{a^4-a^2b^2+b^4}
+\]
+である．無制約の最大値 $R$ が許される角に現れる条件は，命題~\ref{prop:arc} により
+\[
+ \arctan(B/A)\le\pi/3
+ \iff B\le\sqrt3 A\iff b^2\le2a^2
+\]
+である．この場合 $S=(ab+R)/2$ となる．
+$b^2>2a^2$ では右端 $t=\pi/3$ で最大となり，
+\[
+ 2S-ab=\frac A2+\frac{\sqrt3B}{2}=\frac{\sqrt3b^2}{2}
+\]
+だから第二式を得る．
+$b^2=2a^2$ のとき $R=\sqrt3a^2=\sqrt3b^2/2$ なので二式は一致する．
+\end{proof}
+
+\section{Minkowski和によるもう一つの過去問}
+\begin{definition}[Minkowski和]
+平面の集合 $E,F\subset\mathbb R^2$ に対し，$E+F=\{x+y:x\in E,y\in F\}$ をMinkowski和という．
+中心 $0$，半径 $r$ の閉円板を $\overline B_r$，半径 $R$ の円周を $S_R$ と書く．
+\end{definition}
+
+\begin{lemma}[円と円板のMinkowski和]\label{lem:annulus}
+$R\ge r\ge0$ ならば
+\[
+ S_R+\overline B_r=\{z\in\mathbb C:R-r\le|z|\le R+r\}.
+\]
+\end{lemma}
+\begin{proof}
+$z=u+v$，$|u|=R$，$|v|\le r$ なら三角不等式と逆三角不等式で $R-r\le|z|\le R+r$ となる．
+逆に $t=|z|\in[R-r,R+r]$ とする．$z\ne0$ なら $u=Rz/t$ を選ぶと $|u|=R$，$|z-u|=|t-R|\le r$ だから $z=u+v$ と表せる．
+$z=0$ がこの範囲に入るのは $R=r$ の場合に限り，この場合は $u$ を任意の長さ $R$ のベクトルとし $v=-u$ とすればよい．
+\end{proof}
+
+\begin{theorem}[京都大学の複素数領域問題]\label{thm:kyoto}
+例~\ref{ex:kyoto} の複素数 $z$ の動く範囲は
+\[
+ \frac12\le|z-(4+3i)|\le\frac52
+\]
+であり，その面積は $6\pi$ である．
+\end{theorem}
+\begin{proof}
+$z-(4+3i)=x/2+(y-(8+6i))/2$ と分解する．
+$x/2$ は半径 $1$ の閉円板を，$(y-(8+6i))/2$ は半径 $3/2$ の円周を動く．
+補題~\ref{lem:annulus} を $R=3/2,r=1$ に適用すれば領域の表示が従う．
+面積は外円の面積から内円の面積を差し引き
+$\pi\{(5/2)^2-(1/2)^2\}=6\pi$ となる．
+\end{proof}
+
+\begin{remark}[大学数学の役割]
+東京大学の問題は許容される円弧上の二次形式の最大化であり，京都大学の問題は集合のMinkowski和の計算である．
+いずれも図形の個別の座標計算を，線形代数と集合演算に置き換えている．
+\end{remark}
+
+\section*{参考文献・出典}
+\begin{enumerate}[label={[\arabic*]}]
+\item 東京大学，2025年度前期日程・理科数学，第3問．
+\item 京都大学，2024年度前期日程・理系数学，第2問．
+\item S.~Lang, \textit{Algebra}, 3rd ed., Springer, 2002, Chap.~XIII (matrices and linear maps).
+\item J.~Nocedal and S.~J.~Wright, \textit{Numerical Optimization}, Springer, 1999, Chaps.~2 and 12.
+\item 「なかけんの数学ノート」，東京大学2025年第3問・京都大学2024年第2問（出題条件を照合）．
+\end{enumerate}
+
+\end{document}

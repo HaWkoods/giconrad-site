@@ -1,0 +1,269 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{97.130 円とMobius変換}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section{過去問と反転写像}
+本ノートは，複素平面上の逆数写像をM\"obius変換の一例として捉え，直線・円・放物線状の領域を処理する．
+対象は東京大学2017年度理科数学第3問および2025年度理科数学第6問である．
+
+\begin{example}[東京大学2017年度・理科数学第3問（要約）]\label{ex:2017}
+$\alpha\ne0$ とし，$0$ と $\alpha$ の垂直二等分線 $L$ 上の $z$ に $w=1/z$ を対応させる．
+像の円の中心と半径を求める．さらに，三乗根 $\beta=e^{2\pi i/3}$ と $\beta^2$ を結ぶ線分の逆数像を記述する．
+\end{example}
+\begin{example}[東京大学2025年度・理科数学第6問（要約）]\label{ex:2025}
+$C=\{z\in\mathbb C^*:|z-1/2|=1/2\}$ とする．
+$C$ 上の相異なる $\alpha,\beta$ に対する $\alpha^{-2}+\beta^{-2}$ の値域を求め，その補集合内の $\gamma\ne0$ に対して $\mathrm{Re}(1/\gamma)$ の最大値と最小値を求める．
+\end{example}
+
+\section{一般化された円とM\"obius変換}
+\begin{definition}[Riemann球面と一般化された円]
+$\widehat{\mathbb C}=\mathbb C\cup\{\infty\}$ をRiemann球面とする．
+Euclid平面の円と，$\infty$ を付加した直線を合わせて一般化された円という．
+\end{definition}
+\begin{definition}[M\"obius変換]
+$ad-bc\ne0$ を満たす $a,b,c,d\in\mathbb C$ に対して
+\[
+ T(z)=\frac{az+b}{cz+d}
+\]
+が定める $\widehat{\mathbb C}$ 上の写像をM\"obius変換という．分母が零となる有限点は $\infty$ に写し，$T(\infty)$ も連続に定める．
+\end{definition}
+
+\begin{lemma}[反転による円と直線の変換]\label{lem:inversion}
+有限複素平面上の一般化された円の方程式は，適当な $A,C\in\mathbb R$，$B\in\mathbb C$ を用いて
+\begin{equation}\label{eq:circle}
+ A|z|^2+2\mathrm{Re}(Bz)+C=0
+\end{equation}
+と表せる．ただし $(A,B,C)$ は非退化な円または直線を定めるものとする．
+$w=1/z$ によって，$z\ne0$ 上の式~\eqref{eq:circle} は
+\[
+ C|w|^2+2\mathrm{Re}(B\overline w)+A=0
+\]
+へ移る．
+\end{lemma}
+\begin{proof}
+円 $|z-z_0|=r$ は $|z|^2-2\mathrm{Re}(\overline{z_0}z)+|z_0|^2-r^2=0$ と表され，直線は $2\mathrm{Re}(Bz)+C=0$ と表される．
+$z=1/w$ を式~\eqref{eq:circle} に代入し，両辺に $|w|^2$ を掛けると
+$A+2\mathrm{Re}(B\overline w)+C|w|^2=0$ となる．
+$z=0$ や $w=0$ に対応する点は球面上の $\infty$ を考えて補う．
+\end{proof}
+
+\begin{theorem}[M\"obius変換の円保存性]\label{thm:circle}
+M\"obius変換はRiemann球面上の一般化された円を一般化された円へ写す．
+\end{theorem}
+\begin{proof}
+$c=0$ なら $T$ は平行移動と零でない複素数倍の合成であり，円と直線をそれぞれ円と直線へ写す．
+$c\ne0$ のとき
+\[
+ T(z)=\frac ac+\frac{bc-ad}{c^2}\,
+ \frac1{z+d/c}
+\]
+と分解できる．係数 $(bc-ad)/c^2$ は零でない．
+従って平行移動，反転，零でない複素数倍の合成であり，補題~\ref{lem:inversion} から結論が従う．
+\end{proof}
+
+\section{2017年度問題：線分と円弧}
+\begin{theorem}[垂直二等分線の像]\label{thm:2017a}
+$\alpha\in\mathbb C^*$ とし，$L=\{z:|z|=|z-\alpha|\}$ とする．
+$w=1/z$ による $L$ の像は
+\[
+ \left\{w\in\mathbb C^*:\left|w-\frac1\alpha\right|
+ =\frac1{|\alpha|}\right\}.
+\]
+従って対応する円の中心は $1/\alpha$，半径は $1/|\alpha|$ であり，原点は除く．
+\end{theorem}
+\begin{proof}
+$z\in L$ とすると $|z|=|z-\alpha|$ である．
+$z=0$ は $\alpha\ne0$ により $L$ に属さない．
+$w=1/z$ とおけば
+\[
+ |1|=|1-\alpha w|
+ \iff\left|w-\frac1\alpha\right|=\frac1{|\alpha|}
+\]
+となる．$w\ne0$ という条件を付加すれば逆向きにも $z=1/w\in L$ が従う．
+\end{proof}
+
+\begin{theorem}[三乗根を結ぶ線分の像]\label{thm:2017b}
+$\beta=e^{2\pi i/3}$ とする．線分 $[\beta,\beta^2]$ の $z\mapsto1/z$ による像は
+\[
+ \{w\in\mathbb C:|w+1|=1,\ |w|\ge1\}
+\]
+であり，端点を含む円弧である．
+\end{theorem}
+\begin{proof}
+$\beta=-1/2+(\sqrt3/2)i$，$\beta^2=-1/2-(\sqrt3/2)i$ だから，その線分は
+\[
+ \{z:\mathrm{Re}z=-1/2,\ |z|\le1\}
+\]
+と一致する．ただし $z=0$ はこの集合に属さない．
+直線 $\mathrm{Re}z=-1/2$ は $|z|=|z+1|$ と同値であり，定理~\ref{thm:2017a} に $\alpha=-1$ を適用すれば $|w+1|=1$ となる．
+さらに $|z|\le1$ は $|w|\ge1$ と同値である．
+逆変換が単射であるため，両条件を満たす $w$ はすべて元の線分から得られる．
+\end{proof}
+
+\section{2025年度問題：円を直線へ送る}
+\begin{lemma}[円 $C$ の反転像]\label{lem:C}
+$C=\{z\ne0:|z-1/2|=1/2\}$ に対し
+\[
+ z\in C\iff\mathrm{Re}(1/z)=1.
+\]
+従って反転像は直線 $\{1+it:t\in\mathbb R\}$ 全体である．
+\end{lemma}
+\begin{proof}
+円の方程式を展開すると $|z|^2=\mathrm{Re}z$ となる．
+$z\ne0$ で割って
+$\mathrm{Re}(1/z)=\mathrm{Re}(\overline z)/|z|^2=1$ を得る．
+逆に $w=1+it$ とすると $z=1/w$ は零でなく，$\mathrm{Re}(1/z)=1$ を満たす．
+\end{proof}
+
+\begin{theorem}[相異なる二点による値域]\label{thm:range}
+$C$ 上の相異なる $\alpha,\beta$ について
+$\gamma=\alpha^{-2}+\beta^{-2}$ とおく．
+このとき $\gamma=u+iv$ の値域 $D$ は
+\begin{equation}\label{eq:region}
+ D=\{u+iv\in\mathbb C:u<2-v^2/8\}
+\end{equation}
+であり，境界放物線は含まない．
+\end{theorem}
+\begin{proof}
+補題~\ref{lem:C} により
+$\alpha^{-1}=1+is,\beta^{-1}=1+it$ と一意に書ける．
+$\alpha\ne\beta$ は $s\ne t$ と同値である．
+展開すると
+\[
+ \gamma=(1+is)^2+(1+it)^2
+ =2-s^2-t^2+2(s+t)i.
+\]
+したがって $v=2(s+t)$，
+\[
+ u=2-\tfrac12\{(s+t)^2+(s-t)^2\}
+ =2-\frac{v^2}{8}-\frac{(s-t)^2}{2}
+ <2-\frac{v^2}{8}.
+\]
+逆に任意の $u<2-v^2/8$ に対し
+$d=\sqrt{2(2-v^2/8-u)}>0$，
+$s=(v/2+d)/2$，$t=(v/2-d)/2$ とおくと $s-t=d\ne0$ であり，上式で $\gamma=u+iv$ を得る．
+従って不等式は必要十分である．
+\end{proof}
+
+\section{補集合上の実部の最大・最小}
+\begin{theorem}[2025年度問題の最終解答]\label{thm:extrema}
+$D$ を式~\eqref{eq:region} とし，
+$\gamma\in\mathbb C\setminus(D\cup\{0\})$ とする．
+このとき
+\[
+ -\frac1{16}\le\mathrm{Re}\frac1\gamma\le\frac12
+\]
+が成り立つ．最大値は $1/2$，最小値は $-1/16$ で，いずれも実際に達せられる．
+\end{theorem}
+\begin{proof}
+$\gamma=u+iv$ とおくと条件は
+\[
+ u\ge2-v^2/8,\qquad u^2+v^2>0
+\]
+である．求める量は $R(u,v)=u/(u^2+v^2)$ である．
+
+$u\ge2$ なら $0<R(u,v)\le1/u\le1/2$ となる．
+$0\le u\le2$ なら条件から $v^2\ge16-8u$，従って
+\[
+ 0\le R(u,v)\le\frac{u}{u^2+16-8u}
+ =\frac{u}{(u-4)^2}\le\frac12.
+\]
+最後は $2u\le(u-4)^2$ が $[0,2]$ 上で成立することによる．実際
+$(u-4)^2-2u=u^2-10u+16=(u-2)(u-8)\ge0$．
+
+$u<0$ では同じ下界 $v^2\ge16-8u$ を用いると，分子が負なので
+\[
+ R(u,v)\ge\frac{u}{(u-4)^2}.
+\]
+$t=-u>0$ とおけば
+\[
+ \frac{u}{(u-4)^2}=-\frac{t}{(t+4)^2}\ge-\frac1{16}
+\]
+である．最後は $(t+4)^2-16t=(t-4)^2\ge0$ による．
+$u=2,v=0$ では $R=1/2$，$u=-4,v=4\sqrt3$ では
+$u=2-v^2/8=-4$ で $R=-4/(16+48)=-1/16$ となる．
+両点は $\gamma\ne0$ であり，条件を満たす．
+\end{proof}
+
+\begin{remark}[領域の境界の重要性]
+相異なる二点の条件によって $D$ は開領域である．
+補集合には放物線上の点が含まれるため，最終問題の最大値・最小値が達成される．
+もし $D$ に境界を含めてしまうと，最終問題での等号条件が誤る．
+\end{remark}
+
+\section*{参考文献・出典}
+\begin{enumerate}[label={[\arabic*]}]
+\item 東京大学，2017年度前期日程・理科数学，第3問．
+\item 東京大学，2025年度前期日程・理科数学，第6問．
+\item J.~B.~Conway, \textit{Functions of One Complex Variable I}, 2nd ed., Springer, 1978.
+\item 「なかけんの数学ノート」，東京大学理系2017年第3問および2025年第6問（問題の条件を照合）．
+\end{enumerate}
+
+\end{document}

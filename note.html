@@ -11,6 +11,11 @@
   <div class="eyebrow">NOTE GUIDE · <span id="noteNumber"></span></div>
   <h1 class="noteHeading" id="noteTitle"></h1>
   <div id="noteTags" class="tags noteTags"></div>
+  <div class="privatePdfPanel" id="publicPdfPanel" hidden>
+    <a id="publicPdfLink" class="privatePdfAction" target="_blank" rel="noopener noreferrer">公開PDFを開く ↗</a>
+    <a id="publicTexLink" class="privatePdfAction" target="_blank" rel="noopener noreferrer">pLaTeX原稿を開く ↗</a>
+    <p class="privatePdfHint">公開初稿・数学的校閲中。公開は数学的な最終承認を意味しません。</p>
+  </div>
   <div class="privatePdfPanel" id="privatePdfPanel" hidden>
     <a id="privatePdfLink" class="privatePdfAction" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">PDFを開く（GitHub閲覧権限が必要） ↗</a>
     <p class="privatePdfHint">Privateリポジトリへのリンクです。GitHubに閲覧権限のあるアカウントでログインしている場合のみPDFを開けます。リンクのURL自体は公開されています。</p>
@@ -45,7 +50,7 @@
     <p class="pathExplanation">前後関係を定めない、内容が補い合うノートです。</p>
     <div id="relatedList" class="relatedGrid"></div>
   </section>
-  <p class="privateNotice">このサイトは検索のための公開案内です。ノート本文・PDF・pLaTeXソースはこの公開サイトに置いていません。PDFの閲覧権限はGitHub側で管理されます。</p>
+  <p id="privateNotice" class="privateNotice">このノートのPDF・pLaTeX原稿は非公開です。閲覧権限はGitHub側で管理されます。</p>
 </section>
 <p id="noteStatus" role="status">ノート情報を読み込んでいます…</p>
 </main>

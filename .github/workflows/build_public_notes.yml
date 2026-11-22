@@ -1,0 +1,71 @@
+name: Build public pLaTeX notes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public_notes/**/*.tex'
+      - 'scripts/build_public_notes.sh'
+      - '.github/workflows/build_public_notes.yml'
+  workflow_dispatch:
+    inputs:
+      note:
+        description: 'Build note number (e.g. 97.120), or all'
+        required: false
+        default: all
+
+permissions:
+  contents: write
+
+concurrency:
+  group: public-notes-main
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout this public repository only
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Japanese pLaTeX
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            texlive-lang-japanese texlive-latex-extra \
+            texlive-latex-recommended texlive-fonts-recommended poppler-utils
+          command -v platex
+          command -v dvipdfmx
+          kpsewhich jsarticle.cls
+          kpsewhich pxjahyper.sty
+
+      - name: Compile selected public notes
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          MANUAL_NOTE: ${{ inputs.note }}
+        run: bash scripts/build_public_notes.sh
+
+      - name: Commit generated public PDFs
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          find public_notes -type f -name '*.pdf' -print0 | xargs -0 -r git add --
+          if ! git diff --cached --quiet; then
+            git commit -m 'Build public pLaTeX PDFs'
+            git push origin HEAD:main
+          else
+            echo 'No PDF changes to publish.'
+          fi
+
+      - name: Upload build logs for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-platex-logs
+          path: ${{ runner.temp }}/giconrad-pdf-build/**/*.log
+          if-no-files-found: ignore
+          retention-days: 7

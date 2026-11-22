@@ -1,0 +1,275 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{97.120 約数と群作用}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section{問題の設定と主結果}
+本ノートでは，約数の対合と有限群の軌道計数を用いて，平方数の条件を満たす整数を数える．
+対象読者は初等整数論と群作用を既習とする．ただし必要な軌道計数公式は証明する．
+
+\begin{example}[東京大学2025年度前期・理科数学第4問（問題の要約）]\label{ex:todai}
+正整数 $a$ に対し $f_a(n)=n^2+n-a$ とする．
+$f_a(n)$ が非負整数の平方となる正整数 $n$ の個数 $N_a$ を考える．
+出題では $n\le a$ を示し，$N_a=1$ と $4a+1$ が素数であることの同値性を証明する．
+\end{example}
+
+\begin{theorem}[約数個数による完全な解答]\label{thm:main}
+$a\ge1$ を整数とし，$M=4a+1$ とする．
+$\tau(M)$ を $M$ の正の約数の個数，$\varepsilon(M)$ を $M$ が完全平方数のとき $1$，そうでなければ $0$ とする．
+このとき
+\begin{equation}\label{eq:main}
+ N_a=\frac{\tau(4a+1)+\varepsilon(4a+1)}{2}.
+\end{equation}
+特に $N_a=1$ であることと $4a+1$ が素数であることは同値である．
+\end{theorem}
+
+\section{平方数条件と約数対}
+\begin{lemma}[連続する二平方数による評価]\label{lem:bound}
+正整数 $a,n$ に対し $n^2+n-a$ が平方数ならば $n\le a$ である．
+\end{lemma}
+\begin{proof}
+$n^2+n-a=m^2$ とする．ここで $m$ は非負整数である．
+もし $n>a$ ならば
+\[
+ n^2<m^2=n^2+(n-a)<n^2+2n+1=(n+1)^2
+\]
+となる．二つの連続する平方数の間に平方数は存在しないから矛盾である．
+よって $n\le a$．さらに $m^2\le n^2$ なので $0\le m\le n$ である．
+\end{proof}
+
+\begin{lemma}[二平方差の約数対応]\label{lem:pairs}
+$M>1$ を $M\equiv1\pmod 4$ を満たす整数とする．
+$M=4a+1$ と書けば，組
+\[
+ (n,m)\in\mathbb Z_{>0}\times\mathbb Z_{\ge0},\qquad n^2+n-a=m^2
+\]
+と，正の約数対 $de=M$，$d\le e$ の間には全単射がある．
+対応は
+\[
+ d=2n+1-2m,\quad e=2n+1+2m
+\]
+で与えられ，逆対応は
+\begin{equation}\label{eq:inverse}
+ n=\frac{d+e-2}{4},\qquad m=\frac{e-d}{4}
+\end{equation}
+である．
+\end{lemma}
+\begin{proof}
+組 $(n,m)$ が与えられたとき，補題~\ref{lem:bound} より $0\le m\le n$ であり，$d\ge1$ である．
+平方差の因数分解から
+\[
+ (2n+1-2m)(2n+1+2m)
+ =(2n+1)^2-4m^2=4a+1=M
+\]
+となる．したがって $d,e$ は求める正の約数対である．
+
+逆に，$de=M$，$1\le d\le e$ とする．$M$ が奇数なので $d,e$ は奇数である．
+また $de\equiv1\pmod4$ より $d\equiv e\pmod4$ である．
+従って式~\eqref{eq:inverse} の右辺は整数であり，$m\ge0$ である．
+$d+e\ge 1+M\ge6$ なので $n\ge1$ となる．
+さらに
+\[
+ (2n+1)^2-(2m)^2=de=M=4a+1
+\]
+から $n^2+n-a=m^2$ を得る．
+両操作が互いに逆であることは定義式から直ちに確かめられる．
+\end{proof}
+
+\begin{remark}
+$M>1$ の仮定は $a\ge1$ に対応する．$M=1$ の場合には $d=e=1$ から $n=0$ となるため，正整数 $n$ の計数では除外する必要がある．
+\end{remark}
+
+\section{軌道計数とBurnsideの補題}
+\begin{definition}[群作用と軌道]
+有限群 $G$ の有限集合 $X$ への作用とは，写像 $G\times X\to X$ で，$1x=x$ および $(gh)x=g(hx)$ を満たすものをいう．
+$x\in X$ の軌道を $Gx=\{gx:g\in G\}$ と書き，$g\in G$ の固定点集合を $X^g=\{x\in X:gx=x\}$ とする．
+\end{definition}
+\begin{lemma}[Burnsideの軌道計数公式]\label{lem:burnside}
+有限群 $G$ が有限集合 $X$ に作用するとき，軌道の個数は
+\[
+ \#(X/G)=\frac{1}{|G|}\sum_{g\in G}|X^g|
+\]
+である．
+\end{lemma}
+\begin{proof}
+集合 $\Omega=\{(g,x)\in G\times X:gx=x\}$ を二通りに数える．
+第一に $|\Omega|=\sum_{g\in G}|X^g|$ である．
+第二に各 $x$ の安定化部分群 $G_x$ を用いれば
+$|\Omega|=\sum_{x\in X}|G_x|$ である．
+軌道 $O=Gx$ 上で $|G_y|=|G|/|O|$ が成立する．
+従って一つの軌道からの寄与は $\sum_{y\in O}|G_y|=|G|$ であり，$|\Omega|=|G|\#(X/G)$ を得る．
+\end{proof}
+
+\begin{proposition}[約数対は二元群の軌道]\label{prop:orbit}
+正整数 $M$ の約数集合 $D(M)=\{d\in\mathbb Z_{>0}:d\mid M\}$ 上で
+\[
+ \iota(d)=M/d
+\]
+と定める．このとき $\iota^2=\mathrm{id}$ であるから，$C_2$ が $D(M)$ に作用し，軌道は順序を無視した約数対 $\{d,M/d\}$ と一致する．
+軌道の個数は
+\[
+ \frac{\tau(M)+\varepsilon(M)}2
+\]
+である．
+\end{proposition}
+\begin{proof}
+$\iota(\iota(d))=M/(M/d)=d$ より対合である．
+固定点条件は $d=M/d$，すなわち $d^2=M$ である．
+固定点は $M$ が平方数のときただ一つ，そうでなければ存在しない．
+補題~\ref{lem:burnside} を $G=C_2$ に適用すれば
+\[
+ \#(D(M)/C_2)
+ =\tfrac12\bigl(|D(M)|+|D(M)^\iota|\bigr)
+ =\tfrac12(\tau(M)+\varepsilon(M)).
+\]
+\end{proof}
+
+\begin{proof}[定理~\ref{thm:main} の証明]
+補題~\ref{lem:pairs} により $N_a$ は $4a+1$ の順序を無視した正の約数対の数であり，命題~\ref{prop:orbit} が式~\eqref{eq:main} を与える．
+$M=4a+1\ge5$ である．もし $M$ が素数ならば $\tau(M)=2,\varepsilon(M)=0$ なので $N_a=1$．
+逆に $M$ が合成数で平方数ならば $\tau(M)\ge3$，平方数でなければ $\tau(M)\ge4$ であるから，いずれも $N_a\ge2$．
+従って $N_a=1$ は $M$ の素数性と同値である．
+\end{proof}
+
+\section{約数関数による分類}
+\begin{proposition}[素因数分解による解の個数]\label{prop:factor}
+$4a+1=\prod_{j=1}^r p_j^{e_j}$ を相異なる素数の積に分解する．このとき
+\[
+ N_a=\frac12\left\{\prod_{j=1}^r(e_j+1)
+  +\prod_{j=1}^r\boldsymbol1_{\{e_j\equiv0\pmod2\}}\right\}.
+\]
+\end{proposition}
+\begin{proof}
+正の約数は指数 $0\le f_j\le e_j$ の組と一対一に対応するので $\tau(M)=\prod(e_j+1)$ である．
+$M$ が平方数であることと，すべての $e_j$ が偶数であることは同値である．
+これを定理~\ref{thm:main} に代入する．
+\end{proof}
+
+\begin{example}[平方数の特別な扱い]
+$a=6$ ならば $M=25$ で，約数対は $(1,25),(5,5)$ の二つである．
+式~\eqref{eq:inverse} により対応する組は $(n,m)=(6,6),(2,0)$ であり，$N_6=2$．
+平方根 $5$ の固定点が一つ現れることが $\varepsilon(25)=1$ に対応する．
+\end{example}
+
+\begin{example}[異なる素数指数型]
+$a=11$ ならば $M=45=3^2\cdot5$ である．
+$\tau(45)=3\cdot2=6$，平方数でないから $N_{11}=3$．
+約数対 $(1,45),(3,15),(5,9)$ に対応する $n$ はそれぞれ $11,4,3$ である．
+\end{example}
+
+\begin{corollary}[各個数の出現]
+任意の正整数 $k$ に対して，$N_a=k$ を満たす正整数 $a$ が存在する．
+\end{corollary}
+\begin{proof}
+奇素数 $p\equiv1\pmod4$，例えば $p=5$ をとる．
+$M=p^{2k-1}$ とすれば $M\equiv1\pmod4$ であり，$a=(M-1)/4$ は正整数である．
+$\tau(M)=2k$，$M$ は平方数でないから，定理~\ref{thm:main} により $N_a=k$．
+\end{proof}
+
+\section{解の明示と一般化}
+\begin{theorem}[解集合の明示]
+$a\ge1$，$M=4a+1$ とする．求める正整数 $n$ の集合は
+\[
+ \left\{\frac{d+M/d-2}{4}:\ d\mid M,\quad 1\le d\le\sqrt M\right\}
+\]
+である．この集合の各項は異なる．
+\end{theorem}
+\begin{proof}
+集合の記述は補題~\ref{lem:pairs} に従う．
+異なる $d_1<d_2\le\sqrt M$ に対して
+\[
+ d_1+M/d_1-(d_2+M/d_2)
+ =(d_2-d_1)\bigl(M/(d_1d_2)-1\bigr)>0
+\]
+が成立する．最後の不等号は $d_1d_2<M$ による．
+よって対応する $n$ は互いに異なる．
+\end{proof}
+
+\begin{remark}[一般の差の平方数]
+正整数 $M$ の整数による表示 $X^2-Y^2=M$ は，$(X-Y)(X+Y)=M$ への変換で分類できる．
+ただし一般には因子が同じ偶奇をもつ条件が必要である．
+本ノートでは $X=2n+1$，$Y=2m$ に制限されるため，因子に追加の合同条件が課される．
+$M\equiv1\pmod4$ という仮定がこの合同条件を自動的に満たす点が重要である．
+\end{remark}
+
+\begin{remark}[証明の依存関係]
+本題の独自の論証は，平方数の間隔による評価，因数分解による全単射，有限群の軌道計数の三段階で構成した．
+平方数の場合を見落とすと固定点を数えず，式~\eqref{eq:main} の右辺が誤る．
+\end{remark}
+
+\section*{参考文献・出典}
+\begin{enumerate}[label={[\arabic*]}]
+\item 東京大学，2025年度前期日程・理科数学，第4問（問題の出典）．
+\item S.~Lang, \textit{Algebra}, revised 3rd ed., Springer, 2002. Group actions and finite groups.
+\item H.~Cohen, \textit{A Course in Computational Algebraic Number Theory}, Springer, 1993. Integer factorization and elementary number theory.
+\item 「なかけんの数学ノート」，東京大学理系2025年度第4問（問題文の出題条件を照合）．\\
+\texttt{https://math.nakaken88.com/problem/tokyo-u-r-2025-4/}
+\end{enumerate}
+
+\end{document}

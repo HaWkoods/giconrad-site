@@ -1,0 +1,262 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{97.030 積分と極限}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section{積分と極限に関する出題}
+本ノートは，高校数学の積分極限を，関数空間における収束とパラメータ微分の問題として再解釈する．
+対象とする区間はコンパクトとし，一様収束，連続関数の積分，Taylorの定理を使用する．
+
+\begin{example}[東京大学2025年度前期・理科数学第2問（要約）]\label{ex:tokyo}
+次の極限を計算する．
+\begin{equation}\label{eq:tokyo}
+ I_n=n\int_1^2\log\left(\frac{1+x^{1/n}}2\right)\,dx,
+ \qquad n\longrightarrow\infty.
+\end{equation}
+原出題は対数に関する不等式による誘導を含む．ここではパラメータ微分を用いて独立に解答する．
+\end{example}
+
+\begin{example}[京都大学2023年度前期・理系数学第4問（要約）]\label{ex:kyoto}
+$-1\le x\le1$ において
+\[
+ H(x)=g(x)+g(x)^{-1},\qquad
+ g(x)=e^{-x^2}+\frac{x^2}{4}+1
+\]
+の最大値と最小値を求める．
+こちらは積分問題ではないが，合成関数の構造と単調性を用いる解析的処理の対比例として採用する．
+\end{example}
+
+\section{一様収束と連続線形汎関数}
+\begin{definition}[一様ノルム]
+コンパクト区間 $I=[a,b]$ 上の実数値連続関数全体を $C(I)$ と書く．
+$\norm f_\infty=\sup_{x\in I}|f(x)|$ を一様ノルムという．
+\end{definition}
+\begin{lemma}[積分の一様ノルム評価]\label{lem:integral}
+$T:C([a,b])\to\mathbb R$ を $Tf=\int_a^b f(x)\,dx$ で定めると
+\[
+ |Tf|\le(b-a)\norm f_\infty
+\]
+であり，$T$ は有界線形汎関数である．
+\end{lemma}
+\begin{proof}
+積分の線形性は既知とする．絶対値の積分評価と $|f(x)|\le\norm f_\infty$ より
+$|\int_a^b f|\le\int_a^b|f|\le(b-a)\norm f_\infty$．
+\end{proof}
+
+\begin{theorem}[パラメータ微分からの積分極限]\label{thm:parameter}
+$[a,b]$ をコンパクト区間とし，$F:[a,b]\times[0,\delta]\to\mathbb R$ は連続で，$\partial_tF$ も連続とする．
+このとき
+\[
+ \lim_{n\to\infty}n\int_a^b
+  \bigl(F(x,1/n)-F(x,0)\bigr)\,dx
+ =\int_a^b\partial_tF(x,0)\,dx
+\]
+が成立する．ただし十分大きい $n$ で $1/n\le\delta$ とする．
+\end{theorem}
+\begin{proof}
+微積分学の基本定理から各 $x$ について
+\[
+ \frac{F(x,t)-F(x,0)}t
+ =\int_0^1\partial_tF(x,st)\,ds \qquad(t>0)
+\]
+が成立する．$\partial_tF$ はコンパクト集合上で一様連続だから
+\[
+ \sup_{x\in[a,b]}\left|
+ \frac{F(x,t)-F(x,0)}t-\partial_tF(x,0)
+ \right|\longrightarrow0\quad(t\downarrow0).
+\]
+補題~\ref{lem:integral} によって，この一様収束に積分汎関数を作用させても極限は保たれる．$t=1/n$ として結論を得る．
+\end{proof}
+
+\begin{remark}[条件の重要性]
+点ごとの収束だけでは同じ結論は導けない．
+例えば $f_n(x)=n\boldsymbol1_{(0,1/n)}(x)$ は $[0,1]$ 上でほとんど至る所 $0$ に収束するが，$\int_0^1 f_n(x)\,dx=1$ である．
+この反例は，単に積分記号の中で極限を取る操作が一般には正当化されないことを示す．
+\end{remark}
+
+\section{対数のパラメータ表示}
+\begin{lemma}[関数 $h$ の微分とTaylor展開]\label{lem:h}
+$h(u)=\log((1+e^u)/2)$ とすると，$u\in\mathbb R$ に対して
+\[
+ h(u)=\frac u2+\log\cosh\frac u2,
+\quad h'(0)=\frac12,\quad h''(0)=\frac14,
+\quad h'''(0)=0.
+\]
+任意の $R>0$ に対してある $C_R>0$ が存在し，$|u|\le R$ のとき
+\begin{equation}\label{eq:remainder}
+ \left|h(u)-\frac u2-\frac{u^2}{8}\right|
+ \le C_R|u|^4
+\end{equation}
+が成立する．
+\end{lemma}
+\begin{proof}
+$1+e^u=2e^{u/2}\cosh(u/2)$ を対数に代入すれば第一式が従う．
+$g(u)=\log\cosh(u/2)$ は $C^\infty$ 級の偶関数であり，$g(0)=0,g'(0)=0,g''(0)=1/4$，$g'''(0)=0$ である．
+$g^{(4)}$ は $[-R,R]$ 上で有界だから，Taylorの定理のLagrange剰余を適用して式~\eqref{eq:remainder} を得る．
+\end{proof}
+
+\begin{theorem}[東京大学の積分極限]\label{thm:tokyo}
+式~\eqref{eq:tokyo} の極限は
+\begin{equation}\label{eq:limit}
+ \lim_{n\to\infty}I_n=\log2-\frac12
+\end{equation}
+である．
+\end{theorem}
+\begin{proof}
+$F(x,t)=h(t\log x)$ とおく．$[1,2]\times[0,1]$ 上で $F$ と $\partial_tF(x,t)=h'(t\log x)\log x$ は連続である．
+$F(x,0)=0$，$\partial_tF(x,0)=\tfrac12\log x$ だから，定理~\ref{thm:parameter} を適用して
+\[
+ \lim_{n\to\infty}I_n=\frac12\int_1^2\log x\,dx.
+\]
+部分積分により $\int_1^2\log x\,dx=[x\log x-x]_1^2=2\log2-1$ であるから式~\eqref{eq:limit} を得る．
+\end{proof}
+
+\section{高次漸近展開}
+\begin{theorem}[誤差の明示]\label{thm:asympt}
+式~\eqref{eq:tokyo} に対して
+\[
+ I_n=\log2-\frac12
+ +\frac{2(\log2)^2-4\log2+2}{8n}
+ +O(n^{-3})
+\]
+が成り立つ．従って
+\[
+ \lim_{n\to\infty}n\left(I_n-\log2+\frac12\right)
+ =\frac{(\log2)^2}{4}-\frac{\log2}{2}+\frac14.
+\]
+\end{theorem}
+\begin{proof}
+$x\in[1,2]$ ならば $|\log x|\le\log2$ である．
+補題~\ref{lem:h} に $u=(\log x)/n$ を代入し，$[1,2]$ 上で一様な評価
+\[
+ n h\!\left(\frac{\log x}{n}\right)
+ =\frac{\log x}{2}+\frac{(\log x)^2}{8n}+O(n^{-3})
+\]
+を得る．誤差項は $x$ に依存しない定数倍で評価できるため，区間上で積分できる．
+さらに
+\[
+ \int_1^2(\log x)^2dx
+ =\bigl[x\{(\log x)^2-2\log x+2\}\bigr]_1^2
+ =2(\log2)^2-4\log2+2
+\]
+より求める展開が従う．
+\end{proof}
+
+\begin{remark}[優収束定理との比較]
+Lebesgue積分による別解も得られる．
+まず被積分関数の点ごとの収束を示す．
+次に $h'(u)$ の有界性から可積分な共通上界を得れば，優収束定理が適用できる．
+ただし本問では一様収束を示す方が直接的である．
+\end{remark}
+
+\section{合成関数の最適化への応用}
+\begin{proposition}[単調な外側の関数]\label{prop:composition}
+$K$ を空でないコンパクト集合，$g:K\to J$ を連続関数，$h:J\to\mathbb R$ を狭義単調増加関数とする．
+$g$ の最大値を $M$，最小値を $m$ とすれば，$h\circ g$ の最大値は $h(M)$，最小値は $h(m)$ である．
+極値を与える点の集合は，それぞれ $g$ の場合と一致する．
+\end{proposition}
+\begin{proof}
+コンパクト性と連続性から $g$ は最大値・最小値をとり，すべての $x\in K$ に対して $m\le g(x)\le M$ である．
+狭義単調増加性から $h(m)\le h(g(x))\le h(M)$ であり，等号はそれぞれ $g(x)=m,M$ の場合に限る．
+\end{proof}
+
+\begin{theorem}[京都大学の最大・最小問題]\label{thm:kyoto}
+$-1\le x\le1$ 上で例~\ref{ex:kyoto} の関数 $H$ は
+\[
+ \max H=\frac52\quad(x=0),\qquad
+ \min H=\frac54+e^{-1}+\frac1{\frac54+e^{-1}}
+ \quad(x=\pm1)
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$g'(x)=x(\tfrac12-2e^{-x^2})$ である．
+$|x|\le1$ なら $e^{-x^2}\ge e^{-1}>1/4$ であり（$e<4$ を用いた），括弧は負である．
+ゆえに $g$ は $[-1,0]$ で増加，$[0,1]$ で減少する．
+従って $M=g(0)=2$，$m=g(\pm1)=5/4+e^{-1}>1$ となる．
+$h(t)=t+1/t$ は $t>1$ 上 $h'(t)=1-t^{-2}>0$ である．
+命題~\ref{prop:composition} を適用すれば結論を得る．
+なお $e<4$ は $e=\sum_{k=0}^\infty1/k!<1+1+\sum_{k=2}^\infty2^{1-k}=3<4$ から従う．
+\end{proof}
+
+\section{結語}
+東京大学の問題における積分の極限は，連続関数空間上の有界線形汎関数の連続性として理解できる．
+京都大学の問題は，合成関数の最適化が外側の関数の単調性で決まるという一般事実の特殊例である．
+いずれも複雑な微分計算に先行して，関数の構造を同定することが有効である．
+
+\section*{参考文献・出典}
+\begin{enumerate}[label={[\arabic*]}]
+\item 東京大学，2025年度前期日程・理科数学，第2問．
+\item 京都大学，2023年度前期日程・理系数学，第4問．
+\item V.~I.~Bogachev and O.~G.~Smolyanov, \textit{Real and Functional Analysis}, Springer, 2020, Chap.~3 (integration and convergence).
+\item J.~Nocedal and S.~J.~Wright, \textit{Numerical Optimization}, Springer, 1999, Chap.~2 (unconstrained optimization).
+\item 「なかけんの数学ノート」，東京大学理系2025年第2問，京都大学理系2023年第4問（出題事項を照合）．
+\end{enumerate}
+
+\end{document}
