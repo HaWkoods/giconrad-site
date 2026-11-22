@@ -1,0 +1,553 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{グラフ理論の基礎}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，全域木，閉路，行列木定理．
+本稿の具体的な到達課題は，具体的なグラフの全域木の個数を二つの方法で求める．
+
+\section{有限グラフの定義と基本事項}
+本稿ではグラフは有限であるとする．基本的な議論では単純無向グラフを用い，Euler路の節では平行辺を許す多重グラフを扱う．グラフ理論の記号は本稿内で定める．
+
+\begin{definition}
+\emph{単純無向グラフ}とは有限集合 $V$ と，その二元部分集合からなる集合 $E\subset\binom{V}{2}$ の組 $G=(V,E)$ をいう．$V$ の元を頂点，$E$ の元を辺と呼ぶ．頂点 $v$ の次数 $\deg(v)$ は $v$ を端点に持つ辺の数である．$|V|=n,|E|=m$ と置く．
+\end{definition}
+\begin{theorem}[握手補題]\label{thm:handshake}
+任意の単純無向グラフについて
+\[
+ \sum_{v\in V}\deg(v)=2m.
+\]
+従って奇数次数の頂点の個数は偶数である．
+\end{theorem}
+\begin{proof}
+集合 $I=\{(v,e)\in V\times E:v\in e\}$ を二通りに数える．頂点 $v$ を固定した組は $\deg(v)$ 個あり，辺 $e$ を固定すると端点は二つなので組は二個ある．よって $|I|=\sum_v\deg(v)=2m$．奇数次数の頂点を $r$ 個とすると，左辺の偶奇は $r$ の偶奇に一致する．右辺は偶数だから $r$ も偶数である．
+\end{proof}
+
+\begin{definition}
+長さ $k$ の\emph{道}とは頂点列 $v_0,\dots,v_k$ で，各 $v_{i-1}v_i\in E$ かつすべての頂点が異なるものをいう．$k\ge3$ で相異なる頂点 $v_0,\dots,v_{k-1}$ が $v_0v_1,\dots,v_{k-2}v_{k-1},v_{k-1}v_0\in E$ を満たすとき\emph{閉路}という．任意の二頂点が道で結ばれるグラフを\emph{連結}という．\emph{連結成分}は連結性による頂点集合の同値類から誘導される部分グラフをいう．
+\end{definition}
+
+\begin{lemma}[歩道から道への短縮]\label{lem:shorten}
+頂点の重複を許す辺に沿った列（歩道）が $u$ と $v$ を結ぶなら，$u$ と $v$ を結ぶ道が存在する．
+\end{lemma}
+\begin{proof}
+同じ頂点が二度現れるなら，その二つの出現の間の部分列を取り除いても両端を結ぶ歩道である．この操作で長さは真に減る．有限回繰り返すと同じ頂点の重複のない列を得る．
+\end{proof}
+
+\begin{proposition}[連結成分による分割]
+$u\sim v$ を $u$ から $v$ への歩道が存在することと定めると，$\sim$ は $V$ 上の同値関係である．その同値類の間には辺が存在せず，各同値類が一つの連結成分である．
+\end{proposition}
+\begin{proof}
+長さ零の歩道によって反射律が成り立つ．歩道を逆順にたどれば対称律，連結して歩けば推移律が成り立つ．異なる同値類を結ぶ辺があれば長さ一の歩道によって同じ類となるので矛盾する．補題~\ref{lem:shorten} により各類の任意の二頂点は道で結ばれる．
+\end{proof}
+
+\section{木とその同値な特徴付け}
+\begin{definition}
+連結で閉路を持たない単純無向グラフを\emph{木}という．閉路を持たないグラフを\emph{森}という．頂点集合 $V$ を共有する木 $(V,E')$ で $E'\subset E$ を満たすものを $G$ の\emph{全域木}という．
+\end{definition}
+\begin{lemma}[木の葉]\label{lem:leaf}
+頂点数が二以上の有限の木には次数 $1$ の頂点が少なくとも二つ存在する．
+\end{lemma}
+\begin{proof}
+木の中で最も長い道 $v_0,\dots,v_k$ を取る．$k\ge1$ である．$v_0$ に道の次の頂点 $v_1$ 以外の隣接頂点 $w$ があるとする．$w$ が道上にあれば $v_0,w$ と道の一部分が閉路を作る．$w$ が道上にないなら $w,v_0,\dots,v_k$ はより長い道となる．いずれも矛盾する．よって $\deg(v_0)=1$ であり，同様に $\deg(v_k)=1$ である．
+\end{proof}
+
+\begin{theorem}[木の特徴付け]\label{thm:treeequiv}
+$n\ge1$ の単純無向グラフ $G$ について，次は同値である．
+\begin{enumerate}
+\item $G$ は木である．
+\item 任意の異なる二頂点を結ぶ道がちょうど一つ存在する．
+\item $G$ は連結であり，$m=n-1$ である．
+\item $G$ は閉路を持たず，$m=n-1$ である．
+\item $G$ は連結であり，任意の辺を一つ除去すると非連結になる．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+まず木では二頂点を結ぶ道が存在する．異なる二本の道があれば，最初の分岐点から再び合流するまでの部分が閉路を作るから，(1) から (2) が従う．
+
+(1) から (3) を帰納法で示す．$n=1$ では $m=0$ である．$n\ge2$ なら補題~\ref{lem:leaf} によって葉 $v$ を一つ取れる．$v$ とその唯一の辺を除いたグラフは，閉路を持たず，元の任意の残り二頂点を結ぶ道は葉を内部に通らないから連結である．帰納法により辺は $(n-1)-1$ 本であり，葉の辺を戻すと $m=n-1$ である．
+
+(2) なら連結であり，閉路があればその閉路上の二点を結ぶ異なる二道ができるから (1) である．
+
+一般に，閉路を持つ連結グラフから閉路上の辺を一つ除いても連結性は保たれる．辺数が減るので，これを繰り返せば全域木が得られる．従って連結な $G$ には $n-1$ 本の辺をもつ全域木が存在する．(3) の場合，$G$ とその全域木の辺数が等しいので $G$ 自身が木である．
+
+(4) では，各連結成分が木であり，成分数を $c$ とすると上で示した公式により $m=n-c$ である．$m=n-1$ だから $c=1$，すなわち (1)．
+
+最後に (1) なら任意の辺は，その二端点を結ぶ唯一の道を破壊するので (5) である．逆に (5) のグラフに閉路があればその上の辺を除去しても連結だから矛盾する．従って (5) から (1) が従う．
+\end{proof}
+
+\begin{corollary}[森と辺数]\label{cor:forest}
+頂点数 $n$，成分数 $c$ の森はちょうど $n-c$ 本の辺を持つ．任意の単純無向グラフは $m\ge n-c$ を満たし，等号成立は森の場合に限る．
+\end{corollary}
+\begin{proof}
+森の各連結成分は木であるから，成分の頂点数を $n_i$ とすれば辺数は $\sum_i(n_i-1)=n-c$．一般のグラフでは各成分の全域木を取れるので $n-c$ 本以上の辺があり，余分な辺が一つでも存在すると閉路ができる．
+\end{proof}
+
+\begin{lemma}[辺の除去と閉路]\label{lem:bridge}
+連結グラフの辺 $e=uv$ について，$G-e$ が非連結であることと，$e$ がどの閉路にも属さないことは同値である．
+\end{lemma}
+\begin{proof}
+$e$ が閉路上にあれば，$u$ から $v$ への別の道があるので，$e$ を使う道のその一箇所をこの別の道で置き換えることができる．従って $G-e$ は連結である．逆に $G-e$ が連結なら $u,v$ 間に $G-e$ 内の道があり，これに $e$ を加えると閉路となる．
+\end{proof}
+
+\section{全域木とCayleyの公式}
+\begin{theorem}[Pr\"ufer符号とCayleyの公式]\label{thm:cayley}
+$n\ge2$ とする．頂点集合が $\{1,\dots,n\}$ である木の個数は $n^{n-2}$ である．
+\end{theorem}
+\begin{proof}
+木に対して次の符号化を行う．頂点が二つになるまで，番号が最小の葉を除去し，その葉の唯一の隣接頂点の番号を記録する．こうして長さ $n-2$ の列 $(a_1,\dots,a_{n-2})$ を得る．
+
+任意の長さ $n-2$ の列から木を復元できることを示す．頂点の残りの集合を $S=\{1,\dots,n\}$ とし，列の先頭が $a_1$ のとき，列の中に一度も現れない $S$ の最小の元 $v$ を選ぶ．$v$ と $a_1$ を辺で結び，$v$ を $S$ から除き，列の先頭を削除する．これを残りの列が空になるまで繰り返し，最後の二頂点を辺で結ぶ．各段階で列に現れる異なる番号は残りの列の長さ以下なので，選ぶ $v$ が存在する．$v\ne a_1$ であり，削除した頂点を再び結ばないので，生成される辺は閉路を作らない．復元されたグラフは連結で，ちょうど $n-1$ 本の辺を持つから木である．
+
+符号化と復元が互いに逆であることを確認する．木で除去される葉 $v$ の番号は，将来の符号列に現れない．逆に，現在の木で頂点 $w$ が将来の符号列に現れなければ，その時点の次数が $1$ である．実際，次数が二以上なら，その頂点の隣接頂点が除去される過程で少なくとも一回は $w$ が記録される．従って将来の列に現れない頂点はちょうど現在の葉であり，両手続は同じ最小の葉を選ぶ．帰納的に全ての辺が再現される．
+
+よって木全体と長さ $n-2$ の $n$ 文字列全体との間に全単射があり，後者の個数は $n^{n-2}$ である．
+\end{proof}
+
+\begin{example}
+$n=3$ なら三つのラベル付き木があり，符号は $1,2,3$ のいずれか一文字である．$n=4$ なら $4^2=16$ 本となる．ここで数えるのは頂点の番号を区別した木であり，同型類の個数ではない．
+\end{example}
+
+\section{二部グラフと奇閉路}
+\begin{definition}
+$V=V_0\sqcup V_1$ と分割でき，全ての辺が $V_0$ と $V_1$ の一方ずつを結ぶグラフを\emph{二部グラフ}という．$V_0,V_1$ を二部分という．
+\end{definition}
+\begin{theorem}[二部性の判定]\label{thm:bipartite}
+単純無向グラフが二部グラフであることと，奇数長の閉路が存在しないことは同値である．
+\end{theorem}
+\begin{proof}
+二部グラフでは辺をたどるたび部分が切り替わる．閉路では出発した部分に戻るので長さは偶数である．
+逆に奇閉路がないとする．各連結成分に基点 $r$ を選び，幅優先探索で得られる根付き全域木 $T$ を固定する．木における $r$ から $v$ の距離 $d_T(r,v)$ は，$G$ における最短道の長さ $d_G(r,v)$ に等しい．実際，幅優先探索では距離 $k$ の頂点から未発見の隣接頂点を距離 $k+1$ の層へ入れるので，距離についての帰納法で確認できる．頂点を $d_G(r,v)$ の偶奇で二分する．
+辺 $uv$ が同じ偶奇の二頂点を結ぶと仮定する．距離の三角不等式により $|d_G(r,u)-d_G(r,v)|\le1$ であるから，両者の距離は等しい．根付き木 $T$ における $r$ から $u,v$ への道の最深共通祖先を $w$ とすると，$w$ から $u$ と $v$ への木の道は内部頂点を共有せず，その長さは共に $d_G(r,u)-d_G(r,w)$ である．これらの道と辺 $uv$ を合わせると奇数長の閉路となる．矛盾である．従って全ての辺は異なる偶奇の部分を結び，$G$ は二部グラフである．
+\end{proof}
+
+
+
+\section{Euler路とEuler閉路}
+この節では平行辺を許し，ループは持たない有限無向多重グラフを扱う．次数は辺の重複度を数える．孤立頂点を除いて得られるグラフが連結であることを\emph{辺連結}と呼ぶ．
+\begin{definition}
+辺を重複せずに全てちょうど一回通る歩道を\emph{Euler路}といい，始点と終点が一致するものを\emph{Euler閉路}という．辺数が零の場合は長さ零の歩道をEuler閉路と定める．
+\end{definition}
+\begin{theorem}[Eulerの判定定理]\label{thm:euler}
+辺を少なくとも一つ持つ有限無向多重グラフ $G$ は，辺連結で全ての頂点の次数が偶数であるとき，かつそのときに限り Euler閉路を持つ．また Euler路を持つことと，$G$ が辺連結で奇数次数の頂点の個数が $0$ または $2$ であることは同値である．奇数次数の頂点が $2$ 個のとき，それらが始点と終点となる．
+\end{theorem}
+\begin{proof}
+Euler閉路では，各頂点へ入る辺と出る辺が一対一に組になるから全次数が偶数である．辺を全部通る歩道が存在すれば，孤立頂点を除いたグラフは連結である．Euler路が閉じていない場合，始点と終点では使われる辺が一つずつ余り，それらの次数は奇数で，他の頂点の次数は偶数となる．
+
+逆に辺連結で全次数が偶数とする．一つの辺の端点 $s$ を始点として，未使用辺を選び続けて可能な限り歩く．未使用辺が存在しなくなった終点 $t$ が $s$ と異なると仮定すると，$t$ ではこれまでに通った辺の数は「入る」辺が「出る」辺より一つ多い奇数である．元の次数は偶数なので未使用辺が少なくとも一つ残ることになり矛盾する．よって閉じた歩道 $W$ を得る．
+
+$W$ が全辺を含まなければ，辺連結性から $W$ に現れるある頂点 $v$ が未使用辺に接する．未使用辺だけの多重グラフでは，既に使った閉歩道の辺数が各頂点で偶数なので，残余次数も偶数である．よって $v$ から未使用辺だけをたどって別の閉歩道 $W'$ を作れる．$W$ の $v$ において $W'$ を挿入すると，より多くの辺を通る閉歩道となる．辺数は有限だからこの操作を繰り返してEuler閉路を得る．
+
+奇数次数の頂点が $2$ 個で $u,v$ とする場合には，新しい平行辺 $uv$ を一つ付け加える．全ての次数が偶数となるのでEuler閉路が存在する．その閉路から新しい辺を除き，その位置で切り開くと $u$ から $v$ へのEuler路を得る．奇数頂点が零なら前半でEuler閉路がある．
+\end{proof}
+
+\begin{example}[K\"onigsbergの橋]
+Eulerの判定は，橋を一度ずつ渡って戻れるかという問題を次数の偶奇に帰着する．例えば奇数次数の頂点が四つある連結多重グラフにはEuler路は存在しない．幾何学的な橋の長さや形状は判定に影響しない．
+\end{example}
+
+\section{平面グラフとEulerの多面体公式}
+\begin{definition}
+単純無向グラフ $G$ が\emph{平面的}であるとは，頂点を互いに異なる平面上の点へ，辺を内部で互いに交わらない単純な曲線へと写す描画が存在することをいう．一つの描画を固定したものを\emph{平面グラフ}といい，描画の補集合の連結成分を\emph{面}という．非有界な面も一つとして数える．
+\end{definition}
+
+\begin{lemma}[平面描画における辺と面]\label{lem:faces}
+連結な平面グラフで，閉路上にある辺 $e$ を一つ削除すると，頂点数は変わらず，辺数と面数がそれぞれ一だけ減る．閉路を持たない連結な平面グラフはただ一つの面を持つ．
+\end{lemma}
+\begin{proof}
+平面上の単純閉曲線が平面を内外二領域に分けるという Jordan の曲線定理を用いる．閉路上の辺は，その両側で異なる二つの面に接する．その辺を除くと二つの面が連結され，一つの面になる．他の面は変わらない．また木の描画は閉曲線を含まず，その補集合は連結である．これは葉の辺を順に除去し，平面から一つの終端を持つ曲線を除いても面が分断されないことによる．従って木では面数が $1$ である．
+\end{proof}
+
+\begin{theorem}[平面グラフのEuler公式]\label{thm:planareuler}
+連結な有限平面グラフで，頂点数を $n$，辺数を $m$，面数を $f$ とすると
+\[
+ n-m+f=2.
+\]
+成分数が $c\ge1$ の場合には $n-m+f=1+c$ となる．
+\end{theorem}
+\begin{proof}
+連結な場合，閉路があれば補題~\ref{lem:faces} によってその上の辺を一つ削除する．連結性は変わらず，$m$ と $f$ が同時に一ずつ減るため $n-m+f$ は不変である．繰り返して全域木に至る．木は $m=n-1$，$f=1$ を満たすから式を得る．
+非連結な場合，互いに異なる成分を結ぶ交差のない辺を $c-1$ 本加えることができる．例えば外側の領域に向けて成分の外周から曲線を引き，順次成分を結ぶ．連結化によって辺数は $m+c-1$ に増え，面数は変わらない．連結公式を適用すると $n-(m+c-1)+f=2$ であり，所望の式となる．
+\end{proof}
+
+\begin{lemma}[面境界の長さ]\label{lem:boundary}
+辺を少なくとも一つ持つ連結な平面グラフについて，各面の境界を辺の重複を許してたどった長さを $\ell(F)$ と定めると
+\[
+ \sum_F\ell(F)=2m.
+\]
+さらに単純グラフで $n\ge3$ なら全ての面について $\ell(F)\ge3$ である．二部グラフなら $\ell(F)\ge4$ である．
+\end{lemma}
+\begin{proof}
+各辺には局所的に二つの側があり，その各側がちょうど一つの面に接している．橋は同じ面に両側が接するので，境界の長さにはその辺を二回数える．したがって全ての面の境界の長さの和は $2m$ である．
+単純グラフにループはないから長さ $1$ の面境界はない．長さ $2$ の面境界があれば二本の平行辺による二角形か，一本の橋だけからなる成分を意味する．連結かつ $n\ge3$ では後者は全グラフになれず，前者は単純性に反する．従って $\ell(F)\ge3$．二部グラフの各閉歩道は交互に二部分を訪れるので境界の長さは偶数であり，$\ell(F)\ge4$．
+\end{proof}
+
+\begin{theorem}[平面グラフの辺数評価]\label{thm:planarbound}
+$n\ge3$ の連結な単純平面グラフは
+\[
+ m\le3n-6
+\]
+を満たす．二部グラフならさらに $m\le2n-4$ が成り立つ．
+\end{theorem}
+\begin{proof}
+補題~\ref{lem:boundary} により一般の場合 $3f\le 2m$，二部の場合 $4f\le 2m$ である．Euler公式 $f=2-n+m$ を代入すると
+$3(2-n+m)\le2m$ から $m\le3n-6$，および $4(2-n+m)\le2m$ から $m\le2n-4$ を得る．
+\end{proof}
+
+\begin{corollary}[$K_5$ と $K_{3,3}$ の非平面性]
+完全グラフ $K_5$ と完全二部グラフ $K_{3,3}$ は平面的でない．
+\end{corollary}
+\begin{proof}
+$K_5$ では $n=5,m=10$ であり $10>3\cdot5-6=9$．$K_{3,3}$ では $n=6,m=9$ かつ二部であり $9>2\cdot6-4=8$．従っていずれも定理~\ref{thm:planarbound} に反する．
+\end{proof}
+
+\begin{corollary}[平面グラフの低次数頂点]
+$n\ge3$ の単純平面グラフは次数が $5$ 以下の頂点を一つ以上持つ．
+\end{corollary}
+\begin{proof}
+連結なら握手補題と定理~\ref{thm:planarbound} により
+$\sum_v\deg(v)=2m\le6n-12<6n$ だから，すべての頂点の次数が $6$ 以上であることはできない．非連結なら各成分に分けて考え，頂点数が $1$ または $2$ の成分があれば明らかである．全ての成分が頂点数 $3$ 以上なら，そのいずれかの成分に連結の場合を適用する．
+\end{proof}
+
+\begin{theorem}[平面グラフの6色定理]
+任意の有限単純平面グラフの頂点は，高々 $6$ 色を用いて，隣接する頂点が異なる色になるように彩色できる．
+\end{theorem}
+\begin{proof}
+頂点数による帰納法を用いる．頂点数零では明らかである．低次数頂点に関する前系により，頂点数が三以上なら次数 $5$ 以下の頂点 $v$ がある．頂点数が二以下でも同じ性質を満たす頂点を取れる．$v$ を削除したグラフは平面的であり，帰納法の仮定により $6$ 色で彩色できる．$v$ の隣接頂点は高々 $5$ 個なので，まだ使われていない色の一つを $v$ に割り当てればよい．
+\end{proof}
+
+\section{隣接行列と歩道の数え上げ}
+$V=\{1,\dots,n\}$ と番号付けしたグラフの\emph{隣接行列} $A=(a_{ij})$ は，頂点 $i,j$ が隣接するとき $a_{ij}=1$，そうでないとき零である．
+\begin{proposition}[隣接行列の冪]
+$k\ge0$ について $(A^k)_{ij}$ は，頂点 $i$ から $j$ へ向かう長さ $k$ の歩道（頂点・辺の重複を許す）の個数に等しい．
+\end{proposition}
+\begin{proof}
+$k=0$ では $A^0=I$ であり，長さ零の歩道は出発点と終点が一致するとき一つである．$k$ に対して主張を仮定すると
+\[
+ (A^{k+1})_{ij}=\sum_{r=1}^n(A^k)_{ir}a_{rj}
+\]
+となる．右辺は最後から一つ前の頂点が $r$ である歩道を場合分けして数えたものである．従って帰納法で成立する．
+\end{proof}
+
+\begin{corollary}[行列による生成関数]
+$W_{ij}(z)=\sum_{k\ge0}(A^k)_{ij}z^k$ とすると，形式的冪級数行列として
+\[
+ W(z)=(I-zA)^{-1}.
+\]
+特に各 $W_{ij}$ は $\mathbb Q(z)$ に属する有理型生成関数である．
+\end{corollary}
+\begin{proof}
+行列環 $M_n(\mathbb Q[[z]])$ で $\sum_{k\ge0}z^kA^k$ は各係数が一意に定まり，有限部分和に $I-zA$ を掛けると $I-z^{N+1}A^{N+1}$ になる．従って逆行列の公式を得る．$\det(I-zA)$ は定数項が $1$ の多項式であるから可逆であり，余因子行列による逆行列公式から各成分はその多項式を分母とする有理式になる．
+\end{proof}
+
+\section{行列木定理}
+この節では行列に関するCauchy--Binet公式を既習とする．
+\begin{definition}
+無向グラフの各辺に任意に向きを付ける．$n\times m$ 行列 $B=(b_{ve})$ を，辺 $e$ の始点では $b_{ve}=-1$，終点では $b_{ve}=1$，それ以外では零として定め，\emph{接続行列}という．$L=BB^T$ を\emph{Laplacian行列}と呼ぶ．
+\end{definition}
+\begin{lemma}[Laplacian行列の形]\label{lem:laplacian}
+$L_{ii}=\deg(i)$，$i\ne j$ のとき $L_{ij}=-a_{ij}$ であり，特に $L$ は辺の向きの選択に依存しない．任意の $x\in\mathbb R^n$ について
+\[
+ x^TLx=\sum_{\{i,j\}\in E}(x_i-x_j)^2.
+\]
+従って $\ker L$ の次元はグラフの連結成分数に等しい．
+\end{lemma}
+\begin{proof}
+$L_{ij}=\sum_e b_{ie}b_{je}$ と計算すると，対角成分には $i$ に接する辺が各 $1$ ずつ，非対角成分には $\{i,j\}$ が辺の場合の $-1$ だけが寄与する．また $x^TLx=\|B^Tx\|^2$ であり，$B^Tx$ の辺 $i\to j$ に対応する成分は $x_j-x_i$ である．$Lx=0$ なら $x^TLx=0$ より全ての辺の両端で $x_i=x_j$ である．よって $x$ は連結成分ごとに定数である．逆にそのような $x$ は $B^Tx=0$ なので $Lx=0$ である．
+\end{proof}
+
+\begin{lemma}[木の接続行列の余因子]\label{lem:treeinc}
+$n$ 頂点と $n-1$ 本の辺からなるグラフ $H$ を考える．接続行列 $B_H$ から任意の一行を削除した正方行列を $B_H^{(r)}$ と書く．$H$ が木なら $|\det B_H^{(r)}|=1$，木でないなら $\det B_H^{(r)}=0$ である．
+\end{lemma}
+\begin{proof}
+木でない場合，$H$ は $n-1$ 辺だから定理~\ref{thm:treeequiv} により非連結である．$r$ を含まない連結成分を一つ取り，その成分に対応する行をすべて加えると零行ベクトルになるため，$B_H^{(r)}$ の行は一次従属である．
+木の場合には $n=1$ なら空行列の行列式を $1$ とする．$n\ge2$ なら，$r$ 以外の葉が少なくとも一つある（補題~\ref{lem:leaf}）．その葉に対応する行はちょうど一つの非零成分 $\pm1$ を持つ．その行で余因子展開し，葉と対応する辺を削除すると $n-1$ 頂点の木の行列式に帰着する．帰納法によって絶対値は $1$ である．
+\end{proof}
+
+\begin{theorem}[Kirchhoffの行列木定理]\label{thm:matrix-tree}
+$n\ge2$ の有限単純無向グラフ $G$ に対し，$L^{(r)}$ を Laplacian 行列 $L$ の第 $r$ 行・第 $r$ 列を削除した $(n-1)\times(n-1)$ 行列とする．$G$ の全域木の個数を $\tau(G)$ とすれば
+\[
+ \tau(G)=\det L^{(r)}
+\]
+が任意の $r\in V$ について成り立つ．
+\end{theorem}
+\begin{proof}
+$B^{(r)}$ を $B$ の第 $r$ 行を除いた行列とすると
+$L^{(r)}=B^{(r)}(B^{(r)})^T$ である．Cauchy--Binet公式より
+\[
+ \det L^{(r)}
+ =\sum_{\substack{S\subset E\\|S|=n-1}}
+ \det(B^{(r)}_S)\det((B^{(r)}_S)^T)
+ =\sum_{\substack{S\subset E\\|S|=n-1}}\det(B^{(r)}_S)^2.
+\]
+ここで $B^{(r)}_S$ は列を $S$ に制限した正方行列である．補題~\ref{lem:treeinc} によって各項は $(V,S)$ が木のとき $1$，そうでないとき零となる．従って和は全域木の個数に等しい．
+\end{proof}
+
+\begin{example}[完全グラフの全域木]
+$K_n$ の Laplacian は $L=nI_n-J_n$（$J_n$ は全成分が $1$ の行列）である．第 $n$ 行・列を除くと $nI_{n-1}-J_{n-1}$ となる．$J_{n-1}$ は全成分 $1$ のベクトル上で固有値 $n-1$，その直交補空間上で固有値 $0$ を持つから，$\det L^{(n)}=1\cdot n^{n-2}=n^{n-2}$．よって行列木定理からCayleyの公式が再び得られる．
+\end{example}
+
+\begin{remark}
+木の特徴付け，Pr\"ufer符号，Eulerの判定，Eulerの平面公式，行列木定理は，いずれも有限グラフの組合せ構造を数え上げまたは代数的な不変量に置き換える．次の「マッチングとネットワークフロー」では，辺の選択を最適化する際の必要十分条件へ進む．
+\end{remark}
+
+\section{距離と幅優先探索}
+\begin{definition}
+同じ連結成分にある頂点 $u,v$ の間の\emph{グラフ距離} $d_G(u,v)$ を，$u$ と $v$ を結ぶ道の長さの最小値とする．別の成分に属する場合には $d_G(u,v)=\infty$ とする．
+\end{definition}
+\begin{lemma}[距離の基本性質]
+同じ連結成分にある三頂点 $u,v,w$ について
+\[
+ d_G(u,w)\le d_G(u,v)+d_G(v,w)
+\]
+が成り立つ．また辺 $uv\in E$ なら任意の頂点 $r$ について
+$|d_G(r,u)-d_G(r,v)|\le1$（両辺の距離が有限の場合）が成り立つ．
+\end{lemma}
+\begin{proof}
+$u$ から $v$ への最短道と $v$ から $w$ への最短道をつないだ歩道の長さは $d_G(u,v)+d_G(v,w)$ である．補題~\ref{lem:shorten} によりこの歩道から道が得られ，その長さは増えない．従って三角不等式が成立する．第二式は三角不等式を $d_G(u,v)=1$ に適用し，$u,v$ を入れ替えて得る．
+\end{proof}
+\begin{definition}
+始点 $r$ からの\emph{幅優先探索}（breadth-first search）とは，$r$ を距離零の層に置き，距離 $k$ の層を全て調べて，まだ登録されていない各隣接頂点を距離 $k+1$ の層へ登録する操作を繰り返す算法をいう．各新頂点を最初に発見した辺を記録したものを探索木という．
+\end{definition}
+\begin{theorem}[幅優先探索の正しさ]\label{thm:bfs}
+幅優先探索が頂点 $v$ を層 $k$ に登録することと，$d_G(r,v)=k$ であることは同値である．探索木における根 $r$ からの道は常に最短道である．
+\end{theorem}
+\begin{proof}
+登録された頂点には，親の探索木の道をたどることで長さ $k$ の歩道があるから $d_G(r,v)\le k$ である．
+他方，$d_G(r,v)=k$ なら最短道 $r=v_0,v_1,\dots,v_k=v$ を取る．帰納法の仮定により $v_i$ は遅くとも層 $i$ までに登録される．頂点 $v_{i-1}$ を調べる時点で $v_i$ が未登録なら層 $i$ に登録され，既に登録されているならそれ以前の層にある．従って $v$ は層 $k$ までに登録される．もしより小さい層に登録されたなら，前半により $d_G(r,v)<k$ となって矛盾する．よって層番号は距離に一致する．親は必ず一つ前の層に属するから，探索木の道も最短道である．
+\end{proof}
+
+\section{閉路空間とその次元}
+\begin{definition}
+$\mathbb F_2=\{0,1\}$ を二元体とする．辺の部分集合 $S\subset E$ を，辺集合の特性関数 $\mathbf1_S\in\mathbb F_2^E$ と同一視する．二つの辺集合の和は対称差 $S\triangle T$ とする．全ての頂点の $S$ における次数が偶数であるような辺集合の全体を $Z_1(G;\mathbb F_2)$ と書き，\emph{閉路空間}という．
+\end{definition}
+\begin{lemma}[閉路空間の線形性]
+$Z_1(G;\mathbb F_2)$ は $\mathbb F_2^E$ のベクトル部分空間である．
+\end{lemma}
+\begin{proof}
+線形写像 $\partial:\mathbb F_2^E\to\mathbb F_2^V$ を，辺 $e=uv$ の基底ベクトルを $\mathbf e_u+\mathbf e_v$ へ送る写像として定める．$\partial(\mathbf1_S)$ の $v$ 成分は $S$ における $v$ の次数を $2$ で割った余りである．従って $Z_1(G;\mathbb F_2)=\ker\partial$ であり，核は部分空間である．
+\end{proof}
+\begin{theorem}[基本閉路による基底]\label{thm:cyclespace}
+$G$ の全域森 $F=(V,E_F)$ を一つ固定する．$e\in E\setminus E_F$ に対して，$F+e$ に存在する一意の閉路を $C_e$ と書く．このとき
+\[
+ \{\mathbf1_{C_e}:e\in E\setminus E_F\}
+\]
+は $Z_1(G;\mathbb F_2)$ の基底である．特に連結成分数を $c$ とすれば
+\[
+ \dim_{\mathbb F_2} Z_1(G;\mathbb F_2)=m-n+c.
+\]
+\end{theorem}
+\begin{proof}
+全域森の同じ成分にある辺 $e=uv$ を追加すると，$F$ の $u,v$ を結ぶ唯一の道と $e$ が一つの閉路を作る．$C_e$ は各頂点で次数が偶数なので $\mathbf1_{C_e}\in Z_1$ である．
+
+これらが一次独立であることを示す．$\mathbf1_{C_e}$ では $E\setminus E_F$ の辺のうち $e$ の係数だけが $1$ である．従ってそれらの線形結合が零なら，各 $e$ の係数を見れば全ての結合係数が零である．
+
+次に $S\in Z_1$ とする．$S\triangle\bigtriangleup_{e\in S\setminus E_F}C_e$ を $S'$ と置くと，$S'$ は $Z_1$ に属し，しかも $S'\subset E_F$ である．もし $S'$ が空でなければ，森 $(V,S')$ の辺を持つ連結成分は葉を持つ．その葉の $S'$ における次数は $1$ となり，$S'\in Z_1$ に反する．よって $S'$ は空であり，$S$ は $C_e$ の線形結合で表される．これで基底である．全域森の辺数は $n-c$ なので，基底の元の個数は $m-(n-c)$ である．
+\end{proof}
+\begin{corollary}[Euler閉路と閉路空間]
+各連結成分が正の辺数を持つ場合を含む任意の有限単純無向グラフについて，全頂点が偶数次数であることと $E\in Z_1(G;\mathbb F_2)$ は同値である．この場合，辺を持つ各連結成分はEuler閉路を持ち，辺集合全体は閉路の対称差で表せる．
+\end{corollary}
+\begin{proof}
+$E\in Z_1$ の定義は次数の偶奇条件そのものである．各連結成分は辺連結であり，Eulerの判定定理によってEuler閉路を持つ．また定理~\ref{thm:cyclespace} の基底展開によって $E$ は基本閉路の対称差で表せる．
+\end{proof}
+
+\section{彩色と5色定理}
+\begin{definition}
+$k$ 色による適正頂点彩色とは $c:V\to\{1,\dots,k\}$ で，任意の辺 $uv$ に対し $c(u)\ne c(v)$ を満たす写像をいう．そのような最小の $k$ を色数 $\chi(G)$ とする．孤立した頂点がない空グラフでは $\chi(G)=0$ と約束する．最大次数を $\Delta(G)$ と書く．
+\end{definition}
+\begin{proposition}[貪欲彩色]
+頂点数が正の任意の単純無向グラフについて
+\[
+ \chi(G)\le\Delta(G)+1
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+頂点を任意の順番で並べ，既に彩色された隣接頂点が使っていない最小の色を順に選ぶ．各段階で彩色済みの隣接頂点は高々 $\Delta(G)$ 個であるから，$\Delta(G)+1$ 色のうち一色は利用できる．この算法は有限回で終了し，各辺の両端には異なる色が付く．
+\end{proof}
+\begin{theorem}[平面グラフの5色定理]\label{thm:five-color}
+任意の有限単純平面グラフは $5$ 色で適正に頂点彩色できる．
+\end{theorem}
+\begin{proof}
+頂点数で帰納する．頂点数 $0,1,2$ なら明らかである．頂点数 $n\ge3$ とすると，低次数頂点の系によって次数 $5$ 以下の頂点 $v$ が存在する．$G-v$ は帰納法の仮定により $5$ 色で彩色できる．$v$ の隣接頂点に現れる色が四色以下なら，残りの色を $v$ に割り当てればよい．
+
+従って $\deg(v)=5$ であり，平面描画において $v$ の周囲に円周順に並ぶ五頂点を $v_1,v_2,v_3,v_4,v_5$ とし，$c(v_i)=i$ と名前を付け直してよい．$G-v$ の色 $1,3$ の頂点だけからなる誘導部分グラフを考え，$v_1$ を含む連結成分を $H_{13}$ とする．
+
+$v_3\notin H_{13}$ なら，$H_{13}$ 内の色 $1$ と $3$ を全て交換する．$H_{13}$ とその外部の間には色 $1$ または $3$ の両端を持つ辺がないから適正彩色の性質は保たれ，$v$ に隣接する色 $1$ の頂点が消える．従って $v$ に色 $1$ を付けられる．
+
+一方 $v_3\in H_{13}$ なら，$G-v$ に色 $1,3$ だけを通る $v_1$ から $v_3$ への単純な道 $P_{13}$ が存在する．$P_{13}$ と辺 $vv_1,vv_3$ は平面上の単純閉曲線を作る．Jordanの曲線定理により，$v_2$ と $v_4$ はこの曲線の異なる側にある．これは $v_1,v_2,v_3,v_4,v_5$ の円周順序による．従って $G-v$ 内には色 $2,4$ だけを通る $v_2$ から $v_4$ への道は存在しない．もし存在すれば，この道は $P_{13}$ を頂点・辺の交差なく横切らねばならず，平面描画に矛盾する．
+
+よって色 $2,4$ の誘導部分グラフで $v_2$ を含む連結成分には $v_4$ は属さない．この成分内で色 $2$ と $4$ を全て交換すれば適正彩色は保たれ，$v$ の隣接頂点で色 $2$ を使うものが消える．$v$ に色 $2$ を付けて帰納法が完了する．
+\end{proof}
+
+\section{全域木の削除・縮約と重み付け}
+この節では必要に応じて平行辺を持つ多重グラフも許す．ループは全域木に含まれないものとして扱う．
+\begin{definition}
+辺 $e=uv$ の\emph{縮約} $G/e$ とは，$u,v$ を一つの頂点に同一視して $e$ を除き，他の辺を保存して得られる多重グラフをいう．この操作で生じるループは全域木の個数に寄与しない．
+\end{definition}
+\begin{proposition}[削除・縮約公式]\label{prop:deletion}
+ループでない辺 $e$ を持つ有限無向多重グラフについて，全域木の個数は
+\[
+ \tau(G)=\tau(G-e)+\tau(G/e)
+\]
+を満たす．非連結なグラフの全域木の個数は零と定める．
+\end{proposition}
+\begin{proof}
+$G$ の全域木を $e$ を含むものと含まないものとに分ける．後者は $G-e$ の全域木と同じである．前者の木から $e$ を縮約すると，$G/e$ の全域木となる．逆に $G/e$ の全域木の各辺を元の辺へ戻して $e$ を加えると，連結かつ辺数 $|V(G)|-1$ の閉路のないグラフを得る．縮約で平行辺を区別して保存しているため，両操作は全単射を与える．個数を加えると公式となる．
+\end{proof}
+\begin{theorem}[重み付き行列木定理]\label{thm:weighted-tree}
+単純グラフの各辺 $e$ に可換環 $R$ の元 $w_e$ を与える．向きを付けた接続行列 $B$ に対し $W=\operatorname{diag}(w_e)$，$L_w=BWB^T$ とする．任意の $r$ について
+\[
+ \det L_w^{(r)}=\sum_{T}\prod_{e\in E(T)}w_e
+\]
+が成り立つ．ここで和は $G$ の全域木を動く．
+\end{theorem}
+\begin{proof}
+Cauchy--Binet公式を $B^{(r)}W(B^{(r)})^T$ に適用すると
+\[
+ \det L_w^{(r)}
+ =\sum_{\substack{S\subset E\\|S|=n-1}}
+ (\det B_S^{(r)})^2\prod_{e\in S}w_e.
+\]
+補題~\ref{lem:treeinc} によって行列式の二乗は $(V,S)$ が全域木のときだけ $1$，そうでなければ零となるので，所望の和を得る．
+\end{proof}
+
+\section{最小全域木とKruskal算法}
+\begin{definition}
+連結な有限無向グラフ $G$ の辺に実数値の重み $w:E\to\mathbb R$ を与える．全域木 $T$ の重みを $w(T)=\sum_{e\in E(T)}w(e)$ と定める．重みが最小の全域木を\emph{最小全域木}という．
+\end{definition}
+\begin{theorem}[Kruskal算法の正しさ]\label{thm:kruskal}
+辺を重みの非減少順に並べ，最初は辺を一つも選ばず，調べた辺の両端が既に選んだ辺で結ばれていない場合に限ってその辺を選ぶ．この算法によって得られる辺集合は最小全域木をなす．同じ重みの辺の処理順は任意でよい．
+\end{theorem}
+\begin{proof}
+選ぶたびに異なる連結成分を結ぶので，選択辺は常に森をなす．全ての辺を処理した時点で選択森が非連結なら，元の $G$ が連結であることから異なる選択成分を結ぶ元の辺がある．この辺は処理時にも異なる成分を結んでいたはずなので選択されたことになり矛盾する．従って最終的に全域木が得られる．
+
+次に，処理途中の選択辺集合 $F$ を含む最小全域木 $T$ が常に存在することを帰納的に示す．初めには任意の最小全域木を取れる．辺 $e=uv$ を新たに選ぶとき，$e\in T$ ならそのままでよい．そうでなければ，$T+e$ は一意の閉路を持つ．$F$ において $u$ を含む成分の頂点集合を $C$ とすると，$v\notin C$ である．$T$ における $u,v$ 間の道には $C$ から外へ出る辺 $f$ があり，この辺は $F$ には属さない．$f$ は $e$ より後に処理されたか，$e$ と同じ重みで先に処理された辺でなければならない．実際，もし $w(f)<w(e)$ で $f$ が先に処理されていたなら，その時点では $f$ の両端は現在の選択森でも異なる成分に属するため，算法は $f$ を選んでいたはずである．従って $w(f)\ge w(e)$．
+
+そこで $T'=T-f+e$ とすると，$T'$ は全域木で，$F\cup\{e\}$ を含み，$w(T')\le w(T)$ を満たす．$T$ の最小性より $T'$ も最小全域木である．帰納法を終えると，最終的な選択木自身が最小全域木に等しい．
+\end{proof}
+
+\section{Laplacianの固有値と全域木の個数}
+\begin{theorem}[固有値による全域木の数え上げ]\label{thm:lap-spectrum}
+$n\ge2$ の連結な単純無向グラフのLaplacian $L$ の固有値を，重複度込みで
+$0=\lambda_1<\lambda_2\le\cdots\le\lambda_n$ と並べると
+\[
+ \tau(G)=\frac1n\prod_{i=2}^n\lambda_i
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+補題~\ref{lem:laplacian} により $L$ は実対称半正定値であり，連結なら核は一次元である．従って固有値の零は一つだけである．実対称行列のスペクトル定理により
+\[
+ \det(tI_n+L)=t\prod_{i=2}^n(t+\lambda_i).
+\]
+この多項式の $t$ の係数は $\prod_{i=2}^n\lambda_i$ である．一方，行列式を $t$ を含む対角項で展開すると，$t$ の係数は
+$\sum_{r=1}^n\det L^{(r)}$ に等しい．行列木定理~\ref{thm:matrix-tree} により各余因子は $\tau(G)$ に等しいから，この係数は $n\tau(G)$ である．両者を等置して結論を得る．
+\end{proof}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{閉路グラフの全域木．}
+\begin{proposition}
+$n\ge3$ に対し，閉路グラフ $C_n$ の
+全域木の個数は $n$ である．
+\end{proposition}
+\begin{proof}
+$C_n$ は $n$ 個の頂点と $n$ 本の辺を持つ．
+全域木は $n-1$ 本の辺を持つから，
+各全域木は元の辺のうち一本を除いたものとなる．
+閉路から一本の辺を除くと連結で閉路のない道となり，
+全域木である．
+除く辺の選択は $n$ 通りなので結論を得る．
+\end{proof}
+\begin{proposition}
+完全グラフ $K_3$ のLaplacianの任意の
+一次主小行列を除いた行列の行列式は3である．
+\end{proposition}
+\begin{proof}
+$K_3$ のLaplacianは
+$\left(\begin{smallmatrix}
+2&-1&-1\\-1&2&-1\\-1&-1&2
+\end{smallmatrix}\right)$．
+最後の行と列を除けば
+$\left(\begin{smallmatrix}2&-1\\-1&2\end{smallmatrix}\right)$
+となり行列式は $4-1=3$ である．
+$K_3=C_3$ だから上の組合せ的計数とも一致する．
+\end{proof}
+\noindent\textbf{到達確認．}
+$C_6$ の全域木の個数を求めよ．
+\par\noindent\textbf{解答．}
+除く辺を6本から一つ選ぶので6個である．
+\section*{参考文献}
+\begin{enumerate}
+\item R. Diestel, \textit{Graph Theory}, 5th ed., Springer, 2017.
+\item J. A. Bondy and U. S. R. Murty, \textit{Graph Theory}, Springer, 2008.
+\item N. Biggs, \textit{Algebraic Graph Theory}, 2nd ed., Cambridge University Press, 1993.
+\end{enumerate}
+\end{document}

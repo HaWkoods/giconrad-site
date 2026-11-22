@@ -1,0 +1,721 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{生成関数と漸化式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，形式的冪級数，線形漸化式，係数比較．
+本稿の具体的な到達課題は，漸化式から生成関数を作り，閉じた式と係数を復元する．
+
+\section{形式的冪級数の環}
+本稿では，特に断らない限り環は単位元 $1\ne0$ をもつ可換環とする．
+数列を一つの代数的対象にまとめる生成関数を扱うには，最初に収束を仮定しない冪級数の計算を確立する必要がある．
+
+\begin{definition}[形式的冪級数]
+環 $R$ に対し，$R$ 係数の\emph{形式的冪級数}とは数列 $(a_n)_{n\ge0}$ の記号的表示
+\[
+ A(z)=\sum_{n\ge0}a_nz^n
+\]
+をいう．この全体を $R[[z]]$ と書く．$a_n$ を $[z^n]A$ と表す．和と積を
+\[
+ [z^n](A+B)=a_n+b_n,\qquad
+ [z^n](AB)=\sum_{k=0}^n a_kb_{n-k}
+\]
+で定める．後者を Cauchy 積という．
+\end{definition}
+
+\begin{lemma}[環構造]\label{lem:ring}
+上記の演算によって $R[[z]]$ は可換環となる．零元は零数列であり，単位元は定数級数 $1$ である．さらに $R[z]$ は自然に $R[[z]]$ の部分環となる．
+\end{lemma}
+\begin{proof}
+和についての群公理は各係数で $R$ の加法に帰着する．積の結合律について
+\[
+ [z^n]((AB)C)
+ =\sum_{i+j+k=n}a_ib_jc_k=[z^n](A(BC))
+\]
+が成り立つ．固定された $n$ について添字の組は有限個であるため，有限和の順序交換だけを用いた．交換律，分配律，単位元についても同様に係数を比較すれば従う．多項式を高次係数が零の数列と同一視すると和と積が通常の多項式演算に一致する．
+\end{proof}
+
+\begin{definition}
+$0\ne A\in R[[z]]$ に対し，$[z^n]A\ne0$ となる最小の $n$ を $\operatorname{ord}A$ と書き，$\operatorname{ord}0=\infty$ と定める．
+\end{definition}
+\begin{lemma}[形式的な収束の意味]\label{lem:orders}
+$A,B\in R[[z]]$ について
+\[
+ \operatorname{ord}(A+B)\ge\min\{\operatorname{ord}A,\operatorname{ord}B\},\quad
+ \operatorname{ord}(AB)\ge\operatorname{ord}A+\operatorname{ord}B.
+\]
+$A_j\in R[[z]]$ が $\operatorname{ord}A_j\to\infty$ を満たすなら
+$\sum_{j\ge0}A_j$ は，各次数の係数に有限個の項だけが寄与するという意味で一意に定義される．
+\end{lemma}
+\begin{proof}
+次数 $n$ 未満の係数が零という条件から最初の二不等式が従う．また任意の $n$ について，十分大きい $j$ では $[z^n]A_j=0$ であるから，$[z^n]\sum_j A_j$ を有限和として定義できる．各係数が確定するので一意である．
+\end{proof}
+
+\begin{theorem}[可逆性の判定]\label{thm:unit}
+$A=\sum_{n\ge0}a_nz^n\in R[[z]]$ が乗法に関して可逆であることと，$a_0$ が $R$ で可逆であることは同値である．逆元は一意である．
+\end{theorem}
+\begin{proof}
+$AB=1$ とすると，定数項を比較して $a_0b_0=1$ を得るから必要性が従う．逆に $a_0$ が可逆であれば，$B=\sum b_nz^n$ の係数を
+\[
+ b_0=a_0^{-1},\qquad
+ b_n=-a_0^{-1}\sum_{k=1}^n a_kb_{n-k}\quad(n\ge1)
+\]
+で帰納的に定義できる．これらは $[z^n](AB)=\delta_{n0}$ を満たすから $AB=1$ である．逆元の一意性は環の結合律から従う．
+\end{proof}
+
+\begin{corollary}[幾何級数]\label{cor:geometric}
+$U\in zR[[z]]$ なら
+\[
+ (1-U)^{-1}=\sum_{j\ge0}U^j.
+\]
+特に $(1-z)^{-1}=\sum_{n\ge0}z^n$ である．
+\end{corollary}
+\begin{proof}
+$\operatorname{ord}U^j\ge j$ により右辺は定義できる．部分和に $(1-U)$ を掛けると $1-U^{N+1}$ になる．次数 $n$ の係数を固定し $N\ge n$ とすれば余りの係数は零である．したがって積が $1$ となる．
+\end{proof}
+
+\section{合成，微分，および係数抽出}
+\begin{definition}
+$A(z)=\sum_{n\ge0}a_nz^n\in R[[z]]$ と $U\in zR[[z]]$ に対して
+\[
+ A(U)=\sum_{n\ge0}a_nU^n
+\]
+と定める．また形式微分 $D:R[[z]]\to R[[z]]$ を
+\[
+ DA=\sum_{n\ge1}na_nz^{n-1}
+\]
+で定める．
+\end{definition}
+\begin{proposition}[合成と微分の諸公式]\label{prop:formalcalc}
+$A,B\in R[[z]],\ U,V\in zR[[z]]$ とする．このとき
+\begin{align*}
+ (A+B)(U)&=A(U)+B(U),\\
+ (AB)(U)&=A(U)B(U),\\
+ A(U(V))&=(A(U))(V).
+\end{align*}
+さらに
+\[
+ D(AB)=(DA)B+A(DB),\qquad D(A(U))=(DA)(U)\,DU
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+合成の各次数の係数には有限個の $a_nU^n$ のみが寄与する．その有限和で分配律，結合律を用いると最初の三公式を得る．微分の積公式は
+\[
+ [z^{n-1}]D(AB)=n\sum_{i+j=n}a_ib_j
+ =\sum_{i+j=n}(i+j)a_ib_j
+\]
+から従う．連鎖律は単項式 $A=z^n$ に対し $D(U^n)=nU^{n-1}DU$ を積公式で証明し，各次数で有限項に帰着させればよい．
+\end{proof}
+
+\begin{proposition}[定数項を零とする合成逆]\label{prop:compositional}
+$K$ を体とし，$U(z)=u_1z+u_2z^2+\cdots\in K[[z]]$ とする．$u_1\ne0$ なら，ただ一つの $V\in zK[[z]]$ が存在して
+\[
+ U(V(z))=z,\qquad V(U(z))=z
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+$V=\sum_{n\ge1}v_nz^n$ とおく．$[z]U(V)=u_1v_1$ であるから $v_1=u_1^{-1}$ と定める．$n\ge2$ のとき $[z^n]U(V)$ は $u_1v_n$ と $v_1,\dots,v_{n-1}$ だけに依存する項の和である．従って係数を零にする $v_n$ がただ一つ定まる．これで $U(V)=z$ を得る．同じ手順で $W$ を作って $W(U)=z$ とでき，合成の結合律により
+$W=W(U(V))=(W(U))(V)=V$．よって $V(U)=z$ も成り立つ．
+\end{proof}
+
+\begin{remark}
+ここまでの等式は，$z$ を実数・複素数に代入したときの収束を全く要求していない．たとえば $\sum_{n\ge0}n!z^n$ は複素数の解析的冪級数としては正の収束半径を持たないが，$\mathbb C[[z]]$ の元として正当に扱える．
+\end{remark}
+
+\section{通常型生成関数と漸化式}
+\begin{definition}
+$R$ 値数列 $(a_n)_{n\ge0}$ の\emph{通常型生成関数}（ordinary generating function）を
+\[
+ A(z)=\sum_{n\ge0}a_nz^n
+\]
+と呼ぶ．$A$ の係数を読む操作を $a_n=[z^n]A$ と記す．
+\end{definition}
+\begin{proposition}[移動，部分和，畳み込み]\label{prop:ogf}
+$A(z)=\sum a_nz^n,\ B(z)=\sum b_nz^n$ とすると，
+\begin{align*}
+ \sum_{n\ge0}a_{n+1}z^n&=\frac{A(z)-a_0}{z},\\
+ \sum_{n\ge0}\left(\sum_{k=0}^na_k\right)z^n&=\frac{A(z)}{1-z},\\
+ \sum_{n\ge0}\left(\sum_{k=0}^na_kb_{n-k}\right)z^n&=A(z)B(z).
+\end{align*}
+ここで第一式の商は $A-a_0$ が $z$ で割り切れるという意味である．
+\end{proposition}
+\begin{proof}
+第一式は添字を一つずらすと従う．第二式は $A(1-z)^{-1}$ に幾何級数を代入して次数 $n$ の係数を取る．第三式は Cauchy 積の定義そのものである．
+\end{proof}
+
+\begin{example}[Fibonacci数列]
+$a_0=0,a_1=1,a_{n+2}=a_{n+1}+a_n$ とする．
+$A(z)=\sum a_nz^n$ に対し $n\ge2$ の漸化式を加え合わせると
+\[
+ A(z)-z=z(A(z))+z^2A(z)
+\]
+だから
+\[
+ A(z)=\frac{z}{1-z-z^2}.
+\]
+$\alpha=(1+\sqrt5)/2,\ \beta=(1-\sqrt5)/2$ とおけば
+$1-z-z^2=(1-\alpha z)(1-\beta z)$ である．部分分数に分け，系~\ref{cor:geometric} を用いると
+\[
+ a_n=\frac{\alpha^n-\beta^n}{\alpha-\beta}
+ =\frac{\alpha^n-\beta^n}{\sqrt5}
+\]
+を得る．
+\end{example}
+
+\begin{theorem}[有理型と定数係数線形漸化式]\label{thm:rational}
+$K$ を体，$A(z)=\sum_{n\ge0}a_nz^n\in K[[z]]$ とする．次の二条件は同値である．
+\begin{enumerate}
+\item $A(z)=P(z)/Q(z)$ を満たす $P,Q\in K[z]$ があり，$Q(0)=1$ である．
+\item ある $r\ge1$，$N\ge r$ と $q_1,\dots,q_r\in K$ が存在して
+\[
+ a_n+q_1a_{n-1}+\cdots+q_ra_{n-r}=0\qquad(n\ge N)
+\]
+が成り立つ．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) とする．$Q=1+q_1z+\cdots+q_rz^r$ とし，必要なら末尾に零係数を加えて $r\ge1$ とする．$Q(z)A(z)=P(z)$ の次数 $n$ の係数を比較すると
+\[
+ a_n+\sum_{j=1}^{\min(n,r)}q_ja_{n-j}=[z^n]P.
+\]
+$n>\deg P$ かつ $n\ge r$ では右辺が零だから (2) である．
+逆に (2) とする．$Q=1+\sum_{j=1}^r q_jz^j$ と置けば，$QA$ の次数 $n\ge N$ の係数がすべて零である．よって $P:=QA$ は次数が $N$ 未満の多項式であり，$Q(0)=1$ から $A=P/Q$ を得る．
+\end{proof}
+
+\begin{corollary}[初期値からの一意性]
+$q_1,\dots,q_r\in K$ と $a_0,\dots,a_{r-1}\in K$ を指定し，すべての $n\ge r$ に対して
+$a_n+q_1a_{n-1}+\cdots+q_ra_{n-r}=0$ を課すと，数列は一意に定まる．その生成関数は
+\[
+ A(z)=\frac{a_0+(a_1+q_1a_0)z+\cdots+
+ (a_{r-1}+\sum_{j=1}^{r-1}q_ja_{r-1-j})z^{r-1}}
+ {1+q_1z+\cdots+q_rz^r}.
+\]
+\end{corollary}
+\begin{proof}
+漸化式の最高番の係数は $1$ なので $a_n$ を帰納的に一意に決定できる．前定理の証明と同様に $QA$ の $r$ 次以上の係数が零となり，それ未満の係数を直接計算すると式を得る．
+\end{proof}
+
+\begin{proposition}[線形漸化式の一般形]\label{prop:partial}
+$K$ を標数 $0$ の代数閉体とし，$Q(0)=1$ の有理型生成関数 $A=P/Q$ を考える．
+$Q(z)=\prod_{i=1}^{s}(1-\lambda_i z)^{m_i}$ が相異なる非零の $\lambda_i\in K$ によって因数分解されるとき，ある多項式 $H(z)\in K[z]$ と各 $i$ に対し次数が $m_i-1$ 以下の多項式 $p_i(n)\in K[n]$ が存在して
+\[
+ a_n=[z^n]H(z)+\sum_{i=1}^s p_i(n)\lambda_i^n
+\]
+が全ての $n\ge0$ に対して成立する．
+\end{proposition}
+\begin{proof}
+多項式の除法と部分分数分解によって
+\[
+ A(z)=H(z)+\sum_{i=1}^s\sum_{k=1}^{m_i}
+ \frac{c_{ik}}{(1-\lambda_i z)^k}
+\]
+と書ける．幾何級数を $k-1$ 回積にして，あるいは帰納法を用いて
+\[
+ [z^n](1-\lambda z)^{-k}=
+ \binom{n+k-1}{k-1}\lambda^n
+\]
+を示せる．実際 $k=1$ は幾何級数であり，$k$ から $k+1$ への移行では Cauchy 積によって
+$\sum_{j=0}^n\binom{j+k-1}{k-1}=\binom{n+k}{k}$ を用いる．右辺の二項係数は $n$ の次数 $k-1$ の多項式である．$p_i(n)=\sum_{k=1}^{m_i}c_{ik}\binom{n+k-1}{k-1}$ とすれば結論を得る．
+\end{proof}
+
+\begin{remark}
+命題~\ref{prop:partial} の $H$ は有限個の初期項にだけ寄与する．漸化式が $n\ge r$ の全域で成立し，かつ $q_r\ne0$ である場合には，$A=P/Q$ の分子の次数が $r$ 未満，分母の次数が $r$ となるので，$H=0$ と取れる．また根の重複は $n^j\lambda^n$ 型の項の出現に対応する．
+\end{remark}
+
+\section{指数型生成関数}
+この節では $K$ を標数 $0$ の体とする．従って自然数の階乗は $K$ で可逆である．
+\begin{definition}
+数列 $(a_n)$ の\emph{指数型生成関数}（exponential generating function）を
+\[
+ \widehat A(z)=\sum_{n\ge0}a_n\frac{z^n}{n!}
+\]
+と定める．
+\end{definition}
+\begin{proposition}[積と微分]\label{prop:egf}
+$\widehat A(z)=\sum a_nz^n/n!$, $\widehat B(z)=\sum b_nz^n/n!$ について
+\[
+ \widehat A\widehat B=
+ \sum_{n\ge0}\left(\sum_{k=0}^{n}\binom nk a_kb_{n-k}\right)\frac{z^n}{n!},
+ \quad D\widehat A=\sum_{n\ge0}a_{n+1}\frac{z^n}{n!}.
+\]
+\end{proposition}
+\begin{proof}
+積の次数 $n$ の係数は $\sum_{k=0}^n a_kb_{n-k}/(k!(n-k)!)$ であり，分母分子に $n!$ を掛ければ第一式となる．第二式は形式微分の定義から直ちに従う．
+\end{proof}
+
+\begin{definition}
+$E(z)=\sum_{n\ge0}z^n/n!$ と置き，これを $\exp z$ と書く．$U\in zK[[z]]$ に対し $\exp U=E(U)$ と定める．
+\end{definition}
+\begin{lemma}[形式的指数法則]
+$U,V\in zK[[z]]$ なら
+$\exp(U+V)=(\exp U)(\exp V)$ であり，$D\exp U=(DU)\exp U$ である．
+\end{lemma}
+\begin{proof}
+二項定理を用いて $\exp(U+V)$ の次数 $n$ 以下の項を展開すると，$\sum_{i,j\ge0}U^iV^j/(i!j!)$ の同次数までの項に一致する．各次数について有限計算なので第一式を得る．第二式は $DE=E$ と命題~\ref{prop:formalcalc} の連鎖律から従う．
+\end{proof}
+
+\begin{theorem}[Stirling数とBell数]\label{thm:bell}
+$S(n,k)$ を $n$ 元集合を $k$ 個の空でないブロックに分割する個数とし，$S(0,0)=1$，$S(n,0)=0$（$n>0$）とする．このとき
+\[
+ \sum_{n\ge0}S(n,k)\frac{z^n}{n!}
+ =\frac{(e^z-1)^k}{k!}\quad(k\ge0).
+\]
+従って $B_n=\sum_{k=0}^nS(n,k)$（Bell数）について
+\[
+ \sum_{n\ge0}B_n\frac{z^n}{n!}
+ =\exp(e^z-1)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$e^z-1=\sum_{j\ge1}z^j/j!$ であるから，積の $z^n/n!$ の係数は
+\[
+ \sum_{\substack{j_1+\cdots+j_k=n\\j_i\ge1}}
+ \frac{n!}{j_1!\cdots j_k!}.
+\]
+これは $n$ 個の区別された元を，番号付きの $k$ 個の空でない箱へ分配する方法の数である．各番号なしの分割にはちょうど $k!$ 通りの番号付けがあるから，第一式を得る．$k=0$ については空集合の分割の約束と一致する．
+次に $e^z-1$ の定数項が零なので $\sum_{k\ge0}(e^z-1)^k/k!$ は形式的に定義される．次数 $n$ の係数について $k>n$ は寄与しないから，上式を $k$ について和を取ってよく，第二式を得る．
+\end{proof}
+
+\begin{proposition}[Bell数の漸化式]
+$B_0=1$ とし，$n\ge0$ について
+\[
+ B_{n+1}=\sum_{k=0}^n\binom nk B_k
+\]
+である．
+\end{proposition}
+\begin{proof}
+$n+1$ 元集合の最後の元を含むブロック以外の元の集合を $k$ 元として選ぶ方法が $\binom nk$ 通りあり，それらを任意に分割する方法が $B_k$ 通りである．残りの $n-k$ 元と最後の元は一つのブロックを構成する．この対応は全ての分割を重複なく数えるから式を得る．
+\end{proof}
+
+\section{代数的生成関数とCatalan数}
+\begin{definition}
+$K$ を体とし，$A\in K[[z]]$ が\emph{代数的}であるとは，ある非零の $F(z,y)\in K[z,y]$ によって $F(z,A(z))=0$ が成り立つことをいう．有理型なら代数的である．
+\end{definition}
+\begin{definition}
+$\{U,D\}$ からなる長さ $2n$ の語で，$U$ と $D$ が各 $n$ 個あり，どの先頭部分においても $D$ の個数が $U$ の個数を超えないものを Dyck 語という．個数を $C_n$ とする．空語を含め $C_0=1$ とする．
+\end{definition}
+\begin{lemma}[最初の帰還による分解]\label{lem:catalanrec}
+$C_n=\sum_{k=0}^{n-1}C_kC_{n-1-k}$（$n\ge1$）である．従って $C(z)=\sum_{n\ge0}C_nz^n$ は
+\[
+ C(z)=1+zC(z)^2
+ \tag{1}\label{eq:catalan}
+\]
+を満たす．定数項が $1$ のこの方程式の解は $\mathbb Z[[z]]$ にただ一つ存在する．
+\end{lemma}
+\begin{proof}
+空でない Dyck 語の最初の $U$ と，それに対応する高さ零へ戻る最初の $D$ を取る．語は一意に $UADB$ と表され，$A,B$ はともに Dyck 語である．$A$ に $k$ 個の $U$ があれば $B$ には $n-1-k$ 個ある．逆にこの形の連結は常に Dyck 語だから最初の式を得る．Cauchy積で係数を比較すると (1) である．逆に (1) の定数項は $1$ であり，次数 $n\ge1$ の係数は既に定まった $C_0,\dots,C_{n-1}$ によってただ一つ定まる．帰納法で存在・一意性が従う．
+\end{proof}
+
+\begin{theorem}[Catalan数の閉公式]\label{thm:catalan}
+$n\ge0$ について
+\[
+ C_n=\binom{2n}{n}-\binom{2n}{n+1}
+ =\frac{1}{n+1}\binom{2n}{n}.
+\]
+\end{theorem}
+\begin{proof}
+$U$ と $D$ が各 $n$ 個の語は全部で $\binom{2n}{n}$ 個ある．Dyck条件を破る語のうち，高さ（$U$ を $+1$，$D$ を $-1$ と数える）が初めて $-1$ になる位置を定める．その位置までの $U,D$ を交換すると，全長における $U$ の個数は $n+1$，$D$ の個数は $n-1$ になる．逆に $U$ が $n+1$ 個の語を取り，最初に高さ $+1$ に達する位置までの $U,D$ を交換すれば，Dyck条件を破る元の語が一意に復元される．従って条件を破る語は $\binom{2n}{n+1}$ 個である．差を取れば第一式となり，階乗を整理すれば第二式を得る．$n=0$ にも成立する．
+\end{proof}
+
+\begin{remark}
+式~\eqref{eq:catalan} は $zC^2-C+1=0$ という代数関係を与える．$\mathbb Q[[z]]$ では二次方程式の形式的解として
+\[
+ C(z)=\frac{1-\sqrt{1-4z}}{2z}
+\]
+とも書ける．ここで平方根は定数項 $1$ の二乗根を意味し，割り算は分子の定数項が零であることによって可能となる．この表示は複素解析における平方根の枝の選択とは区別される．
+\end{remark}
+
+\section{Lagrangeの反転公式}
+本節では $K$ を標数 $0$ の体とする．形式的Laurent級数の留数を，$z^{-1}$ の係数として定める．
+\begin{lemma}[形式的留数の置換]\label{lem:residue}
+$U(z)=u_1z+u_2z^2+\cdots\in K[[z]]$，$u_1\ne0$ とする．任意の形式的Laurent級数 $H(t)\in K((t))$ について
+\[
+ \operatorname{Res}_{z=0}H(U(z))U'(z)
+ =\operatorname{Res}_{t=0}H(t)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+Laurent級数の負の次数は有限個であり，各係数は有限個の項で決まるので，$H(t)=t^m$ を示せば十分である．$m\ne-1$ なら
+$U^mU'=(U^{m+1})'/(m+1)$ である．形式的Laurent級数の導関数には $z^{-1}$ 項が現れないから両辺の留数は零である．$m=-1$ なら $U(z)=zW(z)$，$W(0)\ne0$ と書き
+\[
+ \frac{U'}U=\frac1z+\frac{W'}W.
+\]
+$W'/W\in K[[z]]$ なので留数は $1$ となる．これで $t^m$ の留数に一致する．
+\end{proof}
+
+\begin{theorem}[Lagrange反転]\label{thm:lagrange}
+$\Phi(t)\in K[[t]]$ が $\Phi(0)\ne0$ を満たすとし，$F(z)\in zK[[z]]$ は
+\[
+ F(z)=z\Phi(F(z))
+ \tag{2}\label{eq:lagr}
+\]
+を満たすとする．この $F$ は一意に存在し，任意の $n\ge1$ と $H(t)\in K[[t]]$ に対して
+\[
+ [z^n]H(F(z))=\frac1n[t^{n-1}]H'(t)\Phi(t)^n.
+ \tag{3}\label{eq:lagrangeformula}
+\]
+特に整数 $1\le k\le n$ について
+\[
+ [z^n]F(z)^k=\frac{k}{n}[t^{n-k}]\Phi(t)^n.
+\]
+\end{theorem}
+\begin{proof}
+まず $G(t)=t/\Phi(t)$ は $G(0)=0$，$G'(0)=1/\Phi(0)\ne0$ を満たす．命題~\ref{prop:compositional} より一意な合成逆 $F$ が存在し，$G(F)=z$ は式~\eqref{eq:lagr} に同値である．
+留数によって係数を表し，形式的導関数の留数が零であることを使うと
+\begin{align*}
+ [z^n]H(F)
+ &=\operatorname{Res}_{z=0}H(F)z^{-n-1}\\
+ &=\frac1n\operatorname{Res}_{z=0}H'(F)F'z^{-n}.
+\end{align*}
+第二式は $D(H(F)z^{-n})$ の留数が零であることから従う．補題~\ref{lem:residue} を $t=F(z)$ に適用して，$z=G(t)=t/\Phi(t)$ と置けば
+\[
+ \frac1n\operatorname{Res}_{t=0}H'(t)G(t)^{-n}
+ =\frac1n\operatorname{Res}_{t=0}H'(t)t^{-n}\Phi(t)^n,
+\]
+これが式~\eqref{eq:lagrangeformula} である．最後に $H(t)=t^k$ を代入すればよい．
+\end{proof}
+
+\begin{example}[根付き順序木の数]
+根付き木で，各頂点の子に左から右への順序を与えたものを根付き順序木という．頂点数 $n$ のその個数を $t_n$ とする．根の子木は順序付きの有限列であり，根以外の子木は同じ種類の木である．従って $T(z)=\sum_{n\ge1}t_nz^n$ は
+\[
+ T=z(1+T+T^2+\cdots)=\frac{z}{1-T}
+\]
+を満たす．Lagrange反転を $\Phi(t)=(1-t)^{-1}$ に適用すると
+\[
+ t_n=\frac1n[t^{n-1}](1-t)^{-n}
+ =\frac1n\binom{2n-2}{n-1}=C_{n-1}.
+\]
+最後の係数公式は命題~\ref{prop:partial} の証明中の二項係数公式である．
+\end{example}
+
+\section{応用：分割と組合せ的制約}
+\begin{proposition}[硬貨の組合せ]
+正整数 $d_1,\dots,d_r$ に対し，非負整数解
+$\sum_{j=1}^r d_jx_j=n$ の個数を $a_n$ とすると
+\[
+ \sum_{n\ge0}a_nz^n=\prod_{j=1}^r\frac1{1-z^{d_j}}.
+\]
+\end{proposition}
+\begin{proof}
+各 $x_j\ge0$ の寄与を $1+z^{d_j}+z^{2d_j}+\cdots$ と表す．この積の次数 $n$ の係数は，指数の和が $n$ になるような $(x_1,\dots,x_r)$ の個数である．幾何級数の公式により右辺となる．
+\end{proof}
+
+\begin{proposition}[互いに異なる部分の分割]
+整数 $N\ge1$ とする．$1,\dots,N$ の中から互いに異なる整数を選び，和が $n$ になる選択方法の数を $b_n$ とすると
+\[
+ \sum_{n\ge0}b_nz^n=\prod_{j=1}^N(1+z^j).
+\]
+各整数を重複して選べる場合は $\prod_{j=1}^N(1-z^j)^{-1}$ に変わる．
+\end{proposition}
+\begin{proof}
+整数 $j$ を選ばない場合は係数 $1$，選ぶ場合は $z^j$ と表される．それぞれの選択が独立であるから積の係数が全ての選択を数える．重複を許す場合は各因子を $\sum_{k\ge0}z^{kj}$ に置き換えればよい．
+\end{proof}
+
+\begin{remark}[有限計算と無限操作]
+形式的冪級数の計算では，係数を固定したとき有限個の項しか現れないことが正当化の基本原理となる．解析的な収束を前提とする場合と異なり，係数比較，合成，反転，微分のそれぞれについて，定数項の条件や係数体の標数を明示しなければならない．
+\end{remark}
+
+\section{有限差分とNewton展開}
+\begin{definition}
+数列 $a=(a_n)_{n\ge0}$ の前進差分 $\Delta a$ を
+$(\Delta a)_n=a_{n+1}-a_n$ と定める．$\Delta^0a=a$，$\Delta^{k+1}a=\Delta(\Delta^ka)$ とする．
+\end{definition}
+\begin{lemma}[高階差分の明示式]\label{lem:finite-diff}
+任意の $k,n\ge0$ に対して
+\[
+ (\Delta^ka)_n=\sum_{j=0}^{k}(-1)^{k-j}\binom kj a_{n+j}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$k=0$ では明らかである．$k$ に対して成立するとすると
+\begin{align*}
+ (\Delta^{k+1}a)_n
+ &= (\Delta^ka)_{n+1}-(\Delta^ka)_n\\
+ &=\sum_{j=0}^{k}(-1)^{k-j}\binom kj(a_{n+j+1}-a_{n+j}).
+\end{align*}
+二つの和で添字を合わせ，Pascalの等式
+$\binom kj+\binom k{j-1}=\binom{k+1}j$
+を用いれば $k+1$ の公式を得る．
+\end{proof}
+\begin{theorem}[Newtonの展開公式]\label{thm:newton}
+可換環 $R$ 値の任意の数列について
+\[
+ a_n=\sum_{k=0}^{n}\binom nk (\Delta^k a)_0.
+ \tag{4}\label{eq:newton}
+\]
+とくに $a_n$ が $n$ の次数 $d$ 以下の多項式で表されるなら，$\Delta^{d+1}a=0$ であるから
+\[
+ a_n=\sum_{k=0}^{d}\binom nk (\Delta^ka)_0
+\]
+となる．
+\end{theorem}
+\begin{proof}
+補題~\ref{lem:finite-diff} を代入すると，右辺における $a_j$ の係数は
+\[
+ \sum_{k=j}^n\binom nk(-1)^{k-j}\binom kj
+ =\binom nj\sum_{k=j}^n(-1)^{k-j}\binom{n-j}{k-j}.
+\]
+最後の和は $j=n$ のとき $1$，$j<n$ のとき $0$ である．従って右辺は $a_n$ に等しい．後半は多項式の差分が次数を一つ下げることを二項定理で確認し，式に代入すればよい．
+\end{proof}
+\begin{proposition}[Newton展開の生成関数]
+$B_k=(\Delta^ka)_0$ とすれば
+\[
+ A(z)=\sum_{k\ge0}B_k\frac{z^k}{(1-z)^{k+1}}.
+\]
+特に $\Delta^{d+1}a=0$ の場合，$A(z)$ は分母が $(1-z)^{d+1}$ を割り切る有理式となる．
+\end{proposition}
+\begin{proof}
+幾何級数の $k$ 回の形式微分，または二項係数の和の公式によって
+\[
+ \frac{z^k}{(1-z)^{k+1}}
+ =\sum_{n\ge k}\binom nk z^n
+\]
+を得る．右辺の係数を $k$ について足し合わせると，次数 $n$ には $k\le n$ だけが寄与する．Newtonの展開公式によってその係数は $a_n$ に一致する．差分が $d+1$ 回で零なら和は $d$ までで終わり，分母を通分すれば結論を得る．
+\end{proof}
+
+\section{漸化式と形式的微分方程式}
+本節でも $K$ は標数 $0$ の体とする．
+\begin{proposition}[一定係数の微分方程式]\label{prop:diff-eq}
+数列 $a_n$ の指数型生成関数を $E(z)=\sum a_nz^n/n!$ とする．
+定数 $c_0,\dots,c_r\in K$ に対し
+\[
+ a_{n+r}+c_{r-1}a_{n+r-1}+\cdots+c_0a_n=0\quad(n\ge0)
+\]
+であることと
+\[
+ D^rE+c_{r-1}D^{r-1}E+\cdots+c_0E=0
+\]
+であることは同値である．
+\end{proposition}
+\begin{proof}
+命題~\ref{prop:egf} の微分公式を繰り返すと
+$D^kE=\sum_{n\ge0}a_{n+k}z^n/n!$ である．従って微分方程式の $z^n/n!$ の係数はちょうど漸化式の左辺である．全ての係数が零であることと級数が零であることは同値だから結論を得る．
+\end{proof}
+\begin{example}[撹乱順列の指数型生成関数]
+$n$ 元集合上の固定点を持たない置換の個数を $D_n$ とする．包除原理から
+\[
+ D_n=n!\sum_{j=0}^n\frac{(-1)^j}{j!}
+\]
+である．従って
+\begin{align*}
+ \sum_{n\ge0}D_n\frac{z^n}{n!}
+ &=\sum_{n\ge0}\sum_{j=0}^n\frac{(-1)^j}{j!}z^n\\
+ &=\left(\sum_{j\ge0}\frac{(-z)^j}{j!}\right)
+   \left(\sum_{k\ge0}z^k\right)
+ =\frac{e^{-z}}{1-z}.
+\end{align*}
+二重和の変形は各係数について有限和である．
+\end{example}
+
+\section{形式的陰関数と代数的方程式}
+\begin{theorem}[形式的陰関数の存在と一意性]\label{thm:implicit}
+$K$ を体，$P(z,y)\in K[z,y]$ とする．$a\in K$ が
+$P(0,a)=0$，$\partial P/\partial y(0,a)\ne0$ を満たすとき，
+$Y(z)\in K[[z]]$ で
+\[
+ Y(0)=a,\qquad P(z,Y(z))=0
+\]
+となるものがただ一つ存在する．
+\end{theorem}
+\begin{proof}
+$Y(z)=a+\sum_{n\ge1}y_nz^n$ と置く．$n\ge1$ について $y_1,\dots,y_{n-1}$ を定めたとする．$Y_{<n}=a+\sum_{j=1}^{n-1}y_jz^j$ と書くと，多項式の展開によって
+\[
+ P(z,Y_{<n}+y_nz^n)
+ \equiv P(z,Y_{<n})
+ +y_nz^n\frac{\partial P}{\partial y}(0,a)
+ \pmod{z^{n+1}}
+\]
+が成り立つ．ここで $n\ge1$ なので $y_nz^n$ の二次以上の項は $z^{n+1}$ で割り切れ，$\partial_yP(z,Y_{<n})$ の定数項は $\partial_yP(0,a)$ である．
+従って $[z^n]P(z,Y)=0$ となるように $y_n$ を選ぶ条件は，$y_n$ に関する一次方程式であり，その係数は仮定により零でない．よって一意の $y_n$ が存在する．$P(0,a)=0$ を起点として帰納法を続けると，全ての係数で等式が成立する一意の級数 $Y$ を得る．
+\end{proof}
+\begin{example}[Catalan級数の一意性の再証明]
+$P(z,y)=zy^2-y+1$ とすると $P(0,1)=0$ で
+$\partial_yP(0,1)=-1\ne0$ である．したがって
+$C=1+zC^2$ を満たす定数項 $1$ の形式的級数が一意に存在することは定理~\ref{thm:implicit} からも分かる．
+また $Y^2=1-4z$ で $Y(0)=1$ を満たす形式的平方根の存在一意性も，同じ定理を $P(z,y)=y^2-1+4z$ に適用することで得られる．
+\end{example}
+
+\section{整数分割とEulerの恒等式}
+\begin{definition}
+正整数 $n$ の\emph{整数分割}とは，正整数の順序を無視した和 $n=\lambda_1+\cdots+\lambda_k$ の表し方をいう．空和を $0$ の一つの分割とする．分割の個数を $p(n)$ と書く．
+\end{definition}
+\begin{lemma}[無限積の正当化]\label{lem:infprod}
+$U_j(z)\in z^jR[[z]]$ ならば，部分積 $\prod_{j=1}^N(1+U_j)$ は，各固定次数 $n$ の係数について $N\ge n$ 以後変化しない．従って無限積 $\prod_{j\ge1}(1+U_j)$ が $R[[z]]$ の元として定義できる．
+\end{lemma}
+\begin{proof}
+$N\ge n$ に対して，追加される因子 $1+U_{N+1}$ は $1$ と $z^{N+1}$ 以上の項しか持たないので，積の次数 $n$ 以下の係数を変えない．このことを繰り返せば各係数が安定する．
+\end{proof}
+\begin{proposition}[分割数の生成関数]
+$\mathbb Z[[z]]$ において
+\[
+ \sum_{n\ge0}p(n)z^n=\prod_{j\ge1}\frac1{1-z^j}.
+\]
+また相異なる部分からなる分割の個数 $d(n)$ は
+\[
+ \sum_{n\ge0}d(n)z^n=\prod_{j\ge1}(1+z^j)
+\]
+を満たす．
+\end{proposition}
+\begin{proof}
+各因子 $(1-z^j)^{-1}=\sum_{k\ge0}z^{kj}$ の $z^{kj}$ は部分 $j$ を $k$ 個使う選択を表す．積の次数 $n$ の係数では $j\le n$ だけが関与し，分割と選択列が全単射になる．相異なる部分しか許さない場合，使用個数は $0$ か $1$ なので各因子は $1+z^j$ に変わる．無限積は補題~\ref{lem:infprod} によって意味を持つ．
+\end{proof}
+\begin{theorem}[Eulerの分割恒等式]\label{thm:eulerpartition}
+相異なる部分からなる $n$ の分割の個数は，全ての部分が奇数である $n$ の分割の個数に等しい．
+\end{theorem}
+\begin{proof}
+形式的冪級数の恒等式
+\[
+ 1+z^j=\frac{1-z^{2j}}{1-z^j}
+\]
+を全ての $j\ge1$ について掛け合わせる．各固定次数までで積の係数は安定するため，有限積における計算から
+\[
+ \prod_{j\ge1}(1+z^j)
+ =\frac{\prod_{j\ge1}(1-z^{2j})}{\prod_{j\ge1}(1-z^j)}
+ =\prod_{j\ge1}\frac1{1-z^{2j-1}}
+\]
+を得る．最後の積の次数 $n$ の係数は，奇数の部分のみからなる分割を数える．両辺の係数を比較すれば結論が従う．
+\end{proof}
+
+\section{有理型生成関数の係数の増大}
+\begin{proposition}[単純な優勢根]\label{prop:asymptotic}
+$A(z)=\sum a_nz^n\in\mathbb C[[z]]$ が有理型であり，その部分分数表示が，ある $H(z)\in\mathbb C[z]$ について
+\[
+ A(z)=H(z)+\frac{c}{1-\lambda z}
+ +\sum_{i=2}^s\sum_{k=1}^{m_i}
+  \frac{c_{ik}}{(1-\lambda_i z)^k}
+\]
+で，$\lambda\ne0$，$c\ne0$，かつ $|\lambda_i|<|\lambda|$ を満たすとする．このとき
+\[
+ \lim_{n\to\infty}\frac{a_n}{c\lambda^n}=1.
+\]
+\end{proposition}
+\begin{proof}
+命題~\ref{prop:partial} から
+\[
+ a_n=[z^n]H+c\lambda^n+\sum_{i=2}^s p_i(n)\lambda_i^n
+\]
+と表せる．十分大きい $n$ では $[z^n]H=0$ である．$\rho_i=|\lambda_i/\lambda|<1$ とおくと，$p_i$ は多項式なので
+$|p_i(n)|\rho_i^n\to0$ である．これは例えば $\rho_i<\theta<1$ を取り，$n^d\rho_i^n\le C\theta^n$ が十分大きい $n$ で成り立つことから従う．したがって $a_n/(c\lambda^n)=1+o(1)$ である．
+\end{proof}
+\begin{remark}
+複数の極の絶対値が同じ場合や極が重複している場合には，振動項や $n^j$ の因子が現れる．従って「最大絶対値の根だけを残せばよい」という近似は，優勢根の一意性と重複度の条件を確認してから用いるべきである．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{Fibonacci数列の生成関数．}
+\begin{proposition}
+$F_0=0,F_1=1$，
+$F_{n+2}=F_{n+1}+F_n$ とする．
+形式的冪級数 $F(z)=\sum_{n\ge0}F_nz^n$ は
+\[
+F(z)=\frac{z}{1-z-z^2}
+\]
+に等しい．
+\end{proposition}
+\begin{proof}
+$(1-z-z^2)F(z)$ の定数項は0，一次係数は1である．
+$n\ge2$ の係数は
+$F_n-F_{n-1}-F_{n-2}=0$ である．
+従って $(1-z-z^2)F(z)=z$．
+分母の定数項は1だから形式的冪級数環で可逆であり，
+表示式となる．
+\end{proof}
+\begin{corollary}
+$\alpha=(1+\sqrt5)/2$，
+$\beta=(1-\sqrt5)/2$ とすると
+\[
+F_n=\frac{\alpha^n-\beta^n}{\sqrt5}
+\]
+である．
+\end{corollary}
+\begin{proof}
+$\alpha,\beta$ は $t^2=t+1$ の根である．
+右辺は $n=0$ で0，$n=1$ で1となり，
+二つの指数数列が漸化式を満たすため
+その差も同じ漸化式を満たす．
+初期値と漸化式の一意性から一致する．
+\end{proof}
+\noindent\textbf{到達確認．}
+$F_6$ を閉じた式ではなく漸化式から求めよ．
+\par\noindent\textbf{解答．}
+$0,1,1,2,3,5,8$ となるので $F_6=8$．
+\section*{参考文献}
+\begin{enumerate}
+\item R. P. Stanley, \textit{Enumerative Combinatorics}, Vol.~1, 2nd ed., Cambridge University Press, 2012.
+\item H. S. Wilf, \textit{generatingfunctionology}, 3rd ed., A K Peters, 2005.
+\item P. Flajolet and R. Sedgewick, \textit{Analytic Combinatorics}, Cambridge University Press, 2009.
+\end{enumerate}
+\end{document}

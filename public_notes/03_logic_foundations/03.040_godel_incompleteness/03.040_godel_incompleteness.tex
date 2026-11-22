@@ -1,0 +1,675 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Godelの不完全性定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，証明可能性述語と対角化補題．
+本稿の具体的な到達課題は，第一不完全性定理の不完全命題を構成する論理的矛盾を再現する．
+
+\section{形式的算術と計算可能な理論}
+
+本稿では古典的一階論理の健全性・完全性定理，
+原始再帰関数，Peano算術 $\mathrm{PA}$ の公理を前提とする．
+全ての構文対象は有限文字列として符号化する．
+理論の無矛盾性と標準モデルでの真理性を区別する．
+
+\begin{definition}
+一階理論 $T$ が\emph{計算可能に公理化可能}であるとは，
+その公理集合が再帰的可算であることをいう．
+$T$ が無矛盾であるとは，ある文 $\varphi$ について
+$T\vdash\varphi$ と $T\vdash\neg\varphi$ が
+同時に成り立たないことをいう．
+\end{definition}
+
+\begin{definition}
+$T$ が\emph{$\omega$-無矛盾}であるとは，
+一変数論理式 $\varphi(x)$ に対して
+$T\vdash\exists x\,\varphi(x)$ が成り立つ一方，
+全ての自然数 $n$ に対して
+$T\vdash\neg\varphi(\overline n)$ が成り立つ，
+という状況が存在しないことをいう．
+ここで $\overline n$ は自然数 $n$ の数詞である．
+\end{definition}
+
+\begin{proposition}
+$\omega$-無矛盾な理論は無矛盾である．
+\end{proposition}
+\begin{proof}
+もし $T$ が矛盾すれば任意の文が証明可能となる．
+従って $\exists x\,(x=x)$ も，
+全ての $n$ に対する $\neg(\overline n=\overline n)$ も
+証明可能であり，$\omega$-無矛盾性に反する．
+\end{proof}
+
+\section{自然数による構文の符号化}
+
+\begin{definition}
+有限文字列の各文字へ正整数のコードを割り当てる．
+文字コード $a_0,\dots,a_{r-1}$ からなる文字列には，
+$r$ の記録と
+\[
+ \prod_{i=0}^{r-1}p_{i+1}^{a_i+1}
+\]
+を用いた一意な自然数コードを割り当てる．
+ここで $p_i$ は $i$ 番目の素数である．
+このようなコードをGödel番号という．
+\end{definition}
+
+\begin{lemma}[構文操作の計算可能性]\label{lem:syntax}
+有限文字列の連結，長さの取得，式の正当性判定，
+自由変数の検出，数詞の生成，
+代入捕獲を避けた項の代入，証明列の一行の検査は
+原始再帰的な符号操作として実現できる．
+\end{lemma}
+\begin{proof}
+文字列の長さと各位置の文字は素因数の指数を
+有界探索することで得られる．
+$p_i$ の生成も，$i$ 個の素数が見つかるまでの
+探索を原始再帰的な既知の上界の内側に制限すれば
+原始再帰的に行える．
+連結と部分列の取得は有限個の位置の文字コードを
+組み替える操作なので原始再帰的である．
+項や論理式の構文解析は，
+入力文字列の長さ以下の有限個の構成木を調べ，
+各節点の文法規則を判定する有界探索によって実現できる．
+代入は構成木をたどり，束縛変数の名称を必要に応じて
+新しい変数に変更してから有限文字列を置き換える操作である．
+証明の一行が命題論理の公理例，量化公理例，
+理論の公理，または先行行からの推論規則の結果であることも
+有限個の行を調べることで判定できる．
+理論の公理集合が再帰的可算の場合には，
+各公理行へ列挙過程で現れた段階の証明書を付すことで，
+証明書付き証明の検査を原始再帰的にできる．
+従って述べた操作はいずれも原始再帰的に符号化できる．
+\end{proof}
+
+\begin{lemma}[Gödelの $\beta$-関数]\label{lem:beta}
+任意の自然数の有限列 $a_0,\dots,a_r$ に対し，
+自然数 $u,v$ が存在して
+\[
+ a_i=\operatorname{rem}(u,1+(i+1)v)
+ \qquad(0\le i\le r)
+\]
+となる．
+ここで $\operatorname{rem}$ は非負の除法の余りである．
+\end{lemma}
+\begin{proof}
+$v$ を $(r+1)!$ の倍数で，
+全ての $a_i$ より大きい正整数となるように取る．
+$m_i=1+(i+1)v$ と置く．
+$i<j$ のとき，$m_i,m_j$ の公約数 $d$ は
+\[
+ d\mid m_j-m_i=(j-i)v,\qquad
+ \gcd(d,v)=1
+\]
+を満たすので $d\mid j-i$ となる．
+一方 $v$ は $j-i$ の倍数だから
+$m_i\equiv1\pmod{j-i}$ であり，
+$d\mid m_i$ と $d\mid j-i$ から $d=1$ を得る．
+よって $m_0,\dots,m_r$ は互いに素である．
+中国剰余定理により
+$u\equiv a_i\pmod{m_i}$ を同時に満たす $u$ が存在する．
+$0\le a_i<m_i$ なのでその剰余はちょうど $a_i$ となる．
+\end{proof}
+
+\section{原始再帰関数の算術内での表現}
+
+\begin{definition}
+自然数上の関数 $f$ が $\mathrm{PA}$ で
+\emph{強く表現可能}であるとは，
+論理式 $F(\boldsymbol x,y)$ が存在して，
+各自然数の組 $\boldsymbol n$ について
+\[
+ \mathrm{PA}\vdash F(\overline{\boldsymbol n},
+                     \overline{f(\boldsymbol n)}),
+\]
+\[
+ \mathrm{PA}\vdash
+ \forall y\bigl(F(\overline{\boldsymbol n},y)
+ \leftrightarrow y=\overline{f(\boldsymbol n)}\bigr)
+\]
+を満たすことをいう．
+\end{definition}
+
+\begin{theorem}[原始再帰関数の表現可能性]
+\label{thm:representability}
+全ての原始再帰関数は $\mathrm{PA}$ で強く表現可能である．
+原始再帰的関係 $R$ に対しては，
+真な数値例は $\mathrm{PA}$ で証明可能であり，
+偽な数値例の否定も $\mathrm{PA}$ で証明可能であるような
+論理式 $\rho_R$ を取れる．
+\end{theorem}
+\begin{proof}
+原始再帰関数は，零関数，後続関数，射影関数から出発し，
+合成と原始再帰の操作を有限回繰り返して得られる．
+零・後続・射影のグラフは等号の式で表せるから，
+各数値例の一意性も算術の公理から証明できる．
+
+合成 $f(\boldsymbol x)
+ =g(h_1(\boldsymbol x),\dots,h_m(\boldsymbol x))$
+については，$g,h_i$ のグラフを表す論理式を用い
+\[
+ F(\boldsymbol x,y)\equiv
+ \exists z_1\cdots z_m
+ \left(\bigwedge_iH_i(\boldsymbol x,z_i)
+ \land G(z_1,\dots,z_m,y)\right)
+\]
+と置く．
+帰納法の仮定から各数値入力で $z_i$ と $y$ が
+一意に指定されることを $\mathrm{PA}$ 内で証明できる．
+
+原始再帰
+\[
+ f(0,\boldsymbol x)=g(\boldsymbol x),\qquad
+ f(t+1,\boldsymbol x)
+ =h(t,f(t,\boldsymbol x),\boldsymbol x)
+\]
+の場合には，
+補題\ref{lem:beta}の余り表示を用いて
+有限計算列
+$a_0,\dots,a_t$ を二つの自然数 $u,v$ で符号化する．
+$\beta(u,v,i)=\operatorname{rem}(u,1+(i+1)v)$ と書き，
+\[
+ \begin{aligned}
+ F(t,\boldsymbol x,y)\equiv
+ \exists u\,\exists v\ \bigl[&
+ \beta(u,v,0)=g(\boldsymbol x)\ \land\\
+ &\forall i<t\ 
+ \beta(u,v,i+1)
+ =h(i,\beta(u,v,i),\boldsymbol x)\ \land\\
+ &\beta(u,v,t)=y\bigr]
+ \end{aligned}
+\]
+を考える．
+ここで $g,h$ の出現箇所は，帰納法で得た
+それぞれのグラフ公式によって置き換える．
+各標準数値の入力について，
+計算列は有限個の具体的な値からなり，
+補題\ref{lem:beta}の中国剰余構成は算術内で確認できる．
+$\mathrm{PA}$ の帰納法公理によって，
+この再帰関係を満たす計算列の各時刻の値は一意であると
+証明できる．
+従って $F$ は各標準数値入力で一意の出力を持つことが
+証明可能である．
+これで原始再帰関数の構成に関する帰納法が完了する．
+関係 $R$ はその特性関数を用いればよい．
+真偽の数値例について特性関数の値が0または1であることを
+算術が証明できるため，後半が従う．
+\end{proof}
+
+\section{証明可能性述語}
+
+\begin{definition}
+計算可能に公理化可能な理論
+$T\supseteq\mathrm{PA}$ を固定する．
+証明書付き証明のコード $p$ が文のコード $x$ の
+正しい $T$-証明であるという原始再帰的関係を
+$\operatorname{Proof}_T(p,x)$ と書く．
+定理\ref{thm:representability}により，
+これを算術の論理式で表せる．
+\[
+ \operatorname{Prov}_T(x)
+ \equiv\exists p\,\operatorname{Proof}_T(p,x)
+\]
+を証明可能性述語という．
+\end{definition}
+
+\begin{lemma}[数値例の検査]\label{lem:proof-numeral}
+標準自然数 $p,x$ について，
+$p$ が $x$ の正しい証明コードなら
+\[
+ \mathrm{PA}\vdash
+ \operatorname{Proof}_T(\overline p,\overline x),
+\]
+そうでなければ
+\[
+ \mathrm{PA}\vdash
+ \neg\operatorname{Proof}_T(\overline p,\overline x).
+\]
+特に $T\vdash\varphi$ なら
+$\mathrm{PA}\vdash
+ \operatorname{Prov}_T(\overline{\ulcorner\varphi\urcorner})$
+となる．
+\end{lemma}
+\begin{proof}
+$\operatorname{Proof}_T$ は原始再帰的関係なので，
+定理\ref{thm:representability}から
+全ての標準数値例の真偽が算術で証明可能である．
+$T\vdash\varphi$ なら正しい証明コード $p$ が存在する．
+その数値例の真を証明した後，存在量化を導入すると
+$\operatorname{Prov}_T$ の証明を得る．
+\end{proof}
+
+\section{対角化補題}
+
+\begin{lemma}[対角化補題]\label{lem:diagonal}
+任意の一変数算術論理式 $\theta(x)$ に対し，
+ある算術文 $G$ が存在して
+\[
+ \mathrm{PA}\vdash
+ G\leftrightarrow
+ \theta(\overline{\ulcorner G\urcorner})
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+一変数論理式のコード $e$ から，
+その自由変数に数詞 $\overline e$ を代入した文のコードを
+返す関数 $d(e)$ を考える．
+補題\ref{lem:syntax}から $d$ は原始再帰的であり，
+定理\ref{thm:representability}によって
+そのグラフを表す論理式 $D(x,y)$ が存在する．
+\[
+ \psi(x)\equiv\exists y\,
+ (D(x,y)\land\theta(y))
+\]
+と置き，$n=\ulcorner\psi\urcorner$ とする．
+$G$ を文 $\psi(\overline n)$ と定める．
+そのコードは定義から $d(n)$ なので
+$\ulcorner G\urcorner=d(n)$ である．
+$d$ の強い表現可能性から
+\[
+ \mathrm{PA}\vdash
+ \forall y\left(D(\overline n,y)
+ \leftrightarrow y=\overline{d(n)}\right)
+\]
+が成立する．従って
+\[
+ \begin{aligned}
+ \mathrm{PA}\vdash
+ G&\leftrightarrow
+ \exists y(D(\overline n,y)\land\theta(y))\\
+ &\leftrightarrow\theta(\overline{d(n)})
+ \leftrightarrow\theta(\overline{\ulcorner G\urcorner}).
+ \end{aligned}
+\]
+これが結論である．
+\end{proof}
+
+\section{第一不完全性定理}
+
+\begin{theorem}[Gödelの第一不完全性定理]
+\label{thm:first}
+$T\supseteq\mathrm{PA}$ を計算可能に公理化可能な理論とする．
+$T$ が無矛盾なら，ある文 $G_T$ について
+$T\not\vdash G_T$ となる．
+さらに $T$ が $\omega$-無矛盾なら
+$T\not\vdash\neg G_T$ も成り立つ．
+\end{theorem}
+\begin{proof}
+対角化補題\ref{lem:diagonal}を
+$\theta(x)\equiv\neg\operatorname{Prov}_T(x)$ に適用して
+\[
+ \mathrm{PA}\vdash
+ G_T\leftrightarrow
+ \neg\operatorname{Prov}_T(\overline{\ulcorner G_T\urcorner})
+ \tag{1}
+\]
+となる $G_T$ を取る．
+もし $T\vdash G_T$ なら，
+補題\ref{lem:proof-numeral}から
+$T\vdash\operatorname{Prov}_T(
+ \overline{\ulcorner G_T\urcorner})$ となる．
+一方式 (1) から
+$T\vdash\neg\operatorname{Prov}_T(
+ \overline{\ulcorner G_T\urcorner})$ となるので，
+$T$ は矛盾する．従って $T\not\vdash G_T$ である．
+
+さらに $\omega$-無矛盾と仮定する．
+もし $T\vdash\neg G_T$ なら，
+式 (1) から
+$T\vdash\operatorname{Prov}_T(
+\overline{\ulcorner G_T\urcorner})$ を得る．
+これは
+$T\vdash\exists p\,\operatorname{Proof}_T(
+ p,\overline{\ulcorner G_T\urcorner})$ と同値である．
+しかし既に $T\not\vdash G_T$ を示したので，
+どの標準自然数 $n$ も $G_T$ の証明コードでない．
+補題\ref{lem:proof-numeral}により全ての $n$ について
+\[
+ T\vdash\neg\operatorname{Proof}_T(
+ \overline n,\overline{\ulcorner G_T\urcorner})
+\]
+が成り立つ．
+これは $\omega$-無矛盾性の定義に反する．
+従って $T\not\vdash\neg G_T$ である．
+\end{proof}
+
+\section{Rosserの改良}
+
+\begin{theorem}[Rosserの不完全性定理]\label{thm:rosser}
+$T\supseteq\mathrm{PA}$ が計算可能に公理化可能かつ
+無矛盾なら，ある算術文 $R_T$ が存在して
+\[
+ T\not\vdash R_T,\qquad T\not\vdash\neg R_T
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+対角化補題から
+\[
+ \begin{aligned}
+ T\vdash R_T\leftrightarrow
+ \forall p\bigl(&\operatorname{Proof}_T(
+ p,\overline{\ulcorner R_T\urcorner})\\
+ &\to\exists q\le p\
+ \operatorname{Proof}_T(
+ q,\overline{\ulcorner\neg R_T\urcorner})\bigr)
+ \end{aligned}
+ \tag{2}
+\]
+となる $R_T$ を取る．
+
+まず $T\vdash R_T$ と仮定する．
+その標準証明コードを $n$ とする．
+$T$ が無矛盾なので $\neg R_T$ の標準証明は存在しない．
+従って各 $q\le n$ について
+$\mathrm{PA}\vdash\neg\operatorname{Proof}_T(
+ \overline q,\overline{\ulcorner\neg R_T\urcorner})$
+である．$q\le\overline n$ は有限個の場合に分けられるので
+$\mathrm{PA}$ はその有限連言を証明できる．
+一方，補題\ref{lem:proof-numeral}から
+$\mathrm{PA}\vdash\operatorname{Proof}_T(
+\overline n,\overline{\ulcorner R_T\urcorner})$
+である．
+式 (2) に $p=\overline n$ を代入すると
+$T\vdash\neg R_T$ が従い，無矛盾性に反する．
+従って $T\not\vdash R_T$ である．
+
+次に $T\vdash\neg R_T$ と仮定する．
+その証明コードを $n$ とする．
+無矛盾性から $R_T$ の証明は一つも存在しない．
+従って各 $p<n$ について
+$\mathrm{PA}\vdash\neg\operatorname{Proof}_T(
+ \overline p,\overline{\ulcorner R_T\urcorner})$
+である．
+$n$ は固定された標準自然数なので，
+$\mathrm{PA}$ はこれらの有限個の数値判定を用いて
+\[
+ \mathrm{PA}\vdash\forall p<n\
+ \neg\operatorname{Proof}_T(
+ p,\overline{\ulcorner R_T\urcorner})
+\]
+を証明できる．
+また $n$ は $\neg R_T$ の証明コードだから
+\[
+ \mathrm{PA}\vdash\forall p\ge n\
+ \exists q\le p\
+ \operatorname{Proof}_T(
+ q,\overline{\ulcorner\neg R_T\urcorner})
+\]
+が，$q=\overline n$ を証人として成立する．
+算術の線形順序によって任意の $p$ は
+$p<n$ または $p\ge n$ のいずれかである．
+従って $\mathrm{PA}$ は式 (2) の右辺を証明でき，
+ゆえに $T\vdash R_T$ となる．
+これは $T\vdash\neg R_T$ と無矛盾性に反する．
+従って $T\not\vdash\neg R_T$ でもある．
+\end{proof}
+
+\section{証明可能性述語の導出可能性条件}
+
+以下，$\ulcorner\varphi\urcorner$ を文のコードとし，
+$\operatorname{Prov}_T(\ulcorner\varphi\urcorner)$ では
+数詞を省略して記す．
+
+\begin{lemma}[Hilbert--Bernays--L\"obの三条件]
+\label{lem:derivability}
+$T\supseteq\mathrm{PA}$ の標準的な証明可能性述語は，
+任意の文 $\varphi,\psi$ について次を満たす．
+\begin{enumerate}
+\item $T\vdash\varphi$ なら
+ $\mathrm{PA}\vdash\operatorname{Prov}_T(\ulcorner\varphi\urcorner)$．
+\item
+ \[
+ \mathrm{PA}\vdash\operatorname{Prov}_T(
+ \ulcorner\varphi\to\psi\urcorner)\to
+ \bigl(\operatorname{Prov}_T(\ulcorner\varphi\urcorner)
+ \to\operatorname{Prov}_T(\ulcorner\psi\urcorner)\bigr).
+ \]
+\item
+ \[
+ \mathrm{PA}\vdash\operatorname{Prov}_T(\ulcorner\varphi\urcorner)
+ \to\operatorname{Prov}_T(
+ \ulcorner\operatorname{Prov}_T(\ulcorner\varphi\urcorner)\urcorner).
+ \]
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(1) は補題\ref{lem:proof-numeral}による．
+(2) を示す．
+二つの正しい証明列の末尾へmodus ponensを一回加える
+原始再帰的関数 $c(p,q)$ を定義できる．
+$\mathrm{PA}$ は構文検査を算術化して
+\[
+ \operatorname{Proof}_T(p,\ulcorner\varphi\to\psi\urcorner)
+ \land\operatorname{Proof}_T(q,\ulcorner\varphi\urcorner)
+ \ \to\
+ \operatorname{Proof}_T(c(p,q),\ulcorner\psi\urcorner)
+\]
+を証明する．
+証明コード $p,q$ を存在量化すれば (2) を得る．
+
+(3) を示す．
+$\operatorname{Proof}_T(p,\ulcorner\varphi\urcorner)$ の
+数値検査を形式化すると，
+正しい証明コード $p$ から，
+その正当性を算術内で確認する証明コードを
+原始再帰的に構成できる．
+その末尾へ存在量化の導入を加えると，
+$\operatorname{Prov}_T(\ulcorner\varphi\urcorner)$ の
+$T$-証明コードを得る．
+この構成を $v(p)$ とすると
+$\mathrm{PA}$ は
+\[
+ \operatorname{Proof}_T(p,\ulcorner\varphi\urcorner)
+ \to\operatorname{Proof}_T(
+ v(p),
+ \ulcorner\operatorname{Prov}_T(
+ \ulcorner\varphi\urcorner)\urcorner)
+\]
+を証明できる．
+$p$ を存在量化すると (3) が従う．
+この証明書の符号化においても
+補題\ref{lem:syntax}の構文操作と
+定理\ref{thm:representability}を用いている．
+\end{proof}
+
+\section{第二不完全性定理}
+
+\begin{definition}
+$\bot$ を矛盾を表す文 $0=1$ とする．
+\[
+ \operatorname{Con}(T)\equiv
+ \neg\operatorname{Prov}_T(\ulcorner\bot\urcorner)
+\]
+を理論 $T$ の無矛盾性を表す算術文という．
+\end{definition}
+
+\begin{theorem}[Gödelの第二不完全性定理]
+\label{thm:second}
+$T\supseteq\mathrm{PA}$ を計算可能に公理化可能で
+無矛盾な理論とする．このとき
+\[
+ T\not\vdash\operatorname{Con}(T)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+第一不完全性定理の文 $G_T$ を取り，
+\[
+ \mathrm{PA}\vdash
+ G_T\leftrightarrow
+ \neg\operatorname{Prov}_T(\ulcorner G_T\urcorner)
+ \tag{3}
+\]
+とする．
+式 (3) の一方向から
+$T\vdash G_T\to
+ \neg\operatorname{Prov}_T(\ulcorner G_T\urcorner)$
+である．
+補題\ref{lem:derivability}の (1),(2) により
+\[
+ \mathrm{PA}\vdash
+ \operatorname{Prov}_T(\ulcorner G_T\urcorner)
+ \to\operatorname{Prov}_T(
+ \ulcorner\neg\operatorname{Prov}_T(
+ \ulcorner G_T\urcorner)\urcorner)
+ \tag{4}
+\]
+を得る．
+一方，(3) の導出可能性条件により
+\[
+ \mathrm{PA}\vdash
+ \operatorname{Prov}_T(\ulcorner G_T\urcorner)
+ \to\operatorname{Prov}_T(
+ \ulcorner\operatorname{Prov}_T(
+ \ulcorner G_T\urcorner)\urcorner).
+ \tag{5}
+\]
+$T$ は命題論理の恒真式
+$(A\land\neg A)\to\bot$ を証明できるので，
+(1),(2) の適用によって
+\[
+ \mathrm{PA}\vdash
+ \operatorname{Prov}_T(\ulcorner A\urcorner)
+ \land\operatorname{Prov}_T(\ulcorner\neg A\urcorner)
+ \to\operatorname{Prov}_T(\ulcorner\bot\urcorner)
+\]
+となる．
+$A=\operatorname{Prov}_T(\ulcorner G_T\urcorner)$
+を代入し，式 (4),(5) と合わせると
+\[
+ \mathrm{PA}\vdash
+ \operatorname{Prov}_T(\ulcorner G_T\urcorner)
+ \to\operatorname{Prov}_T(\ulcorner\bot\urcorner).
+\]
+従って
+\[
+ \mathrm{PA}\vdash
+ \operatorname{Con}(T)\to
+ \neg\operatorname{Prov}_T(\ulcorner G_T\urcorner).
+\]
+式 (3) を用いると
+\[
+ \mathrm{PA}\vdash\operatorname{Con}(T)\to G_T.
+ \tag{6}
+\]
+もし $T\vdash\operatorname{Con}(T)$ なら，
+$T\supseteq\mathrm{PA}$ なので式 (6) から
+$T\vdash G_T$ を得る．
+しかし $T$ は無矛盾であるから，
+定理\ref{thm:first}によって $T\not\vdash G_T$ である．
+矛盾するので
+$T\not\vdash\operatorname{Con}(T)$ となる．
+\end{proof}
+
+\begin{remark}
+第二不完全性定理は，証明可能性述語の
+\emph{標準的な算術化}に依存する．
+無矛盾性を別の非標準的な式で表現した場合，
+同じ結論が無条件に成り立つとは限らない．
+また定理は，より強い理論が $T$ の無矛盾性を
+証明できないと主張しているわけではない．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Gödel文の証明不能性を実際に追う．}
+\begin{proposition}[無矛盾性を使う箇所]
+$T\supseteq\mathrm{PA}$ を再帰的可算公理系で
+無矛盾とし，
+\[
+T\vdash G\leftrightarrow
+\neg\operatorname{Prov}_T(\ulcorner G\urcorner)
+\]
+を満たす算術文 $G$ を取る．このとき
+$T\not\vdash G$ である．
+\end{proposition}
+\begin{proof}
+$T\vdash G$ と仮定する．正しい $T$-証明コードの
+標準自然数 $n$ が存在するので，
+証明述語の数値例の表現可能性から
+$\mathrm{PA}\vdash\operatorname{Proof}_T(
+\overline n,\ulcorner G\urcorner)$．
+存在量化によって
+$T\vdash\operatorname{Prov}_T(\ulcorner G\urcorner)$
+となる．一方，上の同値式と $T\vdash G$ から
+$T\vdash\neg\operatorname{Prov}_T(\ulcorner G\urcorner)$．
+これは無矛盾性に反する．
+\end{proof}
+\noindent\textbf{到達確認．}
+上の証明から，$T$ の無矛盾性だけで
+$T\not\vdash\neg G$ まで導けるか．
+\par\noindent\textbf{解答．}
+このGödel文に対しては一般に導けない．
+否定の証明不能性には $\omega$-無矛盾性など
+追加の仮定が必要である．
+単なる無矛盾性から独立な文を得るには
+Rosserの改良を用いる．
+\end{document}
