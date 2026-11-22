@@ -19,7 +19,7 @@ async function loadPublicPdf(){
   document.querySelector("#viewerPdfLink").href=item.pdf;
   document.querySelector("#viewerDownloadLink").href=item.pdf;
   document.querySelector("#viewerTexLink").href=item.tex;
-  document.querySelector("#viewerFrame").src=item.pdf;
+  void window.renderPdfPages(document.querySelector("#viewerPages"),item.pdf).catch(()=>{});
   document.querySelector("#viewerDocument").hidden=false;
   status.textContent="";
  }catch(e){status.textContent="PDFを表示できませんでした。再読み込みするか、公開一覧からファイルを開いてください。";}
