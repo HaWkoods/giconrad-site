@@ -1,0 +1,689 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{情報量と情報源符号化定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+確率分布からエントロピーを計算し，
+二元接頭語符号を具体的に構成して平均符号長を求められるようになる．
+符号長の下界を用いて得た符号の最適性も判定する．
+前提は有限確率分布，対数と有限和である．
+
+\section{離散情報量とエントロピー}
+
+本稿では有限集合上の離散確率変数を扱う．
+対数の底は特に断らない限り $2$ とし，
+$0\log 0=0$ と約束する．
+
+\begin{definition}
+$X$ の取り得る値を $x_1,\dots,x_m$，
+$p_i=P(X=x_i)$ とする．
+$p_i>0$ に対する自己情報量を
+$I(x_i)=-\log_2p_i$ といい，
+\emph{Shannonエントロピー}を
+\[
+ H(X)=-\sum_{i=1}^mp_i\log_2p_i
+\]
+と定める．
+\end{definition}
+
+\begin{lemma}[対数の基本不等式]\label{lem:log}
+任意の $u>0$ に対して
+\[
+ \log u\le u-1
+\]
+が成り立ち，等号は $u=1$ のとき，かつそのときに限る．
+ここでは自然対数を用いる．
+\end{lemma}
+\begin{proof}
+$\varphi(u)=u-1-\log u$ と置くと
+$\varphi'(u)=1-1/u$ である．
+従って $\varphi$ は $(0,1]$ で減少し
+$[1,\infty)$ で増加するため，
+最小値は $\varphi(1)=0$ である．
+\end{proof}
+
+\begin{definition}
+確率分布 $p=(p_i)$，$q=(q_i)$ で
+$p_i>0$ なら $q_i>0$ とする．
+Kullback--Leiblerダイバージェンスを
+\[
+ D(p\Vert q)=\sum_{i:p_i>0}
+ p_i\log_2\frac{p_i}{q_i}
+\]
+と定める．
+\end{definition}
+
+\begin{theorem}[Gibbsの不等式]\label{thm:gibbs}
+任意の有限確率分布 $p,q$ に対して
+$D(p\Vert q)\ge0$ が成り立つ．
+ただし $p_i>0,q_i=0$ が存在する場合は
+$D(p\Vert q)=+\infty$ とする．
+等号が成り立つのは $p=q$ のとき，かつそのときに限る．
+\end{theorem}
+\begin{proof}
+$D(p\Vert q)<\infty$ とする．
+補題\ref{lem:log}を
+$u=q_i/p_i$ に適用すると
+\[
+ -p_i\log\frac{p_i}{q_i}
+ =p_i\log\frac{q_i}{p_i}
+ \le q_i-p_i
+\]
+である．$p_i>0$ の全ての $i$ で足し合わせると
+\[
+ -(\log 2)D(p\Vert q)
+ \le\sum_{i:p_i>0}q_i-\sum_{i:p_i>0}p_i
+ \le1-1=0.
+\]
+従って $D(p\Vert q)\ge0$ となる．
+等号が成り立つなら，
+全ての $p_i>0$ について $q_i=p_i$ でなければならず，
+さらに $p_i=0$ の箇所には $q_i=0$ が必要である．
+よって $p=q$ である．
+逆は定義から明らかである．
+\end{proof}
+
+\begin{corollary}[エントロピーの最大値]\label{cor:max-entropy}
+$X$ が高々 $m$ 個の値を取るなら
+\[
+ 0\le H(X)\le\log_2m
+\]
+である．上限の等号は $X$ が $m$ 個の値を一様確率で取るとき，
+かつそのときに限る．
+\end{corollary}
+\begin{proof}
+$0\le p_i\le1$ だから
+$-p_i\log_2p_i\ge0$ であり下限を得る．
+$m$ 個の値を補って $p$ を長さ $m$ の分布とし，
+一様分布 $q_i=1/m$ を取ると
+\[
+ D(p\Vert q)=\sum_i p_i\log_2p_i+\log_2m
+ =\log_2m-H(X)\ge0.
+\]
+等号の特徴づけは定理\ref{thm:gibbs}による．
+\end{proof}
+
+\section{条件付きエントロピーと相互情報量}
+
+\begin{definition}
+有限値確率変数 $X,Y$ の同時分布を
+$p_{ij}=P(X=x_i,Y=y_j)$ とする．
+条件付きエントロピーを
+\[
+ H(X\mid Y)
+ =\sum_{j:P(Y=y_j)>0}P(Y=y_j)H(X\mid Y=y_j)
+\]
+と定める．
+また相互情報量を
+\[
+ I(X;Y)=D(P_{X,Y}\Vert P_X\otimes P_Y)
+\]
+と定める．
+\end{definition}
+
+\begin{proposition}[エントロピーの鎖則]\label{prop:chain}
+有限値確率変数 $X,Y$ に対し
+\[
+ H(X,Y)=H(Y)+H(X\mid Y),\qquad
+ I(X;Y)=H(X)-H(X\mid Y).
+\]
+従って $I(X;Y)\ge0$ であり，
+$I(X;Y)=0$ と $X,Y$ の独立性は同値である．
+\end{proposition}
+\begin{proof}
+$P(Y=y_j)>0$ のとき
+$p_{ij}=P(Y=y_j)P(X=x_i\mid Y=y_j)$
+と書けるので
+\[
+ \begin{aligned}
+ H(X,Y)
+ &=-\sum_jP(Y=y_j)\log_2P(Y=y_j)\\
+ &\quad-\sum_{i,j}p_{ij}
+       \log_2P(X=x_i\mid Y=y_j).
+ \end{aligned}
+\]
+右辺は $H(Y)+H(X\mid Y)$ に等しい．
+また
+\begin{align*}
+ I(X;Y)
+ &=\sum_{i,j}p_{ij}
+   \log_2\frac{p_{ij}}{P(X=x_i)P(Y=y_j)}\\
+ &=H(X)+H(Y)-H(X,Y)\\
+ &=H(X)-H(X\mid Y).
+\end{align*}
+非負性と等号成立条件はGibbsの不等式による．
+$P_{X,Y}=P_X\otimes P_Y$ は独立性の定義である．
+\end{proof}
+
+\begin{proposition}[データ処理不等式]\label{prop:dpi}
+有限値確率変数 $X,Y,Z$ がMarkov連鎖
+$X\to Y\to Z$ をなす，すなわち
+$X$ と $Z$ が $Y$ のもとで条件付き独立であるとする．
+このとき
+\[
+ I(X;Z)\le I(X;Y).
+\]
+\end{proposition}
+\begin{proof}
+条件付き相互情報量を
+\[
+ I(X;Z\mid Y)=
+ \sum_yP(Y=y)
+ D(P_{X,Z\mid Y=y}\Vert
+   P_{X\mid Y=y}\otimes P_{Z\mid Y=y})
+\]
+と定める．Gibbsの不等式から非負であり，
+条件付き独立性のもとでは零となる．
+鎖則を同時分布に適用すれば
+\[
+ I(X;Y,Z)=I(X;Y)+I(X;Z\mid Y)
+ =I(X;Z)+I(X;Y\mid Z)
+\]
+を得る．
+Markov性から $I(X;Z\mid Y)=0$ なので
+\[
+ I(X;Y)-I(X;Z)=I(X;Y\mid Z)\ge0
+\]
+となる．
+\end{proof}
+
+\section{符号と一意復号可能性}
+
+\begin{definition}
+$D\ge2$ を整数とし，$D$ 個の記号からなるアルファベットを
+$\mathcal D$ とする．
+有限情報源の文字集合 $\mathcal X=\{x_1,\dots,x_m\}$ に対して，
+$\mathcal D$ 上の有限語を対応させる単射
+$c:\mathcal X\to\mathcal D^*$ を\emph{符号}という．
+符号語の長さを $\ell_i=|c(x_i)|$ とする．
+異なる情報源文字列が同じ連結符号語を持たない符号を
+\emph{一意復号可能符号}という．
+どの符号語も別の符号語の真の接頭語でないとき
+\emph{接頭語符号}という．
+\end{definition}
+
+\begin{lemma}\label{lem:prefix-unique}
+接頭語符号は一意復号可能である．
+\end{lemma}
+\begin{proof}
+接頭語符号の連結語を左から読む．
+先頭の符号語は，最初に現れる符号語の終端で
+一意に決まる．実際，二つの符号語が
+一方が他方の接頭語となることは定義により不可能である．
+先頭の符号語を取り除いて同じ操作を繰り返せば，
+全ての符号語が一意に復元される．
+\end{proof}
+
+\section{Kraft--McMillanの不等式}
+
+\begin{theorem}[Kraftの不等式]\label{thm:kraft}
+$D$ 元アルファベット上の有限な接頭語符号の
+符号長 $\ell_1,\dots,\ell_m$ は
+\[
+ \sum_{i=1}^mD^{-\ell_i}\le1
+\]
+を満たす．逆に非負整数 $\ell_i$ がこの不等式を満たすなら，
+これらを符号長に持つ接頭語符号が存在する．
+\end{theorem}
+\begin{proof}
+まず符号が与えられたとする．
+$L=\max_i\ell_i$ と置く．
+符号語 $c(x_i)$ を接頭語として持つ長さ $L$ の語は
+ちょうど $D^{L-\ell_i}$ 個ある．
+接頭語条件により，
+異なる $i$ のこれらの集合は互いに交わらない．
+長さ $L$ の語は全部で $D^L$ 個しかないので
+\[
+ \sum_iD^{L-\ell_i}\le D^L
+\]
+となる．両辺を $D^L$ で割れば必要条件を得る．
+
+逆に符号長を非減少順に並べて
+$\ell_1\le\cdots\le\ell_m$ とする．
+\[
+ a_i=\sum_{j<i}D^{-\ell_j}
+\]
+と置くと，
+$D^{\ell_i}a_i$ は整数である．
+実際 $j<i$ なら $\ell_j\le\ell_i$ なので
+$D^{\ell_i-\ell_j}$ が整数となる．
+$a_i$ の $D$ 進小数表示を先頭から $\ell_i$ 桁まで取り，
+対応する長さ $\ell_i$ の語を $c(x_i)$ とする．
+この符号語に対応する $D$ 進区間は
+\[
+ [a_i,a_i+D^{-\ell_i})
+\]
+である．これらの区間は $i$ に関して互いに交わらず，
+Kraftの不等式によって $[0,1)$ に含まれる．
+もしある符号語が他の符号語の接頭語なら，
+その短い語に対応する $D$ 進区間が
+長い語の区間を含んでしまう．
+これは互いに交わらないことに反する．
+従って接頭語符号が得られる．
+\end{proof}
+
+\begin{theorem}[McMillanの不等式]\label{thm:mcmillan}
+有限な一意復号可能符号の符号長
+$\ell_1,\dots,\ell_m$ についても
+\[
+ \sum_{i=1}^mD^{-\ell_i}\le1
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$K=\sum_iD^{-\ell_i}$ と置き，
+$\ell_{\min}=\min_i\ell_i$，
+$\ell_{\max}=\max_i\ell_i$ とする．
+任意の正整数 $n$ について
+\[
+ K^n=\sum_{(i_1,\dots,i_n)}
+ D^{-(\ell_{i_1}+\cdots+\ell_{i_n})}.
+\]
+同じ合計符号長 $L$ の項をまとめて，
+そのような添字列の個数を $A_{n,L}$ と書けば
+\[
+ K^n=\sum_{L=n\ell_{\min}}^{n\ell_{\max}}
+ A_{n,L}D^{-L}.
+\]
+一意復号可能性により，
+長さ $L$ の連結符号語を持つ異なる添字列は
+異なる $D$ 元語を与える．
+長さ $L$ の語は $D^L$ 個なので
+$A_{n,L}\le D^L$ である．従って
+\[
+ K^n\le n(\ell_{\max}-\ell_{\min})+1.
+\]
+両辺の $n$ 乗根を取り $n\to\infty$ とすると
+$K\le1$ を得る．
+\end{proof}
+
+\section{平均符号長とエントロピー}
+
+\begin{definition}
+情報源の確率分布 $p=(p_i)$ と
+符号長 $\ell_i$ に対して，
+平均符号長を
+\[
+ L(c)=\sum_{i=1}^mp_i\ell_i
+\]
+と定める．
+$D$ 元符号の場合のエントロピーを
+$H_D(X)=-\sum_ip_i\log_Dp_i$ と書く．
+\end{definition}
+
+\begin{theorem}[符号長の下界]\label{thm:source-lower}
+任意の有限一意復号可能 $D$ 元符号 $c$ に対し
+\[
+ L(c)\ge H_D(X)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$K=\sum_iD^{-\ell_i}\le1$ と置き，
+$q_i=D^{-\ell_i}/K$ と定める．
+$(q_i)$ は確率分布であり $q_i>0$ である．
+Gibbsの不等式を底 $D$ の対数で表して
+\[
+ \begin{aligned}
+ 0\le D_D(p\Vert q)
+ &=\sum_ip_i\log_Dp_i
+   +\sum_ip_i\ell_i+\log_D K\\
+ &=-H_D(X)+L(c)+\log_D K.
+ \end{aligned}
+\]
+従って
+\[
+ L(c)\ge H_D(X)-\log_DK\ge H_D(X)
+\]
+を得る．
+\end{proof}
+
+\begin{theorem}[Shannon符号の上界]\label{thm:shannon-upper}
+有限情報源 $X$ に対して
+ある接頭語符号 $c$ が存在し，
+\[
+ H_D(X)\le L(c)<H_D(X)+1
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$p_i=0$ の文字は平均符号長に寄与しないので，
+まず正の確率を持つ文字だけを考える．
+\[
+ \ell_i=\left\lceil-\log_Dp_i\right\rceil
+\]
+と置くと
+$D^{-\ell_i}\le p_i$ なので
+$\sum_iD^{-\ell_i}\le1$ である．
+Kraftの定理の逆方向によって
+これらを符号長に持つ接頭語符号が存在する．
+さらに
+\[
+ -\log_Dp_i\le\ell_i<-\log_Dp_i+1
+\]
+なので，$p_i$ を掛けて和を取れば
+$H_D(X)\le L(c)<H_D(X)+1$ を得る．
+確率零の文字を含める場合には，
+正の確率を持つ文字の符号木を必要に応じて深く拡張し，
+確率零の文字に未使用の枝を割り当てる．
+この操作で正の確率の文字の符号長が変化しないようにするには，
+初めに正の確率の文字に少なくとも1桁の余裕を確保するか，
+確率零の文字を情報源の台から除外して符号を定義する．
+本定理では情報源の台を符号化対象とする規約を採用する．
+\end{proof}
+
+\section{情報源符号化定理}
+
+\begin{theorem}[無雑音情報源符号化定理]\label{thm:source-coding}
+$X_1,X_2,\dots$ を有限アルファベット上の
+独立同分布確率変数とし，共通分布のエントロピーを
+$H_D(X)$ とする．
+長さ $n$ のブロック $X^n=(X_1,\dots,X_n)$ に対する
+任意の一意復号可能な $D$ 元符号の平均符号長を $L_n$ とすると
+\[
+ \frac{L_n}{n}\ge H_D(X)
+\]
+である．さらに各 $n$ に対して接頭語符号が存在し，
+\[
+ H_D(X)\le\frac{L_n}{n}
+ <H_D(X)+\frac1n
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+独立同分布性により
+\[
+ P(X^n=(x_1,\dots,x_n))=\prod_{k=1}^nP(X_k=x_k)
+\]
+なので，対数を取って平均すると
+\[
+ H_D(X^n)=\sum_{k=1}^nH_D(X_k)=nH_D(X).
+\]
+定理\ref{thm:source-lower}を
+ブロック確率変数 $X^n$ に適用すると
+$L_n\ge H_D(X^n)=nH_D(X)$ となる．
+一方，定理\ref{thm:shannon-upper}を $X^n$ に適用すれば
+$L_n<H_D(X^n)+1=nH_D(X)+1$
+を満たす接頭語符号が存在する．
+両辺を $n$ で割って結論を得る．
+\end{proof}
+
+\begin{remark}
+この定理は可変長・平均符号長に関する
+無雑音情報源符号化定理である．
+雑音のある通信路に対する通信路符号化定理とは異なる．
+また，情報源が独立同分布であることを
+エントロピーの加法性に用いている．
+\end{remark}
+
+\section{典型列と大数の法則}
+
+\begin{definition}
+有限アルファベット上の独立同分布情報源 $X_i$ に対し，
+任意の $\varepsilon>0$ と正整数 $n$ について
+\[
+ A_{n,\varepsilon}
+ =\left\{x^n:
+ \left|-\frac1n\log_2P(X^n=x^n)-H(X)\right|
+ <\varepsilon\right\}
+\]
+を典型集合という．確率零の文字を含む列は含めない．
+\end{definition}
+
+\begin{theorem}[漸近等分割性]\label{thm:aep}
+任意の $\varepsilon>0$ について
+\[
+ P(X^n\in A_{n,\varepsilon})\longrightarrow1.
+\]
+さらに $P(X^n\in A_{n,\varepsilon})\ge1-\delta$ とすると
+\[
+ (1-\delta)2^{n(H(X)-\varepsilon)}
+ \le |A_{n,\varepsilon}|
+ \le2^{n(H(X)+\varepsilon)}
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$Y_i=-\log_2P(X_i)$ と置く．
+情報源のアルファベットは有限であり，
+正の確率を持つ文字だけを考えるから
+$Y_i$ は有界な独立同分布確率変数である．
+その期待値は $EY_i=H(X)$ である．
+\[
+ -\frac1n\log_2P(X^n)
+ =\frac1n\sum_{i=1}^nY_i
+\]
+なので，大数の法則によって右辺は
+$H(X)$ に確率収束する．これが最初の主張である．
+
+$x^n\in A_{n,\varepsilon}$ なら
+\[
+ 2^{-n(H(X)+\varepsilon)}
+ <P(X^n=x^n)
+ <2^{-n(H(X)-\varepsilon)}
+\]
+である．典型集合の確率は高々1なので
+\[
+ |A_{n,\varepsilon}|
+ 2^{-n(H(X)+\varepsilon)}<1
+\]
+から上界を得る．
+一方，典型集合の確率が $1-\delta$ 以上なら
+\[
+ 1-\delta
+ \le\sum_{x^n\in A_{n,\varepsilon}}P(X^n=x^n)
+ \le |A_{n,\varepsilon}|2^{-n(H(X)-\varepsilon)}
+\]
+なので下界を得る．
+\end{proof}
+
+\section{Huffman符号と具体例}
+
+\begin{theorem}[Huffman符号の最適性]\label{thm:huffman}
+有限な二元情報源の確率分布 $p_1,\dots,p_m>0$
+に対して，確率の最も小さい二つの文字を
+一つの仮想文字にまとめ，この操作を再帰的に繰り返す
+Huffman算法によって得た二元接頭語符号は，
+平均符号長を最小にする．
+\end{theorem}
+\begin{proof}
+$ m=1$ の場合は長さ零の語で表せるので自明である．
+$m\ge2$ とする．
+任意の接頭語符号は二分木によって表せる．
+もし木の内部頂点がただ一つの子しか持たなければ，
+その頂点を縮約して子以下の符号長を1だけ短縮できるので，
+正の確率を持つ文字の平均符号長は狭義に減少する．
+従って最適符号の木は全ての内部頂点が二つの子を持つ
+完全二分木としてよい．
+有限個の葉からなる完全二分木の最大深さは
+$m-1$ 以下なので，最適な木は有限個の候補の中に存在する．
+
+最深部の葉を取ると，その兄弟も葉でなければならない．
+もし兄弟が内部頂点ならその子孫にさらに深い葉が存在し，
+最深であることに矛盾するからである．
+従って最深部には兄弟の二葉がある．
+二つの最小確率の文字を $a,b$ とする．
+符号長 $\ell_a<\ell_c$ であるなら，
+確率 $p_a\le p_c$ のもとで文字 $a,c$ の割当てを交換すると，
+平均符号長の変化は
+\[
+ (p_a\ell_c+p_c\ell_a)
+ -(p_a\ell_a+p_c\ell_c)
+ =(p_a-p_c)(\ell_c-\ell_a)\le0
+\]
+となる．
+従って最適な木の最深部の兄弟の二葉へ
+確率最小の $a,b$ を割り当てることができる．
+この二葉を親頂点にまとめると，
+確率 $p_a+p_b$ の新しい仮想文字を持つ
+$m-1$ 文字の符号木が得られる．
+元の平均符号長と新しい平均符号長の差は
+$p_a+p_b$ に等しい．
+もし縮約後の木が最適でなければ，
+より短い平均符号長の木で置き換えたのちに
+仮想文字を元の兄弟二葉へ展開することで，
+元の $m$ 文字に対してさらに良い符号が得られ，
+最適性に矛盾する．
+従って縮約後も最適である．
+$m-1$ に関する帰納法により，
+最小確率の二文字を順に統合するHuffman算法は
+最適な接頭語符号を構成する．
+\end{proof}
+
+\begin{example}[二元非対称情報源]
+$P(X=0)=3/4$，$P(X=1)=1/4$ とする．
+符号 $c(0)=0$，$c(1)=1$ は接頭語符号で，
+平均符号長は $L=1$ bit/記号である．
+一方
+\[
+ H(X)=-\frac34\log_2\frac34
+       -\frac14\log_2\frac14
+\]
+であり，$H(X)<1$ である．
+長いブロックをまとめて符号化することによって，
+1記号当たりの平均符号長を $H(X)$ に近づけられる．
+\end{example}
+\begin{proof}
+二元接頭語符号では二つの異なる文字に
+空でない符号語が必要であるから，
+平均符号長は少なくとも1である．
+表示した符号は平均1を実現する．
+$P(X=0)\ne P(X=1)$ なので
+エントロピーの最大値の特徴づけから $H(X)<1$ である．
+最後の主張は定理\ref{thm:source-coding}による．
+\end{proof}
+
+\begin{remark}
+エントロピーは平均情報量を表し，
+Kraft--McMillanの不等式は一意復号可能性の制約を
+数値的な不等式へ変換する．
+情報源符号化定理はこの二つの理論を組み合わせ，
+情報源を無損失で符号化する際の漸近的な平均符号長を特徴づける．
+\end{remark}
+
+
+\section{符号を実際に作り，最適性を証明する}
+\begin{example}[4記号の接頭語符号]
+記号 $A,B,C,D$ がそれぞれ
+\[
+ (p_A,p_B,p_C,p_D)
+ =\left(\frac12,\frac14,\frac18,\frac18\right)
+\]
+の確率で現れるとする．次の符号を与える：
+\[
+ A\mapsto0,\quad B\mapsto10,\quad
+ C\mapsto110,\quad D\mapsto111.
+\]
+どの符号語も他の符号語の接頭辞ではない．
+従って符号語を左から順に読めば一意に復号できる．
+符号語長は $(1,2,3,3)$ だからKraft和は
+\[
+ 2^{-1}+2^{-2}+2^{-3}+2^{-3}=1
+\]
+である．平均符号長は
+\[
+ L=\frac12\cdot1+\frac14\cdot2
+   +\frac18\cdot3+\frac18\cdot3=\frac74.
+\]
+一方エントロピーは
+\[
+ H(X)=-\sum_i p_i\log_2p_i
+ =\frac12\cdot1+\frac14\cdot2
+  +\frac18\cdot3+\frac18\cdot3=\frac74.
+\]
+一般の一意復号可能な二元符号には
+$L\ge H(X)$ が成立するから，
+この符号は平均符号長の意味で最適である．
+\end{example}
+\begin{proposition}[具体的な一意復号]
+上の符号で $ACB$ を符号化すると
+ビット列は $011010$ となり，
+このビット列から元の3記号を一意に復元できる．
+\end{proposition}
+\begin{proof}
+$A,C,B$ の符号語を順に連結すると
+$0\,110\,10=011010$．逆に左から読み，
+最初の $0$ が $A$，次の $110$ が $C$，
+最後の $10$ が $B$ である．
+各符号語は他の符号語の接頭辞でないので，
+途中で別の記号として区切ることはできない．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+この符号を用いて $DABA$ を符号化し，
+そのビット長を求めよ．
+
+\medskip\noindent\textbf{解答．}
+$D\mapsto111$，$A\mapsto0$，
+$B\mapsto10$，$A\mapsto0$ なので
+ビット列は $1110100$ で，長さは $3+1+2+1=7$．
+このように実際の符号化・復号と理論上の平均符号長を
+区別して考える．
+
+\end{document}

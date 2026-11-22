@@ -1,0 +1,468 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{線形制御理論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+
+\section*{本稿の到達目標}
+本稿の中心的な課題は，線形状態方程式
+$\dot x=Ax+Bu$ について，指定した終状態へ到達できるかを判定し，
+可能な場合に入力を\emph{実際に構成する}ことである．
+そのために可制御行列と可制御Gram行列の関係を証明し，
+具体的な二重積分器に対して最小エネルギー入力まで求める．
+可観測性・極配置・最適制御・状態推定はこの基本的な課題からの発展とする．
+前提知識は有限次元線形代数，行列の指数関数，常微分方程式の初歩，
+および定積分である．
+
+\section{線形状態方程式}
+$A\in\mathbb R^{n\times n}$，$B\in\mathbb R^{n\times m}$ とし
+$\dot x=Ax+Bu$ を考える．入力 $u$ は区分連続とする．
+\begin{definition}
+組 $(A,B)$ が可制御であるとは，任意の初期状態 $x_0$ と終状態 $x_1$ に対して
+ある時間 $T>0$ と入力 $u$ により $x(T)=x_1$ とできることをいう．
+\end{definition}
+\begin{lemma}[状態遷移の表示]
+\[
+ x(T)=e^{AT}x_0+\int_0^Te^{A(T-s)}Bu(s)ds.
+\]
+\end{lemma}
+\begin{proof}
+$\frac d{dt}(e^{-At}x(t))=e^{-At}Bu(t)$ を積分して整理する．
+\end{proof}
+\section{Kalmanの可制御性条件}
+\begin{theorem}[Kalman]
+$\mathcal C=[B,AB,\ldots,A^{n-1}B]$ とすると，
+$(A,B)$ が可制御であるための必要十分条件は
+$\operatorname{rank}\mathcal C=n$ である．
+\end{theorem}
+\begin{proof}
+固定した $T>0$ に対して可制御Gram行列
+\[
+ W_T=\int_0^T e^{As}BB^Te^{A^Ts}ds
+\]
+を考える．$v^TW_Tv=\int_0^T\norm{B^Te^{A^Ts}v}^2ds$ である．
+ゆえに $W_T$ が特異であることと，ある $v\ne0$ で
+$B^Te^{A^Ts}v=0$ が $0\le s\le T$ で成立することは同値である．
+左辺は解析関数なので，これを $s=0$ で繰り返し微分すると
+$B^T(A^T)^jv=0$（全ての $j\ge0$）を得る．
+Cayley--Hamiltonの定理から $j\ge n$ は $j<n$ の線形結合であるため，
+これは $\mathcal C^Tv=0$ と同値である．
+従って $W_T$ が正定値であることと階数条件は同値である．
+正定値なら入力
+$u(s)=B^Te^{A^T(T-s)}W_T^{-1}(x_1-e^{AT}x_0)$ と置くと
+前補題から $x(T)=x_1$．
+逆に $W_T$ が特異なら到達可能な差
+$x(T)-e^{AT}x_0$ は $\operatorname{Ran}W_T$ に含まれ，
+全ての終状態には到達できない．
+\end{proof}
+
+\section{到達制御の構成：二重積分器}
+ここでは可制御性を抽象的な存在命題として終わらせず，
+実際の入力を求める．
+\begin{example}[位置と速度の制御]\label{ex:double-integrator}
+\[
+ A=\begin{pmatrix}0&1\\0&0\end{pmatrix},\qquad
+ B=\begin{pmatrix}0\\1\end{pmatrix},\qquad x(0)=0
+\]
+とし，時刻 $T>0$ に $x(T)=(a,b)^T$ とする．
+この目標を達成する入力のうち
+$\int_0^T u(t)^2\,dt$ を最小にするものを求めよ．
+\end{example}
+\begin{proof}[解答]
+$A^2=0$ なので
+\[
+ e^{As}B=\begin{pmatrix}s\\1\end{pmatrix},\qquad
+ \mathcal C=[B,AB]=\begin{pmatrix}0&1\\1&0\end{pmatrix}.
+\]
+$\det\mathcal C=-1$ より可制御である．
+可制御Gram行列を計算すると
+\[
+ W_T=\int_0^T
+ \begin{pmatrix}s^2&s\\s&1\end{pmatrix}\,ds
+ =\begin{pmatrix}T^3/3&T^2/2\\T^2/2&T\end{pmatrix},
+ \quad
+ \det W_T=\frac{T^4}{12}>0.
+\]
+その逆行列は
+\[
+ W_T^{-1}=
+ \begin{pmatrix}12/T^3&-6/T^2\\-6/T^2&4/T\end{pmatrix}.
+\]
+よって次の入力を考える：
+\[
+ u_*(t)=B^Te^{A^T(T-t)}W_T^{-1}
+          \begin{pmatrix}a\\b\end{pmatrix}
+ =\frac{6a}{T^2}-\frac{2b}{T}
+  +\left(\frac{6b}{T^2}-\frac{12a}{T^3}\right)t.
+\]
+状態遷移公式から
+\[
+ x(T)=\int_0^T e^{A(T-t)}Bu_*(t)\,dt
+ =W_TW_T^{-1}\begin{pmatrix}a\\b\end{pmatrix}
+ =\begin{pmatrix}a\\b\end{pmatrix}.
+\]
+最小エネルギー性も示す．同じ終状態に達する
+任意の区分連続入力 $u$ について $h=u-u_*$ と置くと，
+$\int_0^T e^{A(T-t)}Bh(t)\,dt=0$ である．
+$v=W_T^{-1}(a,b)^T$ とすれば
+\[
+ \int_0^T u_*(t)h(t)\,dt
+ =v^T\int_0^T e^{A(T-t)}Bh(t)\,dt=0.
+\]
+従って
+\[
+ \int_0^T u(t)^2\,dt
+ =\int_0^T u_*(t)^2\,dt+\int_0^T h(t)^2\,dt
+ \ge\int_0^T u_*(t)^2\,dt.
+\]
+等号なら区分連続性から $h=0$（各連続区間の内部で）となり，
+入力は積分で見て一意である．
+\end{proof}
+\begin{remark}
+この計算は任意の可制御な対 $(A,B)$ に一般化できる．
+$W_T$ が正定値なら $v=x_1-e^{AT}x_0$ に対し
+$u_*(t)=B^Te^{A^T(T-t)}W_T^{-1}v$ は目標へ到達する．
+上と同じ直交性の議論により，その入力は
+平方可積分入力の中でもエネルギーを最小化する．
+\end{remark}
+
+\section{可観測性と双対性}
+出力 $y=Cx$ を考える（$C\in\mathbb R^{p\times n}$）．
+\begin{definition}
+入力が既知のとき出力 $y(t)$（$0\le t\le T$）から初期状態を一意に決定できるなら
+$(C,A)$ は可観測であるという．
+\end{definition}
+\begin{theorem}[可観測性階数条件]
+$\mathcal O=\begin{bmatrix}C\\CA\\\vdots\\CA^{n-1}\end{bmatrix}$ とする．
+$(C,A)$ が可観測であるための必要十分条件は
+$\operatorname{rank}\mathcal O=n$ である．
+\end{theorem}
+\begin{proof}
+二つの初期状態の差 $v$ が同じ出力を生むことと
+$Ce^{At}v=0$（$0\le t\le T$）は同値である．
+解析関数のTaylor展開とCayley--Hamiltonの定理により，
+これは $CA^jv=0$（$0\le j<n$），すなわち $\mathcal Ov=0$ と同値である．
+核が零であることが条件である．
+\end{proof}
+
+
+\section{可制御性と極配置}
+\begin{theorem}[単入力系の極配置]
+$A\in\mathbb R^{n\times n}$，$b\in\mathbb R^n$ とし
+$\mathcal C=[b,Ab,\ldots,A^{n-1}b]$ が可逆とする．
+任意のモニック実多項式
+$p(\lambda)=\lambda^n+c_{n-1}\lambda^{n-1}+\cdots+c_0$ に対し
+ある行ベクトル $k^T$ が存在して，
+$A-bk^T$ の特性多項式は $p$ となる．
+\end{theorem}
+\begin{proof}
+$q^T=e_n^T\mathcal C^{-1}$ と置けば
+$q^TA^jb=0$（$0\le j<n-1$），$q^TA^{n-1}b=1$ である．
+各行を $q^T,q^TA,\ldots,q^TA^{n-1}$ とする行列を $T$ とする．
+$T\mathcal C$ の $(i,j)$ 成分は $q^TA^{i+j-2}b$ であり，
+反対角線より上の成分は零，反対角線上は1だから $T$ は可逆である．
+変換 $z=Tx$ により $Tb=e_n$ となり，
+$TAT^{-1}$ の最初の $n-1$ 行はそれぞれ次の座標を取り出す行である．
+$A$ の特性多項式を
+$\lambda^n+a_{n-1}\lambda^{n-1}+\cdots+a_0$ とすると，
+Cayley--Hamiltonの定理から最後の行は
+$(-a_0,\ldots,-a_{n-1})$ となる．
+従ってこの座標の入力 $u=-\widetilde k^Tz$ により，
+最後の行を任意の
+$(-c_0,\ldots,-c_{n-1})$ に変更できる．
+具体的には $\widetilde k_j=c_{j-1}-a_{j-1}$ と取ればよい．
+この伴随行列の特性多項式は $p$ だから，
+元の座標で $k^T=\widetilde k^TT$ と置いて結論を得る．
+\end{proof}
+\section{発展：線形二次最適制御の十分条件}
+\begin{theorem}[安定化Riccati解からのLQR制御]
+$Q=Q^T\ge0$，$R=R^T>0$ とし，
+対称行列 $P\ge0$ が
+\[
+ A^TP+PA-PBR^{-1}B^TP+Q=0
+\]
+を満たし，$A-BR^{-1}B^TP$ の固有値の実部が全て負であると仮定する．
+$u_*(t)=-R^{-1}B^TPx(t)$ は
+$\dot x=Ax+Bu$，$x(0)=x_0$ に対して
+\[
+ J(u)=\int_0^\infty(x^TQx+u^TRu)dt
+\]
+を，全ての $x(t)\to0$ かつ $J(u)<\infty$ を満たす許容入力の中で最小にし，
+$J(u_*)=x_0^TPx_0$ となる．
+\end{theorem}
+\begin{proof}
+$K=R^{-1}B^TP$，$V(x)=x^TPx$ と置く．
+状態方程式とRiccati方程式を用いて計算すると
+\[
+ \frac d{dt}V(x(t))
+ =-x^TQx-u^TRu+(u+Kx)^TR(u+Kx).
+\]
+これを $[0,T]$ で積分して整理すれば
+\[
+ \int_0^T(x^TQx+u^TRu)dt
+ =V(x_0)-V(x(T))+
+ \int_0^T(u+Kx)^TR(u+Kx)dt.
+\]
+許容入力では $x(T)\to0$ なので $V(x(T))\to0$．
+右端の積分は非負だから $J(u)\ge V(x_0)$ である．
+一方 $u_*=-Kx$ の閉ループ行列 $A-BK$ は仮定から安定なので
+$x(t)\to0$ である．平方項は恒等的に零となり，
+$J(u_*)=V(x_0)$ を得る．
+\end{proof}
+\begin{remark}
+Riccati方程式の安定化解の存在には可安定性・可検出性などが関係する．
+上の定理はその存在を仮定した上での最適性の完全な証明である．
+\end{remark}
+
+\section{発展：安定化Riccati解の存在}
+\begin{theorem}[可安定性・可検出性によるRiccati解]
+$A\in\mathbb R^{n\times n}$，$B\in\mathbb R^{n\times m}$，
+$Q=Q^T\ge0$，$R=R^T>0$ とする．
+ある $F\in\mathbb R^{m\times n}$ に対して $A-BF$ がHurwitzであると仮定する．
+さらに $Av=\lambda v$，$\operatorname{Re}\lambda\ge0$，
+$Q^{1/2}v=0$ を満たす複素ベクトル $v$ は零に限るとする．
+このとき代数的Riccati方程式
+\[
+ A^TP+PA-PBR^{-1}B^TP+Q=0
+\]
+は対称半正定値解 $P$ を持ち，
+$A-BR^{-1}B^TP$ はHurwitzとなる．
+\end{theorem}
+\begin{proof}
+$\|v\|_R^2=v^TRv$ と記す．
+有限時間区間 $[0,T]$ の最適制御問題を考える．
+行列微分方程式
+\[
+ \dot P(t)=A^TP+PA-PBR^{-1}B^TP+Q,
+ \qquad P(0)=0
+\]
+は局所的に唯一の対称解を持つ．この解が存在する $T$ の範囲で
+$S_T(t)=P(T-t)$ と置き，$\dot x=Ax+Bu$ を満たす軌道について
+微分すると
+\[
+ \begin{aligned}
+ &x^TQx+u^TRu+\frac d{dt}(x^TS_Tx)\\
+ &\qquad=\bigl(u+R^{-1}B^TS_Tx\bigr)^TR
+ \bigl(u+R^{-1}B^TS_Tx\bigr).
+ \end{aligned}
+\]
+$S_T(T)=0$ なので積分して
+\[
+ \int_0^T(x^TQx+u^TRu)dt
+ =x_0^TP(T)x_0+
+ \int_0^T\norm{u+R^{-1}B^TS_Tx}_R^2dt.
+\]
+右端の積分は，時間依存の線形フィードバック
+$u=-R^{-1}B^TS_Tx$ で零になる．
+従って $x_0^TP(T)x_0$ は有限時間の最小費用そのものであり，
+$P(T)\ge0$ である．また $T_2\ge T_1$ なら，
+非負費用の長い区間を最小化した値は短い区間の最小値以上だから
+$P(T_2)\ge P(T_1)$ である．
+
+一方，仮定の安定化フィードバック $u=-Fx$ を用いれば
+その無限時間費用は
+\[
+ x_0^TP_Fx_0,\quad
+ P_F=\int_0^\infty e^{(A-BF)^Tt}
+ (Q+F^TRF)e^{(A-BF)t}dt
+\]
+で有限となる．従って $0\le P(T)\le P_F$ が成立する．
+この一様上界から局所Riccati解に有限時刻での発散はなく，
+微分方程式の延長定理により全 $T\ge0$ へ延長される．
+$P(T)$ は半正定値行列の意味で単調有界だから，
+ある $P_\infty\ge0$ に収束する．
+方程式の右辺は $P$ の連続多項式だから
+$\dot P(T)$ も極限を持つ．もしその極限が零でなければ
+$P(T)$ は有界に収束し得ないので，極限は零である．
+従って $P_\infty$ は代数的Riccati方程式を満たす．
+
+$K=R^{-1}B^TP_\infty$，$A_c=A-BK$ と置く．
+Riccati方程式から
+\[
+ A_c^TP_\infty+P_\infty A_c=-(Q+K^TRK)
+\]
+を得る．もし $A_cv=\lambda v$ を満たす非零の複素固有ベクトル $v$ が
+$\operatorname{Re}\lambda\ge0$ を満たすなら
+\[
+ 2\operatorname{Re}\lambda\,v^*P_\infty v
+ =-\norm{Q^{1/2}v}^2-\norm{R^{1/2}Kv}^2
+\]
+である．左辺は非負，右辺は非正だから両辺は零で，
+$Q^{1/2}v=Kv=0$ が従う．ゆえに
+$Av=A_cv+BKv=\lambda v$ となるが，
+これは可検出性についての仮定に反する．
+従って $A_c$ の固有値の実部はすべて負である．
+\end{proof}
+\begin{remark}
+上の仮定は，有限次元での可安定性と可検出性の標準的な
+判定条件を具体的に書いたものである．
+この存在定理と前節の最適性定理により，
+これらの仮定の下で無限時間LQRの最適制御が実際に構成できる．
+\end{remark}
+
+
+\section{発展：線形Gaussian状態推定とKalmanフィルタ}
+\begin{lemma}[有限次元Gaussianベクトルの条件付き分布]
+$X\in\mathbb R^d$，$Y\in\mathbb R^m$ が同時正規分布に従い，
+$\mathbb EX=a$，$\mathbb EY=b$，
+$\operatorname{Cov}(X)=P$，
+$\operatorname{Cov}(X,Y)=C$，
+$\operatorname{Cov}(Y)=S$ とし，$S$ が正定値であるとする．
+このとき $Y=y$ を条件とする $X$ の正規条件付き分布は，
+平均 $a+CS^{-1}(y-b)$，共分散 $P-CS^{-1}C^T$ を持つ．
+\end{lemma}
+\begin{proof}
+$Z=X-a-CS^{-1}(Y-b)$ と置くと
+$\operatorname{Cov}(Z,Y)=C-CS^{-1}S=0$ である．
+$(Z,Y)$ も同時正規分布だから，その特性関数は
+\[
+ \mathbb E e^{i(u^TZ+v^T(Y-b))}
+ =\exp\!\left(-\frac12u^T\operatorname{Cov}(Z)u
+                 -\frac12v^TSv\right)
+\]
+となり二つの特性関数の積へ分解する．
+従って $Z$ と $Y$ は独立である．
+$\operatorname{Cov}(Z)=P-CS^{-1}C^T$ なので
+$X=a+CS^{-1}(Y-b)+Z$ から結論を得る．
+\end{proof}
+\begin{theorem}[離散時間Kalmanフィルタ]
+確率ベクトル $x_0\sim N(m_0,P_0)$ と
+独立な雑音列 $w_k\sim N(0,Q)$，$v_k\sim N(0,R)$ を考える．
+$P_0,Q$ は半正定値，$R$ は正定値とし，
+全ての雑音は相互に独立とする．
+状態と観測を
+\[
+ x_k=Ax_{k-1}+w_k,\qquad y_k=Hx_k+v_k
+ \quad(k\ge1)
+\]
+と定める（$x_0$ は事前分布を表す）．
+$y_1,\ldots,y_k$ を条件とする $x_k$ の分布は正規分布
+$N(m_k,P_k)$ であり，次の再帰式で求まる．
+\begin{align*}
+ m_k^-&=Am_{k-1},&P_k^-&=AP_{k-1}A^T+Q,\\
+ S_k&=HP_k^-H^T+R,&K_k&=P_k^-H^TS_k^{-1},\\
+ m_k&=m_k^-+K_k(y_k-Hm_k^-),
+ &P_k&=P_k^- -P_k^-H^TS_k^{-1}HP_k^-.
+\end{align*}
+ここで $m_0,P_0$ は観測前の初期値である．
+\end{theorem}
+\begin{proof}
+$k=0$ では仮定の分布に一致する．
+$y_1,\ldots,y_{k-1}$ を固定した条件付き分布が
+$N(m_{k-1},P_{k-1})$ と仮定する．
+$w_k$ は過去の観測から独立なので
+$x_k=Ax_{k-1}+w_k$ は条件付きで
+$N(m_k^-,P_k^-)$ に従う．
+観測 $y_k=Hx_k+v_k$ の条件付き平均は $Hm_k^-$，
+共分散は $S_k$，$x_k$ と $y_k$ の条件付き交差共分散は
+$P_k^-H^T$ である．$R>0$ なので $S_k>0$ である．
+前補題をこの条件付き同時正規分布に適用すれば
+$y_k$ を与えた後の平均は $m_k$，共分散は $P_k$ である．
+数学的帰納法により全ての $k$ で主張が成り立つ．
+\end{proof}
+\begin{remark}
+この結果は有限次元・線形・Gaussianの状態推定に関する完全な公式である．
+非Gaussian雑音，未知パラメータの同時同定，非線形状態方程式に対する
+最適フィルタの存在・性質は本定理の射程外である．
+\end{remark}
+
+
+\section*{到達確認}
+\noindent\textbf{確認問題1．}
+例\ref{ex:double-integrator}で $T=1$，終状態 $(1,0)^T$ とする．
+入力 $u_*(t)$ を求め，状態 $x(t)$ を最後まで計算して終状態を確認せよ．
+
+\medskip\noindent\textbf{解答．}
+上の表示から $u_*(t)=6-12t$ である．
+$x_2'=u_*$，$x_1'=x_2$，$x(0)=0$ だから
+\[
+ x_2(t)=6t-6t^2,\qquad x_1(t)=3t^2-2t^3.
+\]
+従って $x(1)=(1,0)^T$ となる．
+
+\medskip\noindent\textbf{確認問題2．}
+$A=0_{2\times2}$，$B=(1,0)^T$，$x(0)=0$ とする．
+目標 $(0,1)^T$ への到達が不可能であることを
+可制御行列の階数と方程式の両方から確かめよ．
+
+\medskip\noindent\textbf{解答．}
+$\mathcal C=[B,AB]$ は階数1である．
+また $x_1'=u$，$x_2'=0$ だから，
+$x_2(0)=0$ のもとで常に $x_2(t)=0$ となる．
+従ってどの時間でも $(0,1)^T$ には到達できない．
+
+\section*{本稿で得た方法と限界}
+\noindent 可制御行列の階数で到達可能性を判定でき，
+可制御Gram行列から具体的な入力を構成できた．
+さらに入力の最小エネルギー性も積分内積の直交性によって証明した．
+これらは入力制限を課さない線形系の結果であり，
+入力振幅の上限や状態制約がある場合には，
+可制御であっても同じ入力をそのまま使えるとは限らない．
+
+\end{document}

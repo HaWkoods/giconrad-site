@@ -1,0 +1,418 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{RSAと公開鍵暗号の数学}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標}
+有限群・中国剰余定理の知識から，RSAの秘密指数を構成し，
+具体的なメッセージを暗号化・復号して一致を検算できるようになる．
+代数的な正当性と実用上の暗号安全性は区別する．
+前提は合同算術，B\'ezout等式，素数についての基本知識である．
+
+
+\section{剰余環と単元群}
+
+本稿では合同算術と有限群の基本定理を前提とし，
+RSAの復号が正しいことを数学的に示す．
+実装上の安全性の問題は，証明可能な代数的事実と区別する．
+
+\begin{definition}
+整数 $n\ge2$ に対し，
+剰余環 $\mathbb Z/n\mathbb Z$ の\emph{単元群}を
+\[
+ (\mathbb Z/n\mathbb Z)^\times
+ =\{\bar a:\gcd(a,n)=1\}
+\]
+と定める．
+その位数をEuler関数 $\varphi(n)$ と書く．
+\end{definition}
+
+\begin{lemma}[単元の判定]\label{lem:units}
+$\bar a\in\mathbb Z/n\mathbb Z$ が単元であることと
+$\gcd(a,n)=1$ は同値である．
+\end{lemma}
+\begin{proof}
+$\gcd(a,n)=1$ ならBezoutの等式により
+$au+nv=1$ となる整数 $u,v$ が存在する．
+剰余類へ移せば $\bar a\bar u=\bar1$ なので
+$\bar a$ は単元である．
+逆に $\bar a\bar u=\bar1$ なら
+$au-1$ は $n$ の倍数である．
+従って $au+nv=1$ となる整数 $v$ が存在し，
+$\gcd(a,n)=1$ である．
+\end{proof}
+
+\begin{theorem}[Eulerの定理]\label{thm:euler}
+$\gcd(a,n)=1$ なら
+\[
+ a^{\varphi(n)}\equiv1\pmod n
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$\bar a$ は有限群
+$(\mathbb Z/n\mathbb Z)^\times$ の元である．
+Lagrangeの定理によって $\bar a$ の位数は
+$\varphi(n)$ を割るから
+$\bar a^{\varphi(n)}=\bar1$ である．
+これを合同式で表したものが結論である．
+\end{proof}
+
+\begin{corollary}[Fermatの小定理]\label{cor:fermat}
+$p$ が素数で $p\nmid a$ なら
+$a^{p-1}\equiv1\pmod p$ である．
+\end{corollary}
+\begin{proof}
+$\varphi(p)=p-1$ を定理\ref{thm:euler}に代入する．
+\end{proof}
+
+\section{中国剰余定理}
+
+\begin{theorem}[中国剰余定理]\label{thm:crt}
+$m,n\ge2$ が互いに素なら
+\[
+ \mathbb Z/mn\mathbb Z
+ \longrightarrow
+ \mathbb Z/m\mathbb Z\times\mathbb Z/n\mathbb Z,
+ \qquad \bar a\longmapsto(\bar a,\bar a)
+\]
+は環同型である．
+\end{theorem}
+\begin{proof}
+写像が環準同型であることは剰余類の演算から従う．
+核は $m,n$ の両方で割り切れる整数の類である．
+$m,n$ が互いに素なので，そのような整数は $mn$ で割り切れ，
+核は零である．
+従って写像は単射である．
+定義域と値域の元の個数はともに $mn$ だから全射でもある．
+また構成的には $um+vn=1$ を満たす整数 $u,v$ を取ると，
+任意の剰余類 $(\bar b,\bar c)$ の逆像は
+\[
+ a=bnv+cmu
+\]
+で与えられる．実際 $a\equiv b\pmod m$，
+$a\equiv c\pmod n$ である．
+\end{proof}
+
+\begin{corollary}\label{cor:unit-group}
+互いに異なる素数 $p,q$ と $n=pq$ に対し
+\[
+ (\mathbb Z/n\mathbb Z)^\times
+ \cong\mathbb F_p^\times\times\mathbb F_q^\times,
+ \qquad
+ \varphi(n)=(p-1)(q-1)
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+環同型は単元を単元へ写し，その逆も単元を単元へ写す．
+従って定理\ref{thm:crt}から単元群の同型を得る．
+$\mathbb F_p^\times,\mathbb F_q^\times$ の位数は
+それぞれ $p-1,q-1$ なので位数の等式が従う．
+\end{proof}
+
+\section{RSAの鍵生成}
+
+\begin{definition}
+互いに異なる素数 $p,q$ を取り $n=pq$ と置く．
+\[
+ \lambda(n)=\operatorname{lcm}(p-1,q-1)
+\]
+と定義する．
+$\gcd(e,\lambda(n))=1$ を満たす正整数 $e$ を選ぶ．
+次に
+\[
+ ed\equiv1\pmod{\lambda(n)}
+\]
+となる整数 $d$ を選ぶ．
+組 $(n,e)$ を\emph{公開鍵}，
+$d$ および素因数 $p,q$ を秘密に保持する量という．
+\end{definition}
+
+\begin{lemma}[秘密指数の存在]\label{lem:private}
+$\gcd(e,\lambda(n))=1$ なら
+$ed\equiv1\pmod{\lambda(n)}$ を満たす整数 $d$ が存在し，
+$\lambda(n)$ を法として一意である．
+\end{lemma}
+\begin{proof}
+Bezoutの等式から
+$eu+\lambda(n)v=1$ となる整数 $u,v$ が存在する．
+$d=u$ と置けば求める合同式を満たす．
+二つの解 $d,d'$ があれば
+$e(d-d')\equiv0\pmod{\lambda(n)}$ である．
+$e$ は $\lambda(n)$ を法として可逆なので
+$d-d'\equiv0\pmod{\lambda(n)}$ となり一意である．
+\end{proof}
+
+\begin{definition}
+平文を剰余類 $\bar m\in\mathbb Z/n\mathbb Z$ とする．
+RSA暗号化を
+\[
+ E_e(\bar m)=\bar m^{\,e}
+\]
+と定め，復号を
+\[
+ D_d(\bar c)=\bar c^{\,d}
+\]
+と定める．
+\end{definition}
+
+\section{RSA復号の正当性}
+
+\begin{theorem}[RSAの復号定理]\label{thm:rsa}
+互いに異なる素数 $p,q$ を取り $n=pq$ とする．
+$\gcd(e,\lambda(n))=1$，
+$ed\equiv1\pmod{\lambda(n)}$ とする．
+このとき任意の剰余類
+$\bar m\in\mathbb Z/n\mathbb Z$ について
+\[
+ D_d(E_e(\bar m))=\bar m,
+ \qquad\text{すなわち}\qquad
+ m^{ed}\equiv m\pmod n
+\]
+が成り立つ．
+特に $\gcd(m,n)=1$ は仮定しなくてよい．
+\end{theorem}
+\begin{proof}
+$ed=1+k\lambda(n)$ となる整数 $k\ge0$ が存在する．
+$p-1$ は $\lambda(n)$ を割るので
+$ed\equiv1\pmod{p-1}$ である．
+$m\equiv0\pmod p$ なら
+$m^{ed}\equiv m\equiv0\pmod p$ である．
+$m\not\equiv0\pmod p$ なら
+Fermatの小定理から $m^{p-1}\equiv1\pmod p$ なので
+\[
+ m^{ed}=m(m^{p-1})^{k\lambda(n)/(p-1)}
+ \equiv m\pmod p
+\]
+となる．
+同じ議論で
+$m^{ed}\equiv m\pmod q$ を得る．
+$p,q$ は互いに素なので中国剰余定理から
+$m^{ed}\equiv m\pmod{pq}$ となる．
+\end{proof}
+
+\begin{remark}
+定理\ref{thm:rsa}は\emph{全ての}剰余類の復号を保証する．
+単にEulerの定理を $m$ に適用するだけでは
+$\gcd(m,n)=1$ の場合しか直接には扱えない．
+$p$ と $q$ をそれぞれ法として場合分けすることが重要である．
+\end{remark}
+
+\section{反復二乗法と計算量}
+
+\begin{proposition}[反復二乗法]\label{prop:squaring}
+非負整数 $e$ の二進展開
+$e=\sum_{j=0}^rb_j2^j$（$b_j\in\{0,1\}$）を用いると，
+任意の整数 $a$ に対して
+\[
+ a^e\bmod n
+\]
+は高々 $2r+1$ 回程度の剰余乗算で求められる．
+\end{proposition}
+\begin{proof}
+$x_0=a\bmod n$，
+$x_{j+1}=x_j^2\bmod n$ と置くと，
+帰納法により $x_j\equiv a^{2^j}\pmod n$ となる．
+$0\le j<r$ の計算には $r$ 回の二乗が必要である．
+次に $b_j=1$ となる $j$ に対してのみ $x_j$ を乗じれば，
+\[
+ \prod_{j:b_j=1}x_j
+ \equiv a^{\sum_jb_j2^j}=a^e\pmod n
+\]
+となる．
+この乗算は高々 $r+1$ 回で済む．
+従って剰余乗算の回数は $O(\log(e+1))$ である．
+\end{proof}
+
+\begin{proposition}[中国剰余定理による復号]\label{prop:crt-decrypt}
+$c\in\mathbb Z$ に対し
+$c^d\bmod p$ と $c^d\bmod q$ を求めたとする．
+この二つの剰余類から
+$c^d\bmod n$ は中国剰余定理によって一意に復元できる．
+\end{proposition}
+\begin{proof}
+$c^d$ の剰余類を $p,q$ それぞれへ写したものは
+与えられた二つの値である．
+定理\ref{thm:crt}の環同型は全単射なので，
+対応する $\mathbb Z/pq\mathbb Z$ の剰余類は一意である．
+定理の証明中に与えたBezout係数を用いれば
+その剰余類を明示的に計算できる．
+\end{proof}
+
+\section{RSAの代数的構造と安全性の区別}
+
+\begin{proposition}[RSA指数写像の置換性]\label{prop:permutation}
+定理\ref{thm:rsa}の仮定のもとで
+\[
+ E_e:\mathbb Z/n\mathbb Z\longrightarrow
+ \mathbb Z/n\mathbb Z,\qquad x\longmapsto x^e
+\]
+は全単射であり，逆写像は $D_d$ である．
+\end{proposition}
+\begin{proof}
+定理\ref{thm:rsa}により
+$D_d\circ E_e=\operatorname{id}$ が成立する．
+同じ定理は $e$ と $d$ を交換しても成立する：
+$de\equiv1\pmod{\lambda(n)}$ であり，
+$\gcd(d,\lambda(n))=1$ だからである．
+従って
+$E_e\circ D_d=\operatorname{id}$ も成り立つ．
+よって二つの写像は互いに逆である．
+\end{proof}
+
+\begin{example}[小さい具体例]
+$p=5$，$q=11$，$n=55$ とする．
+$\lambda(n)=\operatorname{lcm}(4,10)=20$ である．
+$e=3$ とすれば $d=7$ は
+$ed=21\equiv1\pmod{20}$ を満たす．
+平文 $m=2$ の暗号文は $c=2^3=8$ であり，
+\[
+ 8^7\equiv2\pmod{55}
+\]
+となって復号される．
+\end{example}
+\begin{proof}
+$8^2\equiv9$，$8^4\equiv26\pmod{55}$ なので
+$8^7=8^4\cdot8^2\cdot8
+\equiv26\cdot9\cdot8\equiv2\pmod{55}$
+である．
+\end{proof}
+
+\begin{remark}
+本稿の代数的定理は，公開鍵から秘密情報を計算することが
+困難であるとは主張しない．
+特にRSAの復号問題の計算量と素因数分解問題の計算量の
+厳密な同値性は一般に知られていない．
+また，数式上のRSAの正当性は，実際の通信の安全性を
+保証するものではない．
+決定的な教科書的RSAは選択平文攻撃などへの
+安全性を満たさず，実用上は適切な標準化された
+符号化・パディング方式が別途必要になる．
+\end{remark}
+
+\section{小さな鍵で暗号化と復号を全て計算する}
+\begin{example}[鍵生成から復号まで]
+$p=5$，$q=11$ を用いる．$n=55$，
+$\lambda(n)=\operatorname{lcm}(4,10)=20$ である．
+$e=3$ と選べば $\gcd(3,20)=1$ であり，
+$3\cdot7=21\equiv1\pmod{20}$ だから秘密指数は
+$d=7$ と取れる．公開鍵は $(55,3)$ である．
+平文を $m=12$ とすれば暗号文は
+\[
+ c\equiv12^3=1728\equiv23\pmod{55}.
+\]
+復号を反復二乗法で行うと
+\[
+ 23^2\equiv34,\qquad
+ 23^4\equiv34^2\equiv1\pmod{55},
+\]
+ゆえに
+\[
+ c^d=23^7\equiv23\cdot34\cdot1
+       \equiv12\pmod{55}.
+\]
+もとの平文が確かに復元された．
+\end{example}
+\begin{proposition}[単元ではない平文も復号できる]
+上の鍵のもとで $m=5$ とする．この平文は
+$\mathbb Z/55\mathbb Z$ の単元ではないが，
+復号の結果はやはり $5$ になる．
+\end{proposition}
+\begin{proof}
+暗号文は $5^3=125\equiv15\pmod{55}$．
+$15^2\equiv5$，$15^4\equiv25$ だから
+\[
+ 15^7\equiv15\cdot5\cdot25\equiv5\pmod{55}.
+\]
+あるいは中国剰余定理で見ると，法5では
+両辺が0，法11では $5^{ed}=5^{21}\equiv5$
+がFermatの小定理から成立する．
+よって法55でも一致する．
+一般の平文に対する復号の正当性は，
+平文が単元であることを仮定せず，
+素数ごとに場合分けしてから中国剰余定理を使う．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+同じ公開鍵 $(55,3)$ で平文 $m=2$ を暗号化し，
+$d=7$ で復号せよ．
+
+\medskip\noindent\textbf{解答．}
+$2^3\equiv8\pmod{55}$．
+$8^2\equiv9$，$8^4\equiv26$，
+\[
+ 8^7\equiv8\cdot9\cdot26\equiv2\pmod{55}.
+\]
+これも元の平文に一致する．
+\section*{数学的な射程}
+ここで使った数値は暗号の仕組みを手計算するためのものである．
+$n=55$ は容易に素因数分解できるため暗号用途に適さない．
+パディングや攻撃モデルを扱わず，この計算から安全性は結論しない．
+
+\end{document}

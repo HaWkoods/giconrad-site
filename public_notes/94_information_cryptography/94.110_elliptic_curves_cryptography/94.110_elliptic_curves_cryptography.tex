@@ -1,0 +1,448 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{有限体上の楕円曲線と暗号理論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標}
+有限体上の楕円曲線の点であるかを検査し，
+加法公式を用いて点の整数倍を求められるようになる．
+さらに小さな有限群で鍵共有の一致を直接計算して確認する．
+前提は有限体の四則演算と群論の基礎である．
+
+\section{有限体上の非特異三次曲線}
+
+本稿では $K$ を標数 $2,3$ でない体とする．
+有限体の場合は $K=\mathbb F_q$，$\gcd(q,6)=1$ とする．
+群論，有限体，射影平面の定義を前提とする．
+群法則の結合性には滑らかな射影曲線の因子論を用いるため，
+そのための仮定を明示して証明する．
+
+\begin{definition}
+$a,b\in K$ に対し
+\[
+ E:\quad y^2=x^3+ax+b,\qquad
+ \Delta=-16(4a^3+27b^2)
+\]
+を考える．$\Delta\ne0$ を満たすとき，
+$E$ を短Weierstrass形の楕円曲線という．
+射影化は
+\[
+ Y^2Z=X^3+aXZ^2+bZ^3
+\]
+で与えられる．
+\end{definition}
+
+\begin{lemma}[非特異性]\label{lem:smooth}
+$\Delta\ne0$ と，
+射影三次曲線 $E$ が非特異であることは同値である．
+その無限遠点は $O=[0:1:0]$ ただ一つである．
+\end{lemma}
+\begin{proof}
+$F(X,Y,Z)=Y^2Z-X^3-aXZ^2-bZ^3$ とする．
+$Z=0$ と置くと $X^3=0$ だから $X=0$ であり，
+無限遠点は $O$ に限られる．
+$\partial F/\partial Z(O)=Y^2=1$ なので $O$ は非特異である．
+$Z=1$ のアフィン部分において特異点 $(x,y)$ があれば
+\[
+ 2y=0,\quad 3x^2+a=0,\quad y^2-x^3-ax-b=0
+\]
+である．標数は2でないから $y=0$ となり，
+$x$ は $x^3+ax+b$ とその導関数の共通根となる．
+三次式の判別式は $-4a^3-27b^2$ であり，
+共通根があることと $\Delta=0$ が同値である．
+\end{proof}
+
+\begin{definition}
+$K$-有理点全体を
+\[
+ E(K)=\{(x,y)\in K^2:y^2=x^3+ax+b\}\cup\{O\}
+\]
+と書く．$P=(x,y)$ に対し $-P=(x,-y)$，
+$-O=O$ と定める．
+\end{definition}
+
+\section{弦接法と加法公式}
+
+\begin{definition}
+$P,Q\in E(K)$ に対し $P+O=O+P=P$ と置く．
+$Q=-P$ なら $P+Q=O$ と定める．
+それ以外では次のように定める．
+\[
+ m=\begin{cases}
+ \dfrac{y_Q-y_P}{x_Q-x_P}&(P\ne Q),\\[2mm]
+ \dfrac{3x_P^2+a}{2y_P}&(P=Q).
+ \end{cases}
+\]
+\[
+ x_{P+Q}=m^2-x_P-x_Q,\qquad
+ y_{P+Q}=m(x_P-x_{P+Q})-y_P.
+ \tag{1}
+\]
+\end{definition}
+
+\begin{lemma}[加法公式の正当性]\label{lem:add-well}
+式 (1) は $K$-有理点を与え，$P,Q$ の順序によらない．
+また $P+(-P)=O$，$P+O=P$，$P+Q=Q+P$ が成立する．
+\end{lemma}
+\begin{proof}
+$Q\ne-P$ で $P\ne Q$ なら $x_P\ne x_Q$ である．
+実際 $x_P=x_Q$ なら曲線方程式から
+$y_Q=\pm y_P$ なので，$Q=P$ または $Q=-P$ となる．
+$P=Q$ かつ $P\ne-P$ なら $2y_P\ne0$ なので接線の分母も非零である．
+よって $m$ は定義できる．
+$P,Q$ を通る直線を $y=mx+c$ と書く．
+これを曲線方程式へ代入すると
+\[
+ x^3-m^2x^2+(a-2mc)x+(b-c^2)=0.
+\]
+$x_P,x_Q$ はこの三次式の根である．
+$P=Q$ の場合は $m$ が暗黙微分の接線勾配なので
+$x_P$ は二重根である．
+Vietaの公式から第三の根は $m^2-x_P-x_Q$ となる．
+その交点を $R=(x_R,mx_R+c)$ とすると，
+$P+Q=-R$ であり式 (1) の座標を得る．
+従って $(x_{P+Q},y_{P+Q})$ は曲線上の点である．
+弦または接線は $P,Q$ の順序に依存しないので可換性も成立する．
+残る二つは定義による．
+\end{proof}
+
+\section{結合法則の因子論的証明}
+
+この節のみ代数幾何の基礎を用いる．
+$K$ の代数閉包を $\overline K$ とする．
+滑らかな射影曲線 $E_{\overline K}$ の因子群を
+$\operatorname{Div}(E)$，次数零の因子群を
+$\operatorname{Div}^0(E)$ とし，有理関数 $f$ の主因子を
+$\operatorname{div}(f)$ と書く．
+主因子の次数が零であること，
+および次数零の因子類群
+$\operatorname{Pic}^0(E)
+ =\operatorname{Div}^0(E)/\operatorname{Prin}(E)$
+がAbel群であることを既知とする．
+
+\begin{lemma}[種数1曲線の次数1因子]\label{lem:rr}
+任意の次数1の因子 $D$ に対し，
+$D$ に線形同値な有効因子はちょうど一つ存在し，
+それはある点 $(P)$ である．
+\end{lemma}
+\begin{proof}
+楕円曲線の正則微分 $\omega=dx/(2y)$ は各点で非零である．
+$y=0$ の点では $dy=(3x^2+a)dx/(2y)$ という表現の代わりに
+$\omega=dy/(3x^2+a)$ を用いると正則性が確認できる．
+無限遠点では局所座標 $t=-x/y$ を取ると
+$x=t^{-2}+\text{高次項}$，$y=-t^{-3}+\text{高次項}$ であり
+$\omega=(1+\text{高次項})\,dt$ となる．
+従って標準因子 $K_E$ は零で，種数は1である．
+曲線のRiemann--Rochの公式
+\[
+ \ell(D)-\ell(K_E-D)=\deg D+1-g
+\]
+を $\deg D=1$ に適用すると
+$\ell(D)-\ell(-D)=1$ となる．
+$\deg(-D)=-1$ なので $\ell(-D)=0$，
+従って $\ell(D)=1$ である．
+非零 $f\in L(D)$ に対し
+$\operatorname{div}(f)+D$ は有効で次数1だから
+一つの点 $(P)$ に等しい．
+同じ線形同値類に異なる二点 $(P),(Q)$ があれば，
+それぞれに対応する関数が $L(D)$ の非比例な二元となる．
+これは $\dim L(D)=1$ に反する．
+ゆえに存在・一意性を得る．
+\end{proof}
+
+\begin{proposition}[楕円曲線と因子類群]\label{prop:pic0}
+写像
+\[
+ \kappa:E(\overline K)\longrightarrow\operatorname{Pic}^0(E),
+ \qquad P\longmapsto[(P)-(O)]
+\]
+は全単射である．
+\end{proposition}
+\begin{proof}
+任意の次数零の因子類 $[D]$ に対して
+$D+(O)$ は次数1の因子である．
+補題\ref{lem:rr}から一意の点 $P$ が存在して
+$D+(O)\sim(P)$ となるので
+$[D]=[(P)-(O)]$ である．
+従って全射である．
+$\kappa(P)=\kappa(Q)$ なら
+$(P)\sim(Q)$ である．
+両者は次数1の有効因子なので
+補題\ref{lem:rr}の一意性から $P=Q$ である．
+よって単射でもある．
+\end{proof}
+
+\begin{theorem}[結合法則]\label{thm:group}
+式 (1) で定めた加法によって
+$E(K)$ は単位元 $O$ を持つ可換群となる．
+\end{theorem}
+\begin{proof}
+$\overline K$ 上で証明する．
+$P,Q\ne O$ で $Q\ne-P$ の場合，
+$P,Q$ を通る直線は曲線と第三の点 $R$ で交わり，
+交点の重複度を込めて
+\[
+ (P)+(Q)+(R)-3(O)
+\]
+はその直線の方程式を $Z$ で割った有理関数の主因子となる．
+これは無限遠点で座標関数 $Z$ が曲線に三重に交わるためである．
+また鉛直線を用いると
+\[
+ (R)+(-R)-2(O)
+\]
+は主因子である．
+$P+Q=-R$ だから，因子類群で
+\[
+ [(P)-(O)]+[(Q)-(O)]
+ =[(P+Q)-(O)].
+ \tag{2}
+\]
+$Q=-P$ の場合は鉛直線の主因子によって
+式 (2) が成立し，$P=O$ または $Q=O$ の場合も明らかである．
+従って $\kappa(P+Q)=\kappa(P)+\kappa(Q)$ が全ての点で成立する．
+命題\ref{prop:pic0}により $\kappa$ は単射であり，
+$\operatorname{Pic}^0(E)$ の加法が結合的なので
+\[
+ \kappa((P+Q)+R)=\kappa(P)+\kappa(Q)+\kappa(R)
+ =\kappa(P+(Q+R)).
+\]
+ゆえに $(P+Q)+R=P+(Q+R)$ である．
+単位元・逆元・可換性は補題\ref{lem:add-well}で示した．
+加法公式は $K$ 上の四則演算で定義されるため，
+$P,Q\in E(K)$ なら $P+Q\in E(K)$ である．
+よって $E(K)$ は可換群である．
+\end{proof}
+
+\begin{remark}
+この証明では曲線のRiemann--Roch公式を補助定理として用いた．
+結合法則そのものを仮定したわけではなく，
+因子類群の結合的な加法から導いている．
+\end{remark}
+
+\section{有限体上の点集合と計算}
+
+\begin{proposition}[有理点数の計算]\label{prop:count}
+$q$ を奇数の素数冪とし，$\chi$ を
+$\mathbb F_q^\times$ の二次指標，$\chi(0)=0$ とする．
+このとき
+\[
+ \#E(\mathbb F_q)
+ =q+1+\sum_{x\in\mathbb F_q}\chi(x^3+ax+b).
+\]
+\end{proposition}
+\begin{proof}
+各 $x\in\mathbb F_q$ に対して
+$y^2=x^3+ax+b$ の解の個数は
+$1+\chi(x^3+ax+b)$ である．
+実際右辺が零なら $y=0$ の一解，
+非零平方元なら二解，非平方元なら解なしである．
+全ての $x$ について和を取るとアフィン点の個数を得る．
+最後に無限遠点 $O$ を一つ加えて公式を得る．
+\end{proof}
+
+\begin{example}[$\mathbb F_5$ 上の具体例]
+$E:y^2=x^3+x+1$ を $\mathbb F_5$ 上で考える．
+$\Delta=-16(4+27)\equiv4\pmod5$ なので非特異である．
+\[
+ E(\mathbb F_5)=
+ \{O,(0,1),(0,4),(2,1),(2,4),(3,1),(3,4),(4,2),(4,3)\}.
+\]
+\end{example}
+\begin{proof}
+$x=0,1,2,3,4$ に対する
+$x^3+x+1\bmod5$ の値はそれぞれ
+$1,3,1,1,4$ である．
+$\mathbb F_5$ の平方元は $0,1,4$ なので
+$x=1$ には解がなく，その他は各二解ある．
+従ってアフィン点は8個で，$O$ と合わせ9個である．
+\end{proof}
+
+\begin{proposition}[スカラー倍の計算量]\label{prop:double-add}
+非負整数 $m$ の二進桁数を $r$ とすると，
+$mP$ は高々 $r$ 回の倍算と $r$ 回の加算で計算できる．
+\end{proposition}
+\begin{proof}
+$m=\sum_{j=0}^{r-1}b_j2^j$，$b_j\in\{0,1\}$ と書く．
+$Q_0=P$，$Q_{j+1}=2Q_j$ と計算すれば，
+帰納法から $Q_j=2^jP$ である．
+さらに $b_j=1$ となる $Q_j$ を順に加えることで
+$\sum_jb_jQ_j=mP$ を得る．
+$Q_j$ の計算に $r-1$ 回の倍算，
+和の計算に高々 $r$ 回の加算が必要なので主張が従う．
+\end{proof}
+
+\section{楕円曲線離散対数問題}
+
+\begin{definition}
+有限群 $E(\mathbb F_q)$ と位数 $r$ の点 $P$ を固定する．
+与えられた $Q\in\langle P\rangle$ に対して
+$Q=mP$ を満たす $m\bmod r$ を求める問題を
+\emph{楕円曲線離散対数問題}という．
+\end{definition}
+
+\begin{proposition}[Diffie--Hellman型鍵共有の一致]
+\label{prop:ecdh}
+公開点 $P\in E(\mathbb F_q)$ と秘密整数 $a,b$ に対し，
+$A=aP$，$B=bP$ を公開する．
+一方が $aB$，他方が $bA$ を計算すると，
+両者は同じ点を得る．
+\end{proposition}
+\begin{proof}
+群法則の結合性から
+$aB=a(bP)=(ab)P=b(aP)=bA$ となる．
+\end{proof}
+
+\begin{proposition}[部分群と点の位数]
+\label{prop:order}
+$P$ の位数を $r$ とすると，$r$ は
+$\#E(\mathbb F_q)$ を割る．
+また $mP=O$ と $r\mid m$ は同値である．
+\end{proposition}
+\begin{proof}
+$E(\mathbb F_q)$ は有限群なので，
+Lagrangeの定理から巡回部分群 $\langle P\rangle$ の位数
+$r$ は群の位数を割る．
+位数の定義とEuclidの除法によって
+$m=kr+s$，$0\le s<r$ と書くと
+$mP=sP$ であり，$sP=O$ は $s=0$ と同値である．
+従って $mP=O$ と $r\mid m$ は同値となる．
+\end{proof}
+
+\begin{remark}
+鍵共有の一致は純粋な群論的定理であり，
+秘密指数の計算困難性を主張するものではない．
+実装上は公開点が所定の曲線上にあり，
+指定された大きな素数位数の部分群に属するかを確認する必要がある．
+本稿の小さい具体例は暗号用途には適さない．
+\end{remark}
+
+\section{有限体上の点を手計算で加える}
+\begin{example}[非特異曲線と点の倍算]
+$\mathbb F_{17}$ 上の曲線
+\[
+ E:\quad y^2=x^3+2x+2
+\]
+を考える．判別式は
+$-16(4\cdot2^3+27\cdot2^2)\equiv4\not\equiv0
+\pmod{17}$ であるから非特異である．
+$P=(5,1)$ は $1\equiv5^3+2\cdot5+2\pmod{17}$
+により曲線上にある．
+倍算の傾きは
+\[
+ m=\frac{3\cdot5^2+2}{2\cdot1}
+ \equiv9\cdot9=13\pmod{17}
+\]
+（$2^{-1}\equiv9$）である．従って
+\[
+ x_{2P}\equiv13^2-2\cdot5\equiv6,\quad
+ y_{2P}\equiv13(5-6)-1\equiv3,
+\]
+すなわち $2P=(6,3)$ を得る．
+次に $P+2P$ の傾きは
+$(3-1)/(6-5)=2$ だから
+\[
+ 3P=(2^2-5-6,\;2(5-10)-1)=(10,6)
+ \pmod{17}.
+\]
+さらに $2(3P)$ を計算すると
+$m\equiv(3\cdot10^2+2)/(2\cdot6)
+ \equiv13\cdot10=11$ となる．よって
+$6P=(16,13)$ である．
+\end{example}
+\begin{proposition}[小さな群での鍵共有の一致]
+上の曲線上で，秘密の整数を $a=2,b=3$，
+基点を $P=(5,1)$ とすると，
+二者が交換する点は $2P=(6,3)$，
+$3P=(10,6)$ であり，共有点はどちらの順序でも
+$6P=(16,13)$ となる．
+\end{proposition}
+\begin{proof}
+前例の加法公式で得た値を用いる．
+整数倍の結合法則はこのノートで証明した
+楕円曲線群の構造から従うので
+$a(bP)=(ab)P=b(aP)$ である．
+また前例で $6P=(16,13)$ を直接計算した．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+同じ曲線の $4P$ と $5P$ を求めよ．
+
+\medskip\noindent\textbf{解答．}
+$P=(5,1)$，$3P=(10,6)$ より，
+加法の傾きは $(6-1)/(10-5)=1$ である．
+したがって
+$4P=(1-5-10,\;1(5-3)-1)=(3,1)$（法17）．
+次に $P+(3,1)$ の傾きは0だから
+$5P=(0^2-5-3,\,-1)=(9,16)$（法17）．
+これらも曲線方程式へ代入して検算できる．
+\section*{計算例の射程}
+この小さい曲線は加法と鍵共有を理解するための教材である．
+ここでの群が暗号学的に安全であるとは主張せず，
+実用の鍵交換には部分群の選択と公開点の検証が必要である．
+
+\end{document}
