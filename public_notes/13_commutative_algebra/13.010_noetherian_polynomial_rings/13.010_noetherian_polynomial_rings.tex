@@ -1,0 +1,513 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{多項式環とNoether性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，イデアルの有限生成性，単項式イデアル，Hilbertの基底定理．
+本稿の具体的な到達課題は，多項式環の具体的なイデアルについて有限生成元を求める．
+
+\section{Noether環の定義}
+本稿の環は単位元を持つ可換環とし，イデアルは常に両側イデアルを意味する．
+\begin{definition}
+環 $A$ がNoether環であるとは，
+$A$ の任意のイデアルが有限生成であることをいう．
+\end{definition}
+\begin{theorem}[Noether性の同値条件]\label{thm:acc}
+環 $A$ に対し，次の条件は同値である．
+\begin{enumerate}
+\item $A$ はNoether環である．
+\item $A$ のイデアルの任意の昇鎖
+ $I_1\subset I_2\subset\cdots$ はある段階から一定である．
+\item $A$ のイデアルの任意の空でない族は包含関係に関する極大元を持つ．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1)から(2)を示す．$I=\bigcup_{n\ge1}I_n$ はイデアルであり，
+有限個の元 $a_1,\ldots,a_r$ で生成される．
+各 $a_j$ はある $I_{n_j}$ に属するので
+$N=\max n_j$ と置けば $I\subset I_N$，
+従って $I_n=I_N$（$n\ge N$）である．
+(2)から(3)を示す．極大元のない非空族を仮定し，
+任意の $I_1$ から $I_1\subsetneq I_2\subsetneq\cdots$
+を帰納的に作ると(2)に反する．
+(3)から(1)を示す．任意のイデアル $I$ に対し
+$I$ に含まれる有限生成イデアルの全体を考える．
+これは $(0)$ を含む非空族なので極大元 $J$ を持つ．
+$J\ne I$ なら $x\in I\setminus J$ を選ぶと
+$J+(x)$ は $I$ に含まれる有限生成イデアルで
+$J$ を真に含み矛盾する．従って $I=J$ は有限生成である．
+\end{proof}
+\begin{example}
+体，主イデアル整域，有限環はいずれもNoether環である．
+\end{example}
+\begin{proof}
+体のイデアルは $(0)$ と $(1)$ のみである．
+主イデアル整域では全てのイデアルが一元生成である．
+有限環では全てのイデアルが有限集合であるから
+自分の元全体で生成される．
+\end{proof}
+
+\section{商環と局所化}
+\begin{proposition}[商環のNoether性]\label{prop:quot}
+$A$ がNoether環で $I\subset A$ がイデアルなら
+$A/I$ はNoether環である．
+\end{proposition}
+\begin{proof}
+$A/I$ のイデアル $J$ を取る．自然な全射
+$q:A\to A/I$ によって $q^{-1}(J)$ は $A$ のイデアルである．
+有限生成性から $q^{-1}(J)=(a_1,\ldots,a_r)$ と書けるので，
+$J=(q(a_1),\ldots,q(a_r))$ である．
+\end{proof}
+\begin{definition}
+$S\subset A$ が乗法的集合であるとは
+$1\in S$ かつ $S$ が積で閉じることをいう．
+$S$ に零が入ってもよいが，通常は $0\notin S$ を仮定する．
+$S^{-1}A$ を $S$ に関する局所化という．
+\end{definition}
+\begin{lemma}[局所化されたイデアル]
+$S^{-1}A$ の任意のイデアル $J$ は，
+$A$ のあるイデアル $I$ を使って $J=S^{-1}I$ と書ける．
+\end{lemma}
+\begin{proof}
+標準写像 $q:A\to S^{-1}A$ に対して $I=q^{-1}(J)$ と置く．
+明らかに $S^{-1}I\subset J$ である．
+逆に $a/s\in J$ なら
+$a/1=(s/1)(a/s)\in J$ なので $a\in I$．
+従って $a/s\in S^{-1}I$ である．
+\end{proof}
+\begin{theorem}[局所化のNoether性]
+$A$ がNoether環で $S$ が乗法的集合なら
+$S^{-1}A$ もNoether環である．
+\end{theorem}
+\begin{proof}
+任意のイデアル $J=S^{-1}I$ に対し
+$I=(a_1,\ldots,a_r)$ を取る．
+すると $J=(a_1/1,\ldots,a_r/1)$ であるから有限生成である．
+\end{proof}
+\begin{example}[非Noether環]
+体 $k$ 上の無限個の変数の多項式環
+$A=k[x_1,x_2,\ldots]$ はNoether環でない．
+\end{example}
+\begin{proof}
+イデアル $I_n=(x_1,\ldots,x_n)$ を考える．
+各 $n$ で $x_{n+1}\notin I_n$ である．
+実際，変数 $x_1,\ldots,x_n$ を零へ送る環準同型では
+$I_n$ の元は全て零となるが $x_{n+1}$ は零とならない．
+従って $I_1\subsetneq I_2\subsetneq\cdots$ は安定せず，
+定理\ref{thm:acc}からNoetherでない．
+\end{proof}
+\section{Noether加群}
+\begin{definition}
+$A$-加群 $M$ がNoetherであるとは，
+その部分加群の全てが有限生成であることをいう．
+\end{definition}
+\begin{lemma}[Noether加群の昇鎖条件]
+$M$ がNoetherであることと，$M$ の部分加群の
+任意の昇鎖が安定することは同値である．
+\end{lemma}
+\begin{proof}
+定理\ref{thm:acc}の証明は，イデアルを部分加群に
+読み替えるだけでそのまま適用できる．
+昇鎖の和集合は部分加群であり，
+有限個の生成元が入るある一段以降に昇鎖が安定する．
+逆方向には有限生成部分加群の族の極大元を取ればよい．
+\end{proof}
+\begin{theorem}[Noether加群の拡大]\label{thm:exact}
+完全列 $0\to M'\overset{i}\to M\overset{p}\to M''\to0$
+があるとする．
+$M$ がNoetherであることと，$M'$ と $M''$ が
+ともにNoetherであることは同値である．
+\end{theorem}
+\begin{proof}
+$M$ がNoetherなら $M'$ の部分加群は $M$ の部分加群
+として有限生成であり，$M''$ の部分加群の逆像も
+有限生成なのでその像が有限生成となる．
+逆に $M',M''$ がNoetherとする．
+$M$ の部分加群の昇鎖 $N_1\subset N_2\subset\cdots$ を取る．
+$(N_j\cap M')_j$ と $(p(N_j))_j$ は
+それぞれ $M',M''$ の昇鎖なので，ある段階から安定する．
+その段階で $x\in N_{j+1}$ とすると
+$p(x)\in p(N_j)$ だから
+$p(x)=p(y)$ となる $y\in N_j$ がある．
+すると $x-y\in N_{j+1}\cap M'=N_j\cap M'$ なので
+$x\in N_j$ となる．
+よって $N_{j+1}=N_j$ であり $M$ はNoetherである．
+\end{proof}
+\begin{corollary}
+$A$ がNoether環なら任意の有限生成 $A$-加群はNoetherである．
+\end{corollary}
+\begin{proof}
+$A$ 自身が加群としてNoetherである．
+定理\ref{thm:exact}から有限個のNoether加群の直和も
+Noetherである．
+有限生成加群はある $A^r$ の商加群なので，
+再び定理\ref{thm:exact}によってNoetherである．
+\end{proof}
+
+\section{Hilbertの基底定理}
+\begin{lemma}[係数イデアル]\label{lem:coeff}
+$A$ を環とし，$I\subset A[x]$ をイデアルとする．
+$n\ge0$ に対し
+\[
+ C_n=\{a\in A:\text{ある }f\in I,\ \deg f\le n
+ \text{ について }[x^n]f=a\}
+\]
+と置く．ただし零多項式の次数は $-\infty$ とする．
+このとき $C_n$ は $A$ のイデアルであり，
+$C_n\subset C_{n+1}$ である．
+\end{lemma}
+\begin{proof}
+次数が高々 $n$ の $I$ の元の $x^n$ の係数全体は
+加法で閉じ，$A$ の元の乗法で閉じるのでイデアルである．
+$f$ の $x^n$ の係数が $a$ なら
+$xf\in I$ は次数が高々 $n+1$ で
+$x^{n+1}$ の係数が $a$ となる．
+従って $a\in C_{n+1}$ である．
+\end{proof}
+\begin{theorem}[Hilbertの基底定理]\label{thm:hilbert}
+$A$ がNoether環なら多項式環 $A[x]$ もNoether環である．
+\end{theorem}
+\begin{proof}
+任意のイデアル $I\subset A[x]$ を取る．
+補題\ref{lem:coeff}の昇鎖 $C_0\subset C_1\subset\cdots$ は
+$A$ のNoether性によってある $N$ 以降一定となる．
+$0\le n\le N$ に対し
+$C_n=(a_{n1},\ldots,a_{nr_n})$ と書き，
+各生成元 $a_{nj}$ に対して
+次数が高々 $n$ で $x^n$ の係数が $a_{nj}$
+となる $f_{nj}\in I$ を選ぶ．
+ここで $a_{nj}=0$ なら対応する $f_{nj}$ は不要である．
+有限個の $f_{nj}$ が生成するイデアルを $J$ とする．
+明らかに $J\subset I$ である．
+逆の包含を多項式の次数について帰納法で示す．
+
+$0\ne f\in I$ の次数を $d$，最高次係数を $a$ とする．
+$d\le N$ なら $a\in C_d$ なので
+$a=\sum_j b_ja_{dj}$ と書ける．
+従って
+$g=\sum_jb_jf_{dj}\in J$ は次数が高々 $d$ で
+$x^d$ の係数が $a$ である．
+$d>N$ の場合は $C_d=C_N$ であり，
+$a=\sum_jb_ja_{Nj}$ と書ける．
+このとき
+$g=x^{d-N}\sum_jb_jf_{Nj}\in J$ は
+次数が高々 $d$ で最高次係数が $a$ である．
+いずれの場合も $f-g$ は $I$ に属し
+次数が $d$ より小さい．
+帰納法によって $f-g\in J$ となり，$f\in J$ を得る．
+従って $I=J$ は有限生成である．
+$I$ は任意なので $A[x]$ はNoether環である．
+\end{proof}
+\begin{corollary}
+$A$ がNoether環なら有限個の変数の多項式環
+$A[x_1,\ldots,x_m]$ はNoether環である．
+\end{corollary}
+\begin{proof}
+$A[x_1,\ldots,x_m]$ は
+$A[x_1,\ldots,x_{m-1}][x_m]$ と同型である．
+変数の個数に関する帰納法で定理\ref{thm:hilbert}を
+繰り返し適用すればよい．
+\end{proof}
+\begin{corollary}[有限生成代数]
+$A$ がNoether環で，$B$ が有限生成の可換 $A$-代数なら
+$B$ はNoether環である．
+\end{corollary}
+\begin{proof}
+$B=A[b_1,\ldots,b_m]$ と書けば
+多項式の値を $b_i$ に代入する写像
+$A[x_1,\ldots,x_m]\to B$ は全射である．
+多項式環はNoetherであり，
+命題\ref{prop:quot}からその商環 $B$ もNoetherである．
+\end{proof}
+\begin{remark}
+Hilbertの基底定理で重要なのは，
+$A[x]$ のイデアルの生成元が実際に有限個選べるという
+存在の証明である．この証明は一般には
+生成元を機械的に求める算法を与えない．
+具体的な算法は単項式順序とGroebner基底の理論で扱う．
+\end{remark}
+
+\section{Dicksonの補題}
+$\mathbb N=\{0,1,2,\ldots\}$ とし，
+$\mathbb N^m$ に成分ごとの半順序
+$\alpha\le\beta\iff \alpha_i\le\beta_i$（全ての $i$）
+を入れる．
+\begin{lemma}[単調部分列]\label{lem:monosub}
+任意の無限列 $(a_n)_{n\ge1}$（$a_n\in\mathbb N$）は
+無限の非減少部分列を持つ．
+\end{lemma}
+\begin{proof}
+ある自然数 $r$ が列中に無限回現れるなら，
+それらの添字を選べば定数部分列を得る．
+そうでなければ各 $r$ は有限回しか現れない．
+最初の一項を選び，値が $a_{n_j}$ を超える項が
+$n_j$ より後に存在することを示す．
+存在しなければ後の全項が有限集合
+$\{0,\ldots,a_{n_j}\}$ に入るため，
+鳩の巣原理によってその中のある値が無限回現れ矛盾する．
+従って帰納的に狭義増加部分列を選べる．
+\end{proof}
+\begin{lemma}[成分ごとの比較可能性]\label{lem:wqo}
+任意の無限列
+$\alpha^{(1)},\alpha^{(2)},\ldots\in\mathbb N^m$ に対して，
+$i<j$ かつ $\alpha^{(i)}\le\alpha^{(j)}$ となる
+添字 $i,j$ が存在する．
+\end{lemma}
+\begin{proof}
+$m=1$ は補題\ref{lem:monosub}による．
+$m>1$ では第1成分について
+非減少な無限部分列を取り，その部分列の残りの
+$m-1$ 成分に帰納法の仮定を適用する．
+得られた二項では第1成分も非減少なので，
+全成分について所望の不等式が成立する．
+\end{proof}
+\begin{theorem}[Dicksonの補題]\label{thm:dickson}
+任意の $E\subset\mathbb N^m$ に対し，
+有限集合 $F\subset E$ が存在して
+\[
+ \forall\alpha\in E\quad
+ \exists\beta\in F\quad \beta\le\alpha
+\]
+となる．
+\end{theorem}
+\begin{proof}
+そのような有限集合が存在しないと仮定する．
+$\alpha^{(1)}\in E$ を選び，
+$\alpha^{(1)},\ldots,\alpha^{(r)}$ を選んだとき，
+それらのどれからも上方へ比較されない
+$\alpha^{(r+1)}\in E$ を選べる．
+そうでなければ既に選んだ有限集合が結論を満たすからである．
+この操作で
+$i<j$ なら
+$\alpha^{(i)}\not\le\alpha^{(j)}$ となる無限列を得るが，
+補題\ref{lem:wqo}に矛盾する．
+\end{proof}
+\section{単項式イデアル}
+\begin{definition}
+$A[x_1,\ldots,x_m]$ の単項式
+$x^\alpha=x_1^{\alpha_1}\cdots x_m^{\alpha_m}$ を考える．
+単項式で生成されるイデアルを単項式イデアルという．
+\end{definition}
+\begin{lemma}[単項式の整除]
+$x^\alpha$ が $x^\beta$ を割ることと
+$\alpha\le\beta$ は同値である．
+\end{lemma}
+\begin{proof}
+$\alpha\le\beta$ なら
+$x^\beta=x^{\beta-\alpha}x^\alpha$ である．
+逆に多項式 $h$ について
+$x^\beta=x^\alpha h$ と書けるなら，
+$h$ の非零項の指数を見れば
+$x^\alpha$ が指数を全て下げた形で含まれる必要がある．
+従って $\alpha\le\beta$ である．
+\end{proof}
+\begin{theorem}[単項式イデアルの有限生成性]\label{thm:monomial}
+多項式環 $A[x_1,\ldots,x_m]$ の任意の単項式イデアルは
+有限個の単項式によって生成される．
+この結論には $A$ のNoether性を仮定しない．
+\end{theorem}
+\begin{proof}
+単項式イデアル $I$ を生成する単項式の指数全体を
+$E\subset\mathbb N^m$ とする．
+Dicksonの補題から有限集合 $F\subset E$ を選び，
+任意の $\alpha\in E$ に対して
+$\beta\le\alpha$ となる $\beta\in F$ を取れる．
+従って $x^\alpha$ は $x^\beta$ の倍数であり，
+$I$ の生成に $F$ に対応する有限個の単項式だけで十分である．
+\end{proof}
+\begin{example}
+$k[x,y]$ の単項式イデアル
+$I=(x^3,x^2y,xy^2,y^4)$ では，
+四つの生成単項式はどれも他のものを割らない．
+従ってこれらは単項式による生成集合として極小である．
+\end{example}
+\begin{proof}
+各単項式の指数は
+$(3,0),(2,1),(1,2),(0,4)$ である．
+どの二つも成分ごとの順序で比較可能でない．
+従って一つを他の三つの単項式の倍数として表すことはできない．
+\end{proof}
+\begin{remark}
+一般の多項式イデアルの有限生成性には
+Hilbertの基底定理を用いればよい．
+一方，項順序を固定して最高単項式を取り出すと，
+Dicksonの補題がGroebner基底の有限性を保証する．
+両命題は関係するが，構成的計算のための
+多項式除法と停止性の詳細は次の独立ノートで扱う．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{単項式イデアルの最小生成集合．}
+\begin{proposition}
+$k[x,y]$ のイデアル
+$I=(x^3,x^2y,xy^2,y^3)$ は
+全次数3以上の単項式の全体で生成される．
+特に $(x,y)^3=I$ である．
+\end{proposition}
+\begin{proof}
+$(x,y)^3$ は定義より三個の元を
+$x$ または $y$ から選んだ積で生成される．
+重複を整理するとちょうど
+$x^3,x^2y,xy^2,y^3$ となる．
+任意の次数3以上の単項式 $x^ay^b$ は
+$a+b\ge3$ を満たす．$a\ge3$，
+$a=2,b\ge1$，$a=1,b\ge2$，$a=0,b\ge3$
+のいずれかなので，四つの生成元の一つで割り切れる．
+\end{proof}
+\begin{proposition}
+$I$ の上記四生成元はいずれも取り除けない．
+\end{proposition}
+\begin{proof}
+一つの生成元を除いた残り三つで作る
+単項式イデアルの全ての単項式は，
+その三つのいずれかで割り切れる．
+次数3の異なる四つの単項式は
+互いに割り切れないので，除いた生成元は
+残りの生成イデアルに属さない．
+\end{proof}
+\noindent\textbf{到達確認．}
+$(x,y)^2$ の最小単項式生成系を求めよ．
+\par\noindent\textbf{解答．}
+$x^2,xy,y^2$ の三つであり，
+同じ次数2なので相互に割り切れない．
+
+\section{単項式イデアルの所属判定と商環}
+ここでは $k$ を体とし，$R=k[x,y]$ とする．
+\begin{proposition}[所属判定]\label{prop:monomial-membership}
+$I=(m_1,\ldots,m_r)\subset k[x_1,\ldots,x_n]$ を
+単項式イデアルとし，
+$f=\sum_\alpha c_\alpha x^\alpha$ とする．
+このとき $f\in I$ であるための必要十分条件は，
+$c_\alpha\ne0$ となる各 $\alpha$ に対して，
+ある $i$ が存在し $m_i\mid x^\alpha$ となることである．
+\end{proposition}
+\begin{proof}
+各 $m_i$ の多項式倍は，$m_i$ で割り切れる単項式の
+線形結合である．よって $f\in I$ なら，
+単項式基底の一次独立性から $f$ の全ての非零項は
+いずれかの $m_i$ で割り切れる．
+逆に各非零項 $c_\alpha x^\alpha$ がいずれかの
+$m_i$ で割り切れるなら，その項は $I$ に属する．
+有限個の項を加えれば $f\in I$ となる．
+\end{proof}
+\begin{corollary}[商環の単項式基底]
+$I$ を上記の単項式イデアルとする．
+どの $m_i$ でも割り切れない単項式の剰余類全体は
+$k[x_1,\ldots,x_n]/I$ の $k$-線形基底である．
+\end{corollary}
+\begin{proof}
+任意の多項式から $I$ に属する単項式を取り除けば，
+残る単項式の剰余類で商環が張られる．
+それらの一次結合が $I$ に属するとき，
+命題\ref{prop:monomial-membership}によって
+非零係数を持つ項はどれも存在しない．
+従って一次独立である．
+\end{proof}
+\begin{example}[階段図形の代数的計算]
+$I=(x^3,x^2y,y^2)$ と置く．
+$I$ に属さない単項式は
+$1,x,x^2,y,xy$ の五個に限られる．
+従って
+\[
+ \dim_k R/I=5,\qquad
+ H_{R/I}(t)=1+2t+2t^2,
+\]
+ここで $H_{R/I}(t)$ は全次数による次数付き
+Hilbert級数である．
+実際，次数0に一個，次数1に二個，
+次数2に二個の基底単項式がある．
+$x^2y$ と $y^2$ が零となるため，次数3以上の
+単項式はいずれも $I$ に属する．
+\end{example}
+\begin{remark}
+この所属判定は単項式イデアルに対するものである．
+一般の多項式を生成元とするイデアルでは，
+各項が別々に生成元で割り切れる必要はなく，
+多項式除法やGr\"obner基底が必要になる．
+\end{remark}
+\noindent\textbf{到達確認．}
+$J=(x^2,xy^2,y^4)\subset k[x,y]$ とする．
+$\dim_k k[x,y]/J$ と，この商の単項式基底を求めよ．
+
+\par\noindent\textbf{解答．}
+$x$ の指数が2以上なら $J$ に属する．
+$x$ の指数が1の場合は $y$ の指数が0または1，
+$x$ の指数が0の場合は $y$ の指数が0から3までである．
+従って求める基底は
+\[
+ 1,y,y^2,y^3,x,xy
+\]
+の剰余類であり，次元は6である．
+これらはどの生成単項式でも割り切れず，
+それ以外の単項式は全ていずれかの生成元で割り切れる．
+命題\ref{prop:monomial-membership}とその系によって
+張ることと一次独立性の双方が保証される．
+
+\end{document}

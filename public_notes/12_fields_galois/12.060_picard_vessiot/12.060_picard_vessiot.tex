@@ -1,0 +1,661 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Picard--Vessiot拡大と微分Galois群}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，微分体，Picard--Vessiot拡大，定数体．
+本稿の具体的な到達課題は，一次線形微分方程式のPicard--Vessiot拡大とGalois群を計算する．
+
+\section{微分体と線形方程式}
+
+本稿では標数0の微分体 $(K,\partial)$ を考える．
+定数体
+\[
+ k=K^\partial=\{c\in K:\partial c=0\}
+\]
+は代数閉体と仮定する．
+多項式環，テンソル積，代数閉体上の線形代数，
+有限型代数の基本事項を前提とする．
+
+\begin{definition}
+環 $R$ の導分とは
+\[
+ \partial(a+b)=\partial a+\partial b,\qquad
+ \partial(ab)=(\partial a)b+a(\partial b)
+\]
+を満たす写像をいう．
+導分を持つ環を微分環という．
+$\partial(I)\subset I$ となるイデアルを微分イデアルと呼ぶ．
+零と単位イデアル以外に微分イデアルを持たない
+微分環を微分単純という．
+\end{definition}
+
+\begin{definition}
+$A\in M_n(K)$ とし，
+\[
+ \partial Y=AY
+ \tag{1}
+\]
+を考える．
+微分体拡大 $L/K$ における行列
+$Y\in\operatorname{GL}_n(L)$ が式 (1) を満たすとき，
+$Y$ を基本解行列という．
+\end{definition}
+
+\begin{lemma}[基本解行列の比]\label{lem:constant-change}
+$Y,Z\in\operatorname{GL}_n(L)$ が共に式 (1) を満たすなら
+\[
+ Z=YC
+\]
+となる $C\in\operatorname{GL}_n(L^\partial)$ が存在する．
+\end{lemma}
+\begin{proof}
+$C=Y^{-1}Z$ と置く．
+$\partial(Y^{-1})=-Y^{-1}(\partial Y)Y^{-1}$
+を用いると
+\[
+ \partial C=-Y^{-1}AYY^{-1}Z+Y^{-1}AZ=0.
+\]
+従って各成分は定数であり，$C$ は可逆なので
+$C\in\operatorname{GL}_n(L^\partial)$ である．
+\end{proof}
+
+\section{Picard--Vessiot環と拡大}
+
+\begin{definition}
+式 (1) に対するPicard--Vessiot環とは，
+次を満たす微分 $K$-代数 $R$ をいう．
+\begin{enumerate}
+\item $R$ は微分単純である．
+\item $Y\in\operatorname{GL}_n(R)$ が存在して
+ $\partial Y=AY$ を満たす．
+\item $R=K[Y_{ij},\det(Y)^{-1}]$ である．
+\item $R^\partial=k$ である．
+\end{enumerate}
+$R$ の分数体 $L=\operatorname{Frac}R$ を
+Picard--Vessiot拡大という．
+\end{definition}
+
+\begin{lemma}[微分イデアルの根基]\label{lem:radical}
+標数0の微分環 $S$ で微分イデアル $I$ が与えられたとき，
+$\sqrt I$ も微分イデアルである．
+\end{lemma}
+\begin{proof}
+$S/I$ に移して $I=0$ の場合を示せばよい．
+$a$ が冪零元で $a^m=0$ とする．
+$\partial^m(a^m)$ をLeibniz則で展開すると，
+全ての因子にちょうど一回ずつ微分を作用させた項は
+$m!(\partial a)^m$ であり，
+他の項は少なくとも一つ微分されない $a$ を含む．
+したがって
+\[
+ m!(\partial a)^m\in aS.
+\]
+これだけでは冪零性は直ちには従わないので，
+元の等式 $a^m=0$ から得られる
+$ma^{m-1}\partial a=0$ を繰り返し微分し，
+帰納的に
+$a^{m-j}(\partial a)^{2j-1}=0$
+（$1\le j\le m$）を得る．
+特に $(\partial a)^{2m-1}=0$ であり，
+$\partial a$ は冪零である．
+よって零イデアルの根基は微分で保たれる．
+一般の $I$ についても商に移せば従う．
+\end{proof}
+
+\begin{lemma}[微分単純環の整域性]\label{lem:domain}
+標数0の微分単純な非零可換環 $R$ は整域である．
+\end{lemma}
+\begin{proof}
+補題\ref{lem:radical}により零イデアルの根基は
+微分イデアルであり，微分単純性から零である．
+従って $R$ は被約である．
+極小素イデアル $\mathfrak p$ を取る．
+$\mathfrak p$ で局所化すると，
+被約性と極小性によって
+$\mathfrak p R_{\mathfrak p}$ は局所化環の零根基であり，
+従って零である．
+導分は局所化へ延長されるので，
+$a\in\mathfrak p$ に対して
+$a/1=0$ なら
+$\partial(a)/1=0$ となる．
+従って $\partial(a)\in\mathfrak p$ であり，
+$\mathfrak p$ は微分イデアルである．
+微分単純性により $\mathfrak p=0$ となるので，
+零イデアルは素イデアルであり $R$ は整域である．
+\end{proof}
+
+\section{定数体を増やさない構成}
+
+\begin{lemma}[微分代数的定数の代数性]\label{lem:alg-constants}
+$R$ を有限生成な微分単純 $K$-代数とする．
+$R^\partial$ は体である．
+また $R^\partial$ の任意の元は $k$ 上代数的である．
+\end{lemma}
+\begin{proof}
+$c\in R^\partial$ が非零なら
+$(c)$ は非零微分イデアルである．
+微分単純性から $(c)=R$ なので $c$ は単元であり，
+その逆元も導分が零である．
+従って $R^\partial$ は体となる．
+
+$c\in R^\partial$ が $K$ 上代数的なら，
+$K[X]$ における $c$ のモニック最小多項式 $P$ を取る．
+$P(c)=0$ を微分すると
+$(\partial P)(c)=0$ であり，
+$\partial P$ の次数は $\deg P$ より小さい．
+従って $\partial P=0$ である．
+全係数が $k$ に属するので，$c$ は $k$ 上代数的である．
+
+逆に $c$ が $K$ 上超越的と仮定する．
+$R$ は有限生成 $K$-整域であるから，
+\[
+ R=K[c,z_1,\dots,z_m]/I
+\]
+という有限型代数の表示を取れる．
+$c$ が超越的なので $I\cap K[c]=0$ であり，
+$\operatorname{Spec}R\to\operatorname{Spec}K[c]$
+は優勢な有限型射である．
+有限型代数の特殊化補題によって，
+有限個を除く $a\in k$ で
+$R/(c-a)\ne0$ となる．
+この特殊化補題は，
+$K(c)$ 上の有限生成イデアルのGr\"obner基底を取り，
+そこに現れる有限個の分母・先頭係数を避けて
+$c=a$ と代入すると，商環が零にならないことから得られる．
+$k$ は標数0なので無限体であり，
+そのような $a\in k$ を選べる．
+一方 $c-a$ は非零の定数なので単元であり，
+$R/(c-a)=0$ となって矛盾する．
+従って $c$ は $K$ 上代数的，従って $k$ 上代数的である．
+\end{proof}
+
+\begin{corollary}[定数体の保存]\label{cor:constants}
+$k$ が代数閉体なら，
+補題\ref{lem:alg-constants}の $R$ について
+$R^\partial=k$ となる．
+さらに $L=\operatorname{Frac}R$ の定数体も
+$L^\partial=k$ である．
+\end{corollary}
+\begin{proof}
+補題\ref{lem:alg-constants}から
+$R^\partial$ の元は $k$ 上代数的なので，
+$k$ の代数閉性から $R^\partial=k$ となる．
+$b\in L^\partial$ を取る．
+\[
+ J=\{r\in R:rb\in R\}
+\]
+と置くと，分母を一つ取れば $J$ は非零である．
+$rb\in R$ なら
+$\partial(rb)=(\partial r)b$ であるため
+$\partial r\in J$ となり，$J$ は微分イデアルである．
+微分単純性から $J=R$ だから $b\in R$ である．
+よって $b\in R^\partial=k$ であり，
+$L^\partial=k$ となる．
+\end{proof}
+
+\begin{theorem}[Picard--Vessiot拡大の存在]
+\label{thm:pv-existence}
+$k$ を代数閉体とする．
+任意の $A\in M_n(K)$ に対し
+$\partial Y=AY$ のPicard--Vessiot拡大が存在する．
+\end{theorem}
+\begin{proof}
+不定元行列 $X=(X_{ij})$ を取り，
+\[
+ S=K[X_{ij},\det(X)^{-1}]
+\]
+に導分を $\partial X=AX$ によって延長する．
+Leibniz則と
+\[
+ \partial(\det X)=(\operatorname{tr}A)\det X
+\]
+によって $\det(X)^{-1}$ の導分も一意に定まる．
+$S$ の真の微分イデアル全体は零イデアルを含むので空でない．
+鎖の和集合は真の微分イデアルであるから，
+Zornの補題で極大な真の微分イデアル $I$ を取れる．
+$R=S/I$ は微分単純である．
+補題\ref{lem:domain}から $R$ は整域である．
+$Y=X\bmod I$ は可逆で
+$\partial Y=AY$ を満たし，
+$R=K[Y,\det(Y)^{-1}]$ である．
+$R$ は有限生成 $K$-代数なので
+系\ref{cor:constants}から
+$R^\partial=(\operatorname{Frac}R)^\partial=k$ である．
+従って $L=\operatorname{Frac}R$ は
+所望のPicard--Vessiot拡大となる．
+\end{proof}
+
+\section{拡大の一意性}
+
+\begin{theorem}[Picard--Vessiot拡大の一意性]
+\label{thm:pv-uniqueness}
+同じ線形方程式 $\partial Y=AY$ に対する
+二つのPicard--Vessiot拡大 $L_1,L_2$ は
+$K$ 上の微分体として同型である．
+\end{theorem}
+\begin{proof}
+それぞれのPicard--Vessiot環を $R_1,R_2$ とし，
+基本解行列を $Y_1,Y_2$ とする．
+微分 $K$-代数
+$R_1\otimes_KR_2$ を考える．
+これは有限生成 $K$-代数であり，
+自然な導分
+$\partial(a\otimes b)=\partial a\otimes b+a\otimes\partial b$
+を持つ．
+極大真微分イデアル $J$ を取り，
+$S=(R_1\otimes_KR_2)/J$ と置く．
+$S$ は微分単純であり，
+補題\ref{lem:domain}から整域，
+系\ref{cor:constants}から定数体は $k$ である．
+自然な写像 $R_i\to S$ の核は微分イデアルであり，
+$1$ を零へ写さないので真である．
+$R_i$ の微分単純性から核は零であり，
+二つの $R_i$ を $S$ の部分環とみなせる．
+$S$ の中で
+\[
+ C=Y_1^{-1}Y_2
+\]
+は補題\ref{lem:constant-change}により
+$\operatorname{GL}_n(k)$ の行列である．
+従って $Y_2=Y_1C$ であり，
+$K[Y_1,\det(Y_1)^{-1}]
+ =K[Y_2,\det(Y_2)^{-1}]$
+が $S$ 内で成立する．
+これは $R_1$ と $R_2$ が同じ部分環になることを意味する．
+その分数体も同じなので
+$L_1\cong_KL_2$ を得る．
+\end{proof}
+
+\section{微分Galois群}
+
+\begin{definition}
+Picard--Vessiot拡大 $L/K$ に対して
+\[
+ \operatorname{Gal}^\partial(L/K)
+ =\{\sigma\in\operatorname{Aut}(L/K):
+ \sigma\partial=\partial\sigma\}
+\]
+を微分Galois群という．
+\end{definition}
+
+\begin{theorem}[行列による忠実な表現]
+\label{thm:matrix-group}
+$Y$ を基本解行列とする．
+各 $\sigma\in\operatorname{Gal}^\partial(L/K)$ に対し
+ただ一つの $C_\sigma\in\operatorname{GL}_n(k)$ が存在して
+\[
+ \sigma(Y)=YC_\sigma.
+\]
+写像 $\sigma\mapsto C_\sigma$ は
+群の単射準同型を与える．
+\end{theorem}
+\begin{proof}
+$\sigma$ は $K$ を固定し導分と可換なので
+$\partial(\sigma Y)=\sigma(\partial Y)
+ =\sigma(AY)=A\sigma(Y)$ となる．
+補題\ref{lem:constant-change}から
+$\sigma(Y)=YC_\sigma$ となる
+$C_\sigma\in\operatorname{GL}_n(k)$ が存在し，
+$Y$ が可逆だから一意である．
+$\sigma,\tau$ に対し
+\[
+ (\sigma\tau)(Y)=\sigma(YC_\tau)
+ =\sigma(Y)C_\tau=YC_\sigma C_\tau
+\]
+なので準同型である．
+$C_\sigma=I$ なら $\sigma$ は $Y$ の全成分を固定し，
+$K$ も固定するから $R=K[Y,\det(Y)^{-1}]$ を固定する．
+従って分数体 $L$ 全体を固定し $\sigma=1$ となる．
+よって単射である．
+\end{proof}
+
+\section{微分Galois群の代数性}
+
+\begin{lemma}[定数による基底変換]\label{lem:torsor}
+$R$ をPicard--Vessiot環とし，
+$B=R\otimes_KR$ とする．
+$Y_1=Y\otimes1$，$Y_2=1\otimes Y$ と置き，
+\[
+ C=Y_1^{-1}Y_2\in\operatorname{GL}_n(B)
+\]
+と定める．
+$H=B^\partial$ は $k$ 上有限生成な代数であり，
+\[
+ H=k[C_{ij},\det(C)^{-1}],
+ \qquad R\otimes_kH\cong R\otimes_KR
+ \tag{2}
+\]
+が成立する．
+\end{lemma}
+\begin{proof}
+$\partial C=0$ は補題\ref{lem:constant-change}と同様の計算による．
+$B$ は左側の $R$ のコピーと第二の $Y$ で生成されるが，
+$Y_2=Y_1C$ なので
+$B=R[C_{ij},\det(C)^{-1}]$ である．
+$H_0=k[C_{ij},\det(C)^{-1}]$ とすると
+積写像
+\[
+ R\otimes_kH_0\longrightarrow B
+\]
+は全射である．
+
+単射を示す．
+もし $k$ 上線形独立な定数元
+$h_1,\dots,h_m\in H_0$ が
+$R$ 上線形従属となれば，
+$m$ を最小にする関係
+$\sum_{i=1}^mr_ih_i=0$ を取れる．
+$B=R\otimes_KR$ は $R$-加群として自由なので，
+$R$ の非零元を局所化してもこの関係は保持される．
+分数体 $\operatorname{Frac}R$ の上で
+$r_m\ne0$ として割り，最後の係数を1にする．
+微分すると最後の定数項が消え，
+$\sum_{i<m}\partial(r_i/r_m)h_i=0$ となる．
+最小性から全ての $\partial(r_i/r_m)=0$ である．
+系\ref{cor:constants}によって $r_i/r_m\in k$ なので，
+元の関係は $k$-線形従属性となり矛盾する．
+従って積写像は単射である．
+
+よって $B\cong R\otimes_kH_0$ となる．
+$R^\partial=k$ なので，
+$k$-ベクトル空間 $H_0$ の基底を一つ固定して
+係数ごとに導分を考えると，
+$(R\otimes_kH_0)^\partial=H_0$ となる．
+従って $H=B^\partial=H_0$ であり (2) を得る．
+\end{proof}
+
+\begin{theorem}[線形代数群としてのGalois群]
+\label{thm:alg-group}
+微分Galois群は $k$ 上のアフィン代数群の
+$k$-有理点全体に同型であり，
+定理\ref{thm:matrix-group}の表現を通して
+$\operatorname{GL}_n(k)$ のZariski閉部分群となる．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:torsor}の $H$ を考える．
+三つのコピーの基本解行列 $Y_1,Y_2,Y_3$ について
+\[
+ Y_1^{-1}Y_3=(Y_1^{-1}Y_2)(Y_2^{-1}Y_3)
+\]
+が成立する．
+この等式は $H$ 上の余積
+$\Delta_H:H\to H\otimes_kH$ を与え，
+$Y_1=Y_2$ の対角写像は余単位，
+二コピーの交換は反転を与える．
+行列積の結合性からHopf代数の公理が成立する．
+従って $\mathcal G=\operatorname{Spec}H$ は
+$k$ 上のアフィン代数群である．
+
+$k$-代数準同型 $\epsilon:H\to k$ を取る．
+式 (2) で第二の $R$ から $B$ への埋め込みを考え，
+$\operatorname{id}_R\otimes\epsilon$ を適用すると
+\[
+ Y\longmapsto Y\,(\epsilon(C_{ij}))
+\]
+という $K$-微分環の自己準同型を得る．
+Hopf代数の逆元に対応する $\epsilon$ の逆を用いると，
+この写像は自己同型となる．
+逆に任意の微分自己同型 $\sigma$ は
+$Y\mapsto YC_\sigma$ という形なので，
+$H$ の生成元 $C_{ij}$ に $C_\sigma$ の成分を割り当てる
+$k$-点を与える．
+両構成は互いに逆であり，
+$\mathcal G(k)\cong\operatorname{Gal}^\partial(L/K)$ を得る．
+
+$H$ は $\operatorname{GL}_n$ の座標環
+$k[T_{ij},\det(T)^{-1}]$ の商なので，
+$\mathcal G$ は $\operatorname{GL}_n$ の閉部分群スキームである．
+標数0の代数閉体上の有限型群スキームは被約なので，
+その $k$-点全体は $\operatorname{GL}_n(k)$ の
+Zariski閉部分群をなす．
+\end{proof}
+
+\section{微分Galois対応}
+
+\begin{theorem}[微分Galois対応]\label{thm:correspondence}
+$L/K$ をPicard--Vessiot拡大，
+$G=\operatorname{Gal}^\partial(L/K)$ とする．
+中間微分体 $K\subset M\subset L$ と
+$G$ のZariski閉部分群 $H$ の間に
+\[
+ M\longmapsto\operatorname{Gal}^\partial(L/M),
+ \qquad H\longmapsto L^H
+\]
+という互いに逆の包含反転対応がある．
+また $M/K$ がPicard--Vessiot拡大であることと
+対応する $H$ が $G$ の正規部分群であることは同値であり，
+この場合
+\[
+ \operatorname{Gal}^\partial(M/K)\cong G/H
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:torsor}の
+$R\otimes_KR\cong R\otimes_k k[G]$
+はPicard--Vessiot環が $G$-torsorであることを示す．
+従って $G$ の閉部分群 $H$ に対して，
+右側の作用を $H$ に制限したときの不変元は
+$R$ の $H$-不変元に対応し，
+分数体に移すと $L^H$ を与える．
+逆に中間微分体 $M$ について，
+$M$ を固定する微分自己同型の条件は
+$L$ の有限個の元に対する代数的等式の共通零点として
+記述できるので，その安定化部分群はZariski閉となる．
+ここで「有限個」を得るには，
+$k[G]$ のNoether性を用いて，
+各 $m\in M$ の固定条件から定まるイデアルの和が
+有限個の生成元で生成されることを用いる．
+
+対応が互いに逆であることは，
+式 (2) の同型を $M$ 上へ基底変換した
+忠実平坦降下によって従う．
+具体的には
+\[
+ L\otimes_ML
+\]
+の二つの埋め込みから来る一致条件
+$1\otimes z=z\otimes1$ は
+$z\in M$ と同値である．
+一方torsor同型によってこの一致条件は，
+$M$ を固定する部分群の全ての点に対して
+$z$ が不変であることと同値になる．
+従って
+$L^{\operatorname{Gal}^\partial(L/M)}=M$，
+および
+$\operatorname{Gal}^\partial(L/L^H)=H$ が成立する．
+最後に正規部分群の場合は $G/H$ が
+$M$ への作用を通してGalois群を与える．
+逆に $M/K$ がPicard--Vessiotなら，
+$K$ を固定する微分自己同型は $M$ を保ち，
+その核 $\operatorname{Gal}^\partial(L/M)$ は正規である．
+\end{proof}
+
+\section{一次方程式の例}
+
+\begin{proposition}[指数型一次方程式]
+\label{prop:exp-example}
+$a\in K$ とし，$\partial y=ay$ を考える．
+基本解 $t\ne0$ のPicard--Vessiot拡大 $L=K(t)$ では
+\[
+ \sigma(t)=c_\sigma t\qquad(c_\sigma\in k^\times).
+\]
+$t$ が $K$ 上超越的ならGalois群は
+$\mathbb G_m(k)=k^\times$ である．
+$t$ が $K$ 上代数的ならGalois群は有限巡回群である．
+\end{proposition}
+\begin{proof}
+基本解の比は定数なので
+$\sigma(t)/t\in k^\times$ となる．
+$t$ が超越的なら，任意の $c\in k^\times$ に対して
+$K(t)\to K(t)$，$t\mapsto ct$ は体自己同型であり，
+導分との可換性も
+$\partial(ct)=c at=a(ct)$ から従う．
+従ってGalois群は $k^\times$ 全体である．
+$t$ が代数的なら $L/K$ は有限次なので
+微分Galois群は有限である．
+$k^\times$ の有限部分群は単位根からなる巡回群なので
+結論を得る．
+\end{proof}
+
+\begin{proposition}[積分型一次方程式]
+\label{prop:int-example}
+$a\in K$ とし，$\partial t=a$ となる元を含む
+Picard--Vessiot拡大 $L=K(t)$ を考える．
+このとき任意の $\sigma$ に対して
+$\sigma(t)=t+c_\sigma$（$c_\sigma\in k$）である．
+$t$ が超越的ならGalois群は
+$\mathbb G_a(k)=(k,+)$ であり，
+$t$ が代数的なら $t\in K$ でGalois群は自明である．
+\end{proposition}
+\begin{proof}
+$\partial(\sigma(t)-t)=a-a=0$ なので
+$\sigma(t)-t\in k$ である．
+$t$ が超越的なら任意の $c\in k$ に対して
+$t\mapsto t+c$ は $K$-体自己同型であり，
+導分と可換であるからGalois群は $(k,+)$ となる．
+$t$ が代数的ならGalois群は有限であるが，
+標数0の加法群 $(k,+)$ に非自明な有限部分群はない．
+従ってGalois群は自明である．
+微分Galois対応から固定体は $K$ なので $t\in K$ となる．
+\end{proof}
+
+\begin{example}[二階の定数係数方程式]
+$K=\mathbb C(x)$，$\partial=d/dx$ とし
+$y''+y=0$ を考える．
+基本解は $e^{ix}$ と $e^{-ix}$ であり，
+Picard--Vessiot体は $\mathbb C(x,e^{ix})$ である．
+その微分Galois群は $\mathbb G_m(\mathbb C)$ である．
+\end{example}
+\begin{proof}
+$z=e^{ix}$ と置くと $z'=iz$，$z^{-1}=e^{-ix}$
+なので二つの基本解を含む微分体は
+$\mathbb C(x,z)$ である．
+$z$ が $\mathbb C(x)$ 上超越的であることを示す．
+もし代数関係
+$\sum_{j=0}^mr_j(x)e^{ijx}=0$
+（$r_m\ne0$，$r_j\in\mathbb C(x)$）があれば，
+分母を払って多項式係数の関係が得られる．
+$x=-it$，$t\to+\infty$ と置くと
+$e^{ijx}=e^{jt}$ なので，
+最大の $j=m$ に対応する項を $e^{mt}$ で割れば
+$r_m(-it)$ と他の指数減衰項の和が零となる．
+非零有理関数 $r_m(-it)$ は高々多項式的に増減し，
+指数的に零へ近づくことはできないので矛盾する．
+よって $z$ は超越的である．
+命題\ref{prop:exp-example}から
+Galois群は $\mathbb C^\times$ となる．
+\end{proof}
+
+\begin{remark}
+定数体が代数閉であるという仮定は
+Picard--Vessiot拡大の存在・一意性と
+Galois群の $k$-点による記述に本質的である．
+代数閉でない定数体では
+群スキームやtorsorを区別して扱う必要がある．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{指数方程式の微分Galois群．}
+\begin{proposition}
+$K=\mathbb C(x)$，微分 $d/dx$ とし，
+方程式 $y'=y$ を考える．
+$L=K(e^x)$ はPicard--Vessiot拡大であり，
+\[
+\operatorname{Gal}(L/K)\cong\mathbb C^\times
+\]
+である．
+\end{proposition}
+\begin{proof}
+$e^x$ は非零解であり，
+$L$ はこの基本解とその逆元で生成される微分体である．
+$e^x$ は $K$ 上超越的である．
+実際，代数関係があれば，分母を払って
+$\sum_{j=0}^mp_j(x)e^{jx}=0$（$p_m\ne0$）となる．
+$x\to+\infty$ で $e^{mx}$ で割ると
+$p_m(x)\to0$ を強制し，非零多項式の増大と矛盾する．
+$L$ を複素平面上の有理型関数の微分体とみれば，
+微分が零の元は局所定数な有理型関数なので
+定数体は $\mathbb C$ のままである．
+任意の $K$-微分自己同型 $\sigma$ に対し
+$\sigma(e^x)'=\sigma(e^x)$ なので，
+$\sigma(e^x)/e^x$ の微分は零である．
+従って $\sigma(e^x)=ce^x$（$c\in\mathbb C^\times$）．
+逆に各 $c\ne0$ について $e^x\mapsto ce^x$ は
+$K$ 上の微分体自己同型を定める．
+この対応は群同型である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$y'=2y$ の基本解とGalois群を求めよ．
+\par\noindent\textbf{解答．}
+基本解は $e^{2x}$ であり，
+同様の議論から $\mathbb C^\times$ を得る．
+独立に生成した微分体は $K(e^{2x})$ である．
+\end{document}

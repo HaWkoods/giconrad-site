@@ -1,0 +1,632 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Liouville可積分性と微分Galois理論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，微分体，初等関数，微分Galois群．
+本稿の具体的な到達課題は，単純な微分方程式のLiouvillian解を構成し，その条件を確認する．
+
+\section{Liouvillian拡大の定義}
+
+本稿では標数0の微分体 $(K,\partial)$ と
+代数閉な定数体 $k=K^\partial$ を考える．
+Picard--Vessiot拡大の存在・一意性・Galois対応，
+代数群の連結成分・Lie--Kolchinの定理，
+代数関数のPuiseux展開を前提とする．
+
+\begin{definition}
+微分体拡大 $E/F$ が次のいずれかに属するとき，
+一段のLiouvillian拡大という．
+\begin{enumerate}
+\item $E/F$ は有限代数拡大である．
+\item $E=F(t)$ で $\partial t\in F$ を満たす．
+\item $E=F(t)$ で $t\ne0$ かつ
+ $\partial t/t\in F$ を満たす．
+\end{enumerate}
+有限の塔
+\[
+ K=F_0\subset F_1\subset\cdots\subset F_m=E
+\]
+の各段階がこれらのいずれかであり，さらに各段階で
+定数体を増やさない（$F_i^\partial=k$，$0\le i\le m$）とき，
+$E/K$ を本稿ではLiouvillian拡大という．
+定数体の保存は，後述するPicard--VessiotのGalois対応と
+Kolchinの判定定理を適用するための仮定である．
+\end{definition}
+
+\begin{definition}
+線形微分方程式 $\partial Y=AY$ が
+\emph{Liouvillianな解を持つ}とは，
+その基本解行列の全成分が
+あるLiouvillian拡大に含まれることをいう．
+\end{definition}
+
+\begin{remark}
+Liouvillian拡大の第三の段階は指数関数を，
+第二の段階は不定積分を加える操作に対応する．
+これは初等関数だけで表せるという条件より広い．
+例えば $e^{-x^2}$ の不定積分は
+Liouvillianな拡大として許される．
+\end{remark}
+
+\section{一次方程式と微分Galois群}
+
+\begin{proposition}[指数型の方程式]\label{prop:exp}
+$a\in F$ とし
+\[
+ y'=ay
+\]
+を考える．$t\ne0$ を解として定数体を増やさない
+微分体拡大 $E=F(t)$ を取ると，
+微分自己同型は
+\[
+ \sigma(t)=c_\sigma t,\qquad c_\sigma\in k^\times
+\]
+と作用する．従ってGalois群は
+$\mathbb G_m$ の代数部分群である．
+\end{proposition}
+\begin{proof}
+$\partial(\sigma(t)/t)=0$ なので，
+$\sigma(t)/t$ は定数となる．
+定数体が $k$ のままであるから
+$c_\sigma\in k^\times$ である．
+Picard--Vessiot理論により群は
+$\mathbb G_m$ の閉代数部分群となる．
+\end{proof}
+
+\begin{proposition}[積分型の方程式]\label{prop:int}
+$a\in F$ とし
+\[
+ t'=a
+\]
+を満たす $t$ を加えた
+定数体を増やさない微分体拡大 $E=F(t)$ を取る．
+微分自己同型は
+\[
+ \sigma(t)=t+c_\sigma,\qquad c_\sigma\in k
+\]
+と作用する．従ってGalois群は
+$\mathbb G_a$ の代数部分群である．
+\end{proposition}
+\begin{proof}
+$\partial(\sigma(t)-t)=\sigma(a)-a=0$ なので
+$\sigma(t)-t$ は定数であり，
+定数体は $k$ なので $c_\sigma\in k$ となる．
+実際，$t'=a$ に対し
+\[
+ A=\begin{pmatrix}0&a\\0&0\end{pmatrix},\qquad
+ Y=\begin{pmatrix}1&t\\0&1\end{pmatrix}
+\]
+と置けば $Y'=AY$ である．$E=F(t)$ は定数体を増やさず，
+$t$ が $F$ 上代数的なら，最小多項式を微分して
+その最高次係数の次の係数を比較すると，
+$\partial(t+b)=0$ となる $b\in F$ が得られる．
+定数体が $k\subset F$ のままなので $t\in F$ であり，
+拡大は自明である．
+$t$ が超越的なら，$F[t]$ が微分単純であることを示す．
+真の非零微分イデアルがあれば，
+そこに属する次数最小のモニック多項式
+$P=t^d+b_{d-1}t^{d-1}+\cdots$ を取れる（$d\ge1$）．
+$\partial P$ は次数が $d$ より小さく同じイデアルに属するから
+$\partial P=0$ となる．$t^{d-1}$ の係数を比較すれば
+$da+\partial b_{d-1}=0$，従って
+$\partial(t+b_{d-1}/d)=0$ を得る．
+これが定数体の保存に反するため，$F[t]$ は微分単純である．
+ゆえにいずれの場合も対応するPicard--Vessiot拡大を与える．
+従って微分Galois群は
+$\left\{\begin{psmallmatrix}1&c\\0&1\end{psmallmatrix}:c\in k\right\}$
+の代数部分群となる．
+\end{proof}
+
+\section{可解代数群とLiouvillian拡大}
+
+\begin{definition}
+線形代数群 $G$ の単位元を含むZariski連結成分を
+$G^\circ$ と書く．
+群 $G$ が可解であるとは，導来列
+$G^{(0)}=G$，
+$G^{(i+1)}=[G^{(i)},G^{(i)}]$ が有限回で
+自明群となることをいう．
+代数群については各導来部分群のZariski閉包を取る．
+\end{definition}
+
+\begin{lemma}[連結可解群の一次元商]\label{lem:solvable-series}
+$k$ を標数0の代数閉体とし，
+$G$ を連結可解線形代数群とする．
+このとき正規閉部分群の列
+\[
+ G=G_0\triangleright G_1\triangleright\cdots
+ \triangleright G_r=1
+\]
+で，各商 $G_i/G_{i+1}$ が
+$\mathbb G_a$ または $\mathbb G_m$ に同型となるものが存在する．
+\end{lemma}
+\begin{proof}
+Lie--Kolchinの定理によって，
+$G$ は適当な基底で上三角行列群 $B_n$ に含まれる．
+上三角群から対角群への準同型
+$B_n\to(\mathbb G_m)^n$ の核は単位上三角群 $U_n$ である．
+$G$ の像は連結な代数トーラスであり，
+適当な基底を選べば
+$\mathbb G_m$ を一つずつ取り除く
+部分トーラスの正規列を持つ．
+また $G\cap U_n$ は連結な冪単代数群である．
+標数0の冪単群の指数・対数対応により，
+そのLie代数の中心列を群へ戻すと，
+一次元の加法群 $\mathbb G_a$ を商とする
+正規列を得る．
+これらの正規列を $G$ 内へ引き戻して連結すると，
+各商が $\mathbb G_a$ または $\mathbb G_m$ となる
+所望の列を得る．
+\end{proof}
+
+\begin{lemma}[加法・乗法群のtorsorの自明性]
+\label{lem:hilbert90}
+標数0の体 $F$ 上の $\mathbb G_a$-torsorおよび
+$\mathbb G_m$-torsorは自明である．
+\end{lemma}
+\begin{proof}
+まず有限Galois拡大 $E/F$ 上でtorsorを自明化し，
+Galois群 $\Gamma$ に関する降下データを考える．
+加法群の場合，降下データは
+\[
+ c_{\sigma\tau}=c_\sigma+\sigma(c_\tau)
+\]
+を満たす元 $c_\sigma\in E$ の族として表される．
+\[
+ b=-\frac1{|\Gamma|}\sum_{\tau\in\Gamma}c_\tau
+\]
+と置くと，
+\[
+ \sigma(b)-b=c_\sigma
+\]
+がコサイクルの等式から従う．
+従って座標を $t\mapsto t-b$ と変更すれば
+降下データが消え，$F$ 上のtorsorが自明化する．
+
+乗法群の場合には
+$c_{\sigma\tau}=c_\sigma\sigma(c_\tau)$ とする．
+適当な $a\in E$ を選び
+\[
+ b=\sum_{\tau\in\Gamma}c_\tau\tau(a)\ne0
+\]
+となるようにできる．
+これは異なる体自己同型が $E$ 上線形独立であるという
+Artinの独立性定理による．
+コサイクルの等式から
+$\sigma(b)=c_\sigma^{-1}b$ となるので，
+$c_\sigma=b/\sigma(b)$ である．
+従って座標を $b$ で掛け替えることで
+乗法的な降下データが消える．
+いずれの場合もtorsorは $F$-点を持ち，
+自明である．
+\end{proof}
+
+\begin{proposition}[$\mathbb G_a$ および $\mathbb G_m$ 型PV拡大]
+\label{prop:one-dim-pv}
+Picard--Vessiot拡大 $E/F$ の微分Galois群が
+$\mathbb G_a$ に同型なら，
+$E=F(t)$，$\partial t\in F$ となる $t$ が存在する．
+群が $\mathbb G_m$ に同型なら，
+$E=F(t)$，$\partial t/t\in F$ となる
+$t\ne0$ が存在する．
+\end{proposition}
+\begin{proof}
+Picard--Vessiot環のtorsor同型から，
+$E/F$ は対応する群のtorsorの関数体である．
+補題\ref{lem:hilbert90}によってこのtorsorは
+$F$ 上自明である．
+$\mathbb G_a$ の場合は座標 $t$ を選ぶと，
+群作用は $\sigma(t)=t+c_\sigma$ となる．
+導分が群作用と可換なので
+$\sigma(\partial t)=\partial t$ である．
+微分Galois対応から固定体は $F$ なので
+$\partial t\in F$ となる．
+torsorの関数体は $F(t)$ だから $E=F(t)$ である．
+$\mathbb G_m$ の場合も
+$\sigma(t)=c_\sigma t$ となる座標を取れる．
+すると $\sigma(\partial t/t)=\partial t/t$ なので
+$\partial t/t\in F$ であり，
+同様に $E=F(t)$ となる．
+\end{proof}
+
+\section{Kolchinの可積分性判定}
+
+\begin{theorem}[Kolchinの定理]\label{thm:kolchin}
+$L/K$ を線形方程式 $\partial Y=AY$ の
+Picard--Vessiot拡大とし，
+$G=\operatorname{Gal}^\partial(L/K)$ とする．
+次は同値である．
+\begin{enumerate}
+\item 方程式はLiouvillian拡大の中で基本解行列を持つ．
+\item $L/K$ はLiouvillian拡大である．
+\item $G^\circ$ は可解代数群である．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(2) なら基本解行列は $L$ の中にあるので (1) は明らかである．
+まず (3) から (2) を示す．
+$G^\circ$ は有限指数の正規閉部分群なので，
+微分Galois対応から
+$F=L^{G^\circ}$ は $K$ の有限代数拡大である．
+また $L/F$ はPicard--Vessiot拡大で，
+微分Galois群は $G^\circ$ に等しい．
+補題\ref{lem:solvable-series}によって
+\[
+ G^\circ=G_0\triangleright\cdots\triangleright G_r=1
+\]
+という正規列を取る．
+$F_i=L^{G_i}$ と置くとGalois対応から
+\[
+ F=F_0\subset F_1\subset\cdots\subset F_r=L
+\]
+となる．
+各 $F_{i+1}/F_i$ はPicard--Vessiot拡大であり，
+そのGalois群は $G_i/G_{i+1}$ である．
+命題\ref{prop:one-dim-pv}により，
+各段階は積分型または指数積分型の一段拡大となる．
+最初に有限代数拡大 $F/K$ を付け加えれば
+$L/K$ はLiouvillian拡大である．
+
+逆方向を示す．
+(1) により基本解を含むLiouvillian拡大 $E/K$ が存在する．
+$L$ は基本解行列とその逆行列の成分で生成され，
+定数体を増やさない最小の微分体なので，
+共通の微分閉包の中で $L\subset E$ とみなせる．
+Liouvillian塔の各段階を正規化すると，
+代数段階は有限Galois拡大，
+積分段階と指数積分段階はそれぞれ
+$\mathbb G_a$，$\mathbb G_m$ をGalois群に持つ
+Picard--Vessiot拡大として扱える．
+この正規化で得られる拡大のGalois群は，
+有限群，$\mathbb G_a$，$\mathbb G_m$ を商とする
+有限個の群拡大として記述される．
+有限群の単位成分は自明であり，
+$\mathbb G_a$ と $\mathbb G_m$ は可換なので，
+こうした群の単位成分は可解である．
+$L$ のGalois群はそのような群の閉部分群の商として得られるため，
+$G^\circ$ も可解である．
+従って (1) から (3) を得る．
+\end{proof}
+
+\begin{remark}
+定理\ref{thm:kolchin}の逆方向では
+Liouvillian塔の正規化に関する微分代数的降下を用いた．
+この降下は，通常の体のGalois閉包に相当する構成と，
+微分体における定数体の保存を組み合わせるものである．
+\end{remark}
+
+\section{二階線形方程式とRiccati方程式}
+
+\begin{definition}
+$K$ 上の二階線形方程式
+\[
+ y''=r y,\qquad r\in K
+ \tag{R}
+\]
+を考える．
+\[
+ u'+u^2=r
+ \tag{Ric}
+\]
+を対応するRiccati方程式という．
+\end{definition}
+
+\begin{lemma}[対数微分とRiccati方程式]
+\label{lem:riccati-reduction}
+$y\ne0$ が (R) の解なら $u=y'/y$ は (Ric) の解である．
+逆に (Ric) の解 $u$ に対して
+$y'=uy$ の非零解 $y$ は (R) の解となる．
+\end{lemma}
+\begin{proof}
+$u=y'/y$ なら
+\[
+ u'=\frac{y''y-(y')^2}{y^2}
+ =\frac{y''}{y}-u^2,
+\]
+従って $u'+u^2=y''/y=r$ である．
+逆に $y'=uy$ を微分すると
+$y''=(u'+u^2)y=ry$ となる．
+\end{proof}
+
+\begin{lemma}[第二解の積分表示]\label{lem:second-solution}
+$y$ を (R) の非零解とすると，
+線形独立なもう一つの解は
+\[
+ z=y\int y^{-2}\,dx
+\]
+で与えられる．
+\end{lemma}
+\begin{proof}
+$v' =y^{-2}$ となる $v$ を加え，$z=yv$ と置く．
+\[
+ z''=y''v+2y'v'+yv''
+\]
+であり，
+$v''=-2y^{-3}y'$ なので後二項は相殺する．
+従って $z''=y''v=ryv=rz$ である．
+Wronski行列式は
+\[
+ yz'-y'z=y(y'v+yv')-y'(yv)=y^2v'=1
+\]
+なので二解は線形独立である．
+\end{proof}
+
+\begin{theorem}[二階方程式の可積分性判定]
+\label{thm:riccati-criterion}
+$k$ を代数閉とし，$L/K$ を (R) のPicard--Vessiot拡大，
+$G$ を微分Galois群とする．
+次は同値である．
+\begin{enumerate}
+\item $G^\circ$ は可解である．
+\item (Ric) は $K$ 上代数的な微分体拡大の中に解を持つ．
+\item (R) はLiouvillian拡大の中で基本解を持つ．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) ならLie--Kolchinの定理によって
+$G^\circ$ は二次元解空間の一次元部分空間を保つ．
+従って非零解 $y$ を選んで
+$\sigma(y)=c_\sigma y$ が全ての $\sigma\in G^\circ$
+で成立するようにできる．
+このとき $u=y'/y$ は
+全ての $\sigma\in G^\circ$ で不変なので
+$u\in L^{G^\circ}$ である．
+$L^{G^\circ}/K$ は有限代数拡大だから
+$u$ は $K$ 上代数的であり，
+補題\ref{lem:riccati-reduction}から (Ric) を満たす．
+よって (2) が従う．
+
+(2) とし，$u$ を代数拡大 $K(u)$ に取る．
+まず $y'=uy$ の非零解 $y$ を指数積分型に加えれば，
+補題\ref{lem:riccati-reduction}から (R) の解になる．
+続いて $v'=y^{-2}$ を積分型に加えると，
+補題\ref{lem:second-solution}から $yv$ が第二解となり，
+二解のWronski行列式は1なので基本解系をなす．
+従って方程式はLiouvillianな基本解を持ち (3) が従う．
+(3) から (1) は定理\ref{thm:kolchin}による．
+\end{proof}
+
+\section{計算可能な具体例}
+
+\begin{example}[指数型の基本解]
+$K=\mathbb C(x)$，$r(x)=1$ とする．
+$y''=y$ の二つの基本解は $e^x,e^{-x}$ であり，
+Liouvillianである．
+\end{example}
+\begin{proof}
+$e^x$，$e^{-x}$ は $y''=y$ を満たし，
+Wronski行列式は $-2$ なので線形独立である．
+$e^x$ は $y'/y=1$ を満たす指数積分型の元であり，
+その逆元も同じ微分体に属する．
+従って基本解系はLiouvillian拡大に含まれる．
+\end{proof}
+
+\begin{example}[積分が必要な第二解]
+$K=\mathbb C(x)$ とし，
+\[
+ y''=\left(1+\frac2{x^2}\right)y
+\]
+を考える．
+$y_1=e^x(1-x^{-1})$ は非零解であり，
+第二解は $y_1\int y_1^{-2}\,dx$ として得られる．
+\end{example}
+\begin{proof}
+$y_1'=e^x(1-x^{-1}+x^{-2})$，
+$y_1''=e^x(1-x^{-1}+2x^{-2}-2x^{-3})$ なので
+\[
+ y_1''=\left(1+\frac2{x^2}\right)e^x(1-x^{-1})
+\]
+が成立する．
+補題\ref{lem:second-solution}によって第二解が得られ，
+これに必要な操作は指数積分と不定積分だけである．
+\end{proof}
+
+\section{Airy方程式の非Liouvillian性}
+
+\begin{lemma}[代数関数のRiccati解に関する補題]
+\label{lem:airy-riccati}
+微分体 $K=\mathbb C(x)$ において
+\[
+ u'+u^2=x
+ \tag{A-Ric}
+\]
+は $K$ 上代数的な解を持たない．
+\end{lemma}
+\begin{proof}
+背理法で，$u$ を $\mathbb C(x)$ 上代数的な解とする．
+代数関数のNewton--Puiseuxの定理により，
+無限遠点のある分枝で $u$ は
+$x^{-1/m}$ の収束するPuiseux級数に展開できる．
+$x$ の最高次を比較すると，
+$u^2$ の最高次が $x$ と一致する必要がある．
+実際微分は最高次数を1だけ下げるので，
+最高次数を $\alpha$ とすると
+$\max\{\alpha-1,2\alpha\}=1$ であり，
+これを満たすのは $\alpha=1/2$ である．
+従って $u\sim\varepsilon x^{1/2}$，
+$\varepsilon\in\{1,-1\}$ となる．
+
+$z=x^{-3/2}$ と置き，
+$u=x^{1/2}v(z)$ と表す．
+形式的な係数比較によって
+\[
+ v(z)^2+z\left(\frac12v(z)-\frac32zv'(z)\right)=1
+ \tag{7}
+\]
+を得る．
+$\varepsilon$ を指定した形式的Puiseux解は，
+この等式によって逐次一意に決まる．
+実際，先頭の次数を決めると，
+新しく現れる係数は $2\varepsilon$ 倍されて現れ，
+導関数による項はより低次の係数から決まるからである．
+従って解に任意の別の分数指数の項を加える余地はなく，
+\[
+ v(z)=\sum_{n=0}^\infty c_nz^n,\qquad c_0=\varepsilon
+\]
+という形式級数が唯一の候補となる．
+式 (7) の $z^n$ の係数を比較すると
+\[
+ 2\varepsilon c_n
+ =\frac{3n-4}{2}c_{n-1}
+  -\sum_{j=1}^{n-1}c_jc_{n-j},
+ \qquad n\ge1.
+ \tag{8}
+\]
+
+$\varepsilon=1$ のとき
+$n=1$ で $c_1=-1/4$ である．
+式 (8) から帰納的に $c_n<0$（$n\ge1$）が従う．
+実際 $n\ge2$ では第一項は負で，
+和の各項は正なので右辺は負である．
+さらに
+\[
+ |c_n|\ge\frac{3n-4}{4}|c_{n-1}|
+ \qquad(n\ge2)
+\]
+を得る．
+$\varepsilon=-1$ のときも
+式 (8) から $c_1=-1/4$ となり，
+帰納的に $(-1)^nc_n>0$（$n\ge1$）である．
+この場合も第一項と和の負号が同じ符号を持つので
+\[
+ |c_n|\ge\frac{3n-4}{4}|c_{n-1}|
+ \qquad(n\ge2)
+\]
+が成立する．
+従ってどちらの場合も
+$|c_n|$ は $n!$ と同程度以上の速さで増加し，
+級数 $\sum c_nz^n$ の収束半径は零である．
+しかし代数関数のPuiseux級数はある穿孔円板で
+収束するはずである．これは矛盾する．
+よって代数的なRiccati解は存在しない．
+\end{proof}
+
+\begin{theorem}[Airy方程式の非可積分性]
+\label{thm:airy}
+\[
+ y''=xy,\qquad K=\mathbb C(x),\quad
+ \partial=\frac d{dx}
+\]
+の基本解を含むLiouvillian拡大は存在しない．
+従ってその微分Galois群の単位成分は非可解である．
+\end{theorem}
+\begin{proof}
+もしLiouvillianな基本解系が存在すれば，
+定理\ref{thm:riccati-criterion}から
+Riccati方程式 $u'+u^2=x$ が
+$\mathbb C(x)$ 上代数的な解を持つはずである．
+これは補題\ref{lem:airy-riccati}に反する．
+従ってLiouvillianな基本解系は存在しない．
+Kolchinの定理からGalois群の単位成分も非可解である．
+\end{proof}
+
+\begin{remark}
+代数方程式のGalois理論では根号可解性が有限群の可解性に
+対応する．微分Galois理論では，積分・指数積分・代数拡大を
+含むLiouvillian可積分性が，
+線形代数群の\emph{単位成分}の可解性に対応する．
+有限な非可解商群が存在しても単位成分は自明であり，
+代数的拡大を許すLiouvillian可積分性を妨げないことに注意する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{一次方程式のLiouvillian解．}
+\begin{proposition}
+$a\in\mathbb C(x)$ のとき
+$y'=a(x)y$ の非零解は，
+微分体を必要に応じてLiouvillian拡大することで
+\[
+y=\exp\left(\int a(x)\,dx\right)
+\]
+と表せる．
+\end{proposition}
+\begin{proof}
+$a$ の原始関数 $F$ を添加した微分体を考える．
+次に $z'=F'z=az$ を満たす指数型の元 $z$ を添加する．
+この二段階はそれぞれ原始関数の添加と
+指数型の添加であり，Liouvillian拡大の操作である．
+$z$ は与えられた方程式の非零解となる．
+\end{proof}
+\begin{proposition}
+$y'=(1/x)y$（$x\ne0$）は有理解 $y=x$ を持つ．
+\end{proposition}
+\begin{proof}
+$y=x$ と置けば $y'=1$，
+$(1/x)y=1$ で一致する．
+従ってこの方程式は基礎微分体 $\mathbb C(x)$
+の内部にすでに非零解を持つ．
+\end{proof}
+\noindent\textbf{到達確認．}
+$y'=3xy$ の解を求めよ．
+\par\noindent\textbf{解答．}
+$\int3x\,dx=3x^2/2$ だから
+$y=C\exp(3x^2/2)$ である．
+これは指数型の添加によるLiouvillian解である．
+\end{document}

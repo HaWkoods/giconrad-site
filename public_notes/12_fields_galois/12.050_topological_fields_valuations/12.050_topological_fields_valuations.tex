@@ -1,0 +1,748 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{位相体・付値・完備化}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，絶対値付き体，Cauchy列，完備化．
+本稿の具体的な到達課題は，具体的な絶対値に関して列の収束・完備化の性質を判定する．
+
+\section{位相体}
+
+本稿では体を可換体とし，単位元を $1$ と書く．
+体 $K$ の位相は特に断らない限りHausdorffとする．
+距離空間の完備化と有限次線形代数の基本事項を前提とする．
+
+\begin{definition}
+体 $K$ が\emph{位相体}であるとは，
+加法 $K\times K\to K$，加法逆元 $K\to K$，
+乗法 $K\times K\to K$ および乗法逆元
+\[
+ K^\times\longrightarrow K^\times,\qquad x\longmapsto x^{-1}
+\]
+が連続であることをいう．
+ここで $K^\times=K\setminus\{0\}$ には相対位相を入れる．
+\end{definition}
+
+\begin{proposition}\label{prop:field-groups}
+位相体 $K$ の加法群 $(K,+)$ と乗法群 $(K^\times,\cdot)$ は
+位相群である．
+また $a\in K$ に対し，
+$x\mapsto x+a$ は同相写像であり，
+$a\ne0$ なら $x\mapsto ax$ も同相写像である．
+\end{proposition}
+\begin{proof}
+加法群と乗法群の演算の連続性は
+位相体の定義に含まれる．
+平行移動の逆写像は $x\mapsto x-a$，
+零でない $a$ による乗法の逆写像は
+$x\mapsto a^{-1}x$ であり，
+いずれも連続なので同相である．
+\end{proof}
+
+\begin{remark}
+位相体は加法群について位相群であるが，
+体の位相は加法群の構造だけから自動的に決まるわけではない．
+乗法と乗法逆元の連続性を別に確認する必要がある．
+\end{remark}
+
+\section{絶対値とその位相}
+
+\begin{definition}
+体 $K$ 上の\emph{絶対値}とは
+$|\cdot|:K\to[0,\infty)$ で
+\[
+ |x|=0\iff x=0,\qquad
+ |xy|=|x||y|,\qquad
+ |x+y|\le|x|+|y|
+\]
+を満たすものをいう．
+$|x|\le1$ が全ての $x\ne0$ で成り立つ絶対値
+（$x\ne0$ に対し $|x|=1$）を自明絶対値という．
+\end{definition}
+
+\begin{proposition}[絶対値は位相体を定める]\label{prop:abs-topology}
+絶対値 $|\cdot|$ により
+$d(x,y)=|x-y|$ と置けば $d$ は距離である．
+この距離による位相について $K$ は位相体となる．
+\end{proposition}
+\begin{proof}
+距離の正値性と対称性は
+$|-1|=1$，$|x|=0\iff x=0$ から従う．
+三角不等式も絶対値の公理である．
+加法について
+\[
+ |(x+y)-(x'+y')|
+ \le|x-x'|+|y-y'|
+\]
+だから連続である．
+また
+$|xy-x'y'|\le|x||y-y'|+|y'||x-x'|$
+であり，$x,y$ の近くでは $|x|,|y'|$ は有界だから
+乗法は連続である．
+$x,x'\ne0$ のとき
+\[
+ |x^{-1}-(x')^{-1}|
+ =\frac{|x-x'|}{|x||x'|}
+\]
+であり，$x'\to x\ne0$ のとき分母は
+正の値 $|x|^2$ に収束するので逆元写像は連続である．
+\end{proof}
+
+\begin{definition}
+二つの絶対値 $|\cdot|_1,|\cdot|_2$ が
+\emph{同値}であるとは，それらが $K$ に同じ位相を
+誘導することをいう．
+\end{definition}
+
+\begin{lemma}[絶対値同値性の零への判定]\label{lem:equiv-zero}
+二つの絶対値が同値であるための必要十分条件は
+\[
+ |x|_1<1\iff|x|_2<1
+ \qquad(x\in K)
+\]
+が成り立つことである．
+\end{lemma}
+\begin{proof}
+同じ位相を誘導するとする．
+$|x|_1<1$ なら $x^n\to0$ が第1の位相で成り立つから，
+第2の位相でも $x^n\to0$ となる．
+$|x^n|_2=|x|_2^n\to0$ より $|x|_2<1$ を得る．
+逆向きも同様である．
+
+逆に表示の条件を仮定する．
+まず両方の絶対値が自明なら両位相は離散位相であり，
+同値である．非自明な場合は
+$0<|x|_1<1$ となる元 $x$ を選べる．
+$|x|_1=1$ なら $|x|_2<1$ ではなく，
+$|x|_2>1$ でもない：
+後者なら $|x^{-1}|_2<1$ から
+$|x^{-1}|_1<1$ となり矛盾する．
+従って単位球の境界条件も一致する．
+さらに $0<|x|_1<1$ となる $x$ を固定する．
+任意の $\varepsilon>0$ に対して
+$|x|_2^n<\varepsilon$ となる $n$ を取る．
+一方，$|y|_1$ が十分小さいなら
+$|y|_1<|x|_1^n$ となるが，
+このとき $|y/x^n|_1<1$ から
+$|y/x^n|_2<1$ となる．
+よって $|y|_2<|x|_2^n<\varepsilon$ を得る．
+従って第1の零近傍は第2の零近傍へ連続に写り，
+逆向きも同様である．
+平行移動によって恒等写像は全点で両方向に連続となり，
+二つの位相は一致する．
+$x=0$ の場合はどちらの絶対値でも零であるから
+同じ結論が従う．
+\end{proof}
+
+\begin{theorem}[絶対値の同値性]\label{thm:equiv-power}
+$K$ 上の二つの非自明な絶対値 $|\cdot|_1,|\cdot|_2$ が
+同値であるための必要十分条件は，
+ある実数 $c>0$ が存在して
+\[
+ |x|_2=|x|_1^c\qquad(x\in K)
+\]
+となることである．
+\end{theorem}
+\begin{proof}
+後者の条件が成り立てば二つの距離の零への収束は
+同値なので，位相は一致する．
+逆に同値とする．
+補題\ref{lem:equiv-zero}により，
+任意の $x\in K^\times$ について
+$|x|_1>1$ と $|x|_2>1$ は同値である．
+非自明性から，両方の絶対値で $1$ より大きい
+元 $a$ を一つ取れる．
+\[
+ c=\frac{\log|a|_2}{\log|a|_1}>0
+\]
+と置く．
+任意の $x\in K^\times$ で $|x|_1>1$ とする．
+正整数 $m,n$ に対し
+\[
+ |x|_1^m>|a|_1^n
+ \quad\Longleftrightarrow\quad
+ |x^m a^{-n}|_1>1
+\]
+であり，これは同値性の判定から
+$|x|_2^m>|a|_2^n$ と同値である．
+従って実数
+$\log|x|_1/\log|a|_1$ と
+$\log|x|_2/\log|a|_2$ は，
+全ての正有理数 $n/m$ との大小関係が一致する．
+有理数の稠密性により二つの実数は等しい．
+よって $\log|x|_2=c\log|x|_1$ となる．
+$|x|_1<1$ なら $x^{-1}$ にこの議論を適用し，
+$|x|_1=1$ なら補題\ref{lem:equiv-zero}の証明から
+$|x|_2=1$ となる．
+$x=0$ は両辺零なので全ての場合が従う．
+\end{proof}
+
+\section{非Archimedes絶対値と離散付値}
+
+\begin{definition}
+絶対値が\emph{非Archimedes的}であるとは，
+\[
+ |x+y|\le\max\{|x|,|y|\}
+\]
+を満たすことをいう．
+\end{definition}
+
+\begin{theorem}[非Archimedes性の判定]\label{thm:nonarch}
+絶対値 $|\cdot|$ が非Archimedes的であることと，
+全ての自然数 $n\ge1$ について $|n\cdot1|\le1$ であることは
+同値である．
+\end{theorem}
+\begin{proof}
+非Archimedes性を仮定すると，
+$1$ を $n$ 個加える操作に強い三角不等式を
+繰り返し適用して $|n\cdot1|\le|1|=1$ を得る．
+逆に全ての自然数の絶対値が $1$ 以下とする．
+$x,y\in K$，$M=\max\{|x|,|y|\}$ と置く．
+任意の正整数 $n$ に対して二項定理により
+\[
+ |x+y|^n
+ \le\sum_{k=0}^n
+ \left|\binom nk\right||x|^k|y|^{n-k}
+ \le(n+1)M^n
+\]
+である．
+$M=0$ なら $x=y=0$ で明らかである．
+$M>0$ なら $n$ 乗根を取って
+$|x+y|\le(n+1)^{1/n}M$ を得る．
+$n\to\infty$ で $(n+1)^{1/n}\to1$ だから
+強い三角不等式が成り立つ．
+\end{proof}
+
+\begin{proposition}[超距離の性質]\label{prop:ultrametric}
+非Archimedes絶対値による距離では，
+任意の三角形の最長辺は少なくとも二辺存在する．
+また半径が正の開球と閉球はともに開閉集合である．
+\end{proposition}
+\begin{proof}
+三角不等式
+$d(x,z)\le\max\{d(x,y),d(y,z)\}$ が成立する．
+もし $d(x,z)$ が他の二辺より真に大きければ
+この式に反する．他の辺についても同様である．
+
+開球 $B(a,r)=\{x:d(x,a)<r\}$ の点 $x$ を取る．
+$d(x,y)<r$ なら
+$d(a,y)\le\max\{d(a,x),d(x,y)\}<r$ だから，
+$B(x,r)\subset B(a,r)$ である．
+補集合の点 $y$ について
+$d(a,y)\ge r$ とする．
+$d(x,y)<d(a,y)$ なら
+$d(a,x)=d(a,y)$ である
+（強い三角不等式を両向きに用いる）．
+従って $B(y,d(a,y))$ は $B(a,r)$ と交わらず，
+補集合も開である．開球は開閉となる．
+閉球 $\overline B(a,r)=\{x:d(a,x)\le r\}$ については，
+内部の点 $x$ の $B(x,r)$ に代えて
+任意の $0<s\le r$ の球を用いれば開性が従う
+（$r=0$ の場合は自明とは限らないので別に扱う）．
+$r>0$ の場合，$x$ を含む $B(x,r)$ は閉球に含まれる．
+補集合 $\{d(a,\cdot)>r\}$ は距離の連続性から開である．
+$r=0$ の場合，閉球は $\{a\}$ であり一般には開でない．
+従って閉球についての開閉性の主張は半径 $r>0$ に限る．
+\end{proof}
+
+\begin{definition}
+体 $K$ 上の\emph{離散付値}とは，
+\[
+ v:K\longrightarrow\mathbb Z\cup\{\infty\}
+\]
+で
+\[
+ v(0)=\infty,\quad v(xy)=v(x)+v(y),\quad
+ v(x+y)\ge\min\{v(x),v(y)\}
+\]
+を満たし，
+$v(K^\times)=\mathbb Z$ となるものをいう．
+ここで $\infty+n=\infty$ と約束する．
+\end{definition}
+
+\begin{proposition}[付値と絶対値]\label{prop:valuation-abs}
+離散付値 $v$ と実数 $0<c<1$ に対し
+\[
+ |x|_v=
+ \begin{cases}0&(x=0),\\ c^{v(x)}&(x\ne0)\end{cases}
+\]
+と定めると，$|\cdot|_v$ は非Archimedes絶対値である．
+\end{proposition}
+\begin{proof}
+$v(xy)=v(x)+v(y)$ から乗法性が従う．
+非零性も定義から明らかである．
+$v(x+y)\ge\min\{v(x),v(y)\}$ と $0<c<1$ から
+\[
+ |x+y|_v=c^{v(x+y)}
+ \le c^{\min\{v(x),v(y)\}}
+ =\max\{|x|_v,|y|_v\}
+\]
+が従う．
+\end{proof}
+
+\begin{theorem}[離散付値環]\label{thm:dvr}
+$K$ を離散付値 $v$ を持つ体とする．
+\[
+ \mathcal O_v=\{x:v(x)\ge0\},\qquad
+ \mathfrak m_v=\{x:v(x)>0\}
+\]
+と置く．このとき $\mathcal O_v$ は局所環であり，
+その唯一の極大イデアルは $\mathfrak m_v$ である．
+$v(\pi)=1$ となる元 $\pi$ を取ると
+$\mathfrak m_v=\pi\mathcal O_v$ となり，
+全ての非零イデアルは $\pi^n\mathcal O_v$
+（$n\ge0$）の形である．
+\end{theorem}
+\begin{proof}
+付値の公理から $\mathcal O_v$ は $0,1$ を含み，
+和と積に閉じるので部分環である．
+$u\in\mathcal O_v$ が可逆であることは
+$u^{-1}\in\mathcal O_v$ と同値であり，
+$v(u^{-1})=-v(u)$ だから
+$v(u)=0$ と同値である．
+従って非単元全体は $\mathfrak m_v$ であり，
+付値の公理からこれはイデアルである．
+$\mathcal O_v\setminus\mathfrak m_v$ は全て単元なので
+$\mathfrak m_v$ は唯一の極大イデアルである．
+
+$v(\pi)=1$ の元 $\pi$ が存在するのは
+$v(K^\times)=\mathbb Z$ による．
+$v(x)>0$ なら
+$v(x/\pi)\ge0$ だから $x\in\pi\mathcal O_v$ であり，
+逆の包含も自明なので
+$\mathfrak m_v=\pi\mathcal O_v$ である．
+
+非零イデアル $I$ を取る．
+$\{v(x):x\in I,\ x\ne0\}$ は
+非負整数の非空部分集合なので最小元 $n$ を持つ．
+$v(a)=n$ となる $a\in I$ を選ぶと
+$a=\pi^nu$ で $v(u)=0$ となり，$u$ は単元である．
+よって $\pi^n=au^{-1}\in I$ なので
+$\pi^n\mathcal O_v\subset I$ である．
+逆に $x\in I$ なら $v(x)\ge n$ だから
+$x/\pi^n\in\mathcal O_v$ となり，
+$x\in\pi^n\mathcal O_v$ である．
+従って等号が成り立つ．
+\end{proof}
+
+\section{絶対値付き体の完備化}
+
+\begin{theorem}[完備化の存在と普遍性]\label{thm:completion}
+$K$ を絶対値付き体とする．
+このとき完備な絶対値付き体 $\widehat K$ と
+等長な体準同型
+$j:K\hookrightarrow\widehat K$ が存在して，
+$j(K)$ は $\widehat K$ に稠密である．
+さらに完備絶対値付き体 $L$ への
+等長な体準同型 $f:K\to L$ が与えられたとき，
+唯一の等長な体準同型
+$\widehat f:\widehat K\to L$ が存在して
+$\widehat f\circ j=f$ を満たす．
+この性質を持つ $\widehat K$ は
+等長な体同型を除いて一意である．
+\end{theorem}
+\begin{proof}
+$K$ のCauchy列全体を $\mathcal C$ とし，
+二つの列 $(x_n),(y_n)$ に対して
+\[
+ (x_n)\sim(y_n)\iff|x_n-y_n|\to0
+\]
+と定める．三角不等式によってこれは同値関係となる．
+$\widehat K=\mathcal C/{\sim}$ と置く．
+Cauchy列は有界である．
+従って二つのCauchy列の和と積はCauchy列である：
+積について
+\[
+ |x_ny_n-x_my_m|
+ \le|x_n||y_n-y_m|+|y_m||x_n-x_m|
+\]
+を用いる．
+この評価と同じ形の式から，和と積は同値類に依存せず
+well-definedである．
+$0,1$ は定数列の類として定義する．
+加法の逆元は $(-x_n)$ の類である．
+
+$0$ でない類 $x=[(x_n)]$ に対して
+$\lim|x_n|>0$ であることを示す．
+逆三角不等式
+$\bigl||x_n|-|x_m|\bigr|\le|x_n-x_m|$
+により $(|x_n|)$ は実数のCauchy列だから
+極限 $r\ge0$ を持つ．
+$r=0$ なら $(x_n)\sim(0)$ なので $x=0$ となる．
+よって $r>0$ であり，十分大きい $n$ について
+$|x_n|\ge r/2>0$ である．
+最初の有限個の項は $1$ に置き換えるなどして，
+各項が非零の代表列を取れる．
+\[
+ |x_n^{-1}-x_m^{-1}|
+ =\frac{|x_n-x_m|}{|x_n||x_m|}
+ \le\frac4{r^2}|x_n-x_m|
+\]
+だから逆元の列もCauchy列である．
+従って $[(x_n^{-1})]$ は $x$ の逆元を与え，
+$\widehat K$ は体となる．
+
+$|[(x_n)]|=\lim_n|x_n|$ と置くと，
+三角不等式による評価から同値類によらず定まる．
+元の絶対値の乗法性と三角不等式で
+極限を取れば，これは $\widehat K$ 上の絶対値となる．
+$j(a)=[(a,a,\dots)]$ と定めると
+等長な体準同型である．
+任意の $x=[(x_n)]$ について
+$j(x_n)\to x$ が成立する．
+実際，
+\[
+ |j(x_n)-x|
+ =\lim_{m\to\infty}|x_n-x_m|\longrightarrow0
+\]
+である．従って像は稠密である．
+
+完備性を示す．$\widehat K$ のCauchy列 $(z_n)$ を取る．
+稠密性から各 $n$ について
+$a_n\in K$ で
+$|j(a_n)-z_n|<2^{-n}$ となるものを選ぶ．
+\[
+ |a_n-a_m|
+ \le |j(a_n)-z_n|+|z_n-z_m|+|z_m-j(a_m)|
+\]
+によって $(a_n)$ は $K$ のCauchy列である．
+$x=[(a_n)]$ と置くと
+\[
+ |z_n-x|\le|z_n-j(a_n)|+|j(a_n)-x|\to0
+\]
+となるので $\widehat K$ は完備である．
+
+次に $f:K\to L$ を等長な体準同型とする．
+\[
+ \widehat f([(x_n)])=\lim_{n\to\infty}f(x_n)
+\]
+と定める．等長性から $(f(x_n))$ はCauchy列であり，
+$L$ の完備性により極限が存在する．
+同値な二列なら像の差が零へ向かうので
+well-definedである．
+和と積の連続性により $\widehat f$ は体準同型であり，
+\[
+ |\widehat f([(x_n)])|_L
+ =\lim|f(x_n)|_L=\lim|x_n|
+ =|[(x_n)]|
+\]
+なので等長である．
+$\widehat f\circ j=f$ は定義から従う．
+他の連続な延長も稠密部分集合 $j(K)$ 上で一致するので
+全域で一致し，一意である．
+二つの完備化の間に普遍性を相互に適用すれば，
+互いに逆な等長体準同型が得られ，
+同型を除く一意性が従う．
+\end{proof}
+
+\begin{corollary}[非Archimedes性の保存]\label{cor:completion-nonarch}
+$K$ の絶対値が非Archimedes的なら，
+その完備化 $\widehat K$ の絶対値も非Archimedes的である．
+\end{corollary}
+\begin{proof}
+$x=[(x_n)]$，$y=[(y_n)]$ について
+$|x_n+y_n|\le\max\{|x_n|,|y_n|\}$ を満たす．
+$n\to\infty$ として
+$|x+y|\le\max\{|x|,|y|\}$ を得る．
+\end{proof}
+
+\section{$p$進数体の構成}
+
+\begin{definition}
+素数 $p$ と非零有理数 $x=a/b$ に対し，
+分子・分母を整数として
+\[
+ v_p(x)=v_p(a)-v_p(b)
+\]
+と定める．ここで $v_p(n)$ は整数 $n$ の素因数分解における
+$p$ の指数である．また $v_p(0)=\infty$ と置く．
+\[
+ |x|_p=p^{-v_p(x)}\quad(x\ne0),\qquad |0|_p=0
+\]
+を $p$ 進絶対値という．
+\end{definition}
+
+\begin{proposition}\label{prop:p-adic-absolute}
+$v_p$ は $\mathbb Q$ 上の離散付値であり，
+$|\cdot|_p$ は非Archimedes絶対値である．
+\end{proposition}
+\begin{proof}
+素因数分解の一意性から
+$v_p(xy)=v_p(x)+v_p(y)$ である．
+$x,y\ne0$ に対して $a=v_p(x)$，
+$b=v_p(y)$ と置く．
+$a\le b$ としてよい．
+$x=p^au$，$y=p^bv$ と書けば，
+$u,v$ は $p$ を分子・分母に含まない有理数である．
+\[
+ x+y=p^a(u+p^{b-a}v)
+\]
+なので $v_p(x+y)\ge a=\min\{a,b\}$ となる．
+零を含む場合も自明である．
+$v_p(p)=1$ だから値群は $\mathbb Z$ 全体である．
+命題\ref{prop:valuation-abs}より $|\cdot|_p$ は
+非Archimedes絶対値である．
+\end{proof}
+
+\begin{definition}
+$(\mathbb Q,|\cdot|_p)$ の完備化を
+\[
+ \mathbb Q_p
+\]
+と書き，\emph{$p$進数体}という．
+その閉単位球
+\[
+ \mathbb Z_p=\{x\in\mathbb Q_p:|x|_p\le1\}
+\]
+を $p$ 進整数環という．
+\end{definition}
+
+\begin{lemma}[付値の延長]\label{lem:valuation-extend}
+$\mathbb Q_p$ の非零元の絶対値は
+$p^m$（$m\in\mathbb Z$）の形である．
+従って $v_p(x)=-\log_p|x|_p$ は
+$\mathbb Q_p^\times$ 上の整数値離散付値となる．
+\end{lemma}
+\begin{proof}
+$\mathbb Q_p$ の非零元 $x$ を取り，
+$\mathbb Q$ の列 $q_n\to x$ を選ぶ．
+$|x|_p>0$ なので十分大きい $n$ について
+$|q_n-x|_p<|x|_p$ となる．
+超距離性によってこのとき
+$|q_n|_p=|x|_p$ となる．
+$|q_n|_p$ は $p$ の整数冪だから
+$|x|_p$ も同じ形である．
+絶対値の乗法性・超距離性を整数値へ翻訳すれば，
+$v_p$ は離散付値である．
+\end{proof}
+
+\begin{theorem}[$p$進展開]\label{thm:padic-expansion}
+任意の $x\in\mathbb Z_p$ に対して
+一意な数列
+$a_0,a_1,\dots\in\{0,1,\dots,p-1\}$ が存在して
+\[
+ x=\sum_{n=0}^\infty a_np^n
+\]
+が $\mathbb Q_p$ で収束する．
+さらに $x\in\mathbb Q_p^\times$ なら
+ある整数 $m$ と数列 $a_m,a_{m+1},\dots$ で
+$a_m\ne0$ となるものが一意に存在して
+\[
+ x=\sum_{n=m}^\infty a_np^n
+\]
+と書ける．
+\end{theorem}
+\begin{proof}
+まず各 $x\in\mathbb Z_p$ について，
+ただ一つの $a_0\in\{0,\dots,p-1\}$ が存在して
+$x-a_0\in p\mathbb Z_p$ となることを示す．
+$\mathbb Q$ の稠密性から
+$q\in\mathbb Q$ を $|x-q|_p<p^{-1}$ となるように選べる．
+$|x|_p\le1$ だから $|q|_p\le1$ であり，
+$q$ は分子・分母において $p$ を分母に含まない形で
+書ける．
+その分母は $\mathbb F_p$ で可逆だから，
+ある唯一の $a_0\in\{0,\dots,p-1\}$ について
+$q-a_0$ は $p$ 進付値が $1$ 以上の有理数となる．
+$|x-q|_p<p^{-1}$ なので $x-a_0\in p\mathbb Z_p$ である．
+一意性は異なる数字 $a,b$ に対し
+$v_p(a-b)=0$ であることから従う．
+
+$x_0=x$ と置く．
+帰納的に $x_n\in\mathbb Z_p$ に対して
+$a_n\in\{0,\dots,p-1\}$ を選び，
+$x_{n+1}=(x_n-a_n)/p\in\mathbb Z_p$ と定める．
+すると
+\[
+ x=\sum_{j=0}^{N-1}a_jp^j+p^Nx_N
+\]
+である．
+$|p^Nx_N|_p\le p^{-N}\to0$ なので
+表示の級数は $x$ に収束する．
+二つの数字列が同じ元を表すなら，
+最初に異なる桁を $n$ とすると差の付値は
+ちょうど $n$ となり零にはなり得ない．
+従って数字列は一意である．
+
+最後に $x\ne0$ に対し
+$m=v_p(x)$ と置くと
+$u=p^{-m}x$ は $v_p(u)=0$ を満たす
+$p$ 進整数である．
+その展開の定数項は $0$ でない．
+上の展開に $p^m$ を掛ければ求める表示を得る．
+$m$ は $x$ の付値から一意に定まり，
+各桁も一意である．
+\end{proof}
+
+\section{局所コンパクトな付値体}
+
+\begin{theorem}[$\mathbb Z_p$ のコンパクト性]\label{thm:zp-compact}
+$\mathbb Z_p$ はコンパクトな開部分環である．
+従って $\mathbb Q_p$ は局所コンパクトな位相体である．
+\end{theorem}
+\begin{proof}
+$\mathbb Z_p$ が部分環であることは超距離性と
+乗法性から従う．
+$|\cdot|_p$ の値は離散的なので，
+$\mathbb Z_p=\{x:|x|_p<p\}$ とも書ける．
+よって $\mathbb Z_p$ は開であり，
+距離の連続性から閉でもある．
+
+コンパクト性を示すため任意の列 $(x_j)$ を
+$\mathbb Z_p$ 内に取る．
+定理\ref{thm:padic-expansion}によって
+各 $x_j$ は数字列 $(a_n^{(j)})_{n\ge0}$ で表される．
+最初の数字 $a_0^{(j)}$ は有限集合に値を取るから，
+その値が一定となる無限部分列を取れる．
+次にその部分列から $a_1^{(j)}$ が一定となる
+無限部分列を取る．
+この操作を繰り返し，対角線部分列を取れば，
+任意の $N$ に対して，十分大きい添字の部分列の
+最初の $N$ 桁が全て一致する．
+従って二つのそのような元の差は
+$p^N\mathbb Z_p$ に属し，
+距離は $p^{-N}$ 以下である．
+よって対角線部分列はCauchy列である．
+$\mathbb Q_p$ は完備，$\mathbb Z_p$ は閉なので
+その部分列は $\mathbb Z_p$ の元へ収束する．
+距離空間の点列コンパクト性とコンパクト性の同値から
+$\mathbb Z_p$ はコンパクトである．
+これは $0$ の開近傍なので $\mathbb Q_p$ は局所コンパクトである．
+\end{proof}
+
+\begin{example}[Laurent級数体]
+有限体 $\mathbb F_q$ に対して
+\[
+ \mathbb F_q((t))
+ =\left\{\sum_{n=m}^\infty a_nt^n:
+ m\in\mathbb Z,\ a_n\in\mathbb F_q\right\}
+\]
+を考える．
+非零級数の最初の非零係数の指数を
+$v_t(f)$ と定めると，これは離散付値となる．
+$\mathbb F_q((t))$ は対応する非Archimedes絶対値について
+完備かつ局所コンパクトである．
+\end{example}
+\begin{proof}
+非零級数の最初の非零項の次数は積について加法的であり，
+和について最小値以上となるので付値の公理を満たす．
+Cauchy列 $(f_j)$ において，
+任意の $N$ について十分大きい添字の全ての $f_j$ が
+$t^N$ を法として一致する．
+従って各係数は最終的に一定となり，
+その安定値から作るLaurent級数が極限を与える．
+よって完備である．
+付値環 $\mathbb F_q[[t]]$ 内の任意の列について，
+最初の係数から順に有限集合 $\mathbb F_q$ の値で
+対角線部分列を選べば，$t$ 進距離のCauchy部分列が得られる．
+完備性から収束するので
+$\mathbb F_q[[t]]$ はコンパクトである．
+これは零の開近傍だから局所コンパクトである．
+\end{proof}
+
+\begin{remark}
+$\mathbb Q_p$ と $\mathbb F_q((t))$ はいずれも
+局所コンパクトな非Archimedes位相体であるが，
+前者は標数零，後者は正標数である．
+有限次拡大体上の絶対値の延長や完備性の定理は，
+これらをさらに深く研究する際の基本的な主題となる．
+本稿ではその一般定理を証明済みとすることなく，
+構成と具体例までを扱った．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{非Archimedes絶対値の収束．}
+\begin{proposition}
+素数 $p$ に対し，$p$-進絶対値を
+$|x|_p=p^{-v_p(x)}$ と定める．
+$\mathbb Q$ の列 $p^n$ は $p$-進距離で零へ収束するが，
+通常の絶対値では発散する．
+\end{proposition}
+\begin{proof}
+$|p^n-0|_p=p^{-n}\to0$ である．
+一方通常の絶対値では $|p^n|=p^n\to\infty$ となる．
+従って同じ体上でも絶対値の選択により
+収束概念は異なる．
+\end{proof}
+\begin{proposition}
+$\sum_{n\ge0}p^n$ は $\mathbb Q_p$ で収束し，
+和は $1/(1-p)$ に等しい．
+\end{proposition}
+\begin{proof}
+部分和は
+$S_N=(1-p^{N+1})/(1-p)$ である．
+$p^{N+1}\to0$ が $p$-進距離で成り立つので，
+$S_N\to1/(1-p)$ となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\sum_{n\ge0}2^{2n}$ は $\mathbb Q_2$ で収束するか．
+\par\noindent\textbf{解答．}
+等比級数 $\sum4^n$ であり $|4|_2=1/4<1$．
+したがって収束し，和は $1/(1-4)=-1/3$ である．
+\end{document}
