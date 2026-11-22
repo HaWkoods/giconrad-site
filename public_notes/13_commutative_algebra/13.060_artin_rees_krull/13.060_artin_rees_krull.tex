@@ -1,0 +1,294 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Artin–Rees補題とKrullの交叉定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Noether局所環，Artin--Rees補題，Krull交叉定理．
+本稿の具体的な到達課題は，局所環の具体例でKrull交叉定理の結論を検算する．
+
+\section{問題と使用する基礎定理}
+可換Noether環$A$，イデアル$I\subset A$，有限生成$A$-加群$M$，
+部分加群$N\subset M$を考える．本稿の目標は
+$N\cap I^nM$と$I^nN$を比較するArtin--Rees補題を証明し，
+Krullの交叉定理を導くことである．
+使用する既習事項は，Hilbertの基底定理，Noether加群の
+部分加群の有限生成性，有限生成加群の線形代数である．
+
+\begin{definition}[Rees環とRees加群]
+不定元$t$に対し
+\[
+ \mathcal R_I(A)=\bigoplus_{n\ge0}I^nt^n\subset A[t],
+ \qquad
+ \mathcal R_I(M)=\bigoplus_{n\ge0}I^nMt^n
+\]
+と定める．$I^0=A$とし，$\mathcal R_I(M)$には
+$\mathcal R_I(A)$から自然な次数付き加群構造を入れる．
+\end{definition}
+
+\begin{lemma}[Rees環のNoether性]\label{lem:rees}
+$A$をNoether環，$I=(a_1,\ldots,a_r)$とすると
+\[
+ \mathcal R_I(A)=A[a_1t,\ldots,a_rt]
+\]
+であり，特に$\mathcal R_I(A)$はNoether環である．
+$M$が有限生成なら$\mathcal R_I(M)$は
+$\mathcal R_I(A)$上有限生成加群となる．
+\end{lemma}
+\begin{proof}
+$I^n$は$a_{i_1}\cdots a_{i_n}$で$A$上生成される．
+従って$\mathcal R_I(A)$の次数$n$部分は
+$A[a_1t,\ldots,a_rt]$の次数$n$部分に一致し，
+環として等しい．これはNoether環$A$上の多項式環
+$A[X_1,\ldots,X_r]$の商であるからHilbertの基底定理により
+Noether環である．
+$M=(m_1,\ldots,m_q)$なら任意の$I^nM$の元は
+$\sum_j b_jm_j$（$b_j\in I^n$）と書けるので，
+$\mathcal R_I(M)$は次数0の$m_1,\ldots,m_q$で生成される．
+\end{proof}
+
+\section{Artin--Rees補題}
+\begin{theorem}[Artin--Rees補題]\label{thm:AR}
+$A$を可換Noether環，$M$を有限生成$A$-加群，
+$N\subset M$を部分加群，$I\subset A$をイデアルとする．
+ある非負整数$k$が存在して，任意の$n\ge k$に対し
+\[
+ I^nM\cap N=I^{n-k}(I^kM\cap N)
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+Rees加群の次数付き部分加群
+\[
+ \mathcal N=\bigoplus_{n\ge0}(I^nM\cap N)t^n
+ \subset\mathcal R_I(M)
+\]
+を考える．$a\in I^p$，$v\in I^nM\cap N$なら
+$av\in I^{n+p}M\cap N$であるから，
+確かに$\mathcal N$は$\mathcal R_I(A)$上の部分加群である．
+補題\ref{lem:rees}とNoether性により
+$\mathcal N$は有限生成である．
+生成元を各斉次成分に分解すれば，有限個の斉次生成元
+$g_jt^{d_j}$（$g_j\in I^{d_j}M\cap N$）を取れる．
+$k=\max_jd_j$とする（$\mathcal N=0$なら$k=0$でよい）．
+
+$n\ge k$とし，$v\in I^nM\cap N$を取る．
+$\mathcal N$が斉次生成元で生成されるので
+\[
+ v=\sum_j c_jg_j,\qquad c_j\in I^{n-d_j}
+\]
+と表される．各係数を
+$c_j\in I^{n-k}I^{k-d_j}$と見れば
+\[
+ c_jg_j\in I^{n-k}\bigl(I^{k-d_j}g_j\bigr),\qquad
+ I^{k-d_j}g_j\subset I^kM\cap N.
+\]
+従って
+$ I^nM\cap N\subset I^{n-k}(I^kM\cap N)$
+を得る．逆向きは
+$ I^{n-k}I^kM\subset I^nM$と
+$ I^{n-k}N\subset N$から明らかである．
+\end{proof}
+
+\begin{corollary}[誘導位相と$I$進位相の同値]\label{cor:topology}
+定理\ref{thm:AR}の仮定のもとで，$N$上の二つのフィルトレーション
+$\{I^nN\}$および$\{I^nM\cap N\}$は互いに共終である．
+具体的に
+\[
+ I^nN\subset I^nM\cap N
+\]
+が全$n$について成立し，ある$k$について全$n\ge k$で
+\[
+ I^nM\cap N\subset I^{n-k}N
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+最初の包含は自明である．後者は
+定理\ref{thm:AR}の等式と
+$I^kM\cap N\subset N$から従う．
+これにより，任意の$n$に対して十分大きい$m$を取れば
+$I^mM\cap N\subset I^nN$となり，二つの位相は一致する．
+\end{proof}
+
+\section{Nakayamaの補題とKrullの交叉定理}
+$J(A)$を$A$のJacobson根基（全極大イデアルの共通部分）とする．
+
+\begin{lemma}[Nakayamaの補題]\label{lem:nakayama}
+$A$を単位的可換環，$I\subset J(A)$をイデアル，
+$N$を有限生成$A$-加群とする．
+$N=IN$なら$N=0$である．
+\end{lemma}
+\begin{proof}
+$N$の生成元$x_1,\ldots,x_q$を取る．
+$N=IN$より
+$x_i=\sum_{j=1}^q a_{ij}x_j$（$a_{ij}\in I$）と書ける．
+列ベクトル$x=(x_1,\ldots,x_q)^T$を用いれば
+$(I_q-B)x=0$で，$B=(a_{ij})$である．
+余因子行列を左から掛けると
+$\det(I_q-B)x=0$となる．
+$\det(I_q-B)\equiv1\pmod I$だから
+$\det(I_q-B)\in1+I$である．
+$I\subset J(A)$なら任意の$1+a$（$a\in I$）は単元である．
+実際，非単元ならそれを含む極大イデアルが存在し，
+その極大イデアルは$a$も含むので$1$を含む矛盾となる．
+従って$\det(I_q-B)$は単元であり，$x_i=0$が全$i$で従う．
+\end{proof}
+
+\begin{theorem}[Krullの交叉定理]\label{thm:krull}
+$A$を可換Noether環，$I\subset J(A)$をイデアル，
+$M$を有限生成$A$-加群とする．このとき
+\[
+ \bigcap_{n\ge0}I^nM=\{0\}.
+\]
+特に$(A,\mathfrak m)$をNoether局所環とすると
+任意の有限生成$A$-加群$M$に対して
+$\bigcap_{n\ge0}\mathfrak m^nM=0$が成り立つ．
+\end{theorem}
+\begin{proof}
+$x\in\bigcap_{n\ge0}I^nM$を取り，
+$N=Ax\subset M$と置く．$N$は一元生成である．
+定理\ref{thm:AR}によってある$k$が存在し，
+\[
+ I^{k+1}M\cap N=I(I^kM\cap N)\subset IN
+\]
+となる．一方$x\in I^{k+1}M\cap N$だから$x\in IN$である．
+$N=Ax$なので$N=IN$が従う．
+補題\ref{lem:nakayama}を適用すれば$N=0$，特に$x=0$となる．
+\end{proof}
+
+\begin{corollary}[$I$進完備化への単射]\label{cor:injective}
+定理\ref{thm:krull}の仮定のもとで
+\[
+ M\longrightarrow\varprojlim_n M/I^nM,\qquad
+ x\longmapsto(x\bmod I^nM)_n
+\]
+は単射である．
+\end{corollary}
+\begin{proof}
+この準同型の核は$\bigcap_{n\ge0}I^nM$に等しい．
+定理\ref{thm:krull}によって零である．
+\end{proof}
+
+\section{適用範囲の注意}
+\begin{remark}
+$A$がNoether環であることと，
+$I\subset J(A)$であることは異なる仮定である．
+Artin--Rees補題そのものは$I\subset J(A)$を要求しない．
+一方，Krullの交叉定理における後者の仮定を除くと
+$\bigcap_n I^nM=0$は一般に偽となる．
+例えば$A=k\times k$，$I=k\times0$，$M=A$なら
+$I^n=I$（$n\ge1$）で，その共通部分は$I\ne0$である．
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{atiyah} M. F. Atiyah and I. G. Macdonald,
+ \emph{Introduction to Commutative Algebra}, Addison-Wesley, 1969.
+\bibitem{matsumura} H. Matsumura,
+ \emph{Commutative Ring Theory}, Cambridge University Press, 1986.
+\end{thebibliography}
+
+\section{到達課題の完全解答}
+\noindent\textbf{極大イデアルの冪の共通部分．}
+\begin{proposition}
+$R=k[[x]]$，$\mathfrak m=(x)$ とすると
+\[
+\bigcap_{n\ge1}\mathfrak m^n=(0)
+\]
+である．
+\end{proposition}
+\begin{proof}
+非零形式的冪級数 $f=\sum_{j\ge0}a_jx^j$ には
+$a_r\ne0$ となる最小の指数 $r$ が存在する．
+そのとき $f\in(x^r)$ であるが，
+$x^{r+1}$ で割り切れないから
+$f\notin(x^{r+1})$ である．
+従って全ての冪に属する元は零しかない．
+\end{proof}
+\begin{proposition}[局所性の重要性]
+$R=k[x]$，$I=(x)$ でも
+$\bigcap_{n\ge1}I^n=(0)$ であるが，
+任意のイデアルについて同じとは限らない．
+\end{proposition}
+\begin{proof}
+多項式の零でない元は有限の次数の
+$x$ の因子しか持たないため前半は従う．
+一方 $I=R$ とすると
+$I^n=R$ が全ての $n$ で成立するから
+共通部分は $R$ となる．
+従ってイデアルへの仮定を省くことはできない．
+\end{proof}
+\noindent\textbf{到達確認．}
+$k[[x,y]]$ で
+$\bigcap_{n\ge1}(x,y)^n$ を求めよ．
+\par\noindent\textbf{解答．}
+非零冪級数には非零係数を持つ全次数最小の単項式があり，
+その次数を $r$ とすると
+$(x,y)^{r+1}$ には属さない．従って共通部分は零である．
+\end{document}

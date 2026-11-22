@@ -1,0 +1,496 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{主イデアル整域上のSmith標準形}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Euclid整域，整数行列，Smith標準形．
+本稿の具体的な到達課題は，整数行列のSmith標準形を小行列式から検算して商群を計算する．
+
+\section{行列の同値と主イデアル整域}
+
+以下，$R$ は単位元を持つ可換整域とし，
+$R^\times$ をその単元群とする．
+$R$ の各イデアルが単項イデアルであるとき，
+$R$ を\emph{主イデアル整域}（PID）という．
+
+\begin{definition}
+$A,B\in M_{m,n}(R)$ が\emph{同値}であるとは，
+可逆行列 $P\in\operatorname{GL}_m(R)$，
+$Q\in\operatorname{GL}_n(R)$ が存在して
+$B=PAQ$ となることをいう．
+行や列の交換，単元倍，別の行や列の
+スカラー倍の加算を\emph{基本変形}という．
+\end{definition}
+
+\begin{lemma}\label{lem:elementary}
+基本変形は可逆行列による左または右からの積で実現できる．
+従って基本変形は行列の同値関係を保つ．
+\end{lemma}
+\begin{proof}
+行交換は置換行列，単元倍は対角成分の一つを
+単元で置き換えた対角行列，
+行 $i$ に行 $j$ の $c$ 倍を加える操作は
+$I+cE_{ij}$（$i\ne j$）による左積で実現される．
+逆変形はそれぞれ逆置換，逆単元倍，
+$I-cE_{ij}$ であるから可逆である．
+列については同様の行列を右から掛ければよい．
+\end{proof}
+
+\begin{lemma}[B\'ezout変形]\label{lem:bezout}
+$R$ をPIDとし，$a,b\in R$ がともに零でないとする．
+$(a,b)=(d)$ なら，
+\[
+ U\begin{pmatrix}a\\b\end{pmatrix}
+ =\begin{pmatrix}d\\0\end{pmatrix}
+\]
+となる $U\in\operatorname{GL}_2(R)$ が存在する．
+\end{lemma}
+\begin{proof}
+$(a,b)=(d)$ なので
+$a=da_0$，$b=db_0$ と書け，
+$u,v\in R$ で $ua+vb=d$ を満たすものが存在する．
+$R$ は整域で $d\ne0$ だから
+$ua_0+vb_0=1$ である．
+\[
+ U=\begin{pmatrix}u&v\\-b_0&a_0\end{pmatrix}
+\]
+と置くと
+$\det U=ua_0+vb_0=1$ なので
+$U$ は可逆である．また
+$U(a,b)^{\mathsf T}=(ua+vb,-b_0a+a_0b)^{\mathsf T}
+=(d,0)^{\mathsf T}$ となる．
+\end{proof}
+
+\begin{lemma}[PIDの昇鎖条件]\label{lem:acc}
+$R$ をPIDとする．
+イデアルの昇鎖
+$I_1\subset I_2\subset\cdots$ は有限段階で安定する．
+\end{lemma}
+\begin{proof}
+$I=\bigcup_{n\ge1}I_n$ と置く．
+昇鎖なので $I$ はイデアルである．
+$R$ はPIDだから $I=(d)$ と書ける．
+$d\in I$ なので，ある $N$ について $d\in I_N$ である．
+従って
+$I=(d)\subset I_N\subset I$ となり $I_N=I$ を得る．
+$n\ge N$ では $I_N\subset I_n\subset I$ だから
+$I_n=I_N$ となる．
+\end{proof}
+
+\section{Smith標準形の存在}
+
+\begin{theorem}[Smith標準形]\label{thm:smith}
+$R$ をPID，$A\in M_{m,n}(R)$ とする．
+このとき可逆行列
+$P\in\operatorname{GL}_m(R)$，
+$Q\in\operatorname{GL}_n(R)$ が存在し，
+\[
+ PAQ=
+ \operatorname{diag}(d_1,\dots,d_r,0,\dots,0)
+\]
+と書ける．
+ここで $d_i\ne0$ であり，
+\[
+ d_1\mid d_2\mid\cdots\mid d_r
+\]
+を満たす．
+この形の行列をSmith標準形という．
+\end{theorem}
+\begin{proof}
+$m=0$ または $n=0$ の場合は自明である．
+$m,n\ge1$ とし，$\min\{m,n\}$ に関する帰納法で証明する．
+$A=0$ なら結論は明らかである．
+$A$ に零でない成分があれば，行交換・列交換により
+左上の成分 $a=A_{11}\ne0$ とできる．
+
+まず左上の成分 $a$ が全成分を割り切る形へ変形する．
+もし第1列の成分 $b=A_{i1}$ が $a$ で割り切れなければ，
+補題\ref{lem:bezout}を第1行と第 $i$ 行に適用し，
+左上の成分を $d$ で置き換えることができる．
+この $d$ は $(a,b)=(d)$ を満たし，
+$(a)\subsetneq(d)$ となる．
+実際，もし $(a)=(d)$ なら $a$ と $d$ は
+互いに単元倍なので $a\mid b$ となり矛盾する．
+第1行の成分が $a$ で割り切れないときも，
+列に同じ操作を適用して左上の成分を
+その成分との最大公約元へ置き換えれば，
+左上の生成する主イデアルが真に大きくなる．
+
+第1行・第1列の全成分が $a$ で割り切れるとき，
+それらの成分から適切な $a$ の倍数を引く
+基本変形を行い，第1行と第1列の左上以外を零にする．
+このとき行列は
+\[
+ \begin{pmatrix}a&0\\0&B\end{pmatrix}
+\]
+の形となる．
+もし $B$ のある成分 $b$ が $a$ で割り切れなければ，
+その成分を第2行・第2列の位置へ移したうえで
+第1行に第2行を加える．すると第1行に $b$ が現れるので，
+列のB\'ezout変形によって左上の成分を
+$(a,b)$ の生成元へ置き換えられる．
+従ってこの場合にも左上の成分が生成する主イデアルが
+真に大きくなる．
+
+以上の操作を繰り返すと，
+左上の成分が生成する主イデアルは，真に増大する場合に
+$(a_1)\subsetneq(a_2)\subsetneq\cdots$
+という昇鎖をなす．補題\ref{lem:acc}により
+このような真の増大は無限には続かない．
+従って有限回で，
+左上の成分 $d_1$ が行列の全成分を割り切り，
+第1行と第1列の他の成分が零である形
+\[
+ \begin{pmatrix}d_1&0\\0&B\end{pmatrix}
+\]
+を得る．$B$ の全成分は $d_1$ の倍数である．
+
+帰納法によって $B$ をSmith標準形
+$\operatorname{diag}(d_2,\dots,d_r,0,\dots,0)$ に変形する．
+$B$ の成分が全て $d_1$ の倍数であるという性質は，
+行・列の可逆変形を行っても保存される．
+従って $d_1\mid d_i$（$i\ge2$）であり，
+帰納法から $d_2\mid\cdots\mid d_r$ である．
+ゆえに全体がSmith標準形となる．
+\end{proof}
+
+\begin{remark}
+この存在証明では，Euclid整域の余りを取る操作や
+Euclid関数による降下を使っていない．
+代わりに，B\'ezoutの等式による行列変形と
+主イデアルの昇鎖条件を用いている．
+\end{remark}
+
+\section{小行列式イデアルと一意性}
+
+\begin{definition}
+$A\in M_{m,n}(R)$ と $k\ge1$ に対し，
+$A$ の全ての $k\times k$ 小行列式によって生成されるイデアルを
+$I_k(A)$ と書く．$I_0(A)=R$，
+$k>\min\{m,n\}$ のとき $I_k(A)=(0)$ と定める．
+\end{definition}
+
+\begin{lemma}[小行列式イデアルの不変性]\label{lem:minor-invariant}
+$P\in\operatorname{GL}_m(R)$，
+$Q\in\operatorname{GL}_n(R)$ なら
+\[
+ I_k(PAQ)=I_k(A)
+\]
+が全ての $k$ について成立する．
+\end{lemma}
+\begin{proof}
+Cauchy--Binetの公式によって，
+$PA$ の任意の $k$ 次小行列式は
+$P$ の $k$ 次小行列式を係数とする
+$A$ の $k$ 次小行列式の線形結合である．
+従って $I_k(PA)\subset I_k(A)$ となる．
+$P$ は可逆で $A=P^{-1}(PA)$ だから，同じ議論により
+$I_k(A)\subset I_k(PA)$ を得る．
+よって $I_k(PA)=I_k(A)$ である．
+右からの $Q$ についてもCauchy--Binetの公式を使い，
+$I_k(AQ)=I_k(A)$ を得る．
+両者を合わせて結論が従う．
+\end{proof}
+
+\begin{theorem}[不変因子の一意性]\label{thm:smith-unique}
+$A$ のSmith標準形を
+\[
+ D=\operatorname{diag}(d_1,\dots,d_r,0,\dots,0)
+\]
+とすると，
+任意の $1\le k\le r$ について
+\[
+ I_k(A)=(d_1d_2\cdots d_k)
+\]
+である．また $k>r$ なら $I_k(A)=(0)$ である．
+従って $r$ と各 $d_i$ の単元倍を除く同値類は
+$A$ の同値類だけから一意に決まる．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:minor-invariant}により
+$I_k(A)=I_k(D)$ である．
+対角行列 $D$ の非零の $k$ 次小行列式は，
+$k$ 個の対角成分の積
+$d_{i_1}\cdots d_{i_k}$ である．
+$d_1\mid\cdots\mid d_r$ だから，
+$i_1<\cdots<i_k$ に対して
+$d_j\mid d_{i_j}$（$j=1,\dots,k$）となり，
+積 $d_1\cdots d_k$ は
+任意の非零 $k$ 次小行列式を割り切る．
+一方，左上 $k\times k$ 小行列式は
+$d_1\cdots d_k$ に等しい．
+従って $I_k(D)=(d_1\cdots d_k)$ である．
+$k>r$ の全ての小行列式は零である．
+$I_k(A)$ が非零である最大の $k$ が $r$ を決める．
+さらに主イデアルの等式は生成元を単元倍まで決めるから，
+$k=1$ で $d_1$，$k\ge2$ で
+$(d_1\cdots d_k)$ と $(d_1\cdots d_{k-1})$ の
+商から $d_k$ が単元倍まで決まる．
+整域であることにより非零元の約分は正当化される．
+\end{proof}
+
+\section{有限生成加群の構造}
+
+\begin{definition}
+$R$-加群 $M$ の元 $x$ が\emph{ねじれ元}であるとは，
+ある $0\ne r\in R$ が存在して $rx=0$ となることをいう．
+ねじれ元全体を $T(M)$ と書く．$R$ が整域なら
+$T(M)$ は部分加群である．
+\end{definition}
+
+\begin{lemma}\label{lem:finite-present}
+$R$ をPID，$M$ を有限生成 $R$-加群とする．
+このときある $m,n$ と行列 $A\in M_{m,n}(R)$ が存在して
+\[
+ R^n\xrightarrow{A}R^m\longrightarrow M\longrightarrow0
+\]
+は完全列となる．
+\end{lemma}
+\begin{proof}
+$M$ の有限個の生成元 $x_1,\dots,x_m$ を選び，
+$R^m\to M$，$(r_i)\mapsto\sum_ir_ix_i$ と定める．
+これは全射であり，核 $N$ は $R^m$ の部分加群である．
+PID上の有限生成自由加群の部分加群は自由で，
+階数が $m$ 以下となる．
+この標準的な結果はSmith標準形の存在証明と同じ
+B\'ezout変形による帰納法で証明できる：
+部分加群 $N\ne0$ の第1座標の像は主イデアル $(d)$ なので，
+第1座標が $d$ である元 $v\in N$ を選び，
+他の元から $v$ の倍数を引くことで
+$N=Rv\oplus(N\cap(\{0\}\times R^{m-1}))$ と分解する．
+第1座標に関する射影が $Rv$ 上で同型であるため交わりは零である．
+$m-1$ に関する帰納法によって核は階数 $n\le m$ の自由加群となる．
+その基底を列ベクトルとする行列 $A:R^n\to R^m$ を取れば，
+$\operatorname{im}A=N$ なので完全列を得る．
+\end{proof}
+
+\begin{theorem}[有限生成PID加群の構造定理]\label{thm:module}
+$R$ をPID，$M$ を有限生成 $R$-加群とする．
+このときある非負整数 $s,r$ と非零非単元
+$d_1,\dots,d_r\in R$ が存在して
+\[
+ d_1\mid d_2\mid\cdots\mid d_r,
+ \qquad
+ M\cong R^s\oplus
+       \bigoplus_{i=1}^r R/(d_i).
+\]
+さらに $s,r$ および $d_i$ の単元倍を除く同値類は
+$M$ によって一意に決まる．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:finite-present}によって
+$M\cong\operatorname{coker}A$ となる有限行列 $A$ を取る．
+定理\ref{thm:smith}により
+$PAQ=D$ がSmith標準形となる．
+$P,Q$ は可逆なので
+$\operatorname{coker}A\cong\operatorname{coker}D$ である．
+$D$ の対角成分に対応する商は $R/(d_i)$，
+余った行には自由加群の成分 $R$ が生じる．
+$d_i$ が単元なら $R/(d_i)=0$ なのでこれを除き，
+必要なら順序を整えれば存在の表示を得る．
+
+一意性を示す．
+$K=\operatorname{Frac}(R)$ と置くと
+$K\otimes_RM$ の $K$-次元は $s$ に等しい．
+実際，非零元 $d_i$ は $K$ では可逆なので
+$K\otimes_RR/(d_i)=0$ となり，
+$K\otimes_RR^s\cong K^s$ だからである．
+従って $s$ は $M$ の不変量である．
+ねじれ部分 $T(M)$ は
+$\bigoplus_iR/(d_i)$ に同型であり，これも $M$ から一意に定まる．
+
+素元 $p$ に対して
+$T(M)[p^\infty]
+=\{x\in T(M):p^kx=0\text{ for some }k\}$
+を $p$-一次部分とする．これは加群の構造から一意に定まる．
+素因数分解と中国剰余定理により
+\[
+ R/(d_i)\cong
+ \bigoplus_{p\mid d_i}R/(p^{v_p(d_i)}).
+\]
+従って
+\[
+ T(M)[p^\infty]\cong
+ \bigoplus_{i:\,v_p(d_i)>0}R/(p^{v_p(d_i)}).
+\]
+ここで $v_p(d_i)$ は素元 $p$ の $d_i$ における指数である．
+各正整数 $j$ に対し
+\[
+ e_{p,j}=
+ \dim_{R/(p)}
+ \frac{p^{j-1}T(M)[p^\infty]}
+      {p^jT(M)[p^\infty]}
+\]
+と置く．$R/(p)$ は体であり，
+上の直和表示から
+$e_{p,j}$ は指数が $j$ 以上の巡回 $p$-冪成分の個数に等しい．
+従って
+$e_{p,j}-e_{p,j+1}$ が指数ちょうど $j$ の成分数を決める．
+これにより各素元 $p$ に関する指数の多重集合が
+$M$ から一意に決まる．
+$d_1\mid\cdots\mid d_r$ という順序は，
+各 $p$ の指数を非減少順に並べたものを
+同じ番号で掛け合わせることで
+$d_i$ の単元倍を除く同値類を決定する．
+$r$ は全ての素元に関する指数列を，
+先頭に零を加えて同じ長さにしたときの
+最大の長さによって決まる．
+よって不変因子は一意である．
+\end{proof}
+
+\section{具体例と非PIDでの障害}
+
+\begin{example}[整数行列のSmith標準形]
+\[
+ A=\begin{pmatrix}4&6\\2&8\end{pmatrix}
+\]
+に対し，行・列の基本変形によって
+\[
+ \begin{pmatrix}4&6\\2&8\end{pmatrix}
+ \sim\begin{pmatrix}2&8\\4&6\end{pmatrix}
+ \sim\begin{pmatrix}2&8\\0&-10\end{pmatrix}
+ \sim\begin{pmatrix}2&0\\0&-10\end{pmatrix}
+ \sim\begin{pmatrix}2&0\\0&10\end{pmatrix}
+\]
+となる．従って
+$\mathbb Z^2/A\mathbb Z^2
+\cong\mathbb Z/(2)\oplus\mathbb Z/(10)$ である．
+\end{example}
+\begin{proof}
+最初は第1行と第2行の交換，
+次は第2行から第1行の2倍を引く操作，
+次は第2列から第1列の4倍を引く操作，
+最後は第2行を $-1$ 倍する操作である．
+いずれも可逆基本変形であり，
+$2\mid10$ だから最後はSmith標準形である．
+\end{proof}
+
+\begin{example}[UFDでは失敗する例]
+$R=k[x,y]$ を二変数多項式環とする．
+これはUFDであるがPIDではない．
+一行二列の行列
+$A=\begin{pmatrix}x&y\end{pmatrix}$ は，
+一般にSmith標準形へ同値変形できない．
+\end{example}
+\begin{proof}
+もし $A$ が
+$\begin{pmatrix}d&0\end{pmatrix}$ と同値なら，
+基本変形により成分が生成するイデアルは不変なので
+$(x,y)=(d)$ となる．
+しかし $(x,y)$ は単項イデアルではない．
+実際，$d$ が $x,y$ の双方を割り切るなら，
+UFDの性質と $x,y$ が互いに既約かつ非同伴であることから
+$d$ は単元となる．
+すると $(x,y)=R$ を意味するが，
+$x$ と $y$ の任意の多項式係数線形結合は
+$(0,0)$ で零となるため $1$ にはならない．
+従って矛盾する．
+\end{proof}
+
+\begin{remark}
+Smith標準形の存在と一意性は，
+PIDにおけるB\'ezoutの等式とイデアルの昇鎖条件に依存する．
+UFDで最大公約元が存在するだけでは，
+その最大公約元を元の成分の線形結合として実現できるとは限らない．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{小行列式の最大公約数からSmith不変因子を求める．}
+\begin{proposition}
+\[
+A=\begin{pmatrix}2&4\\6&8\end{pmatrix}
+\]
+の整数上のSmith標準形は
+$\operatorname{diag}(2,4)$ であり，
+\[
+\mathbb Z^2/A\mathbb Z^2
+\cong\mathbb Z/2\mathbb Z\oplus\mathbb Z/4\mathbb Z
+\]
+である．
+\end{proposition}
+\begin{proof}
+一次小行列式，すなわち各成分の最大公約数は2．
+二次小行列式は行列式
+$2\cdot8-4\cdot6=-8$ である．
+Smith標準形の不変因子を $d_1,d_2$ とすると
+$d_1=2$，$d_1d_2=8$ だから
+$d_2=4$（単元倍の符号を正に取る）．
+両者は $2\mid4$ を満たすので
+求める標準形はこれである．
+整可逆な行・列基本変形で標準形へ移るため，
+余核の同型が従う．
+\end{proof}
+\noindent\textbf{到達確認．}
+$B=\operatorname{diag}(6,10)$ のSmith不変因子を求めよ．
+\par\noindent\textbf{解答．}
+全成分の最大公約数は2，行列式は60なので
+$d_1=2$，$d_2=30$．従ってSmith標準形は
+$\operatorname{diag}(2,30)$ である．
+\end{document}

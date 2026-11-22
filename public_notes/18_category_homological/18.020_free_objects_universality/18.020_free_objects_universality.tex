@@ -1,0 +1,642 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{自由対象と普遍性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，自由群，自由加群，普遍写像性．
+本稿の具体的な到達課題は，自由対象の普遍性を実際の写像の一意性として検証する．
+
+\section{普遍性の定式化}
+
+本稿では集合，群，可換群，可換環上の加群の
+自由構成を扱う．これらを特徴づける共通の性質を
+\emph{普遍性}という．
+
+\begin{definition}
+$S$ を集合，$\mathcal C$ をある種類の代数的対象の圏とする．
+$F$ を $\mathcal C$ の対象，$\eta:S\to|F|$ をその台集合への写像とする．
+$(F,\eta)$ が $S$ 上の\emph{自由対象}であるとは，
+$\mathcal C$ の任意の対象 $A$ と任意の写像
+$f:S\to|A|$ に対して，ただ一つの射
+$\widetilde f:F\to A$ が存在し，
+\[
+ \widetilde f\circ\eta=f
+\]
+を満たすことをいう．
+ここで $|A|$ は対象 $A$ の台集合とする．
+\end{definition}
+
+\begin{theorem}[普遍性による一意性]\label{thm:universal-unique}
+$(F,\eta)$，$(F',\eta')$ がともに同じ集合 $S$ 上の
+自由対象なら，ただ一つの同型
+$\varphi:F\to F'$ で
+$\varphi\circ\eta=\eta'$ となるものが存在する．
+\end{theorem}
+\begin{proof}
+$F$ の普遍性を $A=F'$，$f=\eta'$ に適用すると，
+ただ一つの射 $\varphi:F\to F'$ が存在して
+$\varphi\eta=\eta'$ となる．
+同様に $F'$ の普遍性から
+$\psi:F'\to F$ で $\psi\eta'=\eta$ となるものが存在する．
+このとき
+\[
+ (\psi\varphi)\eta=\psi\eta'=\eta
+\]
+だから，$F$ の普遍性によって
+$\psi\varphi=\operatorname{id}_F$ である．
+同様に $\varphi\psi=\operatorname{id}_{F'}$ となる．
+従って $\varphi$ は同型であり，
+その一意性も初めの普遍性から従う．
+\end{proof}
+
+\section{自由群の構成}
+
+\begin{definition}
+集合 $S$ に対し，
+$S^\pm=S\times\{+1,-1\}$ を記号の集合とする．
+有限列 $(s_1,\varepsilon_1)\cdots(s_n,\varepsilon_n)$ を
+\emph{語}という．長さ零の語を空語と書く．
+語全体は連結を積とするモノイド $W(S)$ をなす．
+二つの連続した互いに逆の記号
+$(s,+1)(s,-1)$ または $(s,-1)(s,+1)$ を
+消去または挿入する操作で生成される
+モノイド合同関係を $\sim$ とする．
+\[
+ F(S)=W(S)/{\sim}
+\]
+と置く．
+\end{definition}
+
+\begin{lemma}\label{lem:free-group}
+$F(S)$ は群である．各 $s\in S$ の一文字語の同値類を
+$\eta(s)$ とすると，
+$\eta:S\to F(S)$ が定まる．
+\end{lemma}
+\begin{proof}
+$\sim$ はモノイド合同なので，連結は商集合上に
+結合的な積を定める．空語の同値類は単位元である．
+語 $w=(s_1,\varepsilon_1)\cdots(s_n,\varepsilon_n)$ に対して
+\[
+ w^{-1}=(s_n,-\varepsilon_n)\cdots(s_1,-\varepsilon_1)
+\]
+と置く．$ww^{-1}$ および $w^{-1}w$ は
+中央から隣接した逆の記号を順次消去することで
+空語と同値になる．
+従って任意の同値類が両側逆元を持つので
+$F(S)$ は群である．
+\end{proof}
+
+\begin{theorem}[自由群の普遍性]\label{thm:free-group}
+$S$ を集合とする．
+$(F(S),\eta)$ は群の圏で $S$ 上の自由対象である．
+\end{theorem}
+\begin{proof}
+任意の群 $G$ と写像 $f:S\to G$ を取る．
+語 $w=(s_1,\varepsilon_1)\cdots(s_n,\varepsilon_n)$ に対し
+\[
+ \widehat f(w)=
+ f(s_1)^{\varepsilon_1}\cdots f(s_n)^{\varepsilon_n}
+\]
+と定め，空語は $1_G$ に写す．
+$\widehat f$ は語の連結を群の積に写すモノイド準同型である．
+隣接した逆の記号の挿入・消去は，
+像において $f(s)f(s)^{-1}=1_G$ を挿入・消去する操作なので，
+$\widehat f$ は同値な語に同じ値を与える．
+従って商集合上に群準同型
+$\widetilde f:F(S)\to G$ を誘導する．
+一文字語について
+$\widetilde f(\eta(s))=f(s)$ なので
+$\widetilde f\eta=f$ である．
+一方，$F(S)$ の全ての元は $\eta(s)$ とその逆元の
+有限積として表されるので，
+$\eta(s)$ 上の値が定まれば群準同型の値は全て決まる．
+従って拡張は一意である．
+\end{proof}
+
+\begin{proposition}[生成元の関係を課すこと]\label{prop:presentation}
+集合 $S$ と自由群 $F(S)$，
+関係式の集合 $R\subset F(S)$ に対し，
+$N$ を $R$ が生成する正規部分群とし，
+$G=F(S)/N$ と置く．
+任意の群 $H$ と写像 $f:S\to H$ について，
+$f$ が $G\to H$ の準同型へ拡張されることと，
+全ての $r\in R$ に対して
+$\widetilde f(r)=1_H$ が成立することは同値である．
+ここで $\widetilde f:F(S)\to H$ は自由群の普遍性による写像である．
+\end{proposition}
+\begin{proof}
+$G\to H$ への拡張があるなら，商写像
+$\pi:F(S)\to G$ の核 $N$ は合成写像の核に含まれるため
+全ての関係式は $1_H$ に写る．
+逆に全ての $r\in R$ が $\widetilde f$ の核に属すれば，
+核は正規部分群なので $N\subset\ker\widetilde f$ となる．
+商群の普遍性から $\widetilde f$ は
+唯一の群準同型 $G\to H$ を誘導する．
+\end{proof}
+
+\section{自由Abel群}
+
+\begin{definition}
+集合 $S$ と可換群 $A$ に対し，
+\[
+ A^{(S)}
+ =\{u:S\to A:\{s\in S:u(s)\ne0\}\text{ は有限}\}
+\]
+と置く．点ごとの加法によって可換群をなす．
+特に $\mathbb Z^{(S)}$ を $S$ 上の自由Abel群という．
+$s\in S$ に対して
+$\delta_s(t)=1$（$t=s$），$0$（$t\ne s$）
+と定める．
+\end{definition}
+
+\begin{theorem}[自由Abel群の普遍性]\label{thm:free-abelian}
+任意の可換群 $A$ と写像 $f:S\to A$ に対し，
+ただ一つの群準同型
+$\widetilde f:\mathbb Z^{(S)}\to A$ が存在して
+$\widetilde f(\delta_s)=f(s)$（$s\in S$）となる．
+\end{theorem}
+\begin{proof}
+$u\in\mathbb Z^{(S)}$ は有限台を持つので
+\[
+ \widetilde f(u)=\sum_{s\in S}u(s)f(s)
+\]
+と定めれば，有限和として意味を持つ．
+点ごとの加法に関して
+$\widetilde f(u+v)=\widetilde f(u)+\widetilde f(v)$
+が成立するから群準同型である．
+$\delta_s$ については
+$\widetilde f(\delta_s)=f(s)$ となる．
+任意の $u$ は
+$u=\sum_{s\in S}u(s)\delta_s$ と一意に書けるので，
+準同型の $\delta_s$ 上の値が決まれば
+全ての $u$ の像が決まり，一意性が従う．
+\end{proof}
+
+\begin{remark}
+自由群 $F(S)$ からその交換子部分群で割った商
+$F(S)_{\mathrm{ab}}=F(S)/[F(S),F(S)]$ は，
+自由Abel群 $\mathbb Z^{(S)}$ と自然に同型となる．
+\end{remark}
+\begin{proof}
+任意の可換群 $A$ への群準同型は
+交換子を零へ写すから，
+群の自由性と商群の普遍性によって
+$F(S)_{\mathrm{ab}}$ は可換群における $S$ 上の
+自由対象となる．
+定理\ref{thm:universal-unique}と
+定理\ref{thm:free-abelian}によって一意な同型が存在する．
+\end{proof}
+
+\section{自由加群とその函手性}
+
+以下，$R$ を単位元を持つ可換環とする．
+
+\begin{definition}
+集合 $S$ に対して
+\[
+ R^{(S)}=\{u:S\to R:\operatorname{supp}(u)\text{ は有限}\}
+\]
+に点ごとの加法・$R$-スカラー倍を定める．
+この $R$-加群を $S$ 上の自由 $R$-加群という．
+\end{definition}
+
+\begin{theorem}[自由加群の普遍性]\label{thm:free-module}
+任意の $R$-加群 $M$ と写像 $f:S\to M$ に対し，
+ただ一つの $R$-線形写像
+$\widetilde f:R^{(S)}\to M$ が存在して
+$\widetilde f(\delta_s)=f(s)$ を満たす．
+\end{theorem}
+\begin{proof}
+任意の $u\in R^{(S)}$ を
+$u=\sum_{s\in S}u(s)\delta_s$ と一意に書ける．
+そこで
+$\widetilde f(u)=\sum_{s\in S}u(s)f(s)$ と定める．
+有限和なので意味を持ち，線形性は
+$R$-加群の公理から従う．
+$\delta_s$ 上での値は $f(s)$ である．
+逆に，$R$-線形写像は $\delta_s$ 上での値によって
+全ての $u$ 上で決まるため一意である．
+\end{proof}
+
+\begin{proposition}[自由加群の函手性]\label{prop:free-functor}
+集合写像 $a:S\to T$ に対し，
+ただ一つの線形写像
+$R^{(a)}:R^{(S)}\to R^{(T)}$ が存在して
+$R^{(a)}(\delta_s)=\delta_{a(s)}$ となる．
+さらに
+\[
+ R^{(\operatorname{id}_S)}
+ =\operatorname{id}_{R^{(S)}},\qquad
+ R^{(b\circ a)}=R^{(b)}\circ R^{(a)}
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+最初の存在と一意性は
+定理\ref{thm:free-module}に $M=R^{(T)}$，
+$f(s)=\delta_{a(s)}$ を適用することで従う．
+二つの函手性の等式について，
+左右の線形写像は任意の基底ベクトル $\delta_s$ を
+それぞれ同じベクトルに写す．
+自由加群の普遍性から全ての元で一致する．
+\end{proof}
+
+\section{テンソル積の存在}
+
+\begin{definition}
+$R$-加群 $M,N,P$ に対し，
+写像 $b:M\times N\to P$ が\emph{$R$-双線形}であるとは，
+各変数を固定したとき残りの変数について
+$R$-線形となることをいう．
+\end{definition}
+
+\begin{theorem}[テンソル積の存在と普遍性]\label{thm:tensor}
+任意の $R$-加群 $M,N$ に対して，
+$R$-加群 $M\otimes_RN$ と双線形写像
+\[
+ \tau:M\times N\to M\otimes_RN,\qquad
+ (m,n)\longmapsto m\otimes n
+\]
+が存在し，任意の $R$-加群 $P$ と双線形写像
+$b:M\times N\to P$ に対して，
+ただ一つの $R$-線形写像
+$\widetilde b:M\otimes_RN\to P$ が存在して
+$b=\widetilde b\circ\tau$ を満たす．
+\end{theorem}
+\begin{proof}
+集合 $M\times N$ 上の自由加群
+$F=R^{(M\times N)}$ を取る．
+$(m,n)$ に対応する基底ベクトルを $[m,n]$ と書く．
+$F$ の部分加群 $L$ を，以下の形の元全体で生成される
+部分加群とする：
+\begin{align*}
+ &[m+m',n]-[m,n]-[m',n],\\
+ &[m,n+n']-[m,n]-[m,n'],\\
+ &[rm,n]-r[m,n],\\
+ &[m,rn]-r[m,n],
+\end{align*}
+ここで $m,m'\in M$，$n,n'\in N$，$r\in R$ とする．
+\[
+ M\otimes_RN=F/L
+\]
+と定め，$m\otimes n=[m,n]+L$ と置く．
+$L$ の生成関係から
+$\tau$ が各変数について $R$-線形であることが従う．
+
+任意の双線形写像 $b:M\times N\to P$ を取る．
+自由加群の普遍性により
+$F$ 上の唯一の線形写像
+$\widehat b:F\to P$ で
+$\widehat b([m,n])=b(m,n)$ となるものが存在する．
+双線形性から，$L$ の各生成元は
+$\widehat b$ の核に属する．従って $L\subset\ker\widehat b$
+であり，商加群の普遍性によって
+ただ一つの線形写像
+$\widetilde b:F/L\to P$ が誘導される．
+これは
+$\widetilde b(m\otimes n)=b(m,n)$ を満たす．
+最後に $F/L$ は $m\otimes n$ の有限線形結合で
+生成されるので，この値を固定した線形写像は一意である．
+\end{proof}
+
+\begin{proposition}[テンソル積の一意性]\label{prop:tensor-unique}
+$R$-加群 $T$ と双線形写像
+$\tau':M\times N\to T$ が
+定理\ref{thm:tensor}と同じ普遍性を満たすなら，
+ただ一つの $R$-加群同型
+$\varphi:M\otimes_RN\to T$ が存在して
+$\varphi(m\otimes n)=\tau'(m,n)$ を満たす．
+\end{proposition}
+\begin{proof}
+$\tau'$ の普遍性と $\tau$ の普遍性をそれぞれ使うと，
+$\varphi:M\otimes_RN\to T$，
+$\psi:T\to M\otimes_RN$ で
+$\varphi\tau=\tau'$，$\psi\tau'=\tau$ を満たす
+線形写像が一意に存在する．
+$\psi\varphi$ と恒等写像は $\tau$ との合成が一致するので，
+普遍性により $\psi\varphi=\operatorname{id}$ である．
+同様に $\varphi\psi=\operatorname{id}$ を得る．
+従って $\varphi$ は同型であり，一意である．
+\end{proof}
+
+\section{テンソル積の基本性質}
+
+\begin{proposition}[函手性]\label{prop:tensor-functor}
+$R$-線形写像 $f:M\to M'$，
+$g:N\to N'$ に対して，ただ一つの線形写像
+\[
+ f\otimes g:M\otimes_RN\to M'\otimes_RN'
+\]
+が存在して
+$(f\otimes g)(m\otimes n)=f(m)\otimes g(n)$ となる．
+また
+\[
+ \operatorname{id}_M\otimes\operatorname{id}_N
+ =\operatorname{id}_{M\otimes_RN},\qquad
+ (f'\otimes g')\circ(f\otimes g)
+ =(f'\circ f)\otimes(g'\circ g).
+\]
+\end{proposition}
+\begin{proof}
+写像
+$(m,n)\mapsto f(m)\otimes g(n)$ は双線形だから，
+定理\ref{thm:tensor}によって
+唯一の線形写像 $f\otimes g$ を誘導する．
+二つの函手性等式は，それぞれ
+任意の純テンソル $m\otimes n$ 上で左右が一致することを
+確認し，純テンソルが全体を生成することから従う．
+\end{proof}
+
+\begin{theorem}[対称性と結合性]\label{thm:tensor-basic}
+$R$-加群 $M,N,P$ に対して自然な同型
+\[
+ M\otimes_RN\cong N\otimes_RM,\qquad
+ (M\otimes_RN)\otimes_RP\cong M\otimes_R(N\otimes_RP)
+\]
+が存在する．また
+\[
+ R\otimes_RM\cong M
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+対称性について，
+$(m,n)\mapsto n\otimes m$ は双線形なので，
+$\sigma:M\otimes N\to N\otimes M$ が一意に存在して
+$\sigma(m\otimes n)=n\otimes m$ となる．
+逆向きも同じ方法で構成すると，
+合成は任意の純テンソルで恒等写像に一致するので
+互いに逆となる．
+
+結合性について，三重線形写像
+\[
+ (m,n,p)\longmapsto m\otimes(n\otimes p)
+\]
+を考える．固定した $p$ に対して
+$(m,n)\mapsto m\otimes(n\otimes p)$ は双線形であるため，
+$M\otimes N$ 上の線形写像を誘導する．
+これを $p$ に関して変化させると，
+$(u,p)\mapsto u\mapsto m\otimes(n\otimes p)$ に対応する
+双線形写像
+$(M\otimes N)\times P\to M\otimes(N\otimes P)$ が得られる．
+よって
+\[
+ \alpha:(M\otimes N)\otimes P\to M\otimes(N\otimes P)
+\]
+で
+$\alpha((m\otimes n)\otimes p)=m\otimes(n\otimes p)$
+となるものが存在する．
+逆向きは
+$(m,n,p)\mapsto(m\otimes n)\otimes p$ を用いて同様に構成する．
+合成は全ての三重純テンソルで恒等写像に等しいから，
+両者は同型である．
+
+最後に
+$\mu:R\times M\to M$，
+$\mu(r,m)=rm$ は双線形なので
+$\overline\mu:R\otimes M\to M$ を誘導する．
+逆向きに $m\mapsto1\otimes m$ と置くと，
+これは線形であり，
+$\overline\mu(1\otimes m)=m$ かつ
+\[
+ 1\otimes(rm)=r\otimes m
+\]
+がテンソル積の関係式から従う．
+従って合成は両方向とも恒等写像である．
+\end{proof}
+
+\begin{theorem}[直和との可換性]\label{thm:tensor-sum}
+$R$-加群 $M,N,P$ に対して
+\[
+ M\otimes_R(N\oplus P)
+ \cong(M\otimes_RN)\oplus(M\otimes_RP)
+\]
+という自然な同型が存在する．
+\end{theorem}
+\begin{proof}
+双線形写像
+\[
+ M\times(N\oplus P)\to
+ (M\otimes N)\oplus(M\otimes P),\quad
+ (m,(n,p))\mapsto(m\otimes n,m\otimes p)
+\]
+から線形写像 $\Phi$ を得る．
+逆向きには，包含
+$N\to N\oplus P$，$n\mapsto(n,0)$ と
+$P\to N\oplus P$，$p\mapsto(0,p)$ から
+\[
+ \Psi:(M\otimes N)\oplus(M\otimes P)
+ \to M\otimes(N\oplus P)
+\]
+を構成し，
+$\Psi(m\otimes n,0)=m\otimes(n,0)$，
+$\Psi(0,m\otimes p)=m\otimes(0,p)$ と定める．
+$\Phi\Psi$ は直和の各成分上で恒等写像であり，
+\[
+ \Psi\Phi(m\otimes(n,p))
+ =m\otimes(n,0)+m\otimes(0,p)
+ =m\otimes(n,p)
+\]
+だから $\Psi\Phi$ も恒等写像である．
+\end{proof}
+
+\section{テンソル積とHomの随伴}
+
+\begin{theorem}[テンソル--Homの随伴]\label{thm:tensor-hom}
+$R$ を可換環，$M,N,P$ を $R$-加群とする．
+このとき自然な $R$-加群同型
+\[
+ \operatorname{Hom}_R(M\otimes_RN,P)
+ \cong\operatorname{Hom}_R(M,\operatorname{Hom}_R(N,P))
+\]
+が存在する．
+\end{theorem}
+\begin{proof}
+$F:M\otimes N\to P$ を線形写像とする．
+各 $m\in M$ に対して
+$\widehat F(m):N\to P$ を
+\[
+ \widehat F(m)(n)=F(m\otimes n)
+\]
+と定める．テンソル積の双線形性と $F$ の線形性により
+$\widehat F(m)$ は $R$-線形である．
+さらに $m\mapsto\widehat F(m)$ も線形であるため，
+\[
+ \widehat F\in
+ \operatorname{Hom}_R(M,\operatorname{Hom}_R(N,P))
+\]
+となる．
+逆に $G:M\to\operatorname{Hom}_R(N,P)$ が線形なら，
+\[
+ b_G:M\times N\to P,\qquad b_G(m,n)=G(m)(n)
+\]
+は双線形である．テンソル積の普遍性によって
+ただ一つの線形写像
+$\widetilde b_G:M\otimes N\to P$ が存在し，
+$\widetilde b_G(m\otimes n)=G(m)(n)$ となる．
+二つの対応を合成すると，
+全ての純テンソルおよび全ての $m,n$ に対して元に戻るので，
+互いに逆である．
+また写像の和と $R$-スカラー倍に関して両対応は線形である．
+従って自然な $R$-加群同型を得る．
+\end{proof}
+
+\begin{example}[有限自由加群のテンソル積]
+$R^m\otimes_RR^n\cong R^{mn}$ である．
+\end{example}
+\begin{proof}
+$R^m$ の標準基底を $e_i$，
+$R^n$ の標準基底を $f_j$ とする．
+任意の純テンソルは
+\[
+ \left(\sum_i a_ie_i\right)\otimes
+ \left(\sum_j b_jf_j\right)
+ =\sum_{i,j}a_ib_j(e_i\otimes f_j)
+\]
+と表されるので $e_i\otimes f_j$ が全体を生成する．
+一方，双線形写像
+$(x,y)\mapsto(x_iy_j)_{i,j}$ は
+線形写像 $R^m\otimes R^n\to R^{mn}$ を誘導する．
+これは $e_i\otimes f_j$ を標準基底へ写すから，
+それらが独立であることも従う．
+従って同型である．
+\end{proof}
+
+\section{自由--忘却の随伴}
+
+\begin{theorem}[自由構成の随伴性]\label{thm:free-forgetful}
+集合 $S$ と $R$-加群 $M$ に対して，
+自然な全単射
+\[
+ \operatorname{Hom}_R(R^{(S)},M)
+ \cong\operatorname{Map}(S,|M|)
+\]
+が存在する．この対応は，集合写像 $S'\to S$ と
+線形写像 $M\to M'$ のいずれに関しても自然である．
+\end{theorem}
+\begin{proof}
+線形写像 $F:R^{(S)}\to M$ を
+$F\circ\eta:S\to|M|$ に対応させる．
+定理\ref{thm:free-module}により，
+任意の $f:S\to|M|$ に対して
+ただ一つの線形写像 $\widetilde f:R^{(S)}\to M$ が存在する．
+二つの対応は互いに逆であるから全単射となる．
+
+自然性を示す．$a:S'\to S$，$G:M\to M'$ を取る．
+任意の $F:R^{(S)}\to M$ に対して
+\[
+ (G\circ F\circ R^{(a)})\eta_{S'}
+ =G\circ F\circ\eta_S\circ a.
+\]
+これは左辺の線形写像と右辺の集合写像が，
+対応を通じて一致することを意味する．
+従って自然性が成り立つ．
+\end{proof}
+
+\begin{remark}
+自由群，自由Abel群，自由加群，テンソル積は，
+いずれも普遍性によって定義することができる．
+普遍性を用いる利点は，具体的構成に依存しない一意性と，
+写像・同型・函手性が同じ形式の議論から導かれることである．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{自由Abel群の普遍性．}
+\begin{proposition}
+集合 $S=\{a,b\}$ 上の自由Abel群は
+$\mathbb Z^2$ であり，任意のAbel群 $A$ と
+写像 $f:S\to A$ に対して一意な準同型
+$\widetilde f:\mathbb Z^2\to A$ が存在して
+$\widetilde f(1,0)=f(a)$，
+$\widetilde f(0,1)=f(b)$ を満たす．
+\end{proposition}
+\begin{proof}
+$\widetilde f(m,n)=mf(a)+nf(b)$ と定めれば
+加法性を満たす．
+$\mathbb Z^2$ の元は
+$(m,n)=m(1,0)+n(0,1)$ と一意に書けるので，
+指定された二元の像を持つ準同型はこの式以外にない．
+\end{proof}
+\begin{corollary}
+$\operatorname{Hom}_{\mathbb Z}(\mathbb Z^2,A)
+\cong A\times A$ である．
+\end{corollary}
+\begin{proof}
+準同型を $(1,0),(0,1)$ の像へ送れば，
+上の普遍性によって全単射となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$S$ が3元集合なら
+$S$ 上の自由Abel群から $\mathbb Z/2\mathbb Z$ への
+準同型は何個あるか．
+\par\noindent\textbf{解答．}
+各生成元の像は独立に2通り選べるため
+$2^3=8$ 個である．
+\end{document}

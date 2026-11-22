@@ -1,0 +1,570 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{圏・函手・自然変換と米田の補題}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，圏，函手，自然変換，米田の補題．
+本稿の具体的な到達課題は，表現可能函手の自然変換を実際に計算する．
+
+\section{圏とその例}
+
+集合・写像・合成の基本事項を前提とする．
+本稿では集合の大きさに関する問題を避けるため，
+特に断らない限り圏は\emph{小圏}であるとする．
+すなわち対象全体と射全体が集合をなす．
+適切な集合論的宇宙を固定すれば，
+大きな圏に対しても同じ形式の定理が成り立つ．
+
+\begin{definition}
+\emph{圏} $\mathcal C$ とは，対象の集合
+$\operatorname{Ob}(\mathcal C)$ と，各二対象 $A,B$ に対する
+射の集合 $\operatorname{Hom}_{\mathcal C}(A,B)$，
+射の合成
+\[
+ \operatorname{Hom}_{\mathcal C}(B,C)
+ \times\operatorname{Hom}_{\mathcal C}(A,B)
+ \longrightarrow\operatorname{Hom}_{\mathcal C}(A,C)
+\]
+および各対象の恒等射 $1_A$ からなり，
+任意の合成可能な射について
+\[
+ h\circ(g\circ f)=(h\circ g)\circ f,\qquad
+ f\circ1_A=f=1_B\circ f
+\]
+を満たすものをいう．
+\end{definition}
+
+\begin{example}[集合・群・順序集合]
+集合の圏 $\mathbf{Set}$ は集合を対象，写像を射とする．
+群の圏 $\mathbf{Grp}$ は群を対象，群準同型を射とする．
+順序集合 $(P,\le)$ において，
+$p\le q$ のときに限り $p$ から $q$ への射をただ一つ置くと，
+圏が得られる．
+\end{example}
+\begin{proof}
+写像と群準同型の合成は結合的であり，
+恒等写像は各圏の恒等射となる．
+順序集合の場合は反射律から恒等射が存在し，
+推移律によって合成が定まる．
+同じ始点・終点を持つ射は高々一つなので，
+結合律と単位律は自動的に成立する．
+\end{proof}
+
+\begin{definition}
+圏 $\mathcal C$ の\emph{反対圏} $\mathcal C^{\mathrm{op}}$ は，
+対象をそのままにし
+\[
+ \operatorname{Hom}_{\mathcal C^{\mathrm{op}}}(A,B)
+ =\operatorname{Hom}_{\mathcal C}(B,A)
+\]
+と定め，合成を逆向きにした圏である．
+\end{definition}
+
+\begin{proposition}\label{prop:op}
+$\mathcal C^{\mathrm{op}}$ は圏であり，
+$(\mathcal C^{\mathrm{op}})^{\mathrm{op}}=\mathcal C$ である．
+\end{proposition}
+\begin{proof}
+$\mathcal C^{\mathrm{op}}$ の射 $f:A\to B$ は
+$\mathcal C$ の射 $f:B\to A$ である．
+合成 $g\circ_{\mathrm{op}}f$ を
+$\mathcal C$ では $f\circ g$ と定めると，
+元の圏の合成の結合律・単位律から
+反対圏の公理が従う．二度向きを逆にすると元に戻る．
+\end{proof}
+
+\section{函手}
+
+\begin{definition}
+圏 $\mathcal C,\mathcal D$ の間の\emph{共変函手}
+$F:\mathcal C\to\mathcal D$ とは，
+対象 $A$ に対象 $F(A)$ を，
+射 $f:A\to B$ に射 $F(f):F(A)\to F(B)$ を対応させ，
+\[
+ F(1_A)=1_{F(A)},\qquad
+ F(g\circ f)=F(g)\circ F(f)
+\]
+を満たすものをいう．
+$\mathcal C^{\mathrm{op}}\to\mathcal D$ なる共変函手を
+$\mathcal C$ から $\mathcal D$ への\emph{反変函手}という．
+\end{definition}
+
+\begin{example}[冪集合函手]
+集合 $A$ に冪集合 $\mathcal P(A)$ を対応させ，
+写像 $f:A\to B$ に逆像写像
+$f^{-1}:\mathcal P(B)\to\mathcal P(A)$ を対応させると，
+$\mathbf{Set}$ から $\mathbf{Set}$ への反変函手となる．
+\end{example}
+\begin{proof}
+$(1_A)^{-1}=1_{\mathcal P(A)}$ であり，
+$(g\circ f)^{-1}=f^{-1}\circ g^{-1}$ が成立するため
+反変函手の二つの公理を満たす．
+\end{proof}
+
+\begin{proposition}[函手の合成]\label{prop:functor-comp}
+$F:\mathcal C\to\mathcal D$ と
+$G:\mathcal D\to\mathcal E$ が共変函手なら，
+$G\circ F:\mathcal C\to\mathcal E$ は共変函手である．
+恒等対応 $1_{\mathcal C}:\mathcal C\to\mathcal C$ も函手である．
+\end{proposition}
+\begin{proof}
+各対象 $A$ に対して
+\[
+ (G\circ F)(1_A)=G(F(1_A))
+ =G(1_{F(A)})=1_{G(F(A))}
+\]
+である．
+合成可能な射 $f,g$ に対して
+\begin{align*}
+ (G\circ F)(g\circ f)
+ &=G(F(g)\circ F(f))\\
+ &=G(F(g))\circ G(F(f))
+\end{align*}
+となる．恒等対応については各函手の公理が
+圏の恒等射と合成の定義から成立する．
+\end{proof}
+
+\section{自然変換と函手圏}
+
+\begin{definition}
+函手 $F,G:\mathcal C\to\mathcal D$ の間の
+\emph{自然変換} $\alpha:F\Rightarrow G$ とは，
+各対象 $A$ に射
+$\alpha_A:F(A)\to G(A)$ を対応させ，
+任意の射 $f:A\to B$ に対して
+\[
+ G(f)\circ\alpha_A
+ =\alpha_B\circ F(f)
+ \tag{*}
+\]
+を満たすものをいう．
+各 $\alpha_A$ が同型射である自然変換を
+\emph{自然同型}という．
+\end{definition}
+
+\begin{proposition}[自然同型の特徴づけ]\label{prop:nat-iso}
+自然変換 $\alpha:F\Rightarrow G$ が自然同型であることと，
+自然変換 $\beta:G\Rightarrow F$ で
+$\beta\alpha=1_F$，$\alpha\beta=1_G$ を満たすものが
+存在することは同値である．
+\end{proposition}
+\begin{proof}
+各成分 $\alpha_A$ が同型なら
+$\beta_A=\alpha_A^{-1}$ と定める．
+自然性の式 (*) を両辺から逆写像で挟むと
+\[
+ F(f)\circ\alpha_A^{-1}
+ =\alpha_B^{-1}\circ G(f)
+\]
+が従うから $\beta$ も自然変換である．
+$\beta_A\alpha_A=1_{F(A)}$ と
+$\alpha_A\beta_A=1_{G(A)}$ は各対象で成立する．
+逆に $\alpha$ が自然変換として逆を持つなら，
+各成分で互いに逆な射が存在するため
+$\alpha_A$ は同型射である．
+\end{proof}
+
+\begin{definition}
+小圏 $\mathcal C$ と圏 $\mathcal D$ に対して，
+函手を対象，自然変換を射とする圏を
+$[\mathcal C,\mathcal D]$ と書き，\emph{函手圏}という．
+自然変換の合成は各成分ごとの合成で定める．
+\end{definition}
+
+\begin{proposition}\label{prop:functor-category}
+函手圏における自然変換の合成は自然変換であり，
+恒等自然変換とともに圏の公理を満たす．
+\end{proposition}
+\begin{proof}
+$\alpha:F\Rightarrow G$，
+$\beta:G\Rightarrow H$ とすると，
+任意の $f:A\to B$ について
+\begin{align*}
+ H(f)\circ(\beta_A\circ\alpha_A)
+ &=\beta_B\circ G(f)\circ\alpha_A\\
+ &=\beta_B\circ\alpha_B\circ F(f).
+\end{align*}
+従って各成分 $\beta_A\alpha_A$ は自然変換を定める．
+結合律と恒等律は $\mathcal D$ の射の合成について
+各対象ごとに成立する．
+\end{proof}
+
+\section{Hom函手と表現可能函手}
+
+\begin{definition}
+$\mathcal C$ を局所小圏とし，$A\in\mathcal C$ とする．
+\emph{共変Hom函手} $h^A:\mathcal C\to\mathbf{Set}$ を
+\[
+ h^A(B)=\operatorname{Hom}_{\mathcal C}(A,B),\qquad
+ h^A(f)(u)=f\circ u
+\]
+によって定める．
+同様に\emph{反変Hom函手}
+$h_A:\mathcal C^{\mathrm{op}}\to\mathbf{Set}$ を
+\[
+ h_A(B)=\operatorname{Hom}_{\mathcal C}(B,A),\qquad
+ h_A(f)(u)=u\circ f
+\]
+によって定める．
+函手 $F:\mathcal C\to\mathbf{Set}$ が
+ある $A$ について $h^A$ と自然同型なら
+$F$ は\emph{表現可能}であるという．
+\end{definition}
+
+\begin{proposition}\label{prop:hom-functor}
+$h^A$ および $h_A$ は函手である．
+\end{proposition}
+\begin{proof}
+共変の場合，任意の $u:A\to B$ について
+$h^A(1_B)(u)=1_B\circ u=u$ である．
+$f:B\to C$，$g:C\to D$ に対して
+\[
+ h^A(g\circ f)(u)=(g\circ f)\circ u
+ =g\circ(f\circ u)
+ =h^A(g)(h^A(f)(u))
+\]
+だから函手の公理が成立する．
+反変の場合にも合成が逆順になることに注意して
+結合律から同じ主張が従う．
+\end{proof}
+
+\begin{example}[自由群と表現可能性]
+群 $G$ の台集合を返す忘却函手
+$U:\mathbf{Grp}\to\mathbf{Set}$ は，
+自然同型
+\[
+ U(G)\cong\operatorname{Hom}_{\mathbf{Grp}}(\mathbb Z,G)
+\]
+によって表現可能である．
+\end{example}
+\begin{proof}
+準同型 $\varphi:\mathbb Z\to G$ は
+$\varphi(1)\in G$ によって一意に定まる．
+任意の $g\in G$ に対して
+$\varphi_g(n)=g^n$ と定めれば準同型となるから，
+$\varphi\mapsto\varphi(1)$ は全単射である．
+群準同型 $f:G\to H$ に対して
+$(f\circ\varphi)(1)=f(\varphi(1))$ なので，
+この全単射は $G$ に関して自然である．
+\end{proof}
+
+\section{米田の補題}
+
+\begin{theorem}[米田の補題]\label{thm:yoneda}
+$\mathcal C$ を局所小圏，$A\in\mathcal C$，
+$F:\mathcal C\to\mathbf{Set}$ を共変函手とする．
+このとき
+\[
+ \operatorname{Nat}(h^A,F)\longrightarrow F(A),
+ \qquad \alpha\longmapsto\alpha_A(1_A)
+\]
+は全単射である．
+逆写像は $x\in F(A)$ に対して
+\[
+ \alpha^x_B:
+ \operatorname{Hom}_{\mathcal C}(A,B)\to F(B),
+ \qquad
+ \alpha^x_B(f)=F(f)(x)
+ \tag{Y}
+\]
+によって与えられる．
+この全単射は $F$ に関して自然であり，
+$A$ に関しても適切な反変の意味で自然である．
+\end{theorem}
+\begin{proof}
+まず $x\in F(A)$ を固定する．
+式 (Y) によって各対象 $B$ に写像 $\alpha^x_B$ が定まる．
+$f:A\to B$ と $g:B\to C$ を任意に取ると，
+\[
+ \alpha^x_C(g\circ f)
+ =F(g\circ f)(x)
+ =F(g)(F(f)(x))
+ =F(g)(\alpha^x_B(f)).
+\]
+よって $\alpha^x:h^A\Rightarrow F$ は自然変換である．
+また
+\[
+ \alpha^x_A(1_A)=F(1_A)(x)=x
+\]
+なので，写像 $x\mapsto\alpha^x$ は
+定理の写像の右逆である．
+
+逆に $\alpha:h^A\Rightarrow F$ を任意に取って
+$x=\alpha_A(1_A)$ と置く．
+$f:A\to B$ の自然性の図式から
+\[
+ \alpha_B(f)
+ =\alpha_B(h^A(f)(1_A))
+ =F(f)(\alpha_A(1_A))
+ =F(f)(x)
+ =\alpha^x_B(f)
+\]
+となる．
+これは全ての $B$ と $f$ で成立するので
+$\alpha=\alpha^x$ である．
+従って $\alpha\mapsto\alpha_A(1_A)$ は単射でもあり，
+逆写像が式 (Y) で与えられる．
+
+次に函手の自然性を示す．
+$\eta:F\Rightarrow G$ を自然変換とする．
+任意の $\alpha:h^A\Rightarrow F$ について
+\[
+ (\eta\circ\alpha)_A(1_A)
+ =\eta_A(\alpha_A(1_A))
+\]
+なので，
+$\operatorname{Nat}(h^A,F)\to F(A)$ と
+$\operatorname{Nat}(h^A,G)\to G(A)$ の間の四角形は
+可換である．
+対象 $A$ に関する自然性も示す．
+射 $u:A'\to A$ に対応する自然変換
+$h^A\to h^{A'}$ は
+$\tau_B(f)=f\circ u$ である．
+$\alpha:h^{A'}\Rightarrow F$ に対して
+\[
+ (\alpha\circ\tau)_A(1_A)
+ =\alpha_A(u)
+ =F(u)(\alpha_{A'}(1_{A'}))
+\]
+となり，$A$ に関する自然性を得る．
+\end{proof}
+
+\begin{corollary}[反変版の米田の補題]\label{cor:yoneda-contra}
+$F:\mathcal C^{\mathrm{op}}\to\mathbf{Set}$ を反変函手，
+$A\in\mathcal C$ とする．
+このとき
+\[
+ \operatorname{Nat}(h_A,F)\cong F(A)
+\]
+が自然な全単射として成立する．
+\end{corollary}
+\begin{proof}
+定理\ref{thm:yoneda}を反対圏
+$\mathcal C^{\mathrm{op}}$ に適用する．
+この圏における共変Hom函手
+$\operatorname{Hom}_{\mathcal C^{\mathrm{op}}}(A,-)$ は，
+$\mathcal C$ における
+$\operatorname{Hom}_{\mathcal C}(-,A)=h_A$ に等しい．
+\end{proof}
+
+\section{米田埋め込み}
+
+\begin{definition}
+函手
+\[
+ Y:\mathcal C\longrightarrow
+ [\mathcal C^{\mathrm{op}},\mathbf{Set}]
+\]
+を
+\[
+ Y(A)=h_A=\operatorname{Hom}_{\mathcal C}(-,A)
+\]
+と置くことによって定める．
+射 $f:A\to B$ に対して
+$Y(f):h_A\Rightarrow h_B$ の $X$ 成分を
+\[
+ Y(f)_X(g)=f\circ g,\qquad g:X\to A
+\]
+とする．これを\emph{米田埋め込み}という．
+\end{definition}
+
+\begin{lemma}\label{lem:yoneda-functor}
+$Y$ は共変函手である．
+\end{lemma}
+\begin{proof}
+$u:X'\to X$ と $g:X\to A$ に対して
+\[
+ Y(f)_{X'}(g\circ u)
+ =f\circ(g\circ u)
+ =(f\circ g)\circ u
+\]
+なので各 $Y(f)$ は自然変換である．
+任意の対象 $A$ について
+$Y(1_A)$ は各成分で恒等写像である．
+さらに $A\xrightarrow{f}B\xrightarrow{g}C$ に対して
+\[
+ Y(g\circ f)_X(h)=(g\circ f)\circ h
+ =Y(g)_X(Y(f)_X(h))
+\]
+だから $Y(g\circ f)=Y(g)\circ Y(f)$ である．
+\end{proof}
+
+\begin{theorem}[米田埋め込みの充満忠実性]\label{thm:fully-faithful}
+任意の $A,B\in\mathcal C$ について
+\[
+ \operatorname{Hom}_{\mathcal C}(A,B)
+ \longrightarrow\operatorname{Nat}(h_A,h_B),
+ \qquad f\longmapsto Y(f)
+\]
+は全単射である．
+従って $Y$ は充満忠実な函手である．
+\end{theorem}
+\begin{proof}
+反変版の米田の補題（系\ref{cor:yoneda-contra}）に
+$F=h_B$ を適用すると
+\[
+ \operatorname{Nat}(h_A,h_B)
+ \cong h_B(A)
+ =\operatorname{Hom}_{\mathcal C}(A,B)
+\]
+を得る．
+この全単射は $\alpha\mapsto\alpha_A(1_A)$ であり，
+$Y(f)_A(1_A)=f\circ1_A=f$ となる．
+従ってその逆写像は $f\mapsto Y(f)$ に等しい．
+\end{proof}
+
+\begin{corollary}[対象は射の振る舞いから決定される]
+\label{cor:objects}
+$A,B\in\mathcal C$ について，
+$h_A$ と $h_B$ が自然同型であることと
+$A$ と $B$ が同型であることは同値である．
+\end{corollary}
+\begin{proof}
+$f:A\to B$ が同型射なら
+$Y(f)$ の各成分は全単射であり，
+$Y(f^{-1})$ が逆自然変換となる．
+逆に自然同型 $\alpha:h_A\Rightarrow h_B$ があれば，
+定理\ref{thm:fully-faithful}によって
+$\alpha=Y(f)$，$\alpha^{-1}=Y(g)$
+となる射 $f:A\to B$，$g:B\to A$ が存在する．
+\[
+ Y(gf)=Y(g)Y(f)=1_{h_A}=Y(1_A)
+\]
+であり，忠実性から $gf=1_A$ となる．
+同様に $fg=1_B$ なので $f$ は同型射である．
+\end{proof}
+
+\begin{proposition}[普遍元による表現可能性の判定]
+\label{prop:universal-element}
+共変函手 $F:\mathcal C\to\mathbf{Set}$ が
+対象 $A$ によって表現可能であるための必要十分条件は，
+ある元 $u\in F(A)$ が存在して，
+任意の対象 $B$ と元 $x\in F(B)$ に対して
+\[
+ F(f)(u)=x
+\]
+を満たす射 $f:A\to B$ がただ一つ存在することである．
+\end{proposition}
+\begin{proof}
+$F\cong h^A$ とする．
+自然同型 $\beta:h^A\Rightarrow F$ を取り，
+$u=\beta_A(1_A)$ と置く．
+米田の補題の証明から
+$\beta_B(f)=F(f)(u)$ である．
+$\beta_B$ は全単射なので，任意の $x\in F(B)$ に対し
+上式を満たす $f$ が一意に存在する．
+逆にそのような $u$ があるなら
+\[
+ \beta_B:\operatorname{Hom}(A,B)\to F(B),
+ \qquad f\mapsto F(f)(u)
+\]
+は各 $B$ で全単射である．
+定理\ref{thm:yoneda}の証明から $\beta$ は自然変換であり，
+命題\ref{prop:nat-iso}によって自然同型となる．
+従って $F$ は表現可能である．
+\end{proof}
+
+\begin{remark}
+米田の補題の核心は，自然変換
+$h^A\Rightarrow F$ の全ての成分が
+ただ一つの元 $\alpha_A(1_A)$ により決定されることにある．
+この事実は，普遍性を満たす対象の一意性や，
+極限・随伴函手の構成を統一的に理解する基礎となる．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{米田の補題の具体例．}
+\begin{proposition}
+集合の圏 $\mathbf{Set}$ において
+$\operatorname{Nat}(\operatorname{Hom}(A,-),
+\operatorname{Hom}(B,-))\cong\operatorname{Hom}(B,A)$
+が自然に成立する．
+\end{proposition}
+\begin{proof}
+写像 $u:B\to A$ に対し，
+各集合 $X$ で
+$\eta_X:\operatorname{Hom}(A,X)\to
+\operatorname{Hom}(B,X)$ を
+$\eta_X(f)=f\circ u$ と定める．
+任意の $g:X\to Y$ について
+$g\circ(f\circ u)=(g\circ f)\circ u$ なので
+$\eta$ は自然変換である．
+逆に自然変換 $\eta$ に対して
+$u=\eta_A(\mathrm{id}_A):B\to A$ と置く．
+自然性を $f:A\to X$ に適用すると
+$\eta_X(f)=f\circ u$ となるので
+両対応は逆である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$A=\{0,1\}$，$B=\{*\}$ のとき
+上記自然変換は何個あるか．
+\par\noindent\textbf{解答．}
+$B\to A$ の写像は2通りであり，
+それぞれ $A$ のどちらの座標を選ぶかに対応する．
+\end{document}
