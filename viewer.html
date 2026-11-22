@@ -2,7 +2,7 @@
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="擬コンラット数学ノートの公開PDFをサイト内で閲覧できます。">
 <title>PDF閲覧 | 擬コンラット</title>
-<link rel="stylesheet" href="./assets/style.css"><script defer src="./assets/viewer.js"></script></head>
+<link rel="stylesheet" href="./assets/style.css"><script defer src="./assets/pdf-pages.js"></script><script defer src="./assets/viewer.js"></script></head>
 <body><div class="shell">
 <header><a class="brand" href="./"><span>∈</span> 擬コンラット</a><small>MATHEMATICAL NOTES · PDF READER</small></header>
 <main class="viewerMain">
@@ -10,8 +10,8 @@
 <section class="viewerDocument" id="viewerDocument" hidden>
   <div class="viewerHeading"><div><div class="eyebrow">PUBLIC MATHEMATICAL NOTE · PDF</div><h1 id="viewerTitle">ノート本文</h1></div>
   <div class="pdfViewerActions"><a id="viewerPdfLink" href="#" target="_blank" rel="noopener noreferrer">別画面でPDFを開く ↗</a><a id="viewerDownloadLink" href="#" download>PDFを保存 ↓</a><a id="viewerTexLink" href="#" target="_blank" rel="noopener noreferrer">pLaTeX原稿 ↗</a></div></div>
-  <iframe id="viewerFrame" class="sitePdfFrame viewerFrame" title="公開数学ノートPDF" loading="eager"></iframe>
-  <p class="pdfPreviewHelp">埋め込み表示はブラウザのPDF閲覧機能を利用しています。表示されない場合は「別画面でPDFを開く」を選んでください。公開初稿は数学的な最終承認を意味しません。</p>
+  <div id="viewerPages" class="pdfPagesContainer" aria-label="数学ノートのページ画像"></div>
+  <p class="pdfPreviewHelp">PDFの各ページを画像として表示しています。表示されない場合は「別画面でPDFを開く」を選んでください。公開初稿は数学的な最終承認を意味しません。</p>
 </section>
 <p id="viewerStatus" role="status">PDFを読み込んでいます…</p>
 </main>
