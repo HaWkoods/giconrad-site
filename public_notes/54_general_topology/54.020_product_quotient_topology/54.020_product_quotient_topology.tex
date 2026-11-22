@@ -1,0 +1,255 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{積位相・商位相と普遍性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，積位相・商位相の定義と普遍性．
+本稿の具体的な到達課題は，商空間の位相を具体的に記述し，連続性を商写像で検証する．
+
+
+\section{始位相と終位相}
+\begin{definition}
+集合 $X$ と位相空間族 $(Y_i)_{i\in I}$ および写像
+$f_i:X\to Y_i$ に対し，
+全ての $f_i^{-1}(U)$（$U$ は $Y_i$ の開集合）
+で生成される $X$ の位相を始位相という．
+逆に位相空間族 $(X_i)$ と集合 $Y$ および
+$g_i:X_i\to Y$ に対し，
+\[
+ \mathcal T_Y=\{V\subset Y:g_i^{-1}(V)\text{ は全ての }i
+ \text{ で開}\}
+\]
+を終位相という．
+\end{definition}
+\begin{proposition}[始位相の普遍性]\label{prop:initial}
+$X$ に始位相を入れると，
+任意の位相空間 $Z$ と写像 $h:Z\to X$ に対して
+\[
+ h\text{ は連続}\quad\Longleftrightarrow\quad
+ f_i\circ h\text{ は全て連続}
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+必要性は $f_i$ が始位相の定義で連続となることと合成の連続性による．
+逆に，各 $f_i\circ h$ が連続なら
+$h^{-1}(f_i^{-1}(U))=(f_i\circ h)^{-1}(U)$ は開である．
+始位相の準基底の逆像が開なので $h$ は連続である．
+\end{proof}
+\begin{proposition}[終位相の普遍性]\label{prop:final}
+$Y$ に終位相を入れると，
+任意の位相空間 $Z$ と写像 $h:Y\to Z$ に対して
+\[
+ h\text{ は連続}\quad\Longleftrightarrow\quad
+ h\circ g_i\text{ は全て連続}
+\]
+となる．
+\end{proposition}
+\begin{proof}
+必要性は合成の連続性による．
+逆に開集合 $W\subset Z$ について
+$g_i^{-1}(h^{-1}(W))=(h\circ g_i)^{-1}(W)$ は全て開だから，
+終位相の定義から $h^{-1}(W)$ は開である．
+\end{proof}
+\section{部分空間・直積・直和}
+\begin{definition}
+$A\subset X$ に対し
+$\{A\cap U:U\subset X\text{ 開}\}$ を相対位相という．
+位相空間族 $(X_i)$ の集合としての積
+$\prod_iX_i$ に，座標射影 $\pi_i$ に関する始位相を入れたものを
+積空間という．
+\end{definition}
+\begin{lemma}[積位相の基底]\label{lem:productbase}
+$\prod_iX_i$ の積位相は
+\[
+ \prod_iU_i,\qquad
+ U_i\subset X_i\text{ 開},\quad U_i=X_i\text{ を除く添字は有限}
+\]
+を基底とする．
+\end{lemma}
+\begin{proof}
+始位相の準基底は $\pi_i^{-1}(U_i)$ である．
+有限個の準基底元を交叉すると表示した形となり，
+逆に表示した形は有限個の準基底元の交叉である．
+\end{proof}
+\begin{proposition}[直積の普遍性]
+$f:Z\to\prod_iX_i$ は，
+全ての座標 $\pi_i\circ f$ が連続であるとき，かつそのときに限り連続である．
+\end{proposition}
+\begin{proof}
+積位相は射影に関する始位相なので
+命題\ref{prop:initial}を適用する．
+\end{proof}
+\begin{definition}
+集合としての互いに素な和 $\coprod_iX_i$ に，
+$U$ が開であることと各 $X_i$ への制限 $U\cap X_i$ が開であることが
+同値となる位相を入れたものを位相的直和という．
+\end{definition}
+\begin{proposition}[直和の普遍性]
+$f:\coprod_iX_i\to Z$ が連続であることと，
+各包含写像 $\iota_i:X_i\to\coprod_iX_i$ との合成
+$f\circ\iota_i$ が連続であることは同値である．
+\end{proposition}
+\begin{proof}
+直和の位相は各 $\iota_i$ に関する終位相であるから
+命題\ref{prop:final}より従う．
+\end{proof}
+\section{商位相と貼り合わせ}
+\begin{definition}
+全射 $q:X\to Y$ に対し
+$V\subset Y$ が開であることと $q^{-1}(V)$ が開であることが
+同値となる位相を $Y$ に入れる．これを商位相といい，
+$q$ を商写像という．
+\end{definition}
+\begin{theorem}[商写像による降下]\label{thm:quotient}
+$q:X\to Y$ を商写像とし，$f:X\to Z$ を連続写像とする．
+$f$ が $q$ の各ファイバー上定数であることと，
+連続写像 $\bar f:Y\to Z$ が存在して
+$f=\bar f\circ q$ となることは同値である．
+その場合 $\bar f$ は一意である．
+\end{theorem}
+\begin{proof}
+$f$ が各ファイバー上定数なら
+$\bar f(q(x))=f(x)$ と置いてwell-definedな写像を得る．
+$Z$ の開集合 $W$ に対して
+$q^{-1}(\bar f^{-1}(W))=f^{-1}(W)$ は開なので，
+商位相の定義から $\bar f^{-1}(W)$ は開である．
+全射性よりこの写像は一意である．
+逆に因子分解があれば同じファイバー上の二点は同じ像を持つ．
+\end{proof}
+\begin{lemma}[開全射・閉全射は商写像]
+連続全射 $q:X\to Y$ が開写像または閉写像なら商写像である．
+\end{lemma}
+\begin{proof}
+$V\subset Y$ が $q^{-1}(V)$ を開とすると，
+$q$ が開写像なら $V=q(q^{-1}(V))$ は開である．
+閉写像の場合は
+$Y\setminus V=q(X\setminus q^{-1}(V))$ が閉なので $V$ は開である．
+\end{proof}
+\begin{theorem}[貼り合わせ補題]\label{thm:pasting}
+$X=\bigcup_{i\in I}U_i$ を開被覆とし，
+連続写像 $f_i:U_i\to Y$ が重なりで一致するとする．
+このとき一意の連続写像 $f:X\to Y$ が存在して
+$f|_{U_i}=f_i$ を満たす．
+有限個の閉集合 $F_1,\dots,F_m$ による被覆でも同じ結論が成立する．
+\end{theorem}
+\begin{proof}
+写像 $f$ は点ごとに $f(x)=f_i(x)$ と置けば一致条件から定まる．
+開被覆なら $f^{-1}(V)\cap U_i=f_i^{-1}(V)$ が
+$U_i$ の開集合なので $X$ でも開であり，
+$f^{-1}(V)=\bigcup_i(f^{-1}(V)\cap U_i)$ は開となる．
+有限閉被覆なら閉集合 $C\subset Y$ に対して
+$f^{-1}(C)\cap F_i=f_i^{-1}(C)$ は $F_i$ で閉，
+従って $X$ で閉である．
+有限和は閉であるから $f^{-1}(C)$ は閉となる．
+\end{proof}
+\section{例：円周の商表示}
+\begin{proposition}
+$[0,1]$ の両端を同一視した商空間は単位円周
+$S^1=\{z\in\mathbb C:|z|=1\}$ と同相である．
+\end{proposition}
+\begin{proof}
+$f:[0,1]\to S^1$，$f(t)=e^{2\pi it}$ は連続全射であり，
+$f(s)=f(t)$ は $s=t$ または $\{s,t\}=\{0,1\}$
+と同値である．よって商集合への全単射を誘導する．
+区間はコンパクトで円周はHausdorffなので，
+連続全単射は同相である：閉集合の像はコンパクトゆえ閉となり，
+逆写像が連続となるためである．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{区間の端点の同一視から円周を得る．}
+\begin{proposition}[端点の貼り合わせ]
+$[0,1]$ の $0\sim1$ を同一視して得る商空間
+$Q=[0,1]/\sim$ は円周 $S^1$ と同相である．
+\end{proposition}
+\begin{proof}
+$f:[0,1]\to S^1$ を $f(t)=e^{2\pi it}$ と置く．
+$f(0)=f(1)$ だから商写像
+$q:[0,1]\to Q$ の普遍性により
+$\bar f:Q\to S^1$ が存在して $f=\bar f\circ q$ となり，
+$\bar f$ は連続である．
+指数関数の周期性から $\bar f$ は全単射である．
+$Q$ はコンパクト，$S^1$ はHausdorffなので
+連続全単射 $\bar f$ は同相写像である．
+\end{proof}
+\begin{remark}
+商位相を定めるだけでは，商空間が図形として
+何に対応するかはまだ判明しない．
+具体的な連続全単射とコンパクト性・Hausdorff性を
+組み合わせることが重要である．
+\end{remark}
+\noindent\textbf{到達確認．}
+$[0,2\pi]$ の両端を同一視した商空間が
+$S^1$ と同相であることを証明せよ．
+\par\noindent\textbf{解答．}
+$t\mapsto e^{it}$ は連続で両端で一致するため
+商写像を通じて連続全単射を誘導する．
+定義域の商空間はコンパクトで値域はHausdorffなので同相である．
+\end{document}

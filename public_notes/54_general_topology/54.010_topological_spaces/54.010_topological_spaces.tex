@@ -1,0 +1,276 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{位相空間と連続写像}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，集合論，位相の開集合による定義．
+本稿の具体的な到達課題は，与えられた集合族が位相を成すかを検証し，閉包と連続写像を具体的に判定する．
+
+
+\section{位相の定義}
+集合 $X$ を固定する．
+\begin{definition}
+部分集合族 $\mathcal T\subset\mathcal P(X)$ が位相であるとは，
+$\varnothing,X\in\mathcal T$，有限交叉に関して閉じ，
+任意の和集合に関して閉じることをいう．
+$(X,\mathcal T)$ を位相空間，$\mathcal T$ の元を開集合という．
+補集合が開である集合を閉集合という．
+\end{definition}
+\begin{proposition}[閉集合の公理]
+閉集合全体 $\mathcal F$ は $\varnothing,X$ を含み，
+任意の共通部分および有限和集合に関して閉じる．
+逆にこの条件を満たす部分集合族の元を閉集合とすると
+その補集合全体は位相をなす．
+\end{proposition}
+\begin{proof}
+De Morganの法則
+$X\setminus\bigcup_iA_i=\bigcap_i(X\setminus A_i)$ と
+$X\setminus\bigcap_i A_i=\bigcup_i(X\setminus A_i)$
+によって，開集合の三公理が閉集合に関する三条件へ
+ちょうど移り合う．
+\end{proof}
+\begin{example}
+離散位相 $\mathcal P(X)$ と密着位相
+$\{\varnothing,X\}$ はいずれも位相である．
+\end{example}
+\begin{proof}
+前者は全ての部分集合を含むので閉包条件は自明である．
+後者の集合の和および有限交叉は再び
+$\varnothing$ または $X$ である．
+\end{proof}
+\section{基底と準基底}
+\begin{definition}
+$\mathcal B\subset\mathcal P(X)$ が基底であるとは，
+$X=\bigcup\mathcal B$ であり，
+$x\in B_1\cap B_2$（$B_i\in\mathcal B$）なら
+$x\in B_3\subset B_1\cap B_2$ を満たす
+$B_3\in\mathcal B$ が存在することをいう．
+$\mathcal S\subset\mathcal P(X)$ の有限交叉全体が基底をなすとき
+$\mathcal S$ を準基底という．空交叉は $X$ とする．
+\end{definition}
+\begin{theorem}[基底から生成される位相]\label{thm:basis}
+基底 $\mathcal B$ の元の任意の和集合全体 $\mathcal T_{\mathcal B}$ は
+位相をなす．また $\mathcal B$ を含む最小の位相である．
+\end{theorem}
+\begin{proof}
+$X=\bigcup\mathcal B$ および空和から
+$X,\varnothing\in\mathcal T_{\mathcal B}$ である．
+和集合の和集合は再び和集合なので任意和で閉じる．
+$U=\bigcup_iB_i$，$V=\bigcup_jC_j$ とすると
+$U\cap V=\bigcup_{i,j}(B_i\cap C_j)$ である．
+各 $B_i\cap C_j$ は基底公理から基底元の和集合となるので
+$U\cap V$ も基底元の和集合である．
+任意の位相が $\mathcal B$ を含めばその全ての和を含むため
+最小性が従う．
+\end{proof}
+\begin{corollary}[基底による連続性判定]
+$f:X\to Y$，$\mathcal B$ を $Y$ の位相の基底とする．
+$f$ が連続であることと
+$f^{-1}(B)$ が任意の $B\in\mathcal B$ について開であることは同値．
+\end{corollary}
+\begin{proof}
+必要性は連続性の定義による．十分性では任意の開集合
+$V=\bigcup_iB_i$ に対し
+$f^{-1}(V)=\bigcup_i f^{-1}(B_i)$ は開となる．
+\end{proof}
+\section{近傍・内部・閉包}
+\begin{definition}
+$A\subset X$ に対し
+\[
+ A^\circ=\bigcup\{U\subset A:U\text{ は開}\},\qquad
+ \overline A=\bigcap\{F\supset A:F\text{ は閉}\}.
+\]
+$N\subset X$ が $x$ の近傍であるとは
+$x\in U\subset N$ となる開集合 $U$ が存在することをいう．
+\end{definition}
+\begin{proposition}[閉包の近傍による特徴づけ]\label{prop:closure}
+$x\in\overline A$ と，
+$x$ の任意の開近傍 $U$ が $A$ と交わることは同値である．
+\end{proposition}
+\begin{proof}
+ある開近傍 $U$ が $A$ と交わらなければ，
+$X\setminus U$ は $A$ を含む閉集合なので
+$\overline A\subset X\setminus U$，従って
+$x\notin\overline A$ である．
+逆に $x\notin\overline A$ なら
+$\overline A$ は閉であり
+$X\setminus\overline A$ は $x$ の開近傍で
+$A$ と交わらない．
+\end{proof}
+\begin{proposition}[Kuratowskiの閉包公理]
+任意の $A,B\subset X$ に対し
+\[
+ \overline\varnothing=\varnothing,\quad
+ A\subset\overline A,\quad
+ \overline{\overline A}=\overline A,\quad
+ \overline{A\cup B}=\overline A\cup\overline B
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+初めの三式は閉包が最小の閉集合であることから従う．
+有限個の閉集合の和は閉なので
+$\overline A\cup\overline B$ は $A\cup B$ を含む閉集合であり，
+$\overline{A\cup B}\subset\overline A\cup\overline B$．
+一方 $A,B\subset A\cup B$ から
+$\overline A,\overline B\subset\overline{A\cup B}$ を得る．
+\end{proof}
+\section{連続写像}
+\begin{definition}
+位相空間 $X,Y$ の写像 $f:X\to Y$ が連続であるとは
+任意の $Y$ の開集合 $V$ に対し $f^{-1}(V)$ が開であることをいう．
+全単射 $f$ と $f^{-1}$ がともに連続なら同相写像という．
+\end{definition}
+\begin{theorem}[連続性の同値条件]\label{thm:continuity}
+$f:X\to Y$ について，次は同値である．
+\begin{enumerate}
+\item $f$ は連続である．
+\item 任意の閉集合 $F\subset Y$ に対して $f^{-1}(F)$ は閉である．
+\item 任意の $A\subset X$ に対し $f(\overline A)\subset\overline{f(A)}$．
+\item 任意の $B\subset Y$ に対し
+ $\overline{f^{-1}(B)}\subset f^{-1}(\overline B)$．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) と (2) の同値性は逆像と補集合が可換なことによる．
+(2) なら $f^{-1}(\overline{f(A)})$ は $A$ を含む閉集合なので
+$\overline A\subset f^{-1}(\overline{f(A)})$．よって (3) を得る．
+(3) に $A=f^{-1}(B)$ を代入すると
+$f(A)\subset B$ から (4) が従う．
+(4) で $B=F$ を閉集合とすると
+$\overline{f^{-1}(F)}\subset f^{-1}(F)$ であり，逆の包含は一般に成り立つ．
+従って逆像は閉となり (2) を得る．
+\end{proof}
+\begin{proposition}[連続写像の合成]
+連続写像 $f:X\to Y$ と $g:Y\to Z$ の合成 $g\circ f$ は連続である．
+\end{proposition}
+\begin{proof}
+開集合 $W\subset Z$ に対して
+$(g\circ f)^{-1}(W)=f^{-1}(g^{-1}(W))$ であり，
+右辺は二度の連続性によって開である．
+\end{proof}
+\section{収束の位相的意味}
+\begin{definition}
+有向集合 $D$ からの写像 $(x_d)_{d\in D}$ をネットという．
+ネットが $x$ に収束するとは，$x$ の各近傍 $U$ に対し
+ある $d_0$ 以降で $x_d\in U$ となることをいう．
+\end{definition}
+\begin{proposition}[連続性とネット]
+$f:X\to Y$ が連続であることと，
+$X$ の任意の収束ネット $x_d\to x$ に対して
+$f(x_d)\to f(x)$ となることは同値である．
+\end{proposition}
+\begin{proof}
+連続なら $f(x)$ の近傍 $V$ に対して
+$f^{-1}(V)$ は $x$ の近傍なので結論を得る．
+逆に連続でないとき，ある開集合 $V\subset Y$ について
+$x\in f^{-1}(V)$ でありながら $f^{-1}(V)$ が $x$ の近傍でない
+点 $x$ が存在する．$x$ の開近傍全体を逆包含で有向化し，
+各近傍 $U$ に対して
+$x_U\in U\setminus f^{-1}(V)$ を選ぶ．
+このネットは $x$ に収束するが像ネットは $f(x)\in V$ に収束しない．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{補有限位相で閉包と連続性を調べる．}
+\begin{proposition}[補有限位相]
+無限集合 $X$ に
+\[
+\mathcal T=\{\varnothing\}\cup
+\{X\setminus F:F\subset X,\ F\text{ は有限}\}
+\]
+を入れると位相となる．この空間は $T_1$ であるが
+Hausdorffではない．
+\end{proposition}
+\begin{proof}
+空集合と全体が属する．有限個の有限集合の和は有限なので
+有限交叉で閉じ，任意個の開集合の和の補集合は，
+そのうち一つの非空開集合の有限な補集合に含まれるから有限である．
+単点集合が閉であるため $T_1$ となる．
+二つの非空開集合は共通部分を持つので
+異なる二点を互いに素な開近傍で分離できない．
+\end{proof}
+\begin{proposition}[閉包の計算]
+$A\subset X$ が無限集合なら $\overline A=X$ であり，
+有限集合なら $\overline A=A$ である．
+\end{proposition}
+\begin{proof}
+閉集合は有限集合または $X$ なので，
+有限集合は閉である．
+無限集合を含む閉集合は $X$ だけである．
+\end{proof}
+\noindent\textbf{到達確認．}
+無限補有限空間からHausdorff空間 $Y$ への
+連続写像 $f:X\to Y$ は定数か．
+\par\noindent\textbf{解答．}
+異なる像 $f(x)\ne f(y)$ があればHausdorff性により
+互いに素な開近傍 $U,V$ がある．
+$f^{-1}(U)$ と $f^{-1}(V)$ は非空で互いに素な開集合となり，
+補有限空間の性質に矛盾する．従って定数である．
+\end{document}

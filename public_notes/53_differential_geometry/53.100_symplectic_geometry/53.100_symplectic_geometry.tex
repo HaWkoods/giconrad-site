@@ -1,0 +1,276 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{シンプレクティック幾何学入門}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，微分形式，外微分，Hamiltonベクトル場．
+本稿の具体的な到達課題は，標準シンプレクティック形式からHamilton方程式を計算し，面積保存を検証する．
+
+
+\section{シンプレクティック形式}
+\begin{definition}
+多様体 $M$ 上の2形式 $\omega$ が
+$d\omega=0$ を満たし，各点で双線形形式
+$\omega_p$ が非退化であるとき，
+$(M,\omega)$ をシンプレクティック多様体という．
+\end{definition}
+\begin{lemma}[非退化交代形式の次元]\label{lem:even}
+非退化交代双線形形式を持つ有限次元実ベクトル空間の次元は偶数である．
+さらに適当な基底 $e_1,\dots,e_n,f_1,\dots,f_n$ に対して
+\[
+ \omega(e_i,e_j)=\omega(f_i,f_j)=0,\qquad
+ \omega(e_i,f_j)=\delta_{ij}
+\]
+となる．
+\end{lemma}
+\begin{proof}
+零でない $e_1$ を取り，非退化性から
+$\omega(e_1,f_1)=1$ となる $f_1$ を選ぶ．
+二次元部分空間 $W_1=\operatorname{span}\{e_1,f_1\}$
+への形式の制限は非退化である．
+任意の $v$ から
+$\omega(v,f_1)e_1-\omega(v,e_1)f_1$ を引けば
+$W_1$ と $\omega$-直交する元になるので
+$V=W_1\oplus W_1^\omega$ である．
+$W_1^\omega$ 上の形式も非退化なので，
+次元に関する帰納法で同じ構成を繰り返す．
+従って次元は $2n$ で表示した基底を得る．
+\end{proof}
+\section{Hamiltonベクトル場}
+\begin{definition}
+滑らかな関数 $H:M\to\mathbb R$ に対し，
+\[
+ \iota_{X_H}\omega=dH
+\]
+を満たす唯一のベクトル場 $X_H$ を
+Hamiltonベクトル場という．
+\end{definition}
+\begin{proposition}[Hamilton量の保存]
+$X_H(H)=0$．また $X_H$ の局所フロー $\Phi_t$ は
+$\Phi_t^*\omega=\omega$ を満たす．
+\end{proposition}
+\begin{proof}
+$X_H(H)=dH(X_H)=\omega(X_H,X_H)=0$．
+Cartanの公式から
+$\mathcal L_{X_H}\omega
+ =d(\iota_{X_H}\omega)+\iota_{X_H}d\omega
+ =d^2H+0=0$．
+従って
+$\frac d{dt}\Phi_t^*\omega
+ =\Phi_t^*(\mathcal L_{X_H}\omega)=0$ なので
+$\Phi_t^*\omega=\Phi_0^*\omega=\omega$ である．
+\end{proof}
+\section{Poisson括弧}
+\begin{definition}
+$f,g\in C^\infty(M)$ に対し
+\[
+ \{f,g\}=\omega(X_f,X_g)
+\]
+と定める．
+\end{definition}
+\begin{proposition}[Poisson括弧の性質]\label{prop:poisson}
+$\{\cdot,\cdot\}$ は双線形，反対称で
+\[
+ \{f,gh\}=g\{f,h\}+h\{f,g\}
+\]
+を満たす．またJacobi恒等式
+$\{f,\{g,h\}\}+\{g,\{h,f\}\}+\{h,\{f,g\}\}=0$
+が成立する．
+\end{proposition}
+\begin{proof}
+$X_{gh}=gX_h+hX_g$ は
+$\iota_X\omega=d(gh)=g\,dh+h\,dg$ と
+非退化性から従う．従ってLeibniz則を得る．
+反対称性は $\omega$ の交代性による．
+Cartanの公式と $d\omega=0$ を用いれば
+\[
+ \iota_{[X_f,X_g]}\omega
+ =\mathcal L_{X_f}(\iota_{X_g}\omega)
+ =\mathcal L_{X_f}dg
+ =d(X_f g)=-d\{f,g\}.
+\]
+従って $[X_f,X_g]=-X_{\{f,g\}}$．
+ベクトル場のLie括弧のJacobi恒等式を代入すると
+$X_{\{f,\{g,h\}\}+\mathrm{cyc}}=0$ であり，
+括弧のJacobi和は局所定数である．
+この定数が零であることは，
+$d\omega(X_f,X_g,X_h)=0$ の外微分の公式を展開すると
+$-\{f,\{g,h\}\}-\{g,\{h,f\}\}-\{h,\{f,g\}\}=0$
+が得られることから従う．
+\end{proof}
+\section{Darbouxの定理}
+\begin{lemma}[星状領域の2形式の原始形式]\label{lem:poincare}
+$U\subset\mathbb R^m$ を原点について星状とし，
+$\eta$ を閉2形式とする．
+\[
+ \alpha_x(v)=\int_0^1t\,\eta_{tx}(x,v)\,dt
+\]
+と置くと $d\alpha=\eta$ である．
+また $\alpha_0=0$．
+\end{lemma}
+\begin{proof}
+放射収縮 $F(t,x)=tx$ に対する外微分のホモトピー公式
+$dK+Kd=F_1^*-F_0^*$ を適用する．
+2形式に対して $F_0^*\eta=0$，
+$d\eta=0$ なので $dK\eta=\eta$ となる．
+$K\eta$ の成分を積分で書き下すと表示した $\alpha$ を得る．
+$x=0$ では被積分関数が零なので $\alpha_0=0$．
+\end{proof}
+\begin{theorem}[Darbouxの定理]\label{thm:darboux}
+$2n$ 次元シンプレクティック多様体 $(M,\omega)$ と
+$p\in M$ に対し，
+$p$ の局所座標 $(q^1,\dots,q^n,p_1,\dots,p_n)$ で
+\[
+ \omega=\sum_{i=1}^n dq^i\wedge dp_i
+\]
+となるものが存在する．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:even}の線形代数により，
+$p$ の座標で $\omega_p=\omega_0=\sum dq^i\wedge dp_i$
+となるようにする．
+$p$ を原点とする小さい星状座標近傍 $U$ を取る．
+$\eta=\omega-\omega_0$ は閉2形式で，$\eta_0=0$ である．
+補題\ref{lem:poincare}によって $d\alpha=\eta$ かつ
+$\alpha_0=0$ となる1形式 $\alpha$ を取る．
+\[
+ \omega_t=\omega_0+t(\omega-\omega_0),\qquad 0\le t\le1
+\]
+と置く．$\omega_t|_0=\omega_0|_0$ が非退化なので
+$U$ を縮めれば全ての $t$ と $x\in U$ で $\omega_t$ は非退化である．
+時間依存ベクトル場 $Y_t$ を
+\[
+ \iota_{Y_t}\omega_t=-\alpha
+\]
+によって一意に定める．$Y_t(0)=0$ であるから，
+ODEの時間依存版の局所存在定理によって，
+$0$ のさらに小さい近傍上で $0\le t\le1$ のフロー
+$\Phi_t$ を定義できる．
+外微分とLie微分の関係から
+\[
+ \begin{aligned}
+ \frac d{dt}\Phi_t^*\omega_t
+ &=\Phi_t^*(\partial_t\omega_t+\mathcal L_{Y_t}\omega_t)\\
+ &=\Phi_t^*(\eta+d(\iota_{Y_t}\omega_t)
+ +\iota_{Y_t}d\omega_t)\\
+ &=\Phi_t^*(d\alpha-d\alpha)=0.
+ \end{aligned}
+\]
+従って $\Phi_1^*\omega=\omega_0$．
+$\Phi_1$ は局所微分同相なので，
+それを用いた局所座標では $\omega$ が $\omega_0$ になる．
+\end{proof}
+\section{標準形でのHamilton方程式}
+\begin{proposition}
+$\omega=\sum_i dq^i\wedge dp_i$ なら
+\[
+ X_H=\sum_i
+ \left(\frac{\partial H}{\partial p_i}\frac{\partial}{\partial q^i}
+ -\frac{\partial H}{\partial q^i}\frac{\partial}{\partial p_i}\right).
+\]
+\end{proposition}
+\begin{proof}
+$X=\sum_i(a_i\partial_{q^i}+b_i\partial_{p_i})$ とすると
+$\iota_X\omega=\sum_i(a_i\,dp_i-b_i\,dq^i)$ である．
+これを $dH=\sum_i(H_{q^i}dq^i+H_{p_i}dp_i)$ と比較すれば
+$a_i=H_{p_i}$，$b_i=-H_{q^i}$ を得る．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{調和振動子のHamilton流．}
+\begin{proposition}[調和振動子]
+$\mathbb R^2$ に $\omega=dq\wedge dp$ を入れ，
+$H(q,p)=\frac12(q^2+p^2)$ とする．
+$\iota_{X_H}\omega=dH$ と定めると
+\[
+X_H=p\,\partial_q-q\,\partial_p
+\]
+であり，初期値 $(q_0,p_0)$ に対する流れは
+\[
+\binom{q(t)}{p(t)}
+=\begin{pmatrix}\cos t&\sin t\\-\sin t&\cos t\end{pmatrix}
+\binom{q_0}{p_0}.
+\]
+\end{proposition}
+\begin{proof}
+$X_H=a\partial_q+b\partial_p$ に対して
+$\iota_{X_H}\omega=a\,dp-b\,dq$ であり，
+$dH=q\,dq+p\,dp$ と比較すると $a=p,b=-q$．
+この連立方程式を解けば表示した回転行列となる．
+行列式が1なので流れは面積を保存し，
+$H$ も $q^2+p^2$ の保存から一定となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$H(q,p)=\frac12(p^2+\lambda q^2)$，$\lambda>0$
+の周期を求めよ．
+\par\noindent\textbf{解答．}
+Hamilton方程式は $\dot q=p$，$\dot p=-\lambda q$．
+従って $\ddot q+\lambda q=0$ となり
+非定常解の周期は $2\pi/\sqrt\lambda$ である．
+\end{document}

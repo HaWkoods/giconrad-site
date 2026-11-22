@@ -1,0 +1,266 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{曲面論とGauss–Bonnetの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Gauss曲率，Stokesの定理，Euler標数．
+本稿の具体的な到達課題は，Gauss--Bonnetから球面・トーラスの曲率積分を求め，局所曲率と位相的な総曲率を区別する．
+
+
+\section{Gauss曲率と接続1形式}
+本稿では向き付けられた滑らかなRiemann曲面を考える．
+角を持つ境界の旋回数，滑らかな曲面の三角形分割の存在，
+Stokesの定理を前提とする．
+\begin{definition}
+局所的な正向き正規直交フレーム $(e_1,e_2)$ に対し
+\[
+ \nabla_Xe_1=\omega(X)e_2,\qquad
+ \nabla_Xe_2=-\omega(X)e_1
+\]
+で定まる1形式 $\omega$ を接続1形式という．
+\end{definition}
+\begin{proposition}[曲率2形式]\label{prop:curvform}
+Gauss曲率 $K$ と面積形式 $dA$ に対し
+\[
+ d\omega=-K\,dA
+\]
+が成立する．
+\end{proposition}
+\begin{proof}
+$\nabla_Xe_1=\omega(X)e_2$ を曲率の定義へ代入すると
+\[
+ R(X,Y)e_1=
+ \bigl(X\omega(Y)-Y\omega(X)-\omega([X,Y])\bigr)e_2
+ =d\omega(X,Y)e_2.
+\]
+正向き正規直交基底で
+$K=g(R(e_1,e_2)e_2,e_1)
+=-g(R(e_1,e_2)e_1,e_2)$ だから
+$d\omega(e_1,e_2)=-K$．
+二次元の2形式は $dA$ の実数倍であるため結論を得る．
+\end{proof}
+\section{測地曲率と旋回角}
+\begin{definition}
+単位速度の正向き曲線 $\gamma$ の接ベクトルを $T$，
+$+\pi/2$ 回転を $J$ とすると，
+\[
+ \nabla_TT=k_gJT
+\]
+で定まる関数 $k_g$ を符号付き測地曲率という．
+\end{definition}
+\begin{lemma}[曲率と角度関数]\label{lem:turn}
+単連結な座標領域の正向き正規直交フレームで
+$T=\cos\theta\,e_1+\sin\theta\,e_2$ と書けば
+\[
+ k_g=\theta'+\omega(T)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$T$ を曲線に沿って共変微分すると，
+三角関数の微分から $\theta'JT$ が現れ，
+フレームの共変微分から $\omega(T)JT$ が現れる．
+従って $\nabla_TT=(\theta'+\omega(T))JT$．
+\end{proof}
+\section{局所Gauss–Bonnet公式}
+\begin{theorem}[円板領域のGauss--Bonnet]\label{thm:localGB}
+$D$ を単連結な正向きのコンパクト領域とし，
+境界が区分的に滑らかな単純閉曲線であるとする．
+境界上の角点の正向き外角を $\varepsilon_j$ とすると
+\[
+ \int_DK\,dA+\int_{\partial D}k_g\,ds+
+ \sum_j\varepsilon_j=2\pi.
+\]
+\end{theorem}
+\begin{proof}
+$D$ が円板と微分同相なので $TD$ は自明であり，
+正向き正規直交フレームを全体に取れる．
+境界の滑らかな部分について補題\ref{lem:turn}を積分すると
+$\int k_gds=\int d\theta+\int_{\partial D}\omega$．
+境界の単純正向きJordan曲線の接ベクトルの総回転は
+$2\pi$ なので
+\[
+ \int_{\partial D}d\theta+\sum_j\varepsilon_j=2\pi.
+\]
+Stokesの定理と命題\ref{prop:curvform}から
+$\int_{\partial D}\omega=\int_Dd\omega=-\int_DK\,dA$．
+二式を合わせれば所望の公式となる．
+\end{proof}
+\begin{corollary}[測地三角形の角過剰]\label{cor:angle}
+測地三角形 $D$ の内角を $\alpha,\beta,\gamma$ とすると
+\[
+ \alpha+\beta+\gamma-\pi=\int_DK\,dA.
+\]
+\end{corollary}
+\begin{proof}
+測地線辺では $k_g=0$ である．
+外角は $\pi-\alpha$，$\pi-\beta$，$\pi-\gamma$
+なので局所公式から
+$\int_DK\,dA+3\pi-(\alpha+\beta+\gamma)=2\pi$ を得る．
+\end{proof}
+\section{大域Gauss–Bonnet定理}
+\begin{theorem}[閉曲面のGauss--Bonnet]\label{thm:globalGB}
+$M$ をコンパクト・連結・向き付け可能で境界のない
+滑らかなRiemann曲面とする．このとき
+\[
+ \boxed{\int_MK\,dA=2\pi\chi(M)}.
+\]
+\end{theorem}
+\begin{proof}
+$M$ を有限個の測地三角形へ分割する．
+十分細かい滑らかな三角形分割を取り，
+各小三角形が強凸正規近傍に入るように細分し，
+辺を同じ端点を持つ一意の短い測地線へ置き換えることで，
+非交叉性を保持した測地三角形分割を得られる．
+三角形の個数を $F$，辺の個数を $E$，
+頂点の個数を $V$ とする．
+各三角形へ系\ref{cor:angle}を適用して和を取ると
+\[
+ \int_MK\,dA=
+ \sum_{\text{全三角形}}\left(
+  \text{内角の和}-\pi\right).
+\]
+各頂点の周囲の三角形の内角の和は $2\pi$ だから
+右辺は $2\pi V-\pi F$ である．
+各辺はちょうど二枚の三角形に属し，
+各三角形は三辺を持つので $3F=2E$．
+従って
+\[
+ 2\pi V-\pi F
+ =2\pi(V-E+F)=2\pi\chi(M).
+\]
+\end{proof}
+\section{帰結と例}
+\begin{corollary}
+コンパクトな向き付け可能閉曲面上のGauss曲率が
+恒等的に正ならEuler標数は正，
+恒等的に負ならEuler標数は負である．
+\end{corollary}
+\begin{proof}
+面積形式は正なので
+$K>0$ なら $\int_MK\,dA>0$，$K<0$ なら負である．
+Gauss--Bonnet公式から同じ符号が $\chi(M)$ に成立する．
+\end{proof}
+\begin{example}[単位球面]
+$S^2$ のGauss曲率は1で面積は $4\pi$，
+$\chi(S^2)=2$ であるため公式の両辺は $4\pi$ となる．
+\end{example}
+\begin{proof}
+単位球面の断面曲率はGaussの方程式から1である．
+球面座標で面積形式
+$\sin\theta\,d\theta\wedge d\varphi$ を積分すると
+$\int_0^{2\pi}\int_0^\pi\sin\theta\,d\theta\,d\varphi=4\pi$．
+四面体の球面への射影による三角形分割では
+$V=4,E=6,F=4$ なので $\chi=2$．
+\end{proof}
+\begin{remark}
+本稿の大域的証明は測地三角形分割の存在を補助定理として使用する．
+これは滑らかな曲面の三角形分割と十分小さい強凸正規近傍の理論に依存する．
+この幾何学的補助定理の詳細な検証は最終校閲の対象である．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Gauss--Bonnetの具体的な計算．}
+\begin{proposition}[球面の総曲率]
+半径 $R$ の標準球面 $S_R^2$ について
+\[
+\int_{S_R^2}K\,dA=4\pi
+\]
+であり，右辺は半径に依存しない．
+\end{proposition}
+\begin{proof}
+球面のGauss曲率は一定で $K=1/R^2$，
+面積は $4\pi R^2$ であるから
+\[
+\int_{S_R^2}K\,dA
+=\frac1{R^2}\,4\pi R^2=4\pi.
+\]
+一方，球面のEuler標数は2なので
+Gauss--Bonnetの $2\pi\chi(S^2)=4\pi$ と一致する．
+\end{proof}
+\begin{proposition}[トーラスの総曲率]
+任意の滑らかな計量を備えた向き付け可能な
+閉トーラス $T^2$ について
+\[
+\int_{T^2}K\,dA=0
+\]
+である．ただしこれは $K$ が各点で零となることを意味しない．
+\end{proposition}
+\begin{proof}
+通常のセル分割でトーラスの頂点・辺・面の個数は
+それぞれ $1,2,1$ であり
+$\chi(T^2)=1-2+1=0$ となる．
+Gauss--Bonnetを適用すれば結論が従う．
+\end{proof}
+\noindent\textbf{到達確認．}
+種数 $g$ の向き付け可能閉曲面の総曲率を求めよ．
+\par\noindent\textbf{解答．}
+Euler標数は $2-2g$ だから
+$\int K\,dA=2\pi(2-2g)=4\pi(1-g)$ である．
+\end{document}
