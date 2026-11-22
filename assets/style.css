@@ -86,3 +86,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{o
 .pdfViewerActions{display:flex;flex-wrap:wrap;gap:14px}
 .viewerFrame{height:calc(100vh - 235px);min-height:460px}
 @media(max-width:700px){.pdfPreviewSection{margin:28px 0 40px}.sitePdfFrame{height:70vh;min-height:450px}.viewerFrame{height:calc(100dvh - 220px);min-height:430px}}
+
+/* PDF.js canvas page images, without a browser PDF iframe. */
+.pdfPagesContainer{background:#edf0ed;border:1px solid var(--line);border-radius:6px;padding:18px;max-width:100%;min-height:160px}
+.pdfPageList{display:flex;flex-direction:column;gap:22px;align-items:center}
+.pdfPage{width:min(100%,840px);margin:0;background:#fff;box-shadow:0 3px 16px rgba(0,0,0,.10)}
+.pdfPage canvas{display:block;width:100%;height:auto;aspect-ratio:0.707;}
+.pdfPage figcaption{background:#edf0ed;text-align:center;font-size:11px;color:var(--muted);padding:9px}
+.pdfRenderStatus{font-size:13px;line-height:1.8;color:var(--muted);padding:15px}
+.pdfPagesPreview{max-height:1150px;overflow-y:auto;overscroll-behavior:contain}
+@media(max-width:700px){.pdfPagesContainer{padding:8px}.pdfPageList{gap:12px}.pdfPagesPreview{max-height:850px}}
