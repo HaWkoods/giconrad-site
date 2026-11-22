@@ -1,0 +1,323 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{偏微分方程式の差分法}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+熱方程式に対する明示差分法を実際に計算し，
+刻み幅からCFL条件を判定できるようになる．
+さらに数値解の安定性と整合性が
+どのように収束評価へつながるかを追う．
+前提はTaylor展開，線形代数，微分方程式である．
+
+\section{熱方程式の差分離散化}
+$u_t=\kappa u_{xx}$ を $[0,L]$ 上のDirichlet境界条件で考える．
+$h=L/J$，$\tau=T/N$，$r=\kappa\tau/h^2$ と置く．
+内部格子点で明示Euler差分法を
+\[
+ U_j^{n+1}=rU_{j-1}^n+(1-2r)U_j^n+rU_{j+1}^n
+\]
+と定める．境界値は既知とする．
+\begin{theorem}[最大ノルム安定性]
+$0\le r\le1/2$ なら，同じDirichlet境界値を持つ二つの差分解
+$U,V$ の差 $E=U-V$ について
+\[
+ \max_{1\le j\le J-1}|E_j^n|
+ \le\max_{1\le j\le J-1}|E_j^0|
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+$E_0^n=E_J^n=0$．係数 $r,1-2r,r$ は非負で総和1だから
+$|E_j^{n+1}|\le r|E_{j-1}^n|+(1-2r)|E_j^n|+r|E_{j+1}^n|$
+は前時刻の最大絶対値以下である．帰納法を用いる．
+\end{proof}
+\section{整合性と収束}
+\begin{lemma}
+厳密解 $u$ が $u_{tt},u_{xxxx}$ を連続に持つとする．
+各内部格子点で差分方程式に厳密解の値を代入した残差を
+$\tau R_j^n$ と書くと，ある格子に依存しない $C$ が存在し
+\[
+ |R_j^n|\le C(\tau+h^2)
+\]
+が成立する．
+\end{lemma}
+\begin{proof}
+時間方向のTaylor展開で
+$[u(t+\tau)-u(t)]/\tau=u_t(t)+O(\tau)$，
+空間の中心差分で
+$[u(x+h)-2u(x)+u(x-h)]/h^2=u_{xx}(x)+O(h^2)$．
+両式の剰余は一様有界であり，PDEを代入すると主張が従う．
+\end{proof}
+\begin{theorem}[収束評価]
+$0\le r\le1/2$，かつ初期・境界の格子値を厳密解から取るとき，
+\[
+ \max_{n,j}|U_j^n-u(x_j,t_n)|\le CT(\tau+h^2)
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+格子誤差 $e_j^n=U_j^n-u(x_j,t_n)$ は零の初期・境界値を持ち，
+更新式に残差項 $-\tau R_j^n$ を加えたものを満たす．
+最大ノルム安定性の証明と同じ評価により
+$\norm{e^{n+1}}_\infty\le\norm{e^n}_\infty+C\tau(\tau+h^2)$．
+$n\tau\le T$ 回足すと結果を得る．
+\end{proof}
+\begin{remark}
+$\tau$ と $h$ を独立に零へ近づけるとき，安定性には
+$\kappa\tau/h^2\le1/2$ というCFL条件が必要である．
+\end{remark}
+
+
+\section{Fourierモードによる安定性判定}
+\begin{theorem}[周期境界の明示差分とCFL条件]
+周期格子で熱方程式の明示Euler差分を考える．
+格子Fourierモード $U_j^n=g^ne^{ij\xi}$ に対する増幅率は
+\[
+ g(\xi)=1-4r\sin^2(\xi/2),\qquad r=\kappa\tau/h^2
+\]
+である．全ての周波数 $\xi\in[-\pi,\pi]$ に対して
+$|g(\xi)|\le1$ が成り立つ必要十分条件は $0\le r\le1/2$ である．
+\end{theorem}
+\begin{proof}
+更新式に $e^{ij\xi}$ を代入すると
+$g=1-2r+r(e^{i\xi}+e^{-i\xi})=1-4r\sin^2(\xi/2)$．
+$r\ge0$ のとき $g$ は $1-4r$ から1までの値を取る．
+全ての値の絶対値が1以下であることは $1-4r\ge-1$，
+すなわち $r\le1/2$ と同値である．
+周期格子の離散Fourier変換はユニタリだから，この条件下で
+時間進行作用素の $\ell^2$-ノルムは1以下である．
+\end{proof}
+\begin{theorem}[陰的Euler差分の無条件安定性]
+同じ周期格子で陰的Euler法
+\[
+ U_j^{n+1}-r(U_{j-1}^{n+1}-2U_j^{n+1}+U_{j+1}^{n+1})=U_j^n
+\]
+を用いる．任意の $r\ge0$ に対して一段更新は一意に定まり，
+離散 $\ell^2$-ノルムで縮小的である．
+\end{theorem}
+\begin{proof}
+周波数 $\xi$ のFourierモードに作用する係数は
+$(1+4r\sin^2(\xi/2))^{-1}$ であり，
+これは正で1以下である．従って各モードで解は一意に定まり，
+Parsevalの等式から更新後の二乗ノルムは更新前以下である．
+\end{proof}
+\section{波動方程式の差分と特性根}
+\begin{proposition}[中心差分波動法のFourier条件]
+周期格子で $u_{tt}=c^2u_{xx}$ を
+\[
+ U_j^{n+1}-2U_j^n+U_j^{n-1}
+ =r^2(U_{j+1}^n-2U_j^n+U_{j-1}^n),\qquad r=c\tau/h
+\]
+によって離散化する．Fourier周波数 $\xi$ の特性根が
+すべて絶対値1以下となるための条件は
+$|1-2r^2\sin^2(\xi/2)|\le1$ である．
+すべての $\xi$ でこの条件が成り立つのは $0\le r\le1$ のときである．
+\end{proposition}
+\begin{proof}
+$U_j^n=z^ne^{ij\xi}$ と置いて代入すると
+\[
+ z^2-2\bigl(1-2r^2\sin^2(\xi/2)\bigr)z+1=0
+\]
+を得る．係数 $a=1-2r^2\sin^2(\xi/2)$ は実数だから，
+$|a|\le1$ のとき特性根は相互に共役な単位円上の二根であり，
+$|a|>1$ のとき一方の絶対値が1を超える．
+全周波数で $|a|\le1$ となることは $r\le1$ と同値である．
+ただし $|a|=1$ の重根では $n z^n$ 型の解が現れ得るため，
+この根条件だけで長時間の一様安定性を証明したことにはならない．
+\end{proof}
+
+\section{二次元周期格子上の熱方程式の差分法}
+$u_t=\kappa(u_{xx}+u_{yy})$（$\kappa>0$）を
+長方形の二次元トーラスで考える．
+空間格子数 $N_x,N_y$ はともに偶数とし，幅を
+$h_x,h_y$，時間幅を $\tau$ とする．
+差分作用素を $\delta_{xx},\delta_{yy}$ と書く．
+\begin{theorem}[二次元陽的Euler差分の安定条件]
+周期差分法
+\[
+ U^{k+1}_{ij}=U^k_{ij}+\kappa\tau
+ \left(\frac{U^k_{i+1,j}-2U^k_{ij}+U^k_{i-1,j}}{h_x^2}
+ +\frac{U^k_{i,j+1}-2U^k_{ij}+U^k_{i,j-1}}{h_y^2}\right)
+\]
+について $r_x=\kappa\tau/h_x^2$，
+$r_y=\kappa\tau/h_y^2$ と置く．
+全ての格子Fourierモードに関する $\ell^2$ 安定性の必要十分条件は
+\[
+ r_x+r_y\le\frac12
+\]
+である．この条件の下で，十分滑らかな周期解に対する
+固定時間区間 $[0,T]$ 上の格子誤差は
+$O(\tau+h_x^2+h_y^2)$ となる．
+\end{theorem}
+\begin{proof}
+周期格子の離散Fourierモード
+$U^k_{ij}=A_k e^{i(i\theta_x+j\theta_y)}$ を代入すると
+\[
+ A_{k+1}=G(\theta_x,\theta_y)A_k,\qquad
+ G=1-4r_x\sin^2(\theta_x/2)-4r_y\sin^2(\theta_y/2).
+\]
+$r_x,r_y\ge0$ だから $G\le1$ であり，
+全モードで $|G|\le1$ となる条件は
+$1-4(r_x+r_y)\ge-1$，すなわち $r_x+r_y\le1/2$ である．
+$N_x,N_y$ が偶数なので $\theta_x=\theta_y=\pi$ のモードが存在し，
+条件が破れるとこのモードで $|G|>1$ となる．
+離散Fourier変換は格子 $\ell^2$ ノルムに対し直交分解を与えるので，
+$|G|\le1$ と一ステップ作用素のノルムが1以下であることは同値である．
+
+滑らかな真の解を格子点に制限したベクトルを $u^k$ と書く．
+時間方向のTaylor展開と空間中心差分のTaylor展開から
+一ステップの局所残差は
+$\norm{u^{k+1}-Au^k}_{\ell^2_h}
+ \le C\tau(\tau+h_x^2+h_y^2)$ である
+（$A$ は差分一ステップ作用素）．
+格子ノルムは $h_xh_y$ を重みとするものとし，
+滑らかさにより定数 $C$ は分割幅に依存しない．
+数値誤差 $e^k=U^k-u^k$ に対して
+$e^{k+1}=Ae^k-(u^{k+1}-Au^k)$ となる．
+安定性から $\norm A\le1$ なので $e^0=0$ とすれば
+\[
+ \norm{e^k}_{\ell_h^2}
+ \le Ck\tau(\tau+h_x^2+h_y^2)
+ \le CT(\tau+h_x^2+h_y^2)
+\]
+を得る．
+\end{proof}
+\begin{remark}
+この証明は周期格子・線形熱方程式での完全なVon Neumann解析である．
+Dirichlet境界，非一様格子，非線形方程式については別の安定性評価が要る．
+\end{remark}
+
+
+\section{熱方程式の差分計算を実行する}
+\begin{example}[安定な格子幅の選択と二段更新]
+$u_t=u_{xx}$ を区間 $[0,1]$ で考え，
+両端に零Dirichlet境界条件を課す．
+$J=4$ とすると空間幅は $h=1/4$ である．
+時間幅を $\tau=1/64$ と取れば
+\[
+ r=\frac{\tau}{h^2}
+ =\frac{1/64}{1/16}=\frac14\le\frac12
+\]
+だから最大ノルム安定性の条件を満たす．
+初期格子値を
+\[
+ (U_0^0,U_1^0,U_2^0,U_3^0,U_4^0)
+ =(0,0,1,0,0)
+\]
+とする．係数は $r=1/4$，$1-2r=1/2$ だから，
+最初の更新では
+\[
+ (U_1^1,U_2^1,U_3^1)
+ =\left(\frac14,\frac12,\frac14\right)
+\]
+となる．次の更新では
+\[
+ (U_1^2,U_2^2,U_3^2)
+ =\left(\frac14,\frac38,\frac14\right).
+\]
+実際 $U_2^2=1/4\cdot1/4+
+1/2\cdot1/2+1/4\cdot1/4=3/8$ である．
+最大絶対値は順に $1,1/2,3/8$ と減少しており，
+最大ノルム安定性と整合する．
+\end{example}
+\begin{proposition}[安定条件を破る具体例]\label{prop:fd-unstable}
+同じ $J=4$ と零境界条件のもとで
+$r=1$ とすると，初期格子値
+$(U_1^0,U_2^0,U_3^0)=(0,1,0)$ に対し
+二段後の最大絶対値は3となり，初期の最大絶対値1より大きい．
+\end{proposition}
+\begin{proof}
+$r=1$ の更新式は
+$U_j^{n+1}=U_{j-1}^n-U_j^n+U_{j+1}^n$．
+一段後は $(1,-1,1)$，二段後は
+$(-2,3,-2)$ である．
+従って最大ノルムは $1$ から $3$ に増加する．
+これは一般の $r\le1/2$ で得た最大原理が
+$r>1/2$ で無条件には成立しないことを示す．
+\end{proof}
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題．}
+$\kappa=2$，$h=1/10$ とする．
+熱方程式の明示差分法に対し
+最大ノルム安定性が保証される時間刻み幅
+$\tau$ の範囲を求めよ．
+また $\tau=1/500$ が条件を満たすか判定せよ．
+
+\medskip\noindent\textbf{解答．}
+$r=\kappa\tau/h^2$ が $r\le1/2$ であればよい．
+従って
+\[
+ \tau\le\frac{h^2}{2\kappa}
+       =\frac{1/100}{4}=\frac1{400}.
+\]
+$\tau=1/500<1/400$ なので条件を満たす．
+実際 $r=2(1/500)/(1/100)=2/5<1/2$ である．
+
+\end{document}

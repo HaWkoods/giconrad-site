@@ -1,0 +1,1159 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{有限要素法の数学}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，弱形式，線形有限要素，帽子関数．
+本稿の具体的な到達課題は，一次元有限要素法の剛性行列と負荷ベクトルを計算する．
+
+\section{弱形式とGalerkin近似}
+$H$ を実Hilbert空間，$a:H\times H\to\mathbb R$ を有界双線形形式とし
+$|a(u,v)|\le M\norm u\norm v$，$a(u,u)\ge\alpha\norm u^2$（$\alpha>0$）とする．
+$F\in H^*$ に対し $a(u,v)=F(v)$ を満たす解 $u\in H$ は
+Lax--Milgramの定理で唯一存在する．
+有限次元部分空間 $V_h\subset H$ について
+$ a(u_h,v_h)=F(v_h)$（$v_h\in V_h$）をGalerkin方程式とする．
+\begin{theorem}[C\'eaの補題]\label{thm:Cea}
+Galerkin方程式はただ一つの解を持ち，
+\[
+ \norm{u-u_h}\le\frac{M}{\alpha}
+  \inf_{v_h\in V_h}\norm{u-v_h}
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+$V_h$ は有限次元で完備であり，制限した形式も有界・強圧的だから
+Lax--Milgramの定理で $u_h$ は一意に存在する．
+差を取るとGalerkin直交性
+$a(u-u_h,w_h)=0$（$w_h\in V_h$）を得る．
+任意の $v_h\in V_h$ について
+\[
+ \alpha\norm{u-u_h}^2\le a(u-u_h,u-u_h)
+  =a(u-u_h,u-v_h)
+  \le M\norm{u-u_h}\norm{u-v_h}.
+\]
+零でない場合に $\norm{u-u_h}$ で割って下限を取る．
+\end{proof}
+\section{区間上の一次有限要素}
+$\Omega=(0,1)$，$H=H_0^1(0,1)$ とし，
+$\norm u_H=\norm{u'}_{L^2}$ を用いる．
+$0=x_0<\cdots<x_N=1$ の格子幅の最大値を $h$ とする．
+$V_h$ をこの格子上の連続区分一次関数で両端零のものの空間とする．
+\begin{lemma}[一次補間の誤差]
+$u\in H^2(0,1)\cap H_0^1(0,1)$ とし，$I_hu$ を節点補間とする．
+このとき $\norm{(u-I_hu)'}_{L^2}\le h\norm{u''}_{L^2}$．
+\end{lemma}
+\begin{proof}
+要素 $K=[x_i,x_{i+1}]$ では $(I_hu)'$ は $u'$ の要素平均である．
+各 $x\in K$ に対し
+$|(u-I_hu)'(x)|\le\int_K|u''(s)|ds
+\le |K|^{1/2}\norm{u''}_{L^2(K)}$．
+二乗して $K$ 上で積分すると
+$\norm{(u-I_hu)'}_{L^2(K)}\le |K|\norm{u''}_{L^2(K)}$．
+全要素で二乗和を取って結論を得る．
+\end{proof}
+\begin{corollary}
+$-u''=f$ のDirichlet弱形式で，厳密解が $H^2$ に属するとき
+一次有限要素解は $\norm{u-u_h}_H\le h\norm{u''}_{L^2}$ を満たす．
+\end{corollary}
+\begin{proof}
+$a(u,v)=\int_0^1u'v'$ について $M=\alpha=1$ である．
+定理\ref{thm:Cea}の右辺に $v_h=I_hu$ を代入する．
+\end{proof}
+\begin{remark}[前節までの範囲]
+形状正則な一般三角形網の $H^2$ 補間評価は後続の補遺で示す．
+\end{remark}
+
+
+\section{双対性による$L^2$誤差評価}
+\begin{theorem}[一次要素の二次の$L^2$収束]
+前節の $(0,1)$ 上のPoisson問題について，
+$u\in H^2(0,1)\cap H_0^1(0,1)$，$u_h\in V_h$ とすると
+\[
+ \norm{u-u_h}_{L^2(0,1)}
+ \le h\norm{(u-u_h)'}_{L^2(0,1)}
+ \le h^2\norm{u''}_{L^2(0,1)}
+\]
+となる．
+\end{theorem}
+\begin{proof}
+$e=u-u_h$ とする．双対問題 $-z''=e$，$z(0)=z(1)=0$ は
+$z\in H^2\cap H_0^1$ に一意な解を持つ．
+実際 $z''=-e\in L^2$ の原始関数を二度積分し，
+両端境界条件を満たすよう一次式を加えれば構成できる．
+また $\norm{z''}_2=\norm e_2$ である．
+部分積分とGalerkin直交性から
+\[
+ \norm e_2^2=\int_0^1e'z'\,dx
+ =\int_0^1e'(z-I_hz)'\,dx.
+\]
+Cauchy--Schwarzと一次補間の誤差補題により
+$\norm e_2^2\le\norm{e'}_2 h\norm{z''}_2
+=h\norm{e'}_2\norm e_2$．
+$e\ne0$ なら $\norm e_2$ で割って第一不等式を得る．
+第二不等式は前節のC\'eaの補題と補間評価による．
+\end{proof}
+\begin{remark}
+この二次評価は一次元の楕円正則性を明示的に利用した．
+一般領域の角点や不規則境界では，同じ結論が無条件に成立するわけではない．
+\end{remark}
+
+\section{二次元の矩形要素への拡張}
+\begin{theorem}[矩形格子上の双一次要素の誤差]
+$\Omega=(0,1)^2$ を座標方向の矩形格子で分割し，
+各辺の長さが高々 $h$ とする．$V_h\subset H_0^1(\Omega)$ を
+各矩形上で $Q_1=\operatorname{span}\{1,x,y,xy\}$ 型となる連続関数全体とする．
+$u\in H^2(\Omega)\cap H_0^1(\Omega)$ とし，
+節点補間を $I_hu$ とする．このときある格子に依存しない定数 $C$ が存在し
+\[
+ \norm{\nabla(u-I_hu)}_{L^2(\Omega)}
+ \le Ch\norm{D^2u}_{L^2(\Omega)}
+\]
+が成立する．従ってPoisson方程式 $-\Delta u=f$ に対する
+Galerkin解 $u_h\in V_h$ は
+$\norm{\nabla(u-u_h)}_2\le Ch\norm{D^2u}_2$ を満たす．
+\end{theorem}
+\begin{proof}
+初めに $u\in C^2(\overline\Omega)$ を考える．
+$x$，$y$ 方向の区分一次補間作用素をそれぞれ $I_x,I_y$ と置く．
+$I_hu=I_xI_yu=I_yI_xu$ である．
+一次元の補間について，各小区間 $K$ では補間関数の導関数が
+元の導関数の平均となるから
+\[
+ \norm{(w-I_xw)'}_{L^2(K)}\le |K|\norm{w''}_{L^2(K)},
+ \qquad\norm{(I_xw)'}_{L^2(K)}\le\norm{w'}_{L^2(K)}.
+\]
+さらに端点値からの積分表示を用いれば
+$\norm{w-I_yw}_{L^2(K)}\le |K|\norm{w'}_{L^2(K)}$ が得られる．
+これらを $y$ に関して積分すると，Fubiniの定理により
+$\norm{\partial_x(u-I_xu)}_2\le h\norm{u_{xx}}_2$，
+$\norm{\partial_xI_xv}_2\le\norm{\partial_xv}_2$ が成り立つ．
+従って
+\[
+ \begin{aligned}
+ \norm{\partial_x(u-I_xI_yu)}_2
+ &\le\norm{\partial_x(u-I_xu)}_2
+ +\norm{\partial_xI_x(u-I_yu)}_2\\
+ &\le h\norm{u_{xx}}_2+h\norm{u_{xy}}_2.
+ \end{aligned}
+\]
+$y$ 微分については $I_yI_x=I_xI_y$ を用い，同様に
+$\norm{\partial_y(u-I_hu)}_2
+ \le h(\norm{u_{yy}}_2+\norm{u_{xy}}_2)$ を得る．
+両方を合わせると所要の勾配誤差評価が従う．
+$H^2(\Omega)$ に属する一般の $u$ については，
+矩形領域での $C^\infty(\overline\Omega)$ の $H^2$-稠密性と，
+二次元の $H^2$ 関数の連続代表の存在から
+節点補間を定義し，得られた評価を極限に移す．
+最後に $a(u,v)=\int_\Omega\nabla u\cdot\nabla v$ へ
+C\'eaの補題を適用すれば，$M=\alpha=1$ であるから
+Galerkin誤差も同じ上界で抑えられる．
+\end{proof}
+\begin{remark}
+この証明は座標に沿った矩形格子の $Q_1$ 要素についてのものである．
+一般の三角形・四面体メッシュでは形状正則性や
+要素写像のヤコビ行列の評価が必要になる．
+\end{remark}
+
+
+\section{形状正則三角形網における一次補間誤差}
+$\Omega\subset\mathbb R^2$ を有界多角形領域とし，
+有限個の三角形からなる適合三角形分割 $\mathcal T_h$ を考える．
+各三角形の全ての内角が $\alpha_0>0$ 以上であるとする．
+$h=\max_{T\in\mathcal T_h}\operatorname{diam}T$ と置く．
+\begin{lemma}[線形Lagrange補間の局所誤差]
+$u\in C^2(\overline T)$，$T\in\mathcal T_h$ とし，
+$I_Tu$ を $T$ の三頂点における値を一致させる一次多項式とする．
+$M_T=\sup_{x\in T}\norm{D^2u(x)}_{\mathrm{op}}$ と置くと，
+\[
+ \norm{u-I_Tu}_{L^\infty(T)}\le\frac12h_T^2M_T,
+ \qquad
+ \norm{\nabla(u-I_Tu)}_{L^\infty(T)}\le C_{\alpha_0}h_TM_T
+\]
+である．
+\end{lemma}
+\begin{proof}
+頂点を $v_1,v_2,v_3$，重心座標を $\lambda_i$ と書く．
+$\sum_i\lambda_i(x)=1$，$\sum_i\lambda_i(x)v_i=x$ であり，
+$\lambda_i(x)\ge0$ である．
+任意の $x\in T$ に対するTaylorの公式から
+\[
+ u(v_i)=u(x)+\nabla u(x)\cdot(v_i-x)+R_i(x),
+ \quad|R_i(x)|\le\frac12M_T|v_i-x|^2.
+\]
+これを $I_Tu(x)=\sum_i u(v_i)\lambda_i(x)$ に代入すれば，
+定数・一次の項が相殺されて
+$|I_Tu(x)-u(x)|\le\frac12h_T^2M_T$ を得る．
+
+重心座標はアフィン関数で，
+$\sum_i\nabla\lambda_i=0$，
+$\sum_i(v_i-x)\otimes\nabla\lambda_i=I_2$ を満たす．
+従って上と同じTaylor表示を用いると
+\[
+ \nabla I_Tu(x)-\nabla u(x)=\sum_i R_i(x)\nabla\lambda_i.
+\]
+$\norm{\nabla\lambda_i}=1/h_i^{\perp}$ は対応する対辺への
+高さの逆数である．最小角の下界から
+$h_i^{\perp}\ge c_{\alpha_0}h_T$ なので
+$\sum_i\norm{\nabla\lambda_i}\le C_{\alpha_0}h_T^{-1}$．
+これに $|R_i(x)|\le M_Th_T^2/2$ を代入して結論を得る．
+\end{proof}
+\begin{theorem}[形状正則三角形網のPoisson問題]
+$u\in C^2(\overline\Omega)\cap H^1_0(\Omega)$ が
+$-\Delta u=f$ の弱解であるとする．
+境界頂点において $u=0$ とし，適合する一次有限要素空間
+$V_h\subset H^1_0(\Omega)$ 上のGalerkin解 $u_h$ を取る．
+このとき
+\[
+ \norm{u-u_h}_{H^1(\Omega)}
+ \le C_{\Omega,\alpha_0}h
+ \sup_{x\in\Omega}\norm{D^2u(x)}_{\mathrm{op}}
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+全体のLagrange補間 $I_hu$ は共通頂点で値が一致するので連続であり，
+境界では各頂点値が零だから $I_hu\in V_h$ となる．
+局所誤差を三角形ごとに積分して和を取ると
+\[
+ \norm{u-I_hu}_{H^1(\Omega)}
+ \le C_{\Omega,\alpha_0}(h+h^2)
+ \sup_{\Omega}\norm{D^2u}_{\mathrm{op}}.
+\]
+$h$ は $\operatorname{diam}\Omega$ 以下なので $h^2$ は
+領域に依存する定数を掛けた $h$ に吸収できる．
+Galerkin直交性 $\int\nabla(u-u_h)\cdot\nabla v_h=0$ と
+Cauchy--SchwarzからC\'ea型評価
+$\norm{\nabla(u-u_h)}_{L^2}
+ \le\norm{\nabla(u-I_hu)}_{L^2}$ を得る．
+最後に $u-u_h\in H^1_0(\Omega)$ にPoincar\'e不等式を適用する．
+\end{proof}
+\begin{remark}
+ここでは $C^2$ 解と最小角条件のもとで完全な証明を与えた．
+$H^2$ のみを仮定する解の誤差評価や非凸領域での正則性は，
+補遺で証明する参照三角形上の補間評価と，必要な領域正則性の仮定を区別する．
+\end{remark}
+
+
+
+\section{補遺の位置付け}
+以下の補遺では，形状正則三角形網で $H^2$ 解を仮定した一般の誤差評価と，正方形上の二次 $L^2$ 誤差を証明する．
+
+\section{問題の設定}
+本稿では，二次元多角形領域の形状正則な三角形分割に対し，
+$H^2$ 函数の一次Lagrange補間が $H^1$ ノルムで一次，
+$L^2$ ノルムで二次の精度をもつことを証明する．
+この補間評価から一次有限要素法のエネルギーノルムの誤差を導く．
+さらに正方形での双対問題の正則性を独立に示し，
+$L^2$ 誤差の二次評価を証明する．
+
+既習事項として実Hilbert空間の基本定理，Sobolev弱微分，
+Lebesgue積分，Fourier級数のPlancherel等式を用いる．
+形状正則な三角形の補間評価や双対正則性を，証明抜きの
+「標準的評価」として使用しない．
+
+\begin{definition}
+$\Omega\subset\mathbb R^2$ を有界多角形領域とする．
+$H^m(\Omega)$ は $m$ 階以下の弱導函数が $L^2$ に属する函数の空間である．
+\[
+ |u|_{H^2(\Omega)}^2=
+  \sum_{|\alpha|=2}\norm{D^\alpha u}_{L^2(\Omega)}^2
+\]
+と置く．$H_0^1(\Omega)$ は $C_c^\infty(\Omega)$ の $H^1$ 閉包とする．
+本稿では実函数を扱う．
+\end{definition}
+
+\section{凸領域の平均値Poincar\'e不等式}
+\begin{lemma}[平均値型Poincar\'e不等式]
+$D\subset\mathbb R^d$ を有界凸開集合とし，$\operatorname{diam}D=L$ とする．
+$w\in H^1(D)$，$w_D=|D|^{-1}\int_Dw$ とすれば
+\[
+ \norm{w-w_D}_{L^2(D)}\le2^{d/2}L\norm{\nabla w}_{L^2(D)}.
+\]
+\end{lemma}
+\begin{proof}
+まず $w\in C^1(\overline D)$ とする．凸性によって，
+$x,y\in D$ を結ぶ線分は $D$ に含まれ，
+\[
+ w(x)-w_D=\frac1{|D|}\int_D\int_0^1
+   \nabla w((1-t)y+tx)\cdot(x-y)\,dt\,dy.
+\]
+Cauchy--Schwarzの不等式と $|x-y|\le L$ により
+\[
+ |w(x)-w_D|^2
+ \le\frac{L^2}{|D|}\int_D\int_0^1
+  |\nabla w((1-t)y+tx)|^2\,dt\,dy.
+\]
+$x$ について積分する．$t\le1/2$ では $y$ を変数変換し，
+$t\ge1/2$ では $x$ を変数変換すると，
+それぞれ $|D|\,2^d\norm{\nabla w}_2^2$ が上界となる．
+実際，$D$ の凸性により
+$(1-t)y+tx\in D$ である．従って
+\[
+ \norm{w-w_D}_2^2\le2^d L^2\norm{\nabla w}_2^2.
+\]
+一般の $H^1(D)$ 函数には，凸領域の内部からの平行移動と
+平滑化による $C^1(\overline D)$ の稠密性で拡張する．
+この稠密性の構成は次節で三角形の場合について詳しく行う．
+\end{proof}
+
+\begin{lemma}[零境界Poincar\'e不等式]
+$\Omega$ を有界開集合とする．$\Omega$ を含む座標長方形の
+第一座標方向の長さを $L$ とすると，
+\[
+ \norm u_{L^2(\Omega)}\le L\norm{\partial_1u}_{L^2(\Omega)}
+ \qquad(u\in H_0^1(\Omega))
+\]
+が成立する．
+\end{lemma}
+\begin{proof}
+$u\in C_c^\infty(\Omega)$ を零で長方形の全体へ延長する．
+第一座標方向の一変数Newton--Leibniz公式とCauchy--Schwarzから
+$|u(x_1,x_2)|^2\le L\int|\partial_1u(s,x_2)|^2ds$ である．
+両辺を積分して不等式を得る．
+$H_0^1$ の定義により極限へ移る．
+\end{proof}
+
+\section{三角形上の高階Sobolev函数}
+$\widehat T$ を頂点 $(0,0),(1,0),(0,1)$ を持つ固定三角形とする．
+
+\begin{lemma}[三角形上の滑らかな函数の稠密性]
+任意の $m\in\{1,2\}$ について，
+$C^\infty(\overline{\widehat T})$ は
+$H^m(\widehat T)$ で稠密である．
+\end{lemma}
+\begin{proof}
+$\overline{\widehat T}$ の有限開被覆を，内部の小球，
+各辺の相対内部に近い小球，三頂点に近い小球から選ぶ．
+それぞれの小球について，その部分と $\widehat T$ との共通部分を
+ある固定ベクトル $v_j$ の方向へ十分小さく平行移動すると
+$\widehat T$ の内部に入るようにできる．
+辺の近くでは内向き法線，頂点ではその内角の二等分方向を使えばよい．
+滑らかな分割単位 $\{\eta_j\}$ を取り，$u=\sum_j\eta_ju$ とする．
+
+各 $u_j=\eta_ju$ は対応する局所開集合内に台をもつ．
+$u_j^\varepsilon(x)=u_j(x+\varepsilon v_j)$ を局所的に定義し，
+台の付近では $\widehat T$ の外側にも定義できる．
+そこで $\varepsilon$ より十分小さい半径の非負標準mollifier
+$\rho_\delta$ によって $\rho_\delta*u_j^\varepsilon$ を作る．
+平行移動の $L^2$ 連続性を，$u_j$ の各弱導函数
+$D^\alpha u_j$（$|\alpha|\le m$）へ適用すると
+\[
+ \norm{u_j^\varepsilon-u_j}_{H^m(\widehat T)}\longrightarrow0
+ \quad(\varepsilon\downarrow0).
+\]
+次に $\delta$ を十分小さくすれば畳み込みも
+$H^m$ で $u_j^\varepsilon$ に近づく．
+これらを有限個足し合わせれば
+$C^\infty(\overline{\widehat T})$ の近似列を得る．
+局所平行移動の定義域は，分割単位の台を選ぶときの余裕によって
+固定できるから，外側で未定義の値を利用することはない．
+\end{proof}
+
+\begin{lemma}[二次元三角形の点評価]
+ある定数 $C_{\widehat T}$ が存在して
+\[
+ \norm u_{C(\overline{\widehat T})}
+ \le C_{\widehat T}\norm u_{H^2(\widehat T)}
+ \qquad(u\in C^2(\overline{\widehat T}))
+\]
+が成立する．従って各 $u\in H^2(\widehat T)$ には
+一意の連続代表が存在し，頂点での値が意味を持つ．
+\end{lemma}
+\begin{proof}
+固定三角形には一様な内部円錐条件がある．すなわち
+$\rho>0$，$\theta_0>0$ を選ぶことができ，
+任意の $x\in\overline{\widehat T}$ に対して，
+角度幅 $\theta_0$ の方向集合 $J_x$ が存在し，
+\[
+ x+r(\cos\theta,\sin\theta)\in\widehat T
+ \quad(0<r<\rho,\ \theta\in J_x)
+\]
+が成り立つ．これは三つの頂点の内角に正の下界があること，
+辺の相対内部で半平面側に円錐を選べること，
+およびコンパクト性から従う．
+
+$u\in C^2(\overline{\widehat T})$ とし，
+$e=(\cos\theta,\sin\theta)$ と置く．
+一次元の積分余剰項付きTaylor公式により
+\[
+ u(x)=u(x+re)-r\nabla u(x+re)\cdot e
+       +\int_0^r t\,e^TD^2u(x+te)e\,dt.
+\]
+この等式を $\rho/2<r<\rho$，$\theta\in J_x$ 上で
+極座標の面積測度 $r\,dr\,d\theta$ により平均する．
+$u(x+re)$ の平均は，対象領域の面積が
+$3\theta_0\rho^2/8$ であるため
+$C\norm u_{L^2(\widehat T)}$ で抑えられる．
+$re\cdot\nabla u(x+re)$ も同様に
+$C\norm{\nabla u}_{L^2(\widehat T)}$ で抑えられる．
+余剰項については
+\[
+ \left|\int_0^r t\,e^TD^2u(x+te)e\,dt\right|
+ \le\frac r{\sqrt2}
+  \left(\int_0^r t|D^2u(x+te)|^2\,dt\right)^{1/2}
+\]
+なので，$r,\theta$ についてのCauchy--Schwarzを用いれば
+$C\norm{D^2u}_{L^2(\widehat T)}$ で抑えられる．
+ゆえに $|u(x)|\le C\norm u_{H^2(\widehat T)}$ が
+全 $x\in\overline{\widehat T}$ に一様に成立する．
+前補題による滑らかな近似列に対し，この評価は
+$C(\overline{\widehat T})$ におけるCauchy性を与える．
+その一様極限は $L^2$ の意味で元の $u$ と一致する．
+連続函数がほとんど至る所で一致すれば全ての点で一致するから
+代表は一意である．
+\end{proof}
+
+\section{参照三角形の補間不等式}
+$\widehat I:H^2(\widehat T)\to\mathcal P_1$
+を三頂点で一致する一次多項式の補間とする．
+
+\begin{lemma}[一次多項式の再現]
+任意の $p\in\mathcal P_1$ に対して $\widehat Ip=p$ である．
+また，ある定数 $C$ が存在して
+\[
+ \norm{\widehat Iw}_{H^1(\widehat T)}
+ \le C\norm w_{C(\overline{\widehat T})}
+\]
+が成立する．
+\end{lemma}
+\begin{proof}
+重心座標函数 $\lambda_i$ を用いれば
+$\widehat Iw=\sum_{i=1}^3 w(v_i)\lambda_i$ である．
+一次多項式は頂点値で一意に定まるため再現性を得る．
+また各 $\lambda_i$ の $H^1$ ノルムは参照三角形だけに依存する定数である．
+三角不等式から第二の評価が従う．
+\end{proof}
+
+\begin{theorem}[参照三角形上の $H^2$ 補間誤差]
+ある定数 $C_{\widehat T}>0$ が存在して，全 $u\in H^2(\widehat T)$ に対し
+\[
+ \norm{u-\widehat Iu}_{L^2(\widehat T)}
+ +\norm{\nabla(u-\widehat Iu)}_{L^2(\widehat T)}
+ \le C_{\widehat T}|u|_{H^2(\widehat T)}
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$\beta=|\widehat T|^{-1}\int_{\widehat T}\nabla u\in\mathbb R^2$，
+$a=|\widehat T|^{-1}\int_{\widehat T}(u-\beta\cdot x)$ と置き，
+$p(x)=a+\beta\cdot x$ とする．
+$w=u-p$ は
+\[
+ \int_{\widehat T}w=0,\qquad
+ \int_{\widehat T}\partial_iw=0\quad(i=1,2)
+\]
+を満たす．平均値型Poincar\'e不等式をまず
+$\partial_1w,\partial_2w$，次に $w$ に適用すれば
+\[
+ \norm w_{H^2(\widehat T)}\le C|u|_{H^2(\widehat T)}.
+\]
+点評価の補題と補間作用素の有界性により
+$\norm{\widehat Iw}_{H^1}\le C\norm w_{H^2}$ だから
+\[
+ \norm{w-\widehat Iw}_{H^1}
+ \le C|u|_{H^2(\widehat T)}.
+\]
+$\widehat Ip=p$ によって
+$u-\widehat Iu=w-\widehat Iw$ なので結論を得る．
+\end{proof}
+
+\section{アフィン変換と形状正則性}
+$T$ を退化していない三角形，$F_T(y)=By+b$ を
+$\widehat T$ から $T$ へのアフィン同型とする．
+$h_T=\operatorname{diam}T$ とする．
+
+\begin{lemma}[最小角条件と行列の評価]
+$T$ のすべての内角が $\alpha_0>0$ 以上であるとする．
+このとき $\alpha_0$ にのみ依存する $c,C>0$ が存在して
+\[
+ \norm B\le Ch_T,\quad
+ \norm{B^{-1}}\le C h_T^{-1},\quad
+ ch_T^2\le|\det B|\le Ch_T^2.
+\]
+\end{lemma}
+\begin{proof}
+$B$ の列は同一頂点から出る二辺のベクトルであり，
+それぞれの長さは $h_T$ 以下である．従って $\norm B\le2h_T$．
+正弦定理と各角の下界から，任意の辺の長さは
+$h_T\sin\alpha_0$ 以上である．
+二辺のなす角の正弦も $\sin\alpha_0$ 以上だから
+$|\det B|\ge h_T^2\sin^3\alpha_0$ である．
+二次元では $\norm{B^{-1}}\le C\norm B/|\det B|$ が
+余因子行列の公式から従うので結論を得る．
+\end{proof}
+
+\begin{theorem}[形状正則三角形における一般 $H^2$ 補間誤差]
+$T$ のすべての内角が $\alpha_0>0$ 以上であるとする．
+$u\in H^2(T)$ の連続代表を用いて三頂点の値を補間した
+一次多項式を $I_Tu$ と書く．このとき
+\[
+ \norm{u-I_Tu}_{L^2(T)}\le C_{\alpha_0}h_T^2|u|_{H^2(T)},
+\]
+\[
+ \norm{\nabla(u-I_Tu)}_{L^2(T)}
+ \le C_{\alpha_0}h_T|u|_{H^2(T)}
+\]
+が成立する．定数は $T$ の大きさには依存しない．
+\end{theorem}
+\begin{proof}
+$\widehat u=u\circ F_T$ と置く．
+補間の一意性から
+$(I_Tu)\circ F_T=\widehat I\widehat u$ である．
+弱微分のアフィン変換公式とヤコビ行列式の変換公式から
+\[
+ |\widehat u|_{H^2(\widehat T)}
+ \le C|\det B|^{-1/2}\norm B^2|u|_{H^2(T)}.
+\]
+$L^2$ ノルムについては
+\[
+ \norm{u-I_Tu}_{L^2(T)}
+ =|\det B|^{1/2}
+  \norm{\widehat u-\widehat I\widehat u}_{L^2(\widehat T)}
+ \le C\norm B^2|u|_{H^2(T)}.
+\]
+勾配の変換を同様に適用して
+\[
+ \begin{aligned}
+ &\norm{\nabla(u-I_Tu)}_{L^2(T)}\\
+ &\quad\le|\det B|^{1/2}\norm{B^{-1}}
+  \norm{\nabla(\widehat u-\widehat I\widehat u)}_{L^2(\widehat T)}\\
+ &\quad\le C\norm{B^{-1}}\norm B^2|u|_{H^2(T)}.
+ \end{aligned}
+\]
+前補題の評価を代入して結論を得る．
+\end{proof}
+
+\section{境界値と適合する有限要素空間}
+$\Omega$ を有界多角形領域とし，
+$\mathcal T_h$ を適合する有限三角形分割とする．
+各三角形の内角が $\alpha_0>0$ 以上であると仮定する．
+$h=\max_{T\in\mathcal T_h}h_T$ と置く．
+
+\begin{lemma}[多角形領域の連続代表]
+$u\in H^2(\Omega)$ には一意の連続代表が
+$\overline\Omega$ 上に存在する．
+さらに $u\in H_0^1(\Omega)$ ならばその代表は
+$\partial\Omega$ 上で0となる．
+\end{lemma}
+\begin{proof}
+有限の三角形分割を用い，各 $u|_T\in H^2(T)$ に
+前節の点評価補題をアフィン変換して適用する．
+隣接三角形の共通辺上で二つの代表が一致することは，
+両者が $u$ の同じ分布としての制限を与えることから従う．
+より具体的には，接する二領域を横断する小長方形内で
+$H^1$ 函数の両側の一次元トレースが一致する．
+滑らかな近似列については明白であり，次に述べるトレース評価を
+用いて極限に移せる．よって連続代表を貼り合わせられる．
+
+直線境界の辺を含む局所長方形を
+$Q=(0,a)\times(0,b)$ とし，境界辺を $t=0$ とする．
+滑らかな $v$ について
+$v(s,0)=v(s,t)-\int_0^t\partial_tv(s,r)\,dr$ である．
+Cauchy--Schwarzを用い，$t\in(0,b)$ について平均すると
+\[
+ \int_0^a|v(s,0)|^2\,ds
+ \le\frac2b\norm v_{L^2(Q)}^2
+     +2b\norm{\partial_tv}_{L^2(Q)}^2.
+\]
+ゆえに辺上のトレースは $H^1$ に関して連続である．
+$u\in H_0^1(\Omega)$ はコンパクト台の滑らかな函数によって
+$H^1$ で近似され，そのトレースは0である．
+従って $u$ の連続代表も辺上でほとんど至る所0となり，
+連続性により全辺上で0となる．頂点では連続性から従う．
+\end{proof}
+
+\begin{definition}
+$V_h$ を $\overline\Omega$ 上連続で，各 $T\in\mathcal T_h$ 上
+一次多項式に一致し，境界上で零となる函数全体とする．
+$V_h\subset H_0^1(\Omega)$ である．
+\end{definition}
+
+\begin{lemma}[適合有限要素空間]
+$V_h$ は有限次元であり，$H_0^1(\Omega)$ の部分空間である．
+$u\in H^2(\Omega)\cap H_0^1(\Omega)$ の節点補間 $I_hu$ は
+$V_h$ に属する．
+\end{lemma}
+\begin{proof}
+各三角形の一次多項式は三頂点値で定まり，
+適合性によって共通辺上でも一致する．
+したがって節点値の個数は有限で $V_h$ は有限次元となる．
+区分一次函数は局所的にLipschitzであり，
+辺を越えて連続するので全体として $H^1$ に属する．
+境界で零となるこのような函数は，
+境界から距離 $\varepsilon$ の帯を切断してから平滑化することで
+$C_c^\infty(\Omega)$ に $H^1$ 近似できる．
+切断項は，境界近傍で $|v(x)|\le C\operatorname{dist}(x,\partial\Omega)$
+と評価できることから $L^2$ で零に収束する．
+従って $V_h\subset H_0^1(\Omega)$ である．
+前補題で $u$ の境界節点値は0だから $I_hu\in V_h$ となる．
+\end{proof}
+
+\begin{theorem}[多角形領域の大域補間評価]
+$u\in H^2(\Omega)\cap H_0^1(\Omega)$ に対し
+\[
+ \norm{u-I_hu}_{L^2(\Omega)}\le Ch^2|u|_{H^2(\Omega)},
+\]
+\[
+ \norm{\nabla(u-I_hu)}_{L^2(\Omega)}\le Ch|u|_{H^2(\Omega)}
+\]
+が成立する．定数は $\alpha_0$ と $\Omega$ に依存してよいが，
+分割の要素数と最大要素径 $h$ に依存しない．
+\end{theorem}
+\begin{proof}
+各 $T\in\mathcal T_h$ に局所評価を適用し，
+\[
+ \norm{u-I_hu}_{L^2(\Omega)}^2
+ =\sum_T\norm{u-I_Tu}_{L^2(T)}^2
+ \le C h^4\sum_T|u|_{H^2(T)}^2
+ =Ch^4|u|_{H^2(\Omega)}^2
+\]
+を得る．勾配に対して同じ論法を使えば $Ch^2$ の二乗評価となる．
+平方根を取ればよい．
+\end{proof}
+
+\section{Poisson方程式とGalerkin近似}
+\begin{theorem}[有限要素解の存在と一意性]
+$\Omega$ を有界多角形領域，$f\in L^2(\Omega)$ とする．
+$u\in H_0^1(\Omega)$ で
+\[
+  \int_\Omega\nabla u\cdot\nabla v\,dx
+       =\int_\Omega fv\,dx\qquad(v\in H_0^1(\Omega))
+\]
+を満たすものは唯一存在する．各分割の $V_h$ 上にも
+唯一の $u_h\in V_h$ が存在して，同じ等式を全 $v_h\in V_h$ に対して満たす．
+\end{theorem}
+\begin{proof}
+零境界Poincar\'e不等式によって
+$\norm u_{H}=\norm{\nabla u}_{L^2}$ は
+$H_0^1(\Omega)$ 上の完備なノルムである．
+$a(u,v)=\int\nabla u\cdot\nabla v$ はこのノルムで
+$|a(u,v)|\le\norm u_H\norm v_H$，$a(u,u)=\norm u_H^2$
+を満たす．右辺の汎函数
+$F(v)=\int fv$ もPoincar\'e不等式により有界である．
+Lax--Milgramの定理を適用して弱解の存在と一意性を得る．
+$V_h$ は有限次元だから完備であり，双線形形式の制限に
+同じ定理を適用して $u_h$ の存在と一意性を得る．
+なおLax--Milgramの証明は，Riesz表現による有界作用素 $T$ を構成し，
+$\norm{Tx}\ge\alpha\norm x$ と
+$\ker T^*=0$ から $T$ の全射性を得るものであり，
+別ノート35.020に完全な証明を収録している．
+\end{proof}
+
+\begin{theorem}[一次要素の $H^1$ 誤差評価]
+$u\in H^2(\Omega)\cap H_0^1(\Omega)$ と仮定する．
+このとき一次有限要素解 $u_h$ について
+\[
+ \norm{\nabla(u-u_h)}_{L^2(\Omega)}
+ \le Ch|u|_{H^2(\Omega)}
+\]
+が成立する．さらに $\norm{u-u_h}_{H^1(\Omega)}\le
+C_\Omega h|u|_{H^2(\Omega)}$ である．
+\end{theorem}
+\begin{proof}
+$e=u-u_h$ とおく．Galerkin直交性から
+$\int\nabla e\cdot\nabla v_h=0$（$v_h\in V_h$）である．
+そこで任意の $v_h$ について
+\[
+ \begin{aligned}
+ \norm{\nabla e}_2^2
+ &=\int_\Omega\nabla e\cdot\nabla(u-v_h)\\
+ &\le\norm{\nabla e}_2\norm{\nabla(u-v_h)}_2.
+ \end{aligned}
+\]
+零でない場合は両辺を $\norm{\nabla e}_2$ で割り，
+$v_h=I_hu$ を代入すると前節の大域補間評価から所望の上界を得る．
+$H_0^1$ のPoincar\'e不等式により全 $H^1$ ノルムも評価できる．
+\end{proof}
+
+\section{正方形上の双対正則性と二次誤差}
+ここでは $\Omega=(0,\pi)^2$ とし，正方形の境界に沿う
+適合三角形分割を考える．二階微分が存在することを
+仮定するのではなく，双対Poisson問題から直接示す．
+
+\begin{lemma}[正方形のDirichlet問題の $H^2$ 正則性]
+$g\in L^2((0,\pi)^2)$ に対し
+\[
+ \int_\Omega\nabla z\cdot\nabla v=\int_\Omega gv
+ \quad(v\in H_0^1(\Omega))
+\]
+を満たす $z$ は $H^2(\Omega)$ に属し，
+$|z|_{H^2(\Omega)}\le C\norm g_{L^2(\Omega)}$ が成立する．
+\end{lemma}
+\begin{proof}
+$e_{mn}(x,y)=(2/\pi)\sin(mx)\sin(ny)$（$m,n\ge1$）は
+$L^2(\Omega)$ の正規直交基底である．
+$g=\sum g_{mn}e_{mn}$ と展開し，
+\[
+ z_N=\sum_{1\le m,n\le N}\frac{g_{mn}}{m^2+n^2}e_{mn}
+\]
+と置く．各 $z_N$ は境界で零であり，
+$-\Delta z_N$ は $g$ の部分和に等しい．
+$z_N$ の $H^1$ ノルムと
+二階微分の $L^2$ ノルムは，直交性を用いて
+\[
+ \begin{split}
+ \norm{\partial_{xx}z_N}_2^2
+ &=\sum_{m,n\le N}\frac{m^4|g_{mn}|^2}{(m^2+n^2)^2},\\
+ \norm{\partial_{yy}z_N}_2^2
+ &=\sum_{m,n\le N}\frac{n^4|g_{mn}|^2}{(m^2+n^2)^2},\\
+ \norm{\partial_{xy}z_N}_2^2
+ &=\sum_{m,n\le N}\frac{m^2n^2|g_{mn}|^2}{(m^2+n^2)^2}.
+ \end{split}
+\]
+従って $z_N$ は $H^2$ でCauchy列であり，
+$H^2$ の完備性により $z_N\to z_*$ が $H^2$ で成立する．
+部分積分を有限和に適用し，$N\to\infty$ とすれば
+$z_*$ は弱方程式を満たす．弱解の一意性から $z=z_*$ である．
+二階微分の二乗和の各項を足すと
+$\sum_{m,n} |g_{mn}|^2$ に等しいため
+$|z|_{H^2}\le\norm g_2$（採用する二階半ノルムの定義に応じて
+無害な定数が生じる）．
+\end{proof}
+
+\begin{theorem}[正方形上の二次 $L^2$ 誤差評価]
+$\Omega=(0,\pi)^2$ で $f\in L^2(\Omega)$ とする．
+形状正則な適合三角形分割による一次有限要素解 $u_h$ について
+\[
+ \norm{u-u_h}_{L^2(\Omega)}\le C h^2\norm f_{L^2(\Omega)}
+\]
+が成立する．定数は最小角下界と領域にのみ依存する．
+\end{theorem}
+\begin{proof}
+直前の補題を $g=f$ に適用すると
+$u\in H^2(\Omega)$ かつ $|u|_{H^2}\le C\norm f_2$ である．
+誤差 $e=u-u_h\in H_0^1(\Omega)$ に対して
+双対方程式 $-\Delta z=e$ の弱解を取る．
+補題より $z\in H^2(\Omega)$，
+$|z|_{H^2}\le C\norm e_2$ である．
+Galerkin直交性と補間誤差評価により
+\[
+ \begin{aligned}
+ \norm e_2^2
+ &=\int_\Omega\nabla e\cdot\nabla z
+   =\int_\Omega\nabla e\cdot\nabla(z-I_hz)\\
+ &\le\norm{\nabla e}_2\,Ch|z|_{H^2}
+ \le Ch\norm{\nabla e}_2\norm e_2.
+ \end{aligned}
+\]
+$e\ne0$ の場合に $\norm e_2$ で割れば
+$\norm e_2\le Ch\norm{\nabla e}_2$ である．
+エネルギー誤差評価と $|u|_{H^2}\le C\norm f_2$ を合わせれば
+$\norm e_2\le Ch^2\norm f_2$ となる．
+\end{proof}
+
+\section{仮定が必要な箇所}
+上の証明は，三角形の角度下界と領域が多角形であること，
+および弱解が $H^2$ に属するという仮定のもとで
+一般の二次元補間誤差を与える．
+特に非凸多角形の入り込み角における弱解の $H^2$ 正則性は
+一般には成立しないため，全ての多角形領域での
+二次 $L^2$ 誤差を主張しない．
+正方形については二重Fourier正弦級数により
+双対正則性まで証明したので，これを追加仮定としていない．
+
+
+\section{凹角領域での誤差評価の仮定を検証する}
+本稿では，境界のLipschitz性だけからPoisson方程式の弱解の
+$H^2$ 正則性は従わないことを，具体的な函数と右辺を構成して証明する．
+この事実は，有限要素法の誤差評価で厳密解の$H^2$ 正則性を
+独立した仮定として置く必要があることを示す．
+
+\begin{definition}[弱解]
+有界開集合$\Omega\subset\mathbb R^2$と$f\in L^2(\Omega)$に対し，
+$u\in H_0^1(\Omega)$が
+\[
+ \int_\Omega\nabla u\cdot\nabla v\,dx
+   =\int_\Omega fv\,dx
+ \qquad(v\in H_0^1(\Omega))
+\]
+を満たすとき，$-\Delta u=f$の零Dirichlet境界条件に対する弱解という．
+ここで$H_0^1(\Omega)$は$C_c^\infty(\Omega)$の$H^1$閉包である．
+\end{definition}
+
+\begin{theorem}[凹角領域における$H^2$正則性の破綻]\label{corner:thm:corner}
+$\pi<\omega<2\pi$とし，
+\[
+ \Omega_\omega=
+ \{(r\cos\theta,r\sin\theta):0<r<1,\ 0<\theta<\omega\}
+\]
+と定める．$\Omega_\omega$は有界Lipschitz領域である．
+ある$f\in C^\infty(\overline{\Omega_\omega})$が存在し，
+零Dirichlet境界条件を持つ$-\Delta u=f$の弱解は
+ただ一つ存在するが，その解は$H^2(\Omega_\omega)$に属さない．
+$f$は原点の近傍で恒等的に零となるように選べる．
+\end{theorem}
+
+この定理における$C^\infty(\overline\Omega)$は，
+閉包の各点の近傍で滑らかな函数へ延長できることを意味する．
+
+\section{領域の形状と角点函数}
+$\lambda=\pi/\omega$とおく．$1/2<\lambda<1$である．
+
+\begin{lemma}[扇形のLipschitz境界]\label{corner:lem:lipschitz}
+$\Omega_\omega$は有界Lipschitz領域である．
+\end{lemma}
+\begin{proof}
+原点以外の境界は，二本の直線の一部と半径1の円弧からなり，
+それらの交点では二つの滑らかな曲線が零でない角度で交わる．
+従って各点の近傍で適切な直交座標を取れば，境界はLipschitz函数の
+グラフで，領域はその一方の側として表される．
+原点について確認する．領域の補集合が占める角度を
+$\beta=2\pi-\omega\in(0,\pi)$とする．欠損角の二等分線を
+負の$t$軸とする直交座標$(s,t)$を取る．十分小さい原点近傍では，
+領域は
+\[
+ t>-\cot(\beta/2)|s|
+\]
+で表される．右辺はLipschitz函数である．
+境界のコンパクト性から有限個のグラフ近傍で覆える．
+\end{proof}
+
+\begin{lemma}[角点の調和函数]\label{corner:lem:harmonic}
+$0<r<1$, $0<\theta<\omega$で
+\[
+ w(r,\theta)=r^\lambda\sin(\lambda\theta)
+\]
+と置くと，$w$は滑らかで$\Delta w=0$となる．さらに
+$w(r,0)=w(r,\omega)=0$である．
+\end{lemma}
+\begin{proof}
+極座標におけるLaplacianは
+\[
+ \Delta=\partial_{rr}+r^{-1}\partial_r+r^{-2}\partial_{\theta\theta}
+\]
+である．これに$w$を代入すると
+\[
+ \Delta w=(\lambda(\lambda-1)+\lambda-\lambda^2)
+ r^{\lambda-2}\sin(\lambda\theta)=0.
+\]
+境界値については$\sin0=\sin(\lambda\omega)=\sin\pi=0$
+を用いればよい．
+\end{proof}
+
+\section{弱解の構成と零境界条件}
+$\chi\in C^\infty([0,\infty))$を
+\[
+ 0\le\chi\le1,\quad
+ \chi(r)=1\ (0\le r\le1/3),\qquad
+ \chi(r)=0\ (r\ge2/3)
+\]
+となるように取る．以後
+\[
+ u(r,\theta)=\chi(r)r^\lambda\sin(\lambda\theta)
+\]
+と定める．
+
+\begin{lemma}[エネルギー有限性]\label{corner:lem:H1}
+$u\in H^1(\Omega_\omega)$であり，原点近傍では
+\[
+ \int_{\Omega_\omega\cap\{r<\varepsilon\}}|u|^2\,dx
+      \le C\varepsilon^{2\lambda+2},\qquad
+ \int_{\Omega_\omega\cap\{r<\varepsilon\}}|\nabla u|^2\,dx
+      \le C\varepsilon^{2\lambda}
+\]
+が$0<\varepsilon<1/3$について成立する．
+\end{lemma}
+\begin{proof}
+$r<1/3$では
+\[
+ |u|\le r^\lambda,\qquad
+ |\nabla u|^2=(\partial_r u)^2+r^{-2}(\partial_\theta u)^2
+             =\lambda^2r^{2\lambda-2}.
+\]
+極座標の面積要素$r\,dr\,d\theta$を用いて積分すると
+\[
+ \int_{r<\varepsilon}|u|^2\,dx
+   \le\omega\int_0^\varepsilon r^{2\lambda+1}\,dr,
+ \qquad
+ \int_{r<\varepsilon}|\nabla u|^2\,dx
+   =\omega\lambda^2\int_0^\varepsilon r^{2\lambda-1}\,dr.
+\]
+$\lambda>0$なので両積分は有限であり，記載した評価を得る．
+$r\ge1/3$で$u$とその導函数は有界で，$r\ge2/3$では零である．
+原点は領域の境界点であるから，領域内部での古典的な微分は
+弱微分と一致し，$u\in H^1(\Omega_\omega)$を得る．
+\end{proof}
+
+\begin{lemma}[零境界条件]\label{corner:lem:H0}
+$u\in H_0^1(\Omega_\omega)$である．
+\end{lemma}
+\begin{proof}
+$\eta\in C^\infty([0,\infty))$を
+$0\le\eta\le1$，$\eta(t)=0$（$t\le1$），
+$\eta(t)=1$（$t\ge2$）となるように取る．
+$u_\varepsilon=\eta(r/\varepsilon)u$と置く．
+前補題の評価と
+$|\nabla\eta(r/\varepsilon)|\le C/\varepsilon$から
+\[
+ \|u-u_\varepsilon\|_{H^1(\Omega_\omega)}
+       \longrightarrow0\qquad(\varepsilon\downarrow0)
+\]
+を得る．実際，$\nabla(u-u_\varepsilon)$の第一項は
+$r<2\varepsilon$上の$\nabla u$で抑えられ，第二項は
+$\varepsilon<r<2\varepsilon$上で
+$C\varepsilon^{-1}|u|\le C\varepsilon^{\lambda-1}$
+と抑えられるので，それぞれの$L^2$ノルムは
+$O(\varepsilon^\lambda)$である．
+
+$\varepsilon>0$を固定する．滑らかな角度切断函数
+$\zeta_\delta(\theta)$を
+$\theta\in(0,\delta)\cup(\omega-\delta,\omega)$では0，
+$\theta\in(2\delta,\omega-2\delta)$では1，
+$|\zeta_\delta'|\le C/\delta$となるように取る．
+$u_{\varepsilon,\delta}=\zeta_\delta(\theta)u_\varepsilon$
+は，$0<\delta<\omega/4$について$C_c^\infty(\Omega_\omega)$に属する．
+$u_\varepsilon$の台は$r\ge\varepsilon$にあり，
+$\sin(\lambda\theta)$は両端角の近くで
+$C\min(\theta,\omega-\theta)$以下である．
+従って$\zeta_\delta'$を含む項
+$r^{-1}\zeta_\delta' u_\varepsilon$の絶対値は
+$r\ge\varepsilon$上で$C_\varepsilon$以下である．
+その台の角度方向の幅は$O(\delta)$であるため，
+この項の$L^2$ノルムは$O_\varepsilon(\sqrt\delta)$となる．
+他の項は有界収束定理で収束する．ゆえに
+\[
+ \|u_{\varepsilon,\delta}-u_\varepsilon\|_{H^1}
+   \longrightarrow0\qquad(\delta\downarrow0).
+\]
+対角列を選べば$u$を$C_c^\infty(\Omega_\omega)$で
+$H^1$近似できる．従って$u\in H_0^1(\Omega_\omega)$である．
+\end{proof}
+
+\section{滑らかな右辺と弱解の一意性}
+\begin{lemma}[右辺の正則性]\label{corner:lem:rhs}
+$f=-\Delta u$を$\Omega_\omega$上で古典的に定めると，
+$f$は閉包の近傍に滑らかに延長でき，
+原点近傍で零となる．さらに
+\[
+ f(r,\theta)=-\bigl(\chi''(r)r^\lambda
+      +(2\lambda+1)\chi'(r)r^{\lambda-1}\bigr)
+      \sin(\lambda\theta)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+積の微分公式と補題\ref{corner:lem:harmonic}から
+\[
+ \Delta(\chi w)=(\chi''+r^{-1}\chi')w
+                +2\chi'\partial_rw
+\]
+となる．$\partial_rw=\lambda r^{\lambda-1}\sin(\lambda\theta)$を
+代入して表示式を得る．$\chi',\chi''$は
+$1/3\le r\le2/3$に台を持つため，$f$も同じ帯に台を持つ．
+この帯では極座標表示が境界上を含めて滑らかであり，
+$f$は$C^\infty(\overline{\Omega_\omega})$に属する．
+\end{proof}
+
+\begin{lemma}[弱形式と一意性]\label{corner:lem:weak}
+上で構成した$u$は，$f=-\Delta u$の零Dirichlet弱解であり，
+そのような弱解はただ一つである．
+\end{lemma}
+\begin{proof}
+$u$は領域内部で滑らかで，$f=-\Delta u$が成立する．
+任意の$v\in C_c^\infty(\Omega_\omega)$に対し
+通常の部分積分で
+\[
+ \int_{\Omega_\omega}\nabla u\cdot\nabla v\,dx
+   =\int_{\Omega_\omega}fv\,dx
+\]
+を得る．左辺は$H_0^1$，右辺は$L^2$ノルムに関して連続である．
+$C_c^\infty(\Omega_\omega)$の$H_0^1$稠密性から
+全ての$v\in H_0^1(\Omega_\omega)$へ等式が拡張される．
+
+一意性を示す．同じ$f$に対する弱解$u_1,u_2$を取り，
+$w=u_1-u_2$と置くと，$v=w$を代入して
+$\|\nabla w\|_2^2=0$を得る．
+$H_0^1(\Omega_\omega)$上のPoincar\'e不等式により
+$\|w\|_2=0$となる．この不等式は領域を含む長方形で
+$C_c^\infty(\Omega_\omega)$を零延長し，一変数の
+Newton--Leibniz公式とCauchy--Schwarzを適用して導ける．
+従って$u_1=u_2$である．
+\end{proof}
+
+\section{二階微分の非可積分性}
+\begin{lemma}[角点特異性の強さ]\label{corner:lem:notH2}
+構成した$u$は$H^2(\Omega_\omega)$に属さない．
+\end{lemma}
+\begin{proof}
+$r<1/3$では$\chi=1$であり，
+\[
+ \partial_{rr}u
+   =\lambda(\lambda-1)r^{\lambda-2}\sin(\lambda\theta).
+\]
+$\lambda\in(1/2,1)$なので$\lambda(\lambda-1)\ne0$である．
+$\omega/4\le\theta\le3\omega/4$では
+$\sin(\lambda\theta)\ge1/\sqrt2$である．従って
+\[
+ \int_{\Omega_\omega\cap\{r<1/3\}}
+       |\partial_{rr}u|^2\,dx
+ \ge C\int_0^{1/3}r^{2\lambda-3}\,dr=+\infty,
+\]
+最後の発散は$\lambda<1$から従う．
+
+もし$u\in H^2(\Omega_\omega)$なら，領域内部での古典的な
+二階微分は弱二階微分と一致し，
+\[
+ \partial_{rr}u
+ =\cos^2\theta\,\partial_{xx}u
+  +2\sin\theta\cos\theta\,\partial_{xy}u
+  +\sin^2\theta\,\partial_{yy}u
+\]
+であるから$\partial_{rr}u\in L^2(\Omega_\omega)$となる．
+これは前の発散に矛盾する．
+\end{proof}
+
+\begin{proof}[定理\ref{corner:thm:corner}の証明]
+補題\ref{corner:lem:lipschitz}によって領域は有界Lipschitzである．
+補題\ref{corner:lem:H0}により構成した$u$は零境界条件を持つ．
+補題\ref{corner:lem:rhs}により$f$は滑らかであり，
+補題\ref{corner:lem:weak}から弱解の存在と一意性を得る．
+補題\ref{corner:lem:notH2}からその解は$H^2$に属さない．
+\end{proof}
+
+\section{正則性定理と有限要素法への帰結}
+\begin{corollary}[Lipschitz境界だけでは不十分]
+すべての有界Lipschitz領域$\Omega$と全ての
+$f\in L^2(\Omega)$について，零Dirichlet問題の弱解が
+$H^2(\Omega)$に属するという命題は偽である．
+また，一般のLipschitz領域で
+\[
+ \|u\|_{H^2(\Omega)}\le C_\Omega\|f\|_{L^2(\Omega)}
+\]
+というアプリオリ評価を主張することもできない．
+\end{corollary}
+\begin{proof}
+定理\ref{corner:thm:corner}の領域と滑らかな$f$を選べば，
+左辺は有限値ではないので両命題の反例となる．
+\end{proof}
+
+\begin{remark}[有限要素法への適用]
+形状正則三角形分割に対する一次有限要素補間評価
+\[
+ \|u-I_hu\|_{H^1(\Omega)}\le Ch|u|_{H^2(\Omega)}
+\]
+は，$u\in H^2(\Omega)$という仮定の下で成立する評価である．
+本稿の$u$には右辺が有限でないため，この評価を適用できない．
+ここから直ちに有限要素解が収束しないという結論は出ない．
+より弱い正則性を仮定した誤差評価は別途検討を要する．
+\end{remark}
+
+\begin{remark}[論理的な結論]
+Poisson方程式の$H_0^1$弱解の存在一意性と$H^2$正則性は
+異なる主張である．前者はこの反例上でも成立するが後者は失敗する．
+「一般Lipschitz領域での$H^2$正則性」を完成させる代わりに，
+正則性定理には境界形状，係数および右辺について
+実際に十分な仮定を付ける必要がある．
+\end{remark}
+
+
+
+\begin{thebibliography}{9}
+\bibitem{brenner} S. C. Brenner and L. R. Scott,
+ \emph{The Mathematical Theory of Finite Element Methods},
+ 3rd ed., Springer, 2008.
+\bibitem{ciarlet} P. G. Ciarlet,
+ \emph{The Finite Element Method for Elliptic Problems},
+ North-Holland, 1978.
+\end{thebibliography}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{二要素でPoisson方程式を近似する．}
+\begin{proposition}
+$-u''=1$（$0<x<1$），$u(0)=u(1)=0$
+に対し，節点 $0,1/2,1$ の線形有限要素法の
+離散解は
+\[
+u_h(x)=\frac18\phi(x)
+\]
+である．ここで $\phi$ は中央節点で1，
+両端で0となる帽子関数である．
+\end{proposition}
+\begin{proof}
+$V_h$ は $\phi$ の張る一次元空間で，
+$u_h=c\phi$ と書ける．
+$\phi'(x)=2$（$0<x<1/2$），
+$\phi'(x)=-2$（$1/2<x<1$）なので
+\[
+a(\phi,\phi)=\int_0^1|\phi'|^2dx=4.
+\]
+一方
+$\ell(\phi)=\int_0^1\phi\,dx=1/2$．
+Galerkin方程式 $4c=1/2$ から $c=1/8$ を得る．
+\end{proof}
+\noindent\textbf{到達確認．}
+厳密解 $u(x)=x(1-x)/2$ の
+中央節点値と離散解の中央節点値を比較せよ．
+\par\noindent\textbf{解答．}
+$u(1/2)=\frac12(1/2)(1/2)=1/8$．
+$\phi(1/2)=1$ より
+$u_h(1/2)=1/8$ で一致する．
+\end{document}
