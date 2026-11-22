@@ -1,0 +1,269 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Hopf–Rinowの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Riemann距離の定義，距離完備性，測地線．
+本稿の具体的な到達課題は，具体的なRiemann多様体にHopf--Rinowを適用できるか判定する．
+
+
+\section{Riemann距離と完備性}
+$(M,g)$ を連結な有限次元Riemann多様体とする．
+\begin{definition}
+二点 $p,q$ のRiemann距離を
+\[
+ d_g(p,q)=\inf\{L_g(\gamma):\gamma
+ \text{ は }p\text{ と }q\text{ を結ぶ区分的滑らかな曲線}\}
+\]
+で定める．
+\end{definition}
+\begin{lemma}[Riemann距離の位相]
+$d_g$ は距離であり，もとの多様体位相を誘導する．
+\end{lemma}
+\begin{proof}
+連結な滑らかな多様体は道連結であるから，
+二点を結ぶ区分的滑らかな曲線が存在し距離は有限である．
+非負性・対称性・三角不等式は曲線長の性質から従う．
+座標近傍の相対コンパクトな小球上で
+$g$ とEuclid計量は定数倍で上下から比較できる．
+従って近い二点について
+$d_g(p,q)\le C|\varphi(p)-\varphi(q)|$．
+一方，$p$ の小座標球から出る任意の曲線は
+下から $\sqrt c$ 倍のEuclid半径以上の長さを持つ．
+よって $q\ne p$ なら $d_g(p,q)>0$ であり，
+$d_g$-小球と座標近傍は互いに包含し合う．
+これにより距離性と位相の一致が従う．
+\end{proof}
+\section{測地線完備性}
+\begin{definition}
+全ての初期データ $(p,v)\in TM$ の測地線が
+時刻全体 $\mathbb R$ へ延長できるとき
+$(M,g)$ を測地的完備という．
+\end{definition}
+\begin{proposition}[距離完備性から測地的完備性]
+$(M,d_g)$ が完備なら測地的完備である．
+\end{proposition}
+\begin{proof}
+最大測地線が有限時刻 $b$ で延長できないと仮定する．
+測地線の速さ $c$ は一定なので
+$t,s\uparrow b$ に対し
+$d_g(\gamma(t),\gamma(s))\le c|t-s|$．
+従って $\gamma(t)$ はCauchyであり，距離完備性から
+$p\in M$ に収束する．
+$g$ とEuclid計量の局所同値性および一定速度から，
+$p$ の相対コンパクト座標近傍で
+$(\gamma(t),\dot\gamma(t))$ は接束のコンパクト部分集合内にある．
+測地線方程式の局所存在定理はこのコンパクト集合上で
+共通の正の時間幅の解を与えるので，
+$b$ 直前から解を延長して $b$ を越えられる．
+極大性に矛盾する．負方向も同様である．
+\end{proof}
+\section{完備性から最短測地線へ}
+\begin{lemma}[最短曲線の角は消える]\label{lem:corner}
+二本の滑らかな測地線を接続した区分的滑らかな曲線が
+その端点間の距離を実現するなら，
+接続点における片側速度は一致する
+（単位速度でパラメータ付けした場合）．
+\end{lemma}
+\begin{proof}
+接続点を $x$ とし，接続の前後の単位速度を
+$u,v\in T_xM$ とする．$u\ne v$ なら
+小さい $\varepsilon>0$ について
+前後の点はそれぞれ
+$\exp_x(-\varepsilon u)$，
+$\exp_x(\varepsilon v)$ となる．
+正規座標でこれらの二点間の距離は
+$\varepsilon|u+v|+o(\varepsilon)$ であり，
+$|u+v|<2$ なので $2\varepsilon$ より短い曲線で結べる．
+元の曲線の長さ $2\varepsilon$ の部分をその曲線で
+置き換えると全長が短くなり最短性に矛盾する．
+ゆえに $u=v$ である．
+\end{proof}
+\begin{theorem}[測地的完備なら最短測地線が存在]
+\label{thm:reach}
+$(M,g)$ が測地的完備なら任意の二点 $p,q$ は
+長さ $d_g(p,q)$ の測地線で結ばれる．
+\end{theorem}
+\begin{proof}
+$q\ne p$ とし $d=d_g(p,q)>0$ と置く．
+$p$ の正規球の半径より小さい $0<r<d$ を取る．
+半径 $r$ の放射測地線の端点全体
+$S_r=\exp_p\{v:|v|=r\}$ はコンパクトである．
+任意の $p$ から $q$ への曲線は最初に $S_r$ と交わるため
+\[
+ d=\inf_{x\in S_r}\{r+d_g(x,q)\}.
+\]
+$S_r$ のコンパクト性で最小点 $x_0$ を取れば
+$d=r+d_g(x_0,q)$ となる．
+$p$ から $x_0$ への放射測地線を $\gamma$ とし，
+測地的完備性から全時刻へ延長する．
+
+集合
+\[
+ A=\{t\in[r,d]:d=t+d_g(\gamma(t),q)\}
+\]
+を考える．$r\in A$ であり，距離の連続性によって $A$ は閉．
+$t\in A$，$t<d$ とする．$y=\gamma(t)$ の正規球半径
+より小さい $0<\varepsilon<d-t$ を取り，
+球面 $S_\varepsilon(y)$ 上で $d_g(z,q)$ を最小にする
+$z$ を選ぶ．$y$ から $q$ への任意の曲線はこの球面と交わるので
+$d_g(y,q)=\varepsilon+d_g(z,q)$ である．
+従って
+\[
+ d=t+\varepsilon+d_g(z,q).
+\]
+一方 $d\le d_g(p,z)+d_g(z,q)$ であり，
+$p$ から $y$ までの $\gamma$ と
+$y$ から $z$ への短い放射測地線を結べば
+$d_g(p,z)\le t+\varepsilon$．
+従って等号が全て成立し，接続した曲線は
+$p$ から $z$ への最短曲線である．
+補題\ref{lem:corner}からこの曲線に角はなく，
+測地線の一意性により $z=\gamma(t+\varepsilon)$ となる．
+よって $t+\varepsilon\in A$．
+したがって $A$ は $[r,d]$ の右側に開いている．
+$A$ は閉・非空であり，右へ延長可能なので
+$\sup A=d$ である．閉性から $d\in A$ となり，
+$d_g(\gamma(d),q)=0$．すなわち $\gamma(d)=q$ である．
+$\gamma$ は単位速度なので長さは $d$ となる．
+\end{proof}
+\section{Hopf–Rinowの定理}
+\begin{theorem}[Hopf--Rinow]\label{thm:hopf}
+連結Riemann多様体 $M$ について次は同値である．
+\begin{enumerate}
+\item $(M,d_g)$ は完備である．
+\item $M$ は測地的完備である．
+\item 任意の $p\in M$ について指数写像
+ $\exp_p:T_pM\to M$ が全空間で定義される．
+\item $M$ の閉有界集合はコンパクトである．
+\end{enumerate}
+これらが成立すると任意の二点は最短測地線で結ばれる．
+\end{theorem}
+\begin{proof}
+(1)$\Rightarrow$(2) は前命題による．
+(2)$\Rightarrow$(3) は測地的完備性の定義による．
+(3) なら定理\ref{thm:reach}の証明で用いる測地線の
+必要な延長がすべて可能なので，
+任意の $q$ は $p$ からの最短測地線によって到達できる．
+従って閉距離球
+$\overline B_g(p,R)$ は
+$\exp_p$ による $T_pM$ の閉球
+$\{v:|v|\le R\}$ の像である．
+後者は有限次元Euclid空間でコンパクトなので
+$\overline B_g(p,R)$ はコンパクトである．
+任意の閉有界集合はこのコンパクト球の閉部分集合だから
+(4) が従う．
+(4) ならCauchy列はある閉距離球に尾部が含まれ，
+その球はコンパクトなので収束部分列を持つ．
+Cauchy性から列全体がその極限へ収束し (1) を得る．
+最短測地線の存在は定理\ref{thm:reach}による．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{完備性を距離と測地線から判定する．}
+\begin{proposition}[開区間と円周の比較]
+標準計量を備えた開区間 $(0,1)$ は距離完備でも
+測地的完備でもない．
+一方，標準計量を備えた円周 $S^1$ は双方の意味で完備である．
+\end{proposition}
+\begin{proof}
+$(0,1)$ のRiemann距離は $|x-y|$ である．
+$x_n=1/n$（$n\ge2$）はCauchy列だが
+$(0,1)$ 内に極限を持たない．
+また $\gamma(t)=1/2+t$ は測地線であるが
+$t=1/2$ で境界へ達し延長できない．
+$S^1$ はコンパクトなRiemann多様体なので，
+Riemann距離から得る距離空間もコンパクトであり，
+特に完備である．Hopf--Rinow定理から
+測地的完備性が従う．
+\end{proof}
+\begin{proposition}[完備な非コンパクトな例]
+標準Euclid計量を備えた $\mathbb R^n$ は
+完備だがコンパクトではない．
+任意の二点 $p,q$ は
+$\gamma(t)=(1-t)p+tq$（$0\le t\le1$）という
+最短測地線で結ばれる．
+\end{proposition}
+\begin{proof}
+Euclid距離の完備性を用いる．
+非コンパクト性は列 $(ke_1)_{k\ge1}$ が
+収束部分列を持たないことによる．
+任意の区分的滑らかな曲線 $c$ に対し
+\[
+L(c)=\int|\dot c(t)|\,dt
+\ge\left|\int\dot c(t)\,dt\right|=|q-p|
+\]
+である．表示した線分の長さは $|q-p|$ である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$(0,\infty)$ のEuclid計量は完備か．
+\par\noindent\textbf{解答．}
+$x_n=1/n$ は領域内のCauchy列だが極限0を含まない．
+よって不完備である．
+\end{document}

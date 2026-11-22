@@ -1,0 +1,267 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{部分多様体の外在的幾何}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，第二基本形式とGauss方程式，主曲率．
+本稿の具体的な到達課題は，球面と円柱の第二基本形式，主曲率，Gauss曲率を算出する．
+
+
+\section{等長埋め込みと第二基本形式}
+$(M,g)$ を $(\bar M,\bar g)$ の等長埋め込み部分多様体とし，
+$\bar\nabla$ を $\bar M$ のLevi-Civita接続とする．
+\begin{definition}
+接ベクトル場 $X,Y$ に対し
+\[
+ \bar\nabla_XY=\nabla_XY+\mathrm{II}(X,Y)
+\]
+と接成分・法成分へ直交分解する．
+$\mathrm{II}:TM\times TM\to NM$ を第二基本形式という．
+\end{definition}
+\begin{proposition}[Gauss公式]\label{prop:gauss}
+$\nabla$ は $M$ のLevi-Civita接続であり，
+$\mathrm{II}$ は対称な法束値 $(0,2)$ テンソル場である．
+\end{proposition}
+\begin{proof}
+$\bar\nabla$ の接成分は接続の二つのLeibniz則を満たす．
+$\bar\nabla$ の計量保存性を接ベクトル場に制限すると
+$Xg(Y,Z)=g(\nabla_XY,Z)+g(Y,\nabla_XZ)$ となる．
+また
+$\bar\nabla_XY-\bar\nabla_YX=[X,Y]$ の接成分を取れば
+$\nabla$ の捩率は零である．
+Levi-Civitaの一意性から $\nabla$ は誘導計量の接続である．
+法成分を取ると $\mathrm{II}(X,Y)=\mathrm{II}(Y,X)$．
+$Y$ を $fY$ に変えた際の $X(f)Y$ は接成分なので
+法成分は $f\mathrm{II}(X,Y)$ となる．
+$X$ についても接続の第1変数の線形性から同様であり，
+$\mathrm{II}$ はテンソルである．
+\end{proof}
+\section{形作用素とWeingarten公式}
+\begin{definition}
+法ベクトル場 $\nu$ に対し
+\[
+ g(A_\nu X,Y)=\bar g(\mathrm{II}(X,Y),\nu)
+\]
+によって形作用素 $A_\nu:TM\to TM$ を定める．
+\end{definition}
+\begin{theorem}[Weingarten公式]
+\[
+ \bar\nabla_X\nu=-A_\nu X+\nabla_X^\perp\nu
+\]
+が成り立つ．ここで $\nabla^\perp$ は法成分を取った法束接続．
+\end{theorem}
+\begin{proof}
+$\bar g(\nu,Y)=0$ を微分すると
+\[
+ \bar g(\bar\nabla_X\nu,Y)
+ =-\bar g(\nu,\bar\nabla_XY)
+ =-\bar g(\nu,\mathrm{II}(X,Y))
+ =-g(A_\nu X,Y).
+\]
+従って接成分が $-A_\nu X$ に等しい．
+法成分を $\nabla_X^\perp\nu$ と定めれば式が従う．
+\end{proof}
+\begin{proposition}
+$A_\nu$ は $g$ に関して自己共役である．
+\end{proposition}
+\begin{proof}
+$g(A_\nu X,Y)=\bar g(\mathrm{II}(X,Y),\nu)$
+は $\mathrm{II}$ の対称性によって $X,Y$ に対称である．
+\end{proof}
+\section{Gaussの方程式}
+\begin{theorem}[Gaussの曲率方程式]\label{thm:gausseq}
+$X,Y,Z,W$ を $M$ の接ベクトル場とすると
+\[
+ \begin{aligned}
+ g(R(X,Y)Z,W)
+ ={}&\bar g(\bar R(X,Y)Z,W)\\
+ &+\bar g(\mathrm{II}(X,W),\mathrm{II}(Y,Z))\\
+ &-\bar g(\mathrm{II}(Y,W),\mathrm{II}(X,Z)).
+ \end{aligned}
+\]
+\end{theorem}
+\begin{proof}
+Gauss公式を二度使って
+$\bar\nabla_X\bar\nabla_YZ$ の接成分を計算する．
+$\bar\nabla_YZ=\nabla_YZ+\mathrm{II}(Y,Z)$ であり，
+最初の項の接成分は $\nabla_X\nabla_YZ$，
+法成分への微分の接成分はWeingarten公式で
+$-A_{\mathrm{II}(Y,Z)}X$ である．
+従って
+\[
+ (\bar R(X,Y)Z)^\top
+ =R(X,Y)Z-A_{\mathrm{II}(Y,Z)}X
+ +A_{\mathrm{II}(X,Z)}Y.
+\]
+$W$ と内積を取り，形作用素の定義で書き直すと
+表示したGaussの方程式を得る．
+\end{proof}
+\section{Codazziの方程式}
+\begin{definition}
+第二基本形式の共変微分を
+\[
+ (\nabla_X\mathrm{II})(Y,Z)
+ =\nabla_X^\perp(\mathrm{II}(Y,Z))
+ -\mathrm{II}(\nabla_XY,Z)
+ -\mathrm{II}(Y,\nabla_XZ)
+\]
+で定める．
+\end{definition}
+\begin{theorem}[Codazziの方程式]\label{thm:codazzi}
+\[
+ (\bar R(X,Y)Z)^\perp
+ =(\nabla_X\mathrm{II})(Y,Z)
+ -(\nabla_Y\mathrm{II})(X,Z).
+\]
+\end{theorem}
+\begin{proof}
+$\bar\nabla_X\bar\nabla_YZ$ の法成分は
+$\mathrm{II}(X,\nabla_YZ)
+ +\nabla_X^\perp\mathrm{II}(Y,Z)$ である．
+同様に $X,Y$ を交換した項と
+$\bar\nabla_{[X,Y]}Z$ の法成分を引く．
+捩率零
+$\nabla_XY-\nabla_YX=[X,Y]$ と
+$\mathrm{II}$ の対称性を用いて整理すると
+右辺の表示式を得る．
+\end{proof}
+\section{Euclid空間の曲面}
+\begin{proposition}[曲面のGauss曲率]
+$\mathbb R^3$ の曲面の局所パラメータを
+$F(u,v)$ とする．第一基本形式の係数を
+$E,F_0,G$，第二基本形式の係数を $L,M,N$ とすると
+\[
+ K=\frac{LN-M^2}{EG-F_0^2}
+\]
+である．
+\end{proposition}
+\begin{proof}
+Euclid空間の曲率は零なのでGaussの方程式から
+\[
+ g(R(F_u,F_v)F_v,F_u)
+ =\mathrm{II}(F_u,F_u)\mathrm{II}(F_v,F_v)
+ -\mathrm{II}(F_u,F_v)^2=LN-M^2.
+\]
+断面曲率の分母は
+$g(F_u,F_u)g(F_v,F_v)-g(F_u,F_v)^2=EG-F_0^2$
+である．比を取ればよい．
+\end{proof}
+\begin{example}[単位球面]
+$S^n\subset\mathbb R^{n+1}$ の断面曲率は常に1である．
+\end{example}
+\begin{proof}
+外向き単位法線は $\nu(x)=x$ であり，
+$\bar\nabla_X\nu=X$ だから
+Weingarten公式から $A_\nu=-I$．
+従って
+$\mathrm{II}(X,Y)=-g(X,Y)\nu$．
+Gaussの方程式を代入すると
+$g(R(u,v)v,u)=|u|^2|v|^2-g(u,v)^2$ なので
+断面曲率は1となる．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{球面と円柱の外在曲率を比較する．}
+\begin{proposition}[半径 $R$ の球面]
+$S_R^2\subset\mathbb R^3$ の外向き単位法線を
+$\nu(p)=p/R$ とする．形作用素を
+$A(X)=-(D_X\nu)^\top$ と定めれば
+$A=-R^{-1}\mathrm{id}$ である．
+よって両主曲率は $-1/R$ で，
+Gauss曲率は $K=1/R^2$ となる．
+\end{proposition}
+\begin{proof}
+$D_X\nu=X/R$ であり，$X$ は球面に接するから
+その接成分は $X/R$．従って $A(X)=-X/R$ である．
+Euclid空間のGauss方程式より
+$K=\det A=R^{-2}$ となる．
+\end{proof}
+\begin{proposition}[円柱]
+半径 $R$ の円柱
+$\{(R\cos\theta,R\sin\theta,z)\}$ では
+主曲率は $-1/R$ と $0$ である．
+従って円柱のGauss曲率は零である．
+\end{proposition}
+\begin{proof}
+外向き単位法線は
+$\nu=(\cos\theta,\sin\theta,0)$ である．
+円周方向の単位ベクトル
+$e_\theta=(-\sin\theta,\cos\theta,0)$ に対し
+$D_{e_\theta}\nu=e_\theta/R$．
+軸方向の $e_z=(0,0,1)$ に対して
+$D_{e_z}\nu=0$．
+よって $A(e_\theta)=-e_\theta/R$，
+$A(e_z)=0$ である．
+\end{proof}
+\noindent\textbf{到達確認．}
+半径を2倍にすると球面と円柱のGauss曲率はどう変わるか．
+\par\noindent\textbf{解答．}
+球面は $K=R^{-2}$ だから1/4倍になる．
+円柱はもともと零のままである．
+\end{document}

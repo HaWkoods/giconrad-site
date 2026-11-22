@@ -1,0 +1,294 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{曲率テンソルとJacobi場}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Riemann曲率テンソル，測地線とJacobi方程式．
+本稿の具体的な到達課題は，定曲率空間でJacobi場を解き，曲率と測地線の収束・発散の関係を説明する．
+
+
+\section{Riemann曲率テンソル}
+本稿では $(M,g)$ をRiemann多様体，$\nabla$ を
+Levi-Civita接続とする．
+\begin{definition}
+\[
+ R(X,Y)Z=\nabla_X\nabla_YZ-\nabla_Y\nabla_XZ
+ -\nabla_{[X,Y]}Z
+\]
+を曲率テンソルといい，
+$R(X,Y,Z,W)=g(R(X,Y)Z,W)$ と置く．
+\end{definition}
+\begin{proposition}[テンソル性]
+$R(X,Y)Z$ は $X,Y,Z$ について $C^\infty(M)$-線形であり，
+$R(X,Y)=-R(Y,X)$ である．
+\end{proposition}
+\begin{proof}
+$X$ を $fX$ に変えたときの余分な $Y(f)\nabla_XZ$ は
+$[fX,Y]=f[X,Y]-Y(f)X$ からの項と相殺する．
+$Y$ については反対称性を用いればよい．
+$Z$ を $fZ$ に変えると生じる二階微分項は
+$X(Yf)-Y(Xf)-[X,Y]f=0$ により相殺し，
+一階の項も二つずつ相殺する．
+反対称性は定義を入れ替えれば明らかである．
+\end{proof}
+\section{曲率の対称性}
+\begin{theorem}[第一Bianchi恒等式]\label{thm:bianchi}
+\[
+ R(X,Y)Z+R(Y,Z)X+R(Z,X)Y=0.
+\]
+\end{theorem}
+\begin{proof}
+全てがテンソル的なので一点の近傍の局所座標で
+$X,Y,Z$ を座標ベクトル場として証明すればよい．
+それらの括弧は零で，捩率零から
+$\nabla_XY=\nabla_YX$ である．
+巡回和を展開すると
+\[
+ \nabla_X\nabla_YZ-\nabla_X\nabla_ZY
+ +\nabla_Y\nabla_ZX-\nabla_Y\nabla_XZ
+ +\nabla_Z\nabla_XY-\nabla_Z\nabla_YX=0
+\]
+となる．
+\end{proof}
+\begin{proposition}[計量対称性]\label{prop:curvsym}
+\[
+ \begin{aligned}
+ R(X,Y,Z,W)&=-R(Y,X,Z,W),\\
+ R(X,Y,Z,W)&=-R(X,Y,W,Z),\\
+ R(X,Y,Z,W)&=R(Z,W,X,Y).
+ \end{aligned}
+\]
+\end{proposition}
+\begin{proof}
+第1式は定義による．
+計量保存を二度適用し
+$[X,Y]g(Z,W)=X(Yg(Z,W))-Y(Xg(Z,W))$
+を展開すると
+$g(R(X,Y)Z,W)+g(Z,R(X,Y)W)=0$ を得るので
+第2式が成立する．
+第1，2式およびBianchi恒等式を用い，
+\[
+ R(X,Y,Z,W)+R(Y,Z,X,W)+R(Z,X,Y,W)=0
+\]
+と，$W$ を先頭へ移した同種の式を組み合わせると
+$R(X,Y,Z,W)-R(Z,W,X,Y)=0$ を得る．
+この最後の等式は，二つのBianchi恒等式の
+項を交代性で並べ替え，
+共通する項を消去したものである．
+\end{proof}
+\section{断面曲率}
+\begin{definition}
+$u,v\in T_pM$ が線形独立であるとき，
+それらが張る平面 $\sigma$ の断面曲率を
+\[
+ K(\sigma)=
+ \frac{g(R(u,v)v,u)}
+ {g(u,u)g(v,v)-g(u,v)^2}
+\]
+で定義する．
+\end{definition}
+\begin{proposition}
+断面曲率は平面 $\sigma$ の基底 $u,v$ の選択に依存しない．
+\end{proposition}
+\begin{proof}
+$u,v$ から $u',v'$ への基底変換行列を
+$A\in\operatorname{GL}_2(\mathbb R)$ とする．
+$R$ の第1・第2引数の交代性と第3・第4引数の交代性から
+分子は $(\det A)^2$ 倍となる．
+分母はGram行列の行列式であり，
+$G\mapsto A^TGA$ により同じく $(\det A)^2$ 倍となる．
+比は不変である．
+\end{proof}
+\section{測地線の変分とJacobi場}
+\begin{definition}
+$\gamma$ を測地線とする．滑らかな写像
+$F:(-\varepsilon,\varepsilon)\times I\to M$ で
+各 $s$ 固定の曲線 $\gamma_s(t)=F(s,t)$ が測地線，
+$\gamma_0=\gamma$ となるものを測地線変分という．
+\[
+ J(t)=\left.\frac{\partial F}{\partial s}\right|_{s=0}
+\]
+をその変分ベクトル場という．
+\end{definition}
+\begin{theorem}[Jacobi方程式]\label{thm:jacobi}
+測地線変分の変分ベクトル場 $J$ は
+\[
+ \nabla_{\dot\gamma}\nabla_{\dot\gamma}J
+ +R(J,\dot\gamma)\dot\gamma=0
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$T=\partial_tF$，$S=\partial_sF$ と置く．
+パラメータ方向は可換なので捩率零から
+$\nabla_TS=\nabla_ST$ である．
+また各 $\gamma_s$ は測地線なので
+$\nabla_TT=0$．
+曲率の定義から
+\[
+ \nabla_T\nabla_TS
+ =\nabla_T\nabla_ST
+ =\nabla_S\nabla_TT+R(T,S)T
+ =-R(S,T)T.
+\]
+$s=0$ へ制限すると主張の式を得る．
+\end{proof}
+\begin{theorem}[Jacobi場の初期値問題]
+任意の $a,b\in T_{\gamma(0)}M$ に対し，
+$J(0)=a$，
+$\nabla_{\dot\gamma}J(0)=b$ を満たす
+Jacobi場が一意に存在する．
+\end{theorem}
+\begin{proof}
+$\gamma$ に沿う平行正規直交フレームを取ると，
+Jacobi方程式は滑らかな係数行列を持つ
+線形二階連立常微分方程式
+$j''(t)+A(t)j(t)=0$ になる．
+一階の線形系へ直せるので，
+線形ODEの存在一意性により任意の初期値に対して
+全ての $\gamma$ の定義域で唯一解を持つ．
+\end{proof}
+\begin{proposition}[指数写像の微分とJacobi場]
+$p\in M$，$v,w\in T_pM$ とする．
+$t\mapsto\exp_p(tv)$ に沿って
+$J(0)=0$，
+$\nabla_{\dot\gamma}J(0)=w$ となるJacobi場 $J$ を取る．
+このとき
+\[
+ J(t)=(d\exp_p)_{tv}(tw)
+\]
+が成立する（定義域に含まれる $t$ について）．
+\end{proposition}
+\begin{proof}
+測地線変分
+$F(s,t)=\exp_p(t(v+sw))$ を取ると，
+その変分場は定義から右辺となる．
+$F(s,0)=p$ なので $J(0)=0$．
+$\partial_tF(s,0)=v+sw$ を $s$ で微分すれば
+$\nabla_{\dot\gamma}J(0)=w$ を得る．
+Jacobi場の初期値一意性から指定の $J$ と一致する．
+\end{proof}
+\section{具体例}
+\begin{example}[Euclid空間]
+$\mathbb R^n$ の通常の計量では $R=0$ であり，
+測地線に沿うJacobi場は $J(t)=a+tb$ の形となる．
+\end{example}
+\begin{proof}
+Christoffel記号は零なので曲率も零である．
+Jacobi方程式は各成分 $J''=0$ となり，
+全解が一次式である．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{定曲率空間のJacobi方程式．}
+\begin{proposition}[定曲率の垂直Jacobi場]
+単位速度測地線 $\gamma$ に沿い，
+$\dot\gamma$ に垂直で平行な単位ベクトル場 $E$ を取る．
+断面曲率が一定 $K$ なら，
+$J(t)=j(t)E(t)$ がJacobi場であることと
+\[
+j''(t)+Kj(t)=0
+\]
+は同値である．
+特に $j(0)=0$，$j'(0)=1$ の解は
+\[
+j(t)=
+\begin{cases}
+\sin(\sqrt Kt)/\sqrt K&K>0,\\
+t&K=0,\\
+\sinh(\sqrt{-K}t)/\sqrt{-K}&K<0
+\end{cases}
+\]
+である．
+\end{proposition}
+\begin{proof}
+$\nabla_{\dot\gamma}E=0$ より
+$\nabla_{\dot\gamma}^2J=j''E$ となる．
+定曲率の公式
+$R(J,\dot\gamma)\dot\gamma=KJ$
+をJacobi方程式に代入すると
+$j''+Kj=0$ を得る．
+表示した三つの関数はいずれも
+対応する方程式と初期条件を満たす．
+二階常微分方程式の一意性から結論が従う．
+\end{proof}
+\begin{corollary}[正曲率の場合の最初の零点]
+$K>0$ の場合，
+$j(t)$ は正の時刻 $\pi/\sqrt K$ で初めて零になる．
+一方 $K\le0$ では $t>0$ に零点を持たない．
+\end{corollary}
+\begin{proof}
+三つの明示式で直接確かめる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$K=4$ の場合，$j(0)=0$，$j'(0)=1$ を満たす
+Jacobi場のスカラー係数と最初の正の零点を求めよ．
+\par\noindent\textbf{解答．}
+$j(t)=\sin(2t)/2$，最初の零点は $\pi/2$ である．
+\end{document}
