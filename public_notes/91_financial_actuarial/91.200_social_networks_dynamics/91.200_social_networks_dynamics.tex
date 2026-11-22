@@ -1,0 +1,363 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{社会ネットワークと集団ダイナミクス}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+
+\section*{本稿の到達目標}
+有限ネットワークにおける「意見の平均化」を行列の問題として定式化し，
+与えられたグラフからLaplacianを作って，合意先の値，
+収束速度および指定精度に達するまでの反復回数を求められるようになる．
+前提知識は実対称行列のスペクトル定理，線形常微分方程式，
+および初等的なグラフ理論である．
+
+\section{グラフ上の拡散方程式}
+$G=(V,E)$ を有限無向単純グラフとする．
+隣接行列を $A$，次数行列を $D$ とし，$L=D-A$ をグラフLaplacianとする．
+\begin{proposition}
+任意の $x\in\mathbb R^{|V|}$ について
+\[
+ x^TLx=\sum_{\{i,j\}\in E}(x_i-x_j)^2\ge0.
+\]
+また $Lx=0$ と $x$ が各連結成分上で定数であることは同値である．
+\end{proposition}
+\begin{proof}
+$L$ の定義から二次形式を展開すると，各辺について
+$(x_i^2+x_j^2-2x_ix_j)$ が現れ表示式を得る．
+$Lx=0$ なら $x^TLx=0$ より各辺の両端で値が等しい．
+道に沿って値は一定である．逆は $Lx$ の各成分の定義から従う．
+\end{proof}
+\section{連続時間の合意過程}
+\begin{theorem}[連結グラフ上の合意]
+$G$ が連結なら，常微分方程式
+$\dot x=-Lx$ の解は
+\[
+ x(t)\longrightarrow \bar x\mathbf1,
+ \qquad \bar x=\frac1{|V|}\sum_{i\in V}x_i(0)
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$L$ は実対称半正定値で，連結性により零固有値の固有空間は
+$\operatorname{span}\{\mathbf1\}$ に等しい．
+直交固有基底で $x(0)$ を展開すると，
+$e^{-tL}$ は正固有値 $\lambda_j$ に対応する成分を
+$e^{-t\lambda_j}$ 倍し，零固有値の成分を保存する．
+$t\to\infty$ で後者だけ残る．その射影は表示した平均に等しい．
+\end{proof}
+
+\section{収束の速さを数値化する}
+\begin{proposition}[スペクトル間隙と誤差評価]\label{prop:consensus-rate}
+$G$ を $n$ 頂点の連結無向グラフとし，
+$0=\lambda_1<\lambda_2\le\cdots\le\lambda_n$
+をLaplacianの固有値とする．
+$x(t)=e^{-tL}x(0)$，$\bar x=n^{-1}\sum_i x_i(0)$ とすると
+\[
+ \|x(t)-\bar x\mathbf1\|_2
+ \le e^{-\lambda_2t}\|x(0)-\bar x\mathbf1\|_2
+ \qquad(t\ge0)
+\]
+が成立する．
+\end{proposition}
+\begin{proof}
+$\mathbf1/\sqrt n$ を含むLaplacianの正規直交固有基底
+$v_1,\ldots,v_n$ を取り，
+$x(0)-\bar x\mathbf1=\sum_{j=2}^nc_jv_j$ と置く．
+$e^{-tL}v_j=e^{-t\lambda_j}v_j$ なので
+\[
+ \|x(t)-\bar x\mathbf1\|_2^2
+ =\sum_{j=2}^n e^{-2t\lambda_j}|c_j|^2
+ \le e^{-2t\lambda_2}\sum_{j=2}^n|c_j|^2.
+\]
+平方根をとって結論を得る．
+\end{proof}
+\begin{example}[3頂点の道で合意を計算する]\label{ex:path-consensus}
+3頂点を順に結んだ道 $1-2-3$ に対し
+\[
+ L=\begin{pmatrix}1&-1&0\\-1&2&-1\\0&-1&1\end{pmatrix}.
+\]
+固有値は $0,1,3$ で，対応する互いに直交する
+固有ベクトルとして
+\[
+ (1,1,1)^T,\quad(1,0,-1)^T,\quad(1,-2,1)^T
+\]
+を取れる．初期状態が $x(0)=(2,0,1)^T$ なら $\bar x=1$ であり，
+\[
+ x(0)=\begin{pmatrix}1\\1\\1\end{pmatrix}
+ +\frac12\begin{pmatrix}1\\0\\-1\end{pmatrix}
+ +\frac12\begin{pmatrix}1\\-2\\1\end{pmatrix}.
+\]
+従って解は
+\[
+ x(t)=\begin{pmatrix}1\\1\\1\end{pmatrix}
+ +\frac{e^{-t}}2\begin{pmatrix}1\\0\\-1\end{pmatrix}
+ +\frac{e^{-3t}}2\begin{pmatrix}1\\-2\\1\end{pmatrix}.
+\]
+特に全成分が1へ収束し，端点間の差は
+$x_1(t)-x_3(t)=e^{-t}$ である．
+さらに $\|x(0)-\mathbf1\|_2=\sqrt2$ だから，
+全体の二乗和ノルムの誤差を $\varepsilon>0$ 以下にするには，
+$\varepsilon<\sqrt2$ の場合
+$t\ge\log(\sqrt2/\varepsilon)$ とすれば十分である．
+\end{example}
+
+\section{離散時間の意見形成}
+\begin{theorem}[対称確率行列による合意]
+$W$ を対称な行確率行列とし，各 $W_{ii}>0$，
+$\{\{i,j\}:W_{ij}>0,i\ne j\}$ が連結グラフをなすとする．
+このとき $x_{m+1}=Wx_m$ は
+$\bar x\mathbf1$ に収束する．
+\end{theorem}
+\begin{proof}
+$W$ は対称だから実直交固有分解可能であり，
+$W\mathbf1=\mathbf1$．
+無向連結性から固有値1の固有空間は一次元である．
+また非負で対角成分が正の既約確率行列は非周期的なので，
+Perron--Frobeniusの定理から他の固有値は絶対値が1未満である．
+従って $W^m$ は $\mathbf1$ への直交射影に収束する．
+\end{proof}
+\begin{remark}
+有向グラフや非対称な影響行列では平均が保存されるとは限らない．
+ここでの定理を一般の社会的合意に無条件で適用することはできない．
+\end{remark}
+
+
+
+\section{グラフから離散的な合意規則を設計する}
+\begin{theorem}[離散化したLaplacianの収束]\label{thm:weighted-consensus}
+$G$ を少なくとも2頂点をもつ連結無向グラフとし，
+$\Delta$ を最大次数とする．$0<h<1/\Delta$ とおくと
+$W=I-hL$ は対称な行確率行列で，対角成分は正である．
+その反復 $x_{k+1}=Wx_k$ は平均 $\bar x\mathbf1$ に収束し，
+\[
+ \|x_k-\bar x\mathbf1\|_2
+ \le\rho^k\|x_0-\bar x\mathbf1\|_2,\quad
+ \rho=\max_{2\le j\le n}|1-h\lambda_j|<1
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$W_{ij}=h$（辺の両端），$W_{ii}=1-h\deg(i)>0$
+で，残りの成分は0だから非負である．
+$L\mathbf1=0$ より各行の和は1，対称性も明らかである．
+また任意の実ベクトル $z$ に対し
+\[
+ z^TLz=\sum_{\{i,j\}\in E}(z_i-z_j)^2
+ \le2\sum_i\deg(i)z_i^2
+ \le2\Delta\|z\|_2^2.
+\]
+スペクトル定理から $\lambda_n\le2\Delta$．
+従って $j\ge2$ では
+$0<\lambda_j\le2\Delta$ かつ
+$-1<1-h\lambda_j<1$ である．
+$W$ の固有値は $1-h\lambda_j$ で，
+定数ベクトル以外の固有成分は少なくとも率 $\rho$ で
+減衰する．正規直交固有基底に展開すれば上の評価が得られる．
+\end{proof}
+\begin{example}[反復回数を設計する]
+例\ref{ex:path-consensus}の3頂点の道で $h=1/4$ とする．
+$\Delta=2$ なので定理の範囲にある．
+$W$ の固有値は $1,3/4,1/4$ だから $\rho=3/4$．
+初期状態 $x_0=(2,0,1)^T$ から始めると
+\[
+ \|x_k-\mathbf1\|_2\le\sqrt2(3/4)^k.
+\]
+誤差を $10^{-2}$ 以下に保証するには
+\[
+ k\ge
+ \left\lceil\frac{\log(10^{-2}/\sqrt2)}{\log(3/4)}\right\rceil
+ =18
+\]
+で十分である．この回数は厳密な上界に基づく停止基準であり，
+実際の誤差がそれより早く小さくなることはあり得る．
+\end{example}
+
+\section{非対称ネットワークの合意}
+\begin{lemma}[正の確率行列による直径の縮小]
+$P=(p_{ij})\in\mathbb R^{n\times n}$ を非負の行確率行列とする．
+全成分が $p_{ij}\ge\delta>0$ を満たすなら，
+$D(x)=\max_i x_i-\min_i x_i$ について
+\[
+ D(Px)\le(1-n\delta)D(x)
+\]
+が成立する．
+\end{lemma}
+\begin{proof}
+$x$ の最小値を $m$，最大値を $M$ とする．
+各行の成分から $\delta$ を引いた残りは非負で総和 $1-n\delta$ だから
+\[
+ (Px)_i=\delta\sum_jx_j+
+ \sum_j(p_{ij}-\delta)x_j
+\]
+である．右辺第二項は $(1-n\delta)m$ と
+$(1-n\delta)M$ の間にある．全 $i$ に共通の第一項を差し引いて
+最大値と最小値を比較すると所要の不等式を得る．
+\end{proof}
+\begin{theorem}[原始確率行列の合意定理]
+$P$ を有限次元の行確率行列とし，ある $r\ge1$ で $P^r$ の
+全成分が正であると仮定する．
+このとき唯一の行確率ベクトル $\pi^T$ が存在して
+$\pi^TP=\pi^T$ を満たし，
+任意の $x\in\mathbb R^n$ について
+$P^kx\to(\pi^Tx)\mathbf1$ となる．
+\end{theorem}
+\begin{proof}
+$P^r$ の最小成分を $\delta>0$ とする．
+前補題より $D(P^{rk}x)\le(1-n\delta)^kD(x)$ である．
+確率行列は各成分をもとの最小値と最大値の間に写すので，
+$\min_i(P^kx)_i$ は非減少，$\max_i(P^kx)_i$ は非増加である．
+両者の差が零へ収束するため，すべての成分は同じ極限に収束する．
+定数値の写像 $x\mapsto c(x)$ は線形・正値で $c(\mathbf1)=1$ だから，
+ある行確率ベクトル $\pi^T$ により $c(x)=\pi^Tx$ と書ける．
+$P^{k+1}x$ と $P^kx$ の極限が一致するため $\pi^TP=\pi^T$．
+他の定常行確率ベクトル $\rho$ についても
+$\rho^Tx=\rho^TP^kx\to\rho^T\mathbf1\,\pi^Tx=\pi^Tx$ なので
+$\rho=\pi$ である．
+\end{proof}
+\begin{corollary}[状態依存の非線形合意]
+各 $x$ に対して行確率行列 $P(x)$ が定まり，
+全成分が一様に $p_{ij}(x)\ge\delta>0$ を満たすとする．
+反復 $x_{k+1}=P(x_k)x_k$ の全成分は共通の極限に収束する．
+\end{corollary}
+\begin{proof}
+前補題を時刻ごとの $P(x_k)$ に適用すると
+$D(x_{k+1})\le(1-n\delta)D(x_k)$ となる．
+同時に最小成分は非減少，最大成分は非増加である．
+従ってそれらは同じ極限を持ち，全成分はその間に挟まれて同じ極限へ収束する．
+\end{proof}
+
+\section{ランダムな時変ネットワークの合意}
+\begin{theorem}[確率的な正混合ステップによる合意]
+$P_0,P_1,\ldots$ を独立同分布な $n\times n$ 行確率行列とする．
+ある $\varepsilon>0$ と $p>0$ が存在して
+\[
+ \mathbb P\bigl(P_k(i,j)\ge\varepsilon
+ \text{ for all }i,j\bigr)\ge p
+\]
+が全 $k$ で成り立つと仮定する．
+任意の初期状態 $x_0\in\mathbb R^n$ に対して反復
+$x_{k+1}=P_kx_k$ の各成分は，ほとんど確実に同じ有限値へ収束する．
+この極限値は一般には初期値の算術平均でなく，乱数に依存してよい．
+\end{theorem}
+\begin{proof}
+$D(x)=\max_i x_i-\min_i x_i$ とする．
+確率行列は各成分をもとの最小値と最大値の間の凸結合に写すので，
+常に $D(P_kx)\le D(x)$ であり，最小成分は非減少，最大成分は非増加である．
+$E_k=\{P_k(i,j)\ge\varepsilon\ \text{for all }i,j\}$ と置く．
+事象 $E_k$ が起これば先に証明した直径縮小補題により
+\[
+ D(x_{k+1})\le(1-n\varepsilon)D(x_k)
+\]
+となる．$E_k$ は独立で，$\mathbb P(E_k)\ge p$ だから，
+第二Borel--Cantelliの補題により $E_k$ はほとんど確実に無限回起こる．
+（ここでは全ての成分が $\varepsilon$ 以上となるなら
+$n\varepsilon\le1$ であることも用いる．）
+$n\varepsilon<1$ なら，その発生回数を $N(k)$ として
+$D(x_k)\le(1-n\varepsilon)^{N(k)}D(x_0)\to0$．
+$n\varepsilon=1$ なら最初の発生時刻から直径は零になる．
+最小成分列と最大成分列は単調で有界だから極限を持ち，
+差が零へ収束するので同一の極限を持つ．
+全ての $x_{k,i}$ はその二列の間に挟まれるため結論が従う．
+\end{proof}
+\begin{remark}
+一様に混合する確率行列が独立に無限回現れるという強い十分条件を
+用いた結果である．一般の依存的・有向・断続的接続ネットワークには
+より精密な係数や連結性条件が必要である．
+\end{remark}
+
+
+\section*{到達確認}
+\noindent\textbf{確認問題．}
+3頂点が全て互いに隣接するグラフ $K_3$ について，
+Laplacian $L$ の固有値を求めよ．
+連続時間の合意方程式 $\dot x=-Lx$ の解を与え，
+誤差の減衰率を求めよ．
+
+\medskip\noindent\textbf{解答．}
+各頂点の次数は2だから
+$L=3I-J$（$J$ は全成分が1の行列）である．
+$J\mathbf1=3\mathbf1$，$\mathbf1^\perp$ 上では $J=0$ より，
+固有値は $0,3,3$．従って
+\[
+ x(t)=\bar x\mathbf1+e^{-3t}(x(0)-\bar x\mathbf1),
+ \qquad
+ \|x(t)-\bar x\mathbf1\|_2
+ =e^{-3t}\|x(0)-\bar x\mathbf1\|_2.
+\]
+辺を追加して連結性を増すと収束が速くなる場合があることを，
+3頂点の道の計算と比較できる．
+
+\section*{結果の射程}
+\noindent 無向グラフでLaplacianが対称である場合には，
+平均への収束と速度を固有値だけで厳密に求められる．
+非対称なネットワークでは保存される平均が変化し得るため，
+固有値以外に左固有ベクトルや確率行列の既約性などを
+検討する必要がある．
+
+\end{document}

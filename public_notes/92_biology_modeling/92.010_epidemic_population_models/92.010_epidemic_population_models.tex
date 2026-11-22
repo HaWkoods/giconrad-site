@@ -1,0 +1,339 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{感染症と個体群の数理モデル}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+
+\section*{本稿の到達目標}
+定数係数のSIRモデルについて，パラメータと初期状態から
+感染者の初期増減，流行のピークと最終的に残る感受性者の割合を
+自分で求められるようになることを主目標とする．
+必要なのは微分方程式の解の存在・一意性，微積分，
+および連続関数の単調性である．
+後半のパラメータ同定は，この予測法を観測の逆問題へ拡張する発展事項とする．
+
+\section{SIRモデルの定義}
+総人口を1に正規化し，感受性者 $S$，感染者 $I$，回復者 $R$ について
+\[
+ \dot S=-\beta SI,\qquad
+ \dot I=\beta SI-\gamma I,\qquad
+ \dot R=\gamma I
+\]
+を考える．ここで $\beta,\gamma>0$ とし，
+$S(0),I(0),R(0)\ge0$，$S(0)+I(0)+R(0)=1$ と仮定する．
+\begin{theorem}[正の単体の不変性]
+初期値が上記の単体に属すれば，解は全 $t\ge0$ で存在し，
+$S,I,R\ge0$，$S+I+R=1$ を保つ．
+\end{theorem}
+\begin{proof}
+和の微分は零である．
+$S(t)=S(0)\exp(-\beta\int_0^t I(s)ds)$，
+$I(t)=I(0)\exp(\int_0^t(\beta S(s)-\gamma)ds)$ は
+存在区間で非負である．$R'=\gamma I\ge0$ だから $R$ も非負である．
+従って解はコンパクト単体に留まる．右辺は多項式なので
+常微分方程式の延長定理から全時間へ延長できる．
+\end{proof}
+\section{基本再生産数}
+\begin{definition}
+感染がほとんど存在せず $S\approx S_0$ のときの閾値を
+$\mathcal R_{\mathrm{eff}}=\beta S_0/\gamma$ と定める．
+全人口が感受性者の初期状態なら $\mathcal R_0=\beta/\gamma$ と呼ぶ．
+\end{definition}
+\begin{proposition}
+$I(0)>0$ とする．初期感染者数の増減は
+$\beta S(0)-\gamma$ の符号に従う．
+さらに $I$ は $S(t)>\gamma/\beta$ の間増加し，
+$S(t)<\gamma/\beta$ の間減少する．
+\end{proposition}
+\begin{proof}
+$\dot I=I(\beta S-\gamma)$ かつ $I(t)>0$ だから符号が一致する．
+\end{proof}
+\section{最終規模関係}
+\begin{theorem}
+$S(0)>0$，$I(0)>0$ とすると，$S_\infty=\lim_{t\to\infty}S(t)>0$ が存在し，
+$I(t)\to0$ となる．さらに
+\[
+ \log\frac{S_\infty}{S(0)}
+ =-\frac\beta\gamma\bigl(R_\infty-R(0)\bigr)
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+$S$ は単調非増加，$R$ は単調非減少でどちらも $[0,1]$ に値を持つため極限が存在する．
+$\dot R=\gamma I$ から $\int_0^\infty I(t)dt\le1/\gamma$．
+$\dot I$ は単体上で有界なので $I$ は一様連続である．
+非負・可積分・一様連続な関数は零へ収束するから $I(t)\to0$．
+$S(t)=S(0)\exp(-\beta\int_0^tI(s)ds)$ より
+$S_\infty\ge S(0)e^{-\beta/\gamma}>0$．
+最後に $\dot S/S=-(\beta/\gamma)\dot R$ を積分し
+$t\to\infty$ とする．
+\end{proof}
+\begin{remark}
+実データへの適合では接触率の時変性，人口動態，観測誤差を考慮すべきである．
+\end{remark}
+
+
+
+\section{流行のピークと最終規模を手計算で予測する}
+\begin{proposition}[感染ピークを与える保存量]\label{prop:sir-invariant}
+$S(0)>0$，$I(0)>0$ とする．SIRモデルの解に沿って
+\[
+ H(t)=I(t)+S(t)-\frac{\gamma}{\beta}\log S(t)
+\]
+は一定である．特に $S(0)>\gamma/\beta$ なら，
+感染者数が最大になる時刻 $t_*$ がただ一つ存在し，
+そのとき
+\[
+ I(t_*)=I(0)+S(0)-\frac{\gamma}{\beta}
+        +\frac{\gamma}{\beta}
+          \log\frac{\gamma/\beta}{S(0)}
+\]
+が成立する．
+\end{proposition}
+\begin{proof}
+$S(t)>0$ が成立することは正の単体の不変性の証明で示した．
+従って微分計算が正当化され，
+\[
+ H'(t)=I'(t)+S'(t)
+       -\frac{\gamma}{\beta}\frac{S'(t)}{S(t)}
+       =-\gamma I(t)+\gamma I(t)=0.
+\]
+また前節の単峰性定理により $S(t_*)=\gamma/\beta$ を満たす
+時刻がただ一つあり，この時刻で $I$ は最大になる．
+$H(t_*)=H(0)$ を整理すれば表示式を得る．
+\end{proof}
+\begin{example}[パラメータから予測値を求める]\label{ex:sir-prediction}
+$\beta=2$，$\gamma=1$，初期状態を
+$S(0)=0.9$，$I(0)=0.1$，$R(0)=0$ とする．
+まず $\mathcal R_{\mathrm{eff}}=2\cdot0.9=1.8>1$ だから
+感染者数は初めに増加し，
+\[
+ I'(0)=0.1(2\cdot0.9-1)=0.08.
+\]
+ピークは $S=1/2$ に達したときであり，
+命題\ref{prop:sir-invariant}から
+\[
+ I_{\mathrm{peak}}
+ =\frac12+\frac12\log\frac59
+ \simeq0.2061.
+\]
+さらに最終規模関係と $R_\infty=1-S_\infty$ から
+\[
+ \log\frac{S_\infty}{0.9}=-2(1-S_\infty).
+\]
+これは $S_\infty\in(0,1/2)$ の範囲で一意の解をもつ．
+実際 $F(s)=\log(s/0.9)+2(1-s)$ と置けば
+$F'(s)=1/s-2>0$（$0<s<1/2$），
+$F(s)\to-\infty$（$s\downarrow0$），
+$F(1/2)=1+\log(5/9)>0$ である．
+二分法によって $S_\infty\simeq0.1717$ と求まる．
+従って最終的に回復者に属する割合は
+$R_\infty=1-S_\infty\simeq0.8283$ である．
+これらの数値は\emph{定数係数SIRモデルに従う場合}の予測であり，
+実際の感染症にそのまま適用できるとは限らない．
+\end{example}
+
+\section{発展：流行曲線からのパラメータ同定}
+\begin{proposition}[理想観測における同定可能性]
+SIRモデルの $S(t)$ と $I(t)$ がある開時間区間で
+正の $C^1$ 関数として完全に観測され，モデルの係数 $\beta,\gamma>0$ が
+定数であるとする．このとき両パラメータは一意に定まり，
+\[
+ \beta=-\frac{S'(t)}{S(t)I(t)},\qquad
+ \gamma=-\frac{S'(t)+I'(t)}{I(t)}
+\]
+によって任意の観測時刻から復元できる．
+\end{proposition}
+\begin{proof}
+第一の式は $S'=-\beta SI$ を $S I>0$ で割ったものである．
+$S'+I'=-\gamma I$ だから第二の式も得られる．
+右辺は観測関数のみで決まるため，同じ $S,I$ を生む定数係数の組は一意である．
+\end{proof}
+\begin{theorem}[感染者数の単峰性]
+$S(0),I(0)>0$ とする．$S(t)$ は狭義減少し，
+$I(t)$ は高々一度しか増加から減少へ転じない．
+初めに $\beta S(0)\le\gamma$ なら $I$ は初めから非増加である．
+$\beta S(0)>\gamma$ なら，ある有限時刻 $t_*>0$ において
+$S(t_*)=\gamma/\beta$ となり，$I$ は $[0,t_*]$ で増加，
+その後は減少する．
+\end{theorem}
+\begin{proof}
+$S'=-\beta SI<0$ は全ての有限時刻で成立する．
+$I'=I(\beta S-\gamma)$ だから，$S$ の単調性によって
+$I'$ の符号は正から負へ高々一度しか変わらない．
+$\beta S(0)\le\gamma$ の場合は直ちに結論を得る．
+$\beta S(0)>\gamma$ の場合に $S(t)>\gamma/\beta$ が
+全 $t\ge0$ で成立すると仮定すると $I'(t)>0$ であり
+$I(t)\ge I(0)>0$ となる．従って
+$S'(t)=-\beta S(t)I(t)\le-\beta I(0)S(t)$ から
+$S(t)\le S(0)e^{-\beta I(0)t}\to0$．
+これは $S(t)>\gamma/\beta>0$ に矛盾する．
+ゆえに閾値を横切る時刻が存在し，その時刻は狭義単調性から一意である．
+\end{proof}
+\begin{remark}
+実データでは観測誤差や欠測により導関数の直接評価が不安定になる．
+上記の同定可能性は理想的な連続観測についての数学的主張である．
+\end{remark}
+
+\section{発展：観測誤差を含むパラメータ同定}
+$\Theta\subset\mathbb R^p$ をコンパクト集合とし，
+$\theta\in\Theta$ からモデル観測の予測値
+$M(\theta)=(m_1(\theta),\ldots,m_r(\theta))\in\mathbb R^r$
+への連続写像を考える．
+SIR方程式の解の指定時刻における感染者数などは，
+解の初期値・係数への連続依存によりこの形に含まれる．
+\begin{theorem}[反復観測での最小二乗同定の一致性]
+$M$ が単射であると仮定する．
+真のパラメータ $\theta_0\in\Theta$ に対し，
+$Y_{j,k}=m_j(\theta_0)+\varepsilon_{j,k}$ と観測する．
+各 $j=1,\ldots,r$ について
+$\varepsilon_{j,k}$ は $k$ に関して独立同分布，
+期待値零・絶対可積分とする（異なる $j$ 間の独立性は要求しない）．
+$\overline Y_{j,N}=N^{-1}\sum_{k=1}^NY_{j,k}$ と置き，
+\[
+ \widehat\theta_N\in\operatorname*{argmin}_{\theta\in\Theta}
+ \sum_{j=1}^r\bigl(\overline Y_{j,N}-m_j(\theta)\bigr)^2
+\]
+を選ぶ．この最小化問題には解があり，
+$\widehat\theta_N\to\theta_0$ がほとんど確実に成立する．
+\end{theorem}
+\begin{proof}
+目的関数はコンパクト集合上の連続関数だから最小点がある．
+強大数の法則から
+$\overline Y_N\to M(\theta_0)$ が成分ごとにほとんど確実に成立する．
+目的関数を $Q_N(\theta)=\norm{\overline Y_N-M(\theta)}_2^2$，
+$Q(\theta)=\norm{M(\theta_0)-M(\theta)}_2^2$ と書く．
+$M$ はコンパクト集合上で有界なので，
+\[
+ \sup_{\theta\in\Theta}|Q_N(\theta)-Q(\theta)|
+ \le\norm{\overline Y_N-M(\theta_0)}
+ \bigl(\norm{\overline Y_N-M(\theta_0)}+4\sup_{\Theta}\norm{M}\bigr)
+\]
+の右辺は零へ収束する（必要なら定数を大きくして評価する）．
+単射性により $Q(\theta)=0$ の唯一の点は $\theta_0$ である．
+任意の $\delta>0$ について
+$K_\delta=\{\theta\in\Theta:\norm{\theta-\theta_0}\ge\delta\}$ は
+コンパクトで，空でなければ
+$\min_{K_\delta}Q>0$ である．
+一様収束と $Q_N(\widehat\theta_N)\le Q_N(\theta_0)$ から，
+十分大きい $N$ では $\widehat\theta_N\notin K_\delta$ となる．
+従って $\widehat\theta_N\to\theta_0$ である．
+\end{proof}
+\begin{proposition}[局所同定可能性の十分条件]
+$\Theta$ が $\theta_0$ の近傍で開集合を含み，
+$M$ がその近傍で $C^1$，$DM(\theta_0)$ の列階数が $p$ なら，
+$\theta_0$ の近傍では $M$ は単射である．
+\end{proposition}
+\begin{proof}
+$DM(\theta_0)$ に階数 $p$ の $p\times p$ 小行列がある．
+それに対応する $M$ の $p$ 個の成分を取り出した写像に
+逆関数定理を適用すると，$\theta_0$ のある近傍で単射となる．
+よって成分を全部集めた $M$ もその近傍で単射である．
+\end{proof}
+\begin{remark}
+これは既知のモデル形のもとで独立反復観測が増える場合の一致性である．
+未知初期状態・部分観測・一つの流行だけからの識別，
+測定誤差の相関構造を含む逆問題の正則化は別の条件を要する．
+\end{remark}
+
+
+\section*{到達確認}
+\noindent\textbf{確認問題1．}
+$S(0)=0.9$，$I(0)=0.1$ のモデルで
+$S'(0)=-0.18$，$I'(0)=0.08$ が正確に観測されたとする．
+$\beta$ と $\gamma$ を復元せよ．
+
+\medskip\noindent\textbf{解答．}
+$S(0)I(0)=0.09$ より
+$\beta=-S'(0)/(S(0)I(0))=0.18/0.09=2$．
+また $S'(0)+I'(0)=-0.10$ から
+$\gamma=-(S'(0)+I'(0))/I(0)=1$．
+従って例\ref{ex:sir-prediction}のパラメータに一致する．
+
+\medskip\noindent\textbf{確認問題2．}
+初期条件は上と同じとして $\beta=1$，$\gamma=2$ に変更する．
+感染者数が内部時刻にピークをもつかを判定し，
+その理由を方程式から示せ．
+
+\medskip\noindent\textbf{解答．}
+$S(t)\le1$ であり
+$\beta S(t)-\gamma\le1-2=-1<0$ だから，
+$I(t)>0$ の間 $I'(t)<0$ である．
+従って感染者数は初期時刻から厳密に減少し，
+最大値は $I(0)=0.1$ である．
+
+\section*{結論とモデルの限界}
+\noindent 定数係数と初期状態を与えれば，
+感染者の増減，ピーク時の値，最終規模の暗黙方程式を
+微分方程式から導けることが分かった．
+これらはモデルの数学的帰結であって，
+接触率の時変性，人口の不均一性，潜伏期間や観測誤差を無視した
+現実の予測精度を保証するものではない．
+
+\end{document}

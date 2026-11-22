@@ -1,0 +1,635 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{複合Poissonリスクモデルと破産確率}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+複合Poisson請求モデルを定め，
+安全割増係数の意味を確かめた後，
+初期準備金から究極破産確率を計算できるようになる．
+指数請求額の場合には上界だけでなく厳密値を用い，
+指定した破産確率以下にする準備金額を設計する．
+前提はPoisson分布・条件付き期待値・初等的な確率過程である．
+
+
+\section{Poisson過程と複合Poisson過程}
+
+本稿では保険会社の準備金を連続時間の確率過程として
+モデル化する．
+確率論の条件付き期待値，独立性，大数の強法則を前提とする．
+
+\begin{definition}
+$\lambda>0$ とし，
+$W_1,W_2,\dots$ を独立同分布で
+$P(W_i>t)=e^{-\lambda t}$（$t\ge0$）となる
+指数分布確率変数とする．
+\[
+ T_n=\sum_{j=1}^n W_j,\qquad T_0=0,\qquad
+ N_t=\max\{n\ge0:T_n\le t\}
+\]
+と置く．$N_t$ を強度 $\lambda$ の
+\emph{Poisson過程}という．
+\end{definition}
+
+\begin{lemma}[Poisson分布]\label{lem:poisson}
+任意の $t\ge0$，$n\ge0$ について
+\[
+ P(N_t=n)=e^{-\lambda t}\frac{(\lambda t)^n}{n!}
+\]
+が成り立つ．
+さらに互いに交わらない時間区間の増分は独立であり，
+長さ $h$ の区間の増分は平均 $\lambda h$ の
+Poisson分布に従う．
+\end{lemma}
+\begin{proof}
+$n\ge1$ の場合，
+$T_n$ は $n$ 個の指数分布の和だから，
+その密度は畳み込みを用いる帰納法により
+\[
+ f_{T_n}(s)
+ =\frac{\lambda^n s^{n-1}e^{-\lambda s}}{(n-1)!},
+ \qquad s>0
+\]
+となる．
+実際 $n=1$ は指数分布の密度であり，
+$n$ で成立すれば
+\[
+ f_{T_{n+1}}(t)
+ =\int_0^t f_{T_n}(s)\lambda e^{-\lambda(t-s)}\,ds
+ =\frac{\lambda^{n+1}t^ne^{-\lambda t}}{n!}
+\]
+となる．
+従って
+\begin{align*}
+ P(N_t=n)
+ &=P(T_n\le t<T_{n+1})\\
+ &=\int_0^t f_{T_n}(s)P(W_{n+1}>t-s)\,ds\\
+ &=\int_0^t
+ \frac{\lambda^ns^{n-1}e^{-\lambda s}}{(n-1)!}
+ e^{-\lambda(t-s)}\,ds\\
+ &=e^{-\lambda t}\frac{(\lambda t)^n}{n!}.
+\end{align*}
+$n=0$ では $P(W_1>t)=e^{-\lambda t}$ である．
+
+増分の独立性を示す．
+指数分布は記憶を持たず，
+\[
+ P(W>s+t\mid W>s)
+ =\frac{e^{-\lambda(s+t)}}{e^{-\lambda s}}
+ =e^{-\lambda t}
+\]
+である．
+従って任意の時刻 $t$ の直後の待ち時間は，
+過去の待ち時間と到着回数を条件としても
+強度 $\lambda$ の指数分布であり，
+その後に続く待ち時間も元の独立な指数分布列と同じ法則を持つ．
+これを到着時刻ごとに反復すると，
+$t$ 以後の計数過程は過去から独立で，
+時刻零からの過程と同じ有限次元分布を持つ．
+従って定常独立増分性が成立し，
+増分の分布は既に示したPoisson分布の公式による．
+\end{proof}
+
+\begin{definition}
+$X_1,X_2,\dots$ を非負の独立同分布確率変数とし，
+$(N_t)$ と独立であるとする．
+\[
+ S_t=\sum_{j=1}^{N_t}X_j
+\]
+を\emph{複合Poisson過程}という．
+$X_j$ は一回の保険金請求額を表す．
+\end{definition}
+
+\begin{proposition}[複合Poisson過程の期待値と分散]
+\label{prop:compound-moments}
+$E[X_1]<\infty$ なら
+\[
+ E[S_t]=\lambda tE[X_1].
+\]
+$E[X_1^2]<\infty$ なら
+\[
+ \operatorname{Var}(S_t)=\lambda tE[X_1^2].
+\]
+\end{proposition}
+\begin{proof}
+$N_t=n$ のもとでは
+$S_t=X_1+\cdots+X_n$ なので，
+\[
+ E[S_t\mid N_t]=N_tE[X_1].
+\]
+期待値を取れば
+$E[S_t]=E[N_t]E[X_1]=\lambda tE[X_1]$ となる．
+二乗モーメントが有限なら
+\[
+ \operatorname{Var}(S_t\mid N_t)
+ =N_t\operatorname{Var}(X_1).
+\]
+全分散公式から
+\begin{align*}
+ \operatorname{Var}(S_t)
+ &=E[\operatorname{Var}(S_t\mid N_t)]
+ +\operatorname{Var}(E[S_t\mid N_t])\\
+ &=\lambda t\operatorname{Var}(X_1)
+ +\lambda t(E[X_1])^2\\
+ &=\lambda tE[X_1^2].
+\end{align*}
+Poisson分布の平均と分散が $\lambda t$ であることは，
+母関数 $\exp(\lambda t(z-1))$ を微分して確認できる．
+\end{proof}
+
+\section{準備金過程と破産時刻}
+
+\begin{definition}
+初期準備金 $u\ge0$，単位時間あたりの
+保険料収入 $c>0$ に対して
+\[
+ U_t=u+ct-S_t
+\]
+を\emph{Cram\'er--Lundberg準備金過程}という．
+\emph{破産時刻}を
+\[
+ \tau_u=\inf\{t\ge0:U_t<0\}
+\]
+と定義する．
+\emph{究極破産確率}を
+$\psi(u)=P(\tau_u<\infty)$ と書く．
+\end{definition}
+
+\begin{definition}
+$c>\lambda E[X_1]$ を
+\emph{正の純利益条件}という．
+$c=(1+\theta)\lambda E[X_1]$ と書くとき
+$\theta>0$ を安全割増係数という．
+\end{definition}
+
+\begin{proposition}[純利益条件の意味]\label{prop:net-profit}
+$E[X_1]<\infty$ とすると
+\[
+ \frac{S_t}{t}\longrightarrow\lambda E[X_1]
+ \qquad\text{ほとんど確実に}
+\]
+が成り立つ．
+従って $c<\lambda E[X_1]$ なら，
+任意の有限初期準備金 $u$ について
+$\psi(u)=1$ である．
+\end{proposition}
+\begin{proof}
+独立同分布の指数待ち時間の強法則により
+$T_n/n\to1/\lambda$ がほとんど確実に成立する．
+$T_{N_t}\le t<T_{N_t+1}$ と
+$N_t\to\infty$ を用いると
+$N_t/t\to\lambda$ がほとんど確実に成立する．
+また請求額列の強法則から
+\[
+ \frac1{N_t}\sum_{j=1}^{N_t}X_j
+ \longrightarrow E[X_1]
+\]
+がほとんど確実に成立する．
+両式を掛けて $S_t/t\to\lambda E[X_1]$ を得る．
+$c<\lambda E[X_1]$ なら
+\[
+ \frac{U_t}{t}=\frac ut+c-\frac{S_t}{t}
+ \longrightarrow c-\lambda E[X_1]<0
+\]
+がほとんど確実に成立する．
+従って十分大きい $t$ で $U_t<0$ となり，
+破産時刻は有限である．
+\end{proof}
+
+\section{調整係数と指数マルチンゲール}
+
+\begin{definition}
+請求額の積率母関数を
+\[
+ M_X(r)=E[e^{rX_1}]
+\]
+とする．
+正の実数 $R>0$ が
+\[
+ cR=\lambda(M_X(R)-1)
+ \tag{L}
+\]
+を満たすとき，$R$ を\emph{Lundberg調整係数}という．
+\end{definition}
+
+\begin{lemma}[調整係数の存在と一意性]\label{lem:adjustment}
+$0<E[X_1]<\infty$ とし，
+$c>\lambda E[X_1]$ とする．
+$M_X(r)$ がある区間 $[0,r_1]$ で有限であり，
+\[
+ \lambda(M_X(r_1)-1)>cr_1
+\]
+を満たすとする．
+このとき $(0,r_1)$ にただ一つの調整係数 $R$ が存在する．
+\end{lemma}
+\begin{proof}
+\[
+ h(r)=\lambda(M_X(r)-1)-cr
+\]
+と置く．$h(0)=0$ であり，
+右微分は $h'(0+)=\lambda E[X_1]-c<0$ である．
+また $h(r_1)>0$ なので連続性と中間値の定理から
+$h(R)=0$ となる $R\in(0,r_1)$ が存在する．
+一意性を示す．
+$P(X_1>0)>0$ だから，
+$e^{rX_1}$ の $r$ に関する厳密凸性と期待値の線形性により
+$M_X(r)$ は $[0,r_1]$ 上で厳密凸である．
+従って $h$ も厳密凸である．
+$h(0)=0$ と $h'(0+)<0$ により，
+$h$ は最初負となり，正の方向で零を横切る回数は高々一回である．
+実際二つの正の零点 $0<R_1<R_2$ があれば，
+$R_1$ は $0$ と $R_2$ の真の凸結合であるため
+厳密凸性から
+$h(R_1)<(1-R_1/R_2)h(0)+(R_1/R_2)h(R_2)=0$
+となり矛盾する．
+\end{proof}
+
+\begin{lemma}[複合Poisson過程の積率母関数]
+\label{lem:compound-mgf}
+$M_X(r)<\infty$ なら
+\[
+ E[e^{rS_t}]
+ =\exp\{\lambda t(M_X(r)-1)\}.
+\]
+\end{lemma}
+\begin{proof}
+$N_t=n$ のもとで $X_j$ は独立なので
+$E[e^{rS_t}\mid N_t=n]=M_X(r)^n$ である．
+Poisson分布に関する期待値を取ると
+\begin{align*}
+ E[e^{rS_t}]
+ &=\sum_{n=0}^\infty
+ e^{-\lambda t}\frac{(\lambda t)^n}{n!}M_X(r)^n\\
+ &=e^{-\lambda t}
+   \exp(\lambda tM_X(r))
+ =\exp\{\lambda t(M_X(r)-1)\}.
+\end{align*}
+\end{proof}
+
+\begin{theorem}[指数マルチンゲール]\label{thm:exp-mart}
+$R>0$ が (L) を満たし，
+$M_X(R)<\infty$ とする．
+このとき
+\[
+ Z_t=e^{-RU_t}
+\]
+は，請求過程の自然なフィルトレーションに関して
+非負マルチンゲールであり，
+$E[Z_t]=e^{-Ru}$ が全ての $t\ge0$ で成り立つ．
+\end{theorem}
+\begin{proof}
+$U_t=u+ct-S_t$ と書くと
+\[
+ Z_t=e^{-Ru}e^{-Rct+rS_t}\big|_{r=R}.
+\]
+補題\ref{lem:compound-mgf}と (L) から
+\[
+ E[Z_t]
+ =e^{-Ru}\exp\{-Rct+\lambda t(M_X(R)-1)\}
+ =e^{-Ru}.
+\]
+次に $0\le s<t$ とする．
+$S_t-S_s$ は $\mathcal F_s$ から独立で，
+$S_{t-s}$ と同じ分布を持つので
+\begin{align*}
+ E[Z_t\mid\mathcal F_s]
+ &=Z_sE[e^{-Rc(t-s)+R(S_t-S_s)}\mid\mathcal F_s]\\
+ &=Z_s\exp\{-Rc(t-s)
+       +\lambda(t-s)(M_X(R)-1)\}\\
+ &=Z_s.
+\end{align*}
+従ってマルチンゲールである．
+\end{proof}
+
+\section{Lundbergの破産確率上界}
+
+\begin{lemma}[非負マルチンゲールの有界停止]
+\label{lem:bounded-stop}
+$(Z_t)_{t\ge0}$ を右連続な非負マルチンゲール，
+$\tau$ を停止時刻とする．
+任意の整数 $T\ge1$ について
+\[
+ E[Z_{\tau\wedge T}]\le E[Z_0]
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$n\ge1$ に対して
+$\tau_n=2^{-n}\lceil2^n(\tau\wedge T)\rceil$
+と置く．
+$\tau_n$ は有限個の値を取る停止時刻であり，
+$0\le\tau_n\le T$ である．
+離散時刻の停止定理を有限回の条件付き期待値で
+示すと，$E[Z_{\tau_n}]=E[Z_0]$ となる．
+実際 $2^{-n}$ 刻みの過程 $M_k=Z_{k2^{-n}}$ は
+離散マルチンゲールであり，
+$M_{N_n}=M_0+
+ \sum_{k=1}^{N_n}1_{\{\tau_n\ge k2^{-n}\}}
+ (M_k-M_{k-1})$ と書ける．
+各指示関数は前時刻までの情報で決まるため，
+期待値を取ると和の各項は零である．
+$N_n=2^nT$ として上の等式が従う．
+
+$\tau_n\downarrow\tau\wedge T$ なので，
+$Z$ の右連続性から
+$Z_{\tau_n}\to Z_{\tau\wedge T}$ が成り立つ．
+$Z$ は非負なのでFatouの補題から
+\[
+ E[Z_{\tau\wedge T}]
+ \le\liminf_{n\to\infty}E[Z_{\tau_n}]
+ =E[Z_0].
+\]
+\end{proof}
+
+\begin{theorem}[Lundbergの不等式]\label{thm:lundberg}
+調整係数 $R>0$ が存在するなら，
+任意の初期準備金 $u\ge0$ に対して
+\[
+ \psi(u)=P(\tau_u<\infty)\le e^{-Ru}.
+\]
+\end{theorem}
+\begin{proof}
+指数マルチンゲール $Z_t=e^{-RU_t}$ を考える．
+準備金は請求到着時以外では傾き $c>0$ で増加するため，
+破産するときの準備金は $U_{\tau_u}<0$ である．
+従って $\{\tau_u\le T\}$ 上では
+$Z_{\tau_u\wedge T}=e^{-RU_{\tau_u}}>1$ となる．
+補題\ref{lem:bounded-stop}によって
+\[
+ P(\tau_u\le T)
+ \le E[Z_{\tau_u\wedge T}]
+ \le E[Z_0]=e^{-Ru}.
+\]
+$T\to\infty$ として
+$P(\tau_u<\infty)\le e^{-Ru}$ を得る．
+\end{proof}
+
+\section{初回請求による積分方程式}
+
+\begin{theorem}[破産確率の積分方程式]
+\label{thm:ruin-integral}
+$F_X$ を請求額の分布関数とする．
+任意の $u\ge0$ について
+\[
+ \begin{aligned}
+ \psi(u)=\int_0^\infty\lambda e^{-\lambda t}
+ \biggl\{&
+ P(X_1>u+ct)\\
+ &+\int_{[0,u+ct]}
+       \psi(u+ct-x)\,dF_X(x)
+ \biggr\}\,dt.
+ \end{aligned}
+ \tag{R}
+\]
+\end{theorem}
+\begin{proof}
+最初の請求到着時刻 $T_1$ は強度 $\lambda$ の指数分布である．
+その直前の準備金は $u+cT_1$ である．
+請求額 $X_1>u+cT_1$ ならその瞬間に破産する．
+一方 $X_1\le u+cT_1$ なら，
+残余準備金は $u+cT_1-X_1\ge0$ であり，
+その後の請求過程は過去から独立で元の過程と同じ法則を持つ．
+従ってその条件付き究極破産確率は
+$\psi(u+cT_1-X_1)$ である．
+$T_1$ と $X_1$ の独立性から，
+二つの場合分けの条件付き期待値を
+指数分布の密度 $\lambda e^{-\lambda t}$ に関して積分すると
+表示式が得られる．
+\end{proof}
+
+\begin{proposition}[減衰する有界解の一意性]
+\label{prop:ruin-unique}
+$c>\lambda E[X_1]$ と仮定する．
+式 (R) を満たし，
+$u\to\infty$ で零に収束する有界関数
+$\psi:[0,\infty)\to\mathbb R$ は高々一つである．
+\end{proposition}
+\begin{proof}
+$\psi_1,\psi_2$ が二つの解とし，
+$h=\psi_1-\psi_2$ と置く．
+(R) の差を取ると
+\[
+ h(u)=E[1_{\{X_1\le u+cW_1\}}
+ h(u+cW_1-X_1)]
+\]
+となる．
+これを独立増分と条件付き期待値で反復すると
+\[
+ h(u)=E[1_{\{\tau_u>T_n\}}h(U_{T_n})]
+\]
+を得る．
+ただし $T_n=W_1+\cdots+W_n$ である．
+大数の強法則から
+\[
+ \frac{U_{T_n}}n
+ =\frac un+c\frac{T_n}n
+ -\frac1n\sum_{j=1}^nX_j
+ \longrightarrow\frac c\lambda-E[X_1]>0
+\]
+がほとんど確実に成立する．
+従って $U_{T_n}\to\infty$ であり，
+$\tau_u>T_n$ の指示関数が1となる経路では
+$h(U_{T_n})\to0$ である．
+$h$ は有界なのでLebesgueの収束定理から
+\[
+ h(u)=\lim_{n\to\infty}
+ E[1_{\{\tau_u>T_n\}}h(U_{T_n})]=0.
+\]
+$u$ は任意なので二つの解は一致する．
+\end{proof}
+
+\section{指数請求額の場合の厳密解}
+
+\begin{theorem}[指数分布の破産確率]\label{thm:exponential-ruin}
+請求額 $X_i$ が率 $\beta>0$ の指数分布に従い，
+$c>\lambda/\beta$ とする．
+このとき
+\[
+ \psi(u)=\frac{\lambda}{c\beta}
+ \exp\!\left[-\left(\beta-\frac\lambda c\right)u\right].
+\]
+\end{theorem}
+\begin{proof}
+指数分布の積率母関数は
+$M_X(r)=\beta/(\beta-r)$（$0\le r<\beta$）である．
+調整係数方程式
+$cR=\lambda(M_X(R)-1)$ に代入すると
+\[
+ cR=\lambda\frac R{\beta-R}
+\]
+であり，正の解は
+$R=\beta-\lambda/c>0$ となる．
+$A=\lambda/(c\beta)$ と置くと
+\[
+ A=\frac{\beta-R}{\beta}
+\]
+である．
+候補関数 $\phi(u)=Ae^{-Ru}$ が
+式 (R) を満たすことを示す．
+指数分布の密度を用いると
+\begin{align*}
+ &P(X>z)+\int_0^z\phi(z-x)\beta e^{-\beta x}\,dx\\
+ &\quad=e^{-\beta z}
+ +A\beta e^{-Rz}
+   \int_0^z e^{-(\beta-R)x}\,dx\\
+ &\quad=e^{-\beta z}
+ +\frac{A\beta}{\beta-R}
+  (e^{-Rz}-e^{-\beta z})\\
+ &\quad=e^{-Rz},
+\end{align*}
+最後に $A\beta/(\beta-R)=1$ を用いた．
+この式に $z=u+ct$ を代入して (R) の右辺に入れると
+\begin{align*}
+ &\int_0^\infty\lambda e^{-\lambda t}
+ e^{-R(u+ct)}\,dt\\
+ &\quad=e^{-Ru}\frac{\lambda}{\lambda+cR}
+ =e^{-Ru}\frac{\lambda}{c\beta}
+ =Ae^{-Ru}=\phi(u).
+\end{align*}
+従って $\phi$ は (R) を満たす．
+Lundbergの不等式から真の破産確率 $\psi(u)$ も
+$u\to\infty$ で零に収束する．
+$\phi$ も有界で零へ収束するので，
+命題\ref{prop:ruin-unique}から
+$\psi=\phi$ となる．
+\end{proof}
+
+\begin{remark}
+調整係数による指数上界は，
+請求額の積率母関数が正の点で有限であるという仮定に依存する．
+重い裾を持つ請求額分布では
+正の調整係数が存在しないこともあり，
+破産確率の減衰は指数型とは限らない．
+\end{remark}
+
+\section{破産確率の上限から準備金を設計する}
+\begin{example}[指数請求額の具体的設計]
+請求到着率を $\lambda=1$，
+請求額を指数分布 $\mathrm{Exp}(\beta)$
+（率 $\beta=2$，平均請求額 $1/2$），
+保険料収入率を $c=1$ とする．
+正の純利益条件は
+$c=1>\lambda E[X_1]=1/2$ により成立する．
+安全割増係数は
+$\theta=c/(\lambda E[X_1])-1=1$ である．
+指数請求額の場合の厳密公式から調整係数
+$R=\beta-\lambda/c=1$ を得るので
+\[
+ \psi(u)=\frac{\lambda}{c\beta}e^{-Ru}
+        =\frac12 e^{-u}\qquad (u\ge0).
+\]
+特に初期準備金が零なら $\psi(0)=1/2$，
+$u=\log5$ とすれば $\psi(u)=1/10$ である．
+破産確率を $5\%$ 以下にする条件は
+\[
+ \psi(u)\le\frac1{20}
+ \quad\Longleftrightarrow\quad
+ \frac12 e^{-u}\le\frac1{20}
+ \quad\Longleftrightarrow\quad u\ge\log10.
+\]
+このモデルでは $\log10$ が必要十分な初期準備金である．
+一方，Lundbergの上界 $\psi(u)\le e^{-Ru}=e^{-u}$
+だけを使うと $u\ge\log20$ を要求するため，
+上界から設計した場合には余裕のある値となる．
+\end{example}
+\begin{proposition}[指数請求額の一般的な設計式]
+請求到着率 $\lambda>0$，指数請求額の率
+$\beta>0$，保険料率 $c>\lambda/\beta$ とする．
+初期準備金を用いて目標破産確率
+$\varepsilon\in(0,1)$ を達成するための必要十分条件は
+\[
+ u\ge \max\left\{0,\,
+ \frac{\log(\lambda/(c\beta\varepsilon))}
+      {\beta-\lambda/c}\right\}.
+\]
+\end{proposition}
+\begin{proof}
+既に示した厳密解
+$\psi(u)=(\lambda/(c\beta))e^{-Ru}$，
+$R=\beta-\lambda/c>0$ を使う．
+指数関数は狭義減少だから $\psi(u)\le\varepsilon$ と
+$u\ge R^{-1}\log(\lambda/(c\beta\varepsilon))$
+は同値である．準備金は $u\ge0$ に制限するので，
+両条件の共通部分が表示式となる．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+最初の例で破産確率を $1\%$ 以下にする
+最低の初期準備金を求めよ．
+
+\medskip\noindent\textbf{解答．}
+$(1/2)e^{-u}\le0.01$ は
+$e^{-u}\le0.02$ に同値なので $u\ge\log50$．
+従って最低準備金は $\log50$ である．
+\section*{仮定の意味}
+以上の数値は指数分布・独立請求・定率保険料という
+仮定の下の計算であり，
+重い裾の請求分布や請求間の依存を許す場合には
+同じ公式を適用できない．
+
+\end{document}
