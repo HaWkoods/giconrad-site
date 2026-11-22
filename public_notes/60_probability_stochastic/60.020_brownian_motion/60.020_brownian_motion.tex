@@ -1,0 +1,644 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Brown運動の構成と基本性質}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Brown運動の独立増分と正規分布．
+本稿の具体的な到達課題は，Brown運動の共分散と二乗平均増分を直接求める．
+
+\section{確率過程とGaussian系}
+
+$(\Omega,\mathcal F,P)$ を確率空間とする．
+時間集合 $I$ に添字づけられた確率変数族
+$(X_t)_{t\in I}$ を確率過程という．
+各 $\omega$ に対し $t\mapsto X_t(\omega)$ を標本路という．
+確率過程 $X,Y$ が\emph{修正}の関係にあるとは，
+各固定した $t$ に対して $P(X_t=Y_t)=1$ が成立することをいう．
+$P(X_t=Y_t\text{ for all }t\in I)=1$ のとき，
+両過程は\emph{区別不能}であるという．
+前者から後者が自動的に従うわけではない．
+
+\begin{definition}
+実確率過程 $(X_t)$ がGaussian過程であるとは，
+任意の有限個の時刻 $t_1,\dots,t_n$ に対して
+$(X_{t_1},\dots,X_{t_n})$ が多変量正規分布に従うことをいう．
+退化した正規分布も許す．
+\end{definition}
+
+\begin{lemma}[Gaussian系の独立性]\label{lem:gauss-ind}
+有限個の同時Gaussianな確率変数
+$X_1,\dots,X_m,Y_1,\dots,Y_n$ が
+$\operatorname{Cov}(X_i,Y_j)=0$ を全ての $i,j$ で満たすなら，
+ベクトル $(X_1,\dots,X_m)$ と
+$(Y_1,\dots,Y_n)$ は独立である．
+\end{lemma}
+\begin{proof}
+同時Gaussianベクトルの特性関数は，平均ベクトル $m$
+と共分散行列 $\Sigma$ により
+\[
+ E[e^{i\langle u,Z\rangle}]
+ =\exp\!\left(i\langle u,m\rangle
+ -\frac12\langle u,\Sigma u\rangle\right)
+\]
+と表される．
+仮定により共分散行列の交差ブロックは零であるから，
+$(X,Y)$ の特性関数は $X$ の特性関数と $Y$ の特性関数の積になる．
+特性関数の一意性から両ベクトルの独立性を得る．
+\end{proof}
+
+\section{Brown運動の定義}
+
+\begin{definition}
+実数値過程 $(B_t)_{t\ge0}$ が
+\emph{標準Brown運動}であるとは，
+次を満たすことをいう．
+\begin{enumerate}
+\item $B_0=0$ がほとんど確実に成立する．
+\item 任意の $0\le t_0<t_1<\cdots<t_n$ に対して
+$B_{t_1}-B_{t_0},\dots,B_{t_n}-B_{t_{n-1}}$
+は互いに独立である．
+\item $0\le s<t$ に対し $B_t-B_s$ は
+平均 $0$，分散 $t-s$ の正規分布に従う．
+\item 標本路 $t\mapsto B_t(\omega)$ は，
+確率 $1$ で連続である．
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}\label{prop:covariance}
+標準Brown運動は中心Gaussian過程であり，
+\[
+ E[B_sB_t]=\min\{s,t\}
+ \qquad(s,t\ge0)
+\]
+を満たす．逆に，連続な標本路を持つ中心Gaussian過程で
+$E[B_sB_t]=\min\{s,t\}$ を満たすものは
+標準Brown運動である．
+\end{proposition}
+\begin{proof}
+Brown運動の任意の有限個の値は，
+独立な正規増分の線形結合なので同時Gaussianである．
+$s\le t$ の場合，$B_t=B_s+(B_t-B_s)$ と
+独立増分により
+$E[B_sB_t]=E[B_s^2]=s$ となる．
+
+逆に共分散が $\min\{s,t\}$ である中心Gaussian過程を考える．
+$E[B_0^2]=0$ なので $B_0=0$ は概至る所成立する．
+\[
+ E[(B_t-B_s)^2]=t+s-2\min\{s,t\}=t-s
+\]
+である．互いに交わらない区間に対応する増分の共分散は，
+$\min\{s,t\}$ を代入して展開すると $0$ となる．
+補題\ref{lem:gauss-ind}から独立性が従う．
+従って標準Brown運動の全条件を満たす．
+\end{proof}
+
+\section{連続な修正を与える定理}
+
+\begin{theorem}[Kolmogorovの連続性定理]\label{thm:kol-cont}
+$T>0$ とし，$X=(X_t)_{0\le t\le T}$ を実確率過程とする．
+ある $\alpha,\beta,C>0$ が存在して
+\[
+ E|X_t-X_s|^\alpha\le C|t-s|^{1+\beta}
+ \qquad(0\le s,t\le T)
+ \tag{$*$}
+\]
+が成り立つとする．
+このとき $X$ は連続な標本路を持つ修正を持つ．
+さらに任意の $\gamma\in(0,\beta/\alpha)$ に対して，
+その修正の標本路はほとんど確実に
+指数 $\gamma$ のH\"older連続関数となる．
+\end{theorem}
+\begin{proof}
+まず $T=1$ とし，$0<\gamma<\beta/\alpha$ を固定する．
+$D_n=\{k2^{-n}:0\le k\le2^n\}$ と置き，
+隣接した二点の増分の最大値を
+\[
+ Z_n=\max_{0\le k<2^n}
+ |X_{(k+1)2^{-n}}-X_{k2^{-n}}|
+\]
+とする．Markovの不等式と $(*)$ により
+\[
+ P(Z_n>2^{-n\gamma})
+ \le 2^n C\,2^{-n(1+\beta)}2^{n\alpha\gamma}
+ =C2^{-n(\beta-\alpha\gamma)}.
+\]
+右辺の $n$ に関する和は収束するから，
+Borel--Cantelliの補題により，確率 $1$ で
+十分大きい全ての $n$ について
+$Z_n\le2^{-n\gamma}$ となる．
+有限個の例外的な $n$ を吸収すれば，
+ある有限な確率変数 $C_\gamma$ が存在して
+\[
+ Z_n\le C_\gamma2^{-n\gamma}\qquad(n\ge0)
+ \tag{$**$}
+\]
+を同時に満たす．
+
+$D=\bigcup_nD_n$ と置く．
+任意の $u,v\in D$，$0<|u-v|\le2^{-m}$ を取る．
+各 $n\ge m$ について
+$u_n=2^{-n}\lfloor2^nu\rfloor$，
+$v_n=2^{-n}\lfloor2^nv\rfloor$ とする．
+$u_m,v_m$ は等しいか隣接しており，
+$u_n\to u$，$v_n\to v$ は有限段階で一致する．
+隣り合う近似値の差には $(**)$ を使えるから
+\begin{align*}
+ |X_u-X_v|
+ &\le |X_{u_m}-X_{v_m}|\\
+ &\quad+\sum_{n=m}^{\infty}
+  (|X_{u_{n+1}}-X_{u_n}|
+   +|X_{v_{n+1}}-X_{v_n}|)\\
+ &\le C_\gamma
+ \left(2^{-m\gamma}+2\sum_{n=m+1}^\infty2^{-n\gamma}\right)
+ \le C'_\gamma2^{-m\gamma}.
+\end{align*}
+従って $D$ 上の標本路は一様連続であり，
+$[0,1]$ 上の連続関数 $\widetilde X$ に一意に拡張される．
+上の評価と $|u-v|$ に対応する $m$ の選択から，
+この拡張は指数 $\gamma$ のH\"older連続関数である．
+
+各 $t\in[0,1]$ に対し $t_n\in D$，$t_n\to t$ を取る．
+仮定 $(*)$ から $X_{t_n}\to X_t$ は
+$L^\alpha$，従って確率収束である．
+一方，構成により $X_{t_n}\to\widetilde X_t$
+は概至る所成立する．確率極限の一意性から
+$\widetilde X_t=X_t$ が概至る所成立する．
+よって $\widetilde X$ は $X$ の修正である．
+
+一般の $T>0$ は $t=Tu$ という時間の再尺度化で帰着できる．
+また任意の $\gamma<\beta/\alpha$ についての主張は，
+$\gamma$ を含む可算稠密な指数列を選び，
+それぞれの確率1の集合の共通部分を取ればよい．
+\end{proof}
+
+\begin{remark}
+証明中の構成は連続な修正を与える．
+元の $X$ の標本路が連続であるとは仮定していない．
+各 $t$ での概一致と全ての $t$ での概一致は異なる概念である．
+\end{remark}
+
+\section{Brown運動の存在}
+
+\begin{theorem}[Brown運動の存在]\label{thm:existence}
+ある確率空間上に標準Brown運動が存在する．
+\end{theorem}
+\begin{proof}
+任意の有限個の時刻 $t_1,\dots,t_n\ge0$ に対し，
+平均零で共分散行列
+$\Sigma_{ij}=\min\{t_i,t_j\}$ を持つGaussianベクトルの
+分布を考える．この共分散行列は半正定値である．実際，
+任意の実数 $a_1,\dots,a_n$ に対して
+\[
+ \sum_{i,j=1}^n a_ia_j\min\{t_i,t_j\}
+ =\int_0^\infty
+   \left(\sum_{i=1}^n a_i1_{[0,t_i]}(u)\right)^2du\ge0.
+\]
+従ってGaussianベクトルを構成できる．
+この有限次元分布族は座標の周辺化と時刻の置換に関して
+整合的である．Kolmogorovの拡張定理により，
+これらを有限次元分布に持つ確率過程
+$(X_t)_{t\ge0}$ が存在する．
+命題\ref{prop:covariance}により
+$X$ は連続性以外のBrown運動の性質を満たす．
+
+正規確率変数 $Z\sim N(0,\sigma^2)$ について
+$E[Z^4]=3\sigma^4$ であるから
+\[
+ E|X_t-X_s|^4=3|t-s|^2.
+\]
+任意の $T>0$ について
+定理\ref{thm:kol-cont}を $\alpha=4,\beta=1$ で適用し，
+$[0,T]$ 上の連続な修正を得る．
+整数 $T=1,2,\dots$ ごとに得た修正は，
+重なり合う区間の有理数時刻で
+元の過程に同時に一致する確率1の集合が存在するため，
+連続性によって重なり合う区間上で区別不能である．
+従ってそれらを確率1の集合上で貼り合わせると，
+$[0,\infty)$ 上で連続な修正 $(B_t)$ を得る．
+修正は有限次元分布を変えないので，
+$B$ は標準Brown運動である．
+\end{proof}
+
+\begin{proposition}[標本路のH\"older性]\label{prop:holder}
+標準Brown運動の標本路は，
+任意の $T>0$ および $0<\gamma<1/2$ について，
+ほとんど確実に $[0,T]$ 上で指数 $\gamma$ の
+H\"older連続関数である．
+\end{proposition}
+\begin{proof}
+正規分布の任意の正の偶数次モーメントは有限なので，
+偶数 $p\ge4$ に対して
+\[
+ E|B_t-B_s|^p=C_p|t-s|^{p/2}
+\]
+が成り立つ．
+定理\ref{thm:kol-cont}から指数
+$\gamma<(p/2-1)/p=1/2-1/p$ のH\"older性を得る．
+$p$ を十分大きく取れば任意の $\gamma<1/2$ を得る．
+時間区間については正整数 $T$ に関する可算共通部分を
+取ればよい．
+\end{proof}
+
+\section{Brown運動の基本変換}
+
+\begin{proposition}\label{prop:scaling}
+$B$ を標準Brown運動とする．
+\begin{enumerate}
+\item 任意の $a>0$ について
+$W_t=a^{-1/2}B_{at}$ は標準Brown運動である．
+\item 任意の固定した $s\ge0$ について
+$W_t=B_{s+t}-B_s$ は標準Brown運動である．
+\item $W_t=-B_t$ は標準Brown運動である．
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+いずれも標本路の連続性と始点 $0$ は明らかである．
+(1) の増分は独立で，分散は
+$a^{-1}\operatorname{Var}(B_{at}-B_{au})=t-u$ である．
+(2) は定常独立増分の定義から従う．
+(3) は中心正規分布の対称性から従う．
+\end{proof}
+
+\begin{proposition}[Markov性]\label{prop:markov}
+$B$ を標準Brown運動とし，
+$\mathcal F_t=\sigma(B_s:0\le s\le t)$
+を通常の完備化のもとで考える．
+任意の $t,h\ge0$ と有界Borel関数 $f$ に対し
+\[
+ E[f(B_{t+h})\mid\mathcal F_t]
+ =\int_{\mathbb R}f(B_t+z)
+   \frac{e^{-z^2/(2h)}}{\sqrt{2\pi h}}\,dz
+ \quad(h>0)
+\]
+が成り立つ．
+$h=0$ のときは右辺を $f(B_t)$ と解釈する．
+\end{proposition}
+\begin{proof}
+Brown運動の独立増分により
+$B_{t+h}-B_t$ は $\mathcal F_t$ と独立で
+$N(0,h)$ に従う．
+この独立性は，まず有限個の $B_s$（$s\le t$）
+から生成される代数について成り立ち，
+$\pi$-$\lambda$ 定理で $\mathcal F_t$ 全体へ拡張できる．
+有界Borel関数と独立性を用いる条件付き期待値の公式から
+結論を得る．
+\end{proof}
+
+\section{停止時刻と強Markov性}
+
+\begin{definition}
+$(\mathcal F_t)_{t\ge0}$ をフィルトレーションとする．
+$[0,\infty]$ 値確率変数 $\tau$ が停止時刻であるとは，
+$\{\tau\le t\}\in\mathcal F_t$ がすべての $t\ge0$ で成り立つことをいう．
+$\mathcal F_\tau
+=\{A\in\mathcal F:A\cap\{\tau\le t\}\in\mathcal F_t
+ \ (t\ge0)\}$ と置く．
+\end{definition}
+
+\begin{theorem}[Brown運動の強Markov性]\label{thm:strong-markov}
+$B$ を，通常の条件を満たし増分が過去と独立である
+フィルトレーションに関する標準Brown運動とする．
+$\tau$ をほとんど確実に有限な停止時刻とする．
+このとき
+\[
+ W_t=B_{\tau+t}-B_\tau\qquad(t\ge0)
+\]
+は標準Brown運動であり，
+$\mathcal F_\tau$ と独立である．
+\end{theorem}
+\begin{proof}
+まず $\tau$ が有界とする．
+$n\ge1$ に対して
+$\tau_n=2^{-n}\lceil2^n\tau\rceil$ と置く．
+これは有限個の値を取る停止時刻で，
+$\tau\le\tau_n<\tau+2^{-n}$ を満たす．
+任意の時刻 $0\le t_1<\cdots<t_m$，
+有界連続関数 $g:\mathbb R^m\to\mathbb R$，
+$A\in\mathcal F_\tau$ に対して
+\[
+ E\!\left[1_Ag(B_{\tau_n+t_1}-B_{\tau_n},
+ \dots,B_{\tau_n+t_m}-B_{\tau_n})\right]
+ =P(A)E[g(B_{t_1},\dots,B_{t_m})].
+ \tag{$*$}
+\]
+実際，$\tau_n$ の取り得る各値 $s$ について
+$A\cap\{\tau_n=s\}\in\mathcal F_s$ であり，
+$s$ 以降の増分は $\mathcal F_s$ と独立で，
+定常増分性から右辺の正規分布と一致する．
+各値について足し合わせれば $(*)$ を得る．
+
+標本路の連続性から $\tau_n\to\tau$ とともに
+各 $B_{\tau_n+t_j}-B_{\tau_n}$ は
+$B_{\tau+t_j}-B_\tau$ に概収束する．
+有界収束定理で $(*)$ の左辺に極限を取れば，
+$W$ の有限次元分布が $B$ のそれに一致し，
+かつその全ての有限次元分布が
+$\mathcal F_\tau$ と独立であることを得る．
+$W$ は連続標本路を持つから標準Brown運動であり，
+有理時刻の評価写像が生成する $\sigma$-加法族を通じて
+過程全体が $\mathcal F_\tau$ と独立である．
+
+一般の $\tau<\infty$ については
+$\tau\wedge N$ に以上を適用し，
+$A\cap\{\tau\le N\}\in\mathcal F_{\tau\wedge N}$
+（$A\in\mathcal F_\tau$）を用いる．
+$N\to\infty$ として有界収束定理を適用すれば
+同じ有限次元分布の独立性を得る．
+\end{proof}
+
+\section{反射原理と到達時刻}
+
+\begin{definition}
+$a>0$ とし
+$\tau_a=\inf\{t\ge0:B_t=a\}$ と置く．
+該当する時刻がなければ $\tau_a=\infty$ とする．
+標本路の連続性から
+$\{\tau_a\le t\}=\{\max_{0\le s\le t}B_s\ge a\}$
+であり，$\tau_a$ は停止時刻である．
+\end{definition}
+
+\begin{theorem}[反射原理]\label{thm:reflection}
+$a>0$，$t>0$ とすると
+\[
+ P\left(\max_{0\le s\le t}B_s\ge a\right)
+ =2P(B_t\ge a)
+ =2\left(1-\Phi\!\left(\frac a{\sqrt t}\right)\right),
+\]
+ただし
+$\Phi(u)=(2\pi)^{-1/2}\int_{-\infty}^u e^{-v^2/2}\,dv$
+とする．
+\end{theorem}
+\begin{proof}
+$A=\{\tau_a\le t\}$ と置く．
+$B_t\ge a$ なら必ず $A$ が生じるため
+\[
+ P(A)=P(B_t\ge a)+P(A,B_t<a).
+\]
+強Markov性とBrown運動の対称性により，
+$\tau_a$ 以降の標本路を $a$ で反射した過程
+\[
+ \widetilde B_s=
+ \begin{cases}
+ B_s&(s\le\tau_a),\\
+ 2a-B_s&(s>\tau_a)
+ \end{cases}
+\]
+は $B$ と同じ法則を持つ．
+これは停止時刻以降の独立なBrown運動の増分を
+符号反転しても法則が変わらないことによる．
+$A$ 上では
+$B_t<a$ と $\widetilde B_t>a$ は同値である．
+反射写像は反転操作に関して逆写像自身なので，
+\[
+ P(A,B_t<a)=P(A,B_t>a).
+\]
+$B_t>a$ なら $A$ が生じることから
+$P(A,B_t>a)=P(B_t>a)$ である．
+$B_t$ は連続分布を持つので
+$P(B_t=a)=0$ を用いて
+$P(A)=2P(B_t\ge a)$ を得る．
+最後に $B_t\sim N(0,t)$ を用いる．
+\end{proof}
+
+\begin{corollary}[到達時刻の分布]\label{cor:hitting}
+$a>0$ に対して $\tau_a<\infty$ が概至る所で成立する．
+さらに $\tau_a$ は $(0,\infty)$ 上の密度
+\[
+ f_{\tau_a}(t)
+ =\frac{a}{\sqrt{2\pi}\,t^{3/2}}
+   \exp\!\left(-\frac{a^2}{2t}\right)
+ \qquad(t>0)
+\]
+を持つ．
+\end{corollary}
+\begin{proof}
+定理\ref{thm:reflection}により
+$P(\tau_a\le t)=2(1-\Phi(a/\sqrt t))$ である．
+$t\to\infty$ で右辺は $1$ に収束するので
+$\tau_a<\infty$ が概至る所である．
+$t>0$ について分布関数を微分すれば表示の密度を得る．
+\end{proof}
+
+\section{Brown運動の二次変分}
+
+\begin{theorem}[二次変分]\label{thm:qv}
+$T>0$ とし，
+$\pi_n=\{0=t_0^{(n)}<\cdots<t_{k_n}^{(n)}=T\}$
+を分割列，$|\pi_n|=\max_j(t_{j+1}^{(n)}-t_j^{(n)})$
+を最大分割幅とする．
+$|\pi_n|\to0$ なら
+\[
+ Q_n=\sum_{j=0}^{k_n-1}
+ (B_{t_{j+1}^{(n)}}-B_{t_j^{(n)}})^2
+ \longrightarrow T
+\]
+が $L^2$ で成立する．
+特に等分割で $k_n=2^n$ の場合，
+収束はほとんど確実にも成立する．
+\end{theorem}
+\begin{proof}
+分割の幅を $\Delta_j=t_{j+1}^{(n)}-t_j^{(n)}$ と置く．
+Brown運動の独立増分と正規分布の四次モーメントより
+\[
+ E[Q_n]=\sum_j\Delta_j=T,\qquad
+ \operatorname{Var}(Q_n)
+ =\sum_j2\Delta_j^2\le2T|\pi_n|.
+\]
+従って
+$E|Q_n-T|^2\le2T|\pi_n|\to0$ である．
+等分割 $|\pi_n|=T2^{-n}$ では
+$\sum_nE|Q_n-T|^2<\infty$ だから，
+任意の $\varepsilon>0$ に対する
+Chebyshevの不等式とBorel--Cantelliの補題により
+$Q_n\to T$ がほとんど確実に成立する．
+\end{proof}
+
+\begin{corollary}[Brown運動の変動]\label{cor:unbounded-variation}
+$T>0$ について，標準Brown運動の標本路は
+$[0,T]$ 上でほとんど確実に有界変動でない．
+\end{corollary}
+\begin{proof}
+もし連続関数 $f:[0,T]\to\mathbb R$ の全変動
+$V_T(f)$ が有限なら，任意の分割 $\pi$ に対して
+\[
+ \sum_{[u,v]\in\pi}|f(v)-f(u)|^2
+ \le\left(\max_{[u,v]\in\pi}|f(v)-f(u)|\right)V_T(f).
+\]
+分割幅が零へ向かうと，$f$ の一様連続性から右辺は $0$ へ向かう．
+一方，定理\ref{thm:qv}によりBrown運動の等分割の二次変分は
+概至る所 $T>0$ に収束する．従って有界変動ではあり得ない．
+\end{proof}
+
+\begin{proposition}[各固定時刻での非微分可能性]
+$t\ge0$ を固定する．標準Brown運動の標本路が
+$t$ で有限な右微分係数を持つ確率は $0$ である．
+\end{proposition}
+\begin{proof}
+$h>0$ に対して
+\[
+ \frac{B_{t+h}-B_t}{h}\sim N(0,h^{-1})
+\]
+である．
+任意の $M>0$ について
+\[
+ P\left(\left|\frac{B_{t+h}-B_t}{h}\right|\le M\right)
+ =P(|N(0,1)|\le M\sqrt h)\longrightarrow0.
+\]
+もし有限な右微分係数が存在するなら，
+例えば $h_n=1/n$ に沿う差商は有限値に収束するため，
+ある整数 $M$ について十分大きい $n$ で
+差商の絶対値が $M$ 以下となる．
+これは上の確率評価とFatouの補題を適用した
+事象の極限に反する．
+従って有限な右微分係数が存在する確率は零である．
+\end{proof}
+
+\begin{remark}
+最後の命題は，各固定時刻で微分可能である確率が零であることを
+示している．「ほとんど確実に全ての時刻で微分不可能」という
+さらに強い命題をこれだけから導くことはできない．
+\end{remark}
+
+\section{Wiener測度}
+
+\begin{proposition}\label{prop:wiener}
+$T>0$ とし，
+$C_0([0,T])=\{f\in C([0,T],\mathbb R):f(0)=0\}$
+に一様ノルムによるBorel $\sigma$-加法族を入れる．
+Brown運動の連続標本路を値に持つ写像
+$\omega\mapsto B_\cdot(\omega)$ は
+$C_0([0,T])$ 値確率変数である．
+その法則をWiener測度といい，
+Brown運動の有限次元分布によって一意に決まる．
+\end{proposition}
+\begin{proof}
+$C_0([0,T])$ の一様ノルムによる開球
+$B(f,r)$ は
+\[
+ \{g:\norm{g-f}_\infty<r\}
+ =\bigcup_{m\ge1}\bigcap_{q\in\mathbb Q\cap[0,T]}
+  \{g:|g(q)-f(q)|\le r-1/m\}
+\]
+という形で表せる（$r-1/m>0$ の項だけを使う）．
+従って有理数時刻での評価写像が生成する
+$\sigma$-加法族はBorel $\sigma$-加法族と一致する．
+さらに $C_0([0,T])$ は可分である．
+実際，有理数時刻（および $T$）を分点とし，
+各分点の値を有理数とする折れ線関数で，
+始点の値を $0$ とするもの全体は可算集合である．
+連続関数の一様連続性と折れ線補間を用いれば，
+この集合は $C_0([0,T])$ で稠密である．
+従って可算な開球の基が存在し，
+任意の開集合は高々可算個の基本開球の和集合として表せる．
+各 $B_q$ は確率変数であるから，
+標本路写像による全ての基本開球の逆像が可測であり，
+任意の開集合の逆像も可測となる．
+よって標本路写像は可測である．
+また有限次元分布が与えられれば，
+有理数時刻の座標に関する円柱集合の確率が決まる．
+これらの円柱集合は上のBorel $\sigma$-加法族を生成するため，
+確率測度の一意性定理からWiener測度は一意である．
+\end{proof}
+
+\begin{remark}
+標本路が連続であるという条件を持つ確率過程は，
+有限次元分布だけでなく関数空間上の確率測度として扱える．
+この立場は確率微分方程式や確率積分の構成における
+基本的な枠組みを与える．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Brown運動の共分散計算．}
+\begin{proposition}
+標準Brown運動 $(B_t)_{t\ge0}$ に対し
+\[
+E[B_sB_t]=\min\{s,t\},\qquad
+E[(B_t-B_s)^2]=|t-s|
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+$s\le t$ としてよい．
+$B_t=B_s+(B_t-B_s)$ であり，
+増分は $B_s$ と独立で平均零だから
+\[
+E[B_sB_t]
+=E[B_s^2]+E[B_s]E[B_t-B_s]
+=s.
+\]
+増分 $B_t-B_s$ は平均零，分散 $t-s$
+の正規分布なので二乗平均は $t-s$ である．
+対称性から一般の場合も従う．
+\end{proof}
+\noindent\textbf{到達確認．}
+$E[(B_3-B_1)B_1]$ を求めよ．
+\par\noindent\textbf{解答．}
+増分 $B_3-B_1$ と $B_1$ は独立でそれぞれ
+平均零なので期待値は0である．
+\end{document}

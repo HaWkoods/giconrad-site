@@ -1,0 +1,651 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{二次変分とIt\^oの公式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Brown運動の二次変分，Itôの公式．
+本稿の具体的な到達課題は，非線形関数にItôの公式を適用して積分表示を得る．
+
+\section{二次変分と確率積分}
+
+本稿では $B=(B_t)_{0\le t\le T}$ を
+通常の条件を満たすフィルトレーションに関する
+標準Brown運動とする．
+予測可能な二乗可積分過程 $H$ に対する
+$\int_0^tH_s\,dB_s$ の存在，It\^o等長性，
+および積分過程の連続性は既知とする．
+これらは単純予測可能過程から $L^2$ 完備化によって
+構成できる．
+
+\begin{definition}
+連続な過程 $X$ と $[0,t]$ の分割
+$\pi=\{0=t_0<\cdots<t_n=t\}$ に対し
+\[
+ Q_\pi(X)=\sum_{j=0}^{n-1}(X_{t_{j+1}}-X_{t_j})^2
+\]
+と置く．分割の最大幅が零へ向かうとき，
+$Q_\pi(X)$ が確率収束で極限 $[X]_t$ に収束すれば，
+$[X]_t$ を $X$ の\emph{二次変分}という．
+\end{definition}
+
+\begin{theorem}[Brown運動の二次変分]\label{thm:brown-qv}
+決定論的な分割列 $\pi_n$ の最大幅が零に収束するとする．
+このとき
+\[
+ Q_{\pi_n}(B)\longrightarrow t
+\]
+が $L^2(\Omega)$ で成立する．
+\end{theorem}
+\begin{proof}
+$\Delta_j=t_{j+1}-t_j$，
+$\Delta_jB=B_{t_{j+1}}-B_{t_j}$ と置く．
+$\Delta_jB$ は互いに独立な $N(0,\Delta_j)$ に従う．
+従って $E[(\Delta_jB)^2]=\Delta_j$，
+$E[(\Delta_jB)^4]=3\Delta_j^2$ なので
+\[
+ E Q_\pi(B)=\sum_j\Delta_j=t,\qquad
+ \operatorname{Var}(Q_\pi(B))=2\sum_j\Delta_j^2
+ \le2t|\pi|.
+\]
+ゆえに
+$E|Q_\pi(B)-t|^2\le2t|\pi|\to0$ である．
+\end{proof}
+
+\begin{definition}
+連続な二つの過程 $X,Y$ に対して
+\[
+ [X,Y]_t=\frac14([X+Y]_t-[X-Y]_t)
+\]
+が存在するとき，これを共変動という．
+\end{definition}
+
+\begin{proposition}\label{prop:covar-bm}
+互いに独立な標準Brown運動
+$B^1,\dots,B^m$ に対して
+\[
+ [B^i,B^j]_t=\delta_{ij}t
+\]
+が確率収束の意味で成り立つ．
+\end{proposition}
+\begin{proof}
+$i=j$ は定理\ref{thm:brown-qv}による．
+$i\ne j$ なら異なる成分の増分は互いに独立で中心化されている．
+分割上の積の和
+$C_\pi=\sum_k\Delta_kB^i\Delta_kB^j$ に対して
+\[
+ E C_\pi=0,\qquad
+ E C_\pi^2=\sum_k(\Delta_k)^2\le t|\pi|
+\]
+となる．従って $C_\pi\to0$ は $L^2$ で成立する．
+二乗和の偏極恒等式によって結論を得る．
+\end{proof}
+
+\section{It\^o過程}
+
+\begin{definition}
+$a,b$ を実数値予測可能過程で
+\[
+ E\int_0^T(|a_s|^2+|b_s|^2)\,ds<\infty
+\]
+とする．$x_0\in\mathbb R$ に対し
+\[
+ X_t=x_0+\int_0^ta_s\,ds+\int_0^tb_s\,dB_s
+\]
+と定めた連続適合過程を\emph{It\^o過程}という．
+\end{definition}
+
+\begin{lemma}[積分過程の近似]\label{lem:ito-approx}
+$a,b$ を上の定義の係数とする．
+有界単純予測可能過程 $a^{(n)},b^{(n)}$ で
+\[
+ E\int_0^T\bigl(
+ |a^{(n)}-a|^2+|b^{(n)}-b|^2\bigr)\,ds\to0
+\]
+となるものが存在する．
+それらから定める $X^{(n)}$ に対して
+\[
+ E\sup_{t\le T}|X_t^{(n)}-X_t|^2\to0
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+単純予測可能過程の稠密性から最初の近似が存在する．
+$X^{(n)}-X$ の有限変動部分について
+Cauchy--Schwarzの不等式から
+\[
+ \sup_{t\le T}\left|
+ \int_0^t(a^{(n)}_s-a_s)\,ds\right|^2
+ \le T\int_0^T|a^{(n)}_s-a_s|^2\,ds.
+\]
+確率積分部分についてDoobの $L^2$ 最大不等式と
+It\^o等長性を適用すると
+\[
+ E\sup_{t\le T}\left|
+ \int_0^t(b^{(n)}_s-b_s)\,dB_s\right|^2
+ \le4E\int_0^T|b^{(n)}_s-b_s|^2\,ds.
+\]
+$|u+v|^2\le2|u|^2+2|v|^2$ を用いて両者を合わせれば結論を得る．
+\end{proof}
+
+\section{単純係数の場合のIt\^oの公式}
+
+\begin{lemma}[Taylor展開の剰余]\label{lem:taylor}
+$f\in C^{1,2}([0,T]\times\mathbb R)$ とする．
+任意のコンパクト集合 $K\subset\mathbb R$ と
+$\varepsilon>0$ に対し，ある $\delta>0$ が存在して
+$t,t+h\in[0,T]$，$x,x+u\in K$，
+$|h|+|u|<\delta$ のとき
+\[
+ \begin{aligned}
+ &\bigl|f(t+h,x+u)-f(t,x)-f_t(t,x)h\\
+ &\qquad{}-f_x(t,x)u-\tfrac12 f_{xx}(t,x)u^2\bigr|\\
+ &\qquad\le\varepsilon(|h|+u^2).
+ \end{aligned}
+ \tag{$*$}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+差を
+\[
+ [f(t+h,x+u)-f(t,x+u)]
+ +[f(t,x+u)-f(t,x)]
+\]
+に分ける．前者は
+$\int_t^{t+h}f_t(v,x+u)\,dv$ であり，
+$f_t$ のコンパクト集合上の一様連続性から
+$f_t(t,x)h$ との差は
+$o(|h|)$ である．
+後者は1変数のTaylor公式によって
+\[
+ f_x(t,x)u+\frac12f_{xx}(t,x)u^2+o(u^2)
+\]
+となる．$f_{xx}$ のコンパクト集合上の一様連続性から
+剰余評価は $t,x$ に関して一様である．
+両者を合わせて $(*)$ を得る．
+\end{proof}
+
+\begin{theorem}[単純係数のIt\^oの公式]\label{thm:ito-simple}
+$a,b$ を有界単純予測可能過程とし，
+$X_t=x_0+\int_0^ta_s\,ds+\int_0^tb_s\,dB_s$
+とする．
+$f\in C^{1,2}([0,T]\times\mathbb R)$ について
+$f$ とその偏導関数 $f_t,f_x,f_{xx}$ が有界であると仮定する．
+このとき各 $t\in[0,T]$ に対して
+\begin{align}
+ f(t,X_t)-f(0,x_0)
+ &=\int_0^t\!\bigl(
+ f_t(s,X_s)+a_sf_x(s,X_s)\bigr)\,ds\notag\\
+ &\quad+\int_0^tf_x(s,X_s)b_s\,dB_s\notag\\
+ &\quad+\frac12\int_0^tf_{xx}(s,X_s)b_s^2\,ds.
+ \label{eq:ito-simple}
+\end{align}
+\end{theorem}
+\begin{proof}
+まず固定した $t$ と有界な $X$ の標本路を扱う．
+$a,b$ の係数が変化する有限個の時刻を含み，
+最大幅が零へ向かう決定論的分割 $\pi_n$ を取る．
+分割の各区間 $(t_j,t_{j+1}]$ で
+$a_s=a_j$，$b_s=b_j$ と書き，
+$\Delta_jX=a_j\Delta_jt+b_j\Delta_jB$ と置く．
+各 $a_j,b_j$ は $\mathcal F_{t_j}$ 可測で有界である．
+Taylor展開の補題\ref{lem:taylor}から
+\begin{align*}
+ f(t,X_t)-f(0,x_0)
+ &=\sum_j f_t(t_j,X_{t_j})\Delta_jt\\
+ &\quad+\sum_jf_x(t_j,X_{t_j})\Delta_jX\\
+ &\quad+\frac12\sum_jf_{xx}(t_j,X_{t_j})(\Delta_jX)^2
+ +R_{\pi_n}.
+\end{align*}
+$X$ は連続なので
+$\max_j|\Delta_jX|\to0$ が概至る所である．
+また
+\[
+ E\sum_j(\Delta_jX)^2
+ \le2\|a\|_\infty^2T|\pi_n|
+     +2\|b\|_\infty^2T
+\]
+となり，二乗増分和は確率的に有界である．
+従って補題\ref{lem:taylor}の剰余評価を局所化して適用すると
+$R_{\pi_n}\to0$ は確率収束で成り立つ．
+
+時間微分の和
+$\sum_jf_t(t_j,X_{t_j})\Delta_jt$ は，
+$f_t(s,X_s)$ の標本路の連続性から
+$\int_0^tf_t(s,X_s)\,ds$ に収束する．
+同様にドリフト部分は
+$\sum_jf_x(t_j,X_{t_j})a_j\Delta_jt
+ \to\int_0^tf_x(s,X_s)a_s\,ds$ となる．
+確率積分部分
+$\sum_jf_x(t_j,X_{t_j})b_j\Delta_jB$ は，
+被積分過程
+$\sum_jf_x(t_j,X_{t_j})b_j1_{(t_j,t_{j+1}]}$
+が $f_x(s,X_s)b_s$ に
+$L^2(dt\otimes P)$ で収束することと
+It\^o等長性により
+$\int_0^tf_x(s,X_s)b_s\,dB_s$ に $L^2$ 収束する．
+ここで $f_x$ と $b$ の有界性，
+および $f_x(s,X_s)$ の連続な標本路を用いた．
+
+二次項については
+\[
+ (\Delta_jX)^2
+ =b_j^2(\Delta_jB)^2
+ +2a_jb_j\Delta_jt\,\Delta_jB
+ +a_j^2(\Delta_jt)^2.
+\]
+最後の二項の和は $L^1$ で零へ向かう．
+実際，最後は $O(|\pi_n|)$ であり，交差項は
+$E|\Delta_jB|\le(\Delta_jt)^{1/2}$ を用いて
+$O(|\pi_n|^{1/2})$ である．
+主項の
+\[
+ \sum_j f_{xx}(t_j,X_{t_j})b_j^2
+       ((\Delta_jB)^2-\Delta_jt)
+\]
+は平均零の直交なマルチンゲール差の和である．
+係数が有界で $\mathcal F_{t_j}$ 可測なので，
+その二乗平均は
+\[
+ 2\sum_j E[f_{xx}(t_j,X_{t_j})^2b_j^4]
+       (\Delta_jt)^2
+ \le C T|\pi_n|\to0.
+\]
+残るRiemann和は
+$\frac12\int_0^tf_{xx}(s,X_s)b_s^2\,ds$
+に概至る所収束する．
+以上を合わせて \eqref{eq:ito-simple} を確率変数の等式として得る．
+両辺が連続過程なので，有理時刻で同時に成立する確率1の集合を
+取ることにより全ての時刻で区別不能性の意味で成立する．
+\end{proof}
+
+\section{一般のIt\^oの公式}
+
+\begin{theorem}[It\^oの公式]\label{thm:ito}
+$a,b$ を予測可能で
+\[
+ E\int_0^T(|a_s|^2+|b_s|^2)\,ds<\infty
+\]
+とし，$X_t=x_0+\int_0^ta_s\,ds+\int_0^tb_s\,dB_s$
+と置く．
+$f\in C^{1,2}([0,T]\times\mathbb R)$ とすると，
+全ての $t\in[0,T]$ に対して，区別不能性の意味で
+\begin{align}
+ f(t,X_t)
+ &=f(0,x_0)+\int_0^t f_t(s,X_s)\,ds\notag\\
+ &\quad+\int_0^t f_x(s,X_s)a_s\,ds\notag\\
+ &\quad+\int_0^t f_x(s,X_s)b_s\,dB_s\notag\\
+ &\quad+\frac12\int_0^t f_{xx}(s,X_s)b_s^2\,ds
+ \label{eq:ito}
+\end{align}
+が成り立つ．右辺の確率積分は必要に応じて局所化によって定義する．
+\end{theorem}
+\begin{proof}
+まず $f,f_t,f_x,f_{xx}$ が有界とする．
+補題\ref{lem:ito-approx}により
+$a^{(n)},b^{(n)}$ を有界単純過程で近似し，
+対応する過程を $X^{(n)}$ とする．
+$\sup_{t\le T}|X^{(n)}_t-X_t|\to0$ は
+$L^2$，従って確率収束で成立する．
+任意の部分列から一様概収束する部分列をさらに選べるので，
+以下はその部分列で議論すれば十分である．
+定理\ref{thm:ito-simple}を $X^{(n)}$ に適用する．
+
+$f_t$ と $f_x$ の連続性，および
+$X^{(n)}\to X$ の一様概収束から
+$f_t(s,X^{(n)}_s)\to f_t(s,X_s)$，
+$f_x(s,X^{(n)}_s)\to f_x(s,X_s)$
+が各標本路について一様に成り立つ．
+これらは有界であるから，
+時間積分項は有界収束と
+$a^{(n)}\to a$ の $L^2$ 収束を組み合わせて
+$L^1$ 収束する．
+確率積分項についても
+\[
+ f_x(s,X^{(n)}_s)b^{(n)}_s
+ -f_x(s,X_s)b_s
+\]
+を
+$f_x(s,X^{(n)}_s)(b^{(n)}_s-b_s)$ と
+$(f_x(s,X^{(n)}_s)-f_x(s,X_s))b_s$
+に分ける．前者は $f_x$ の有界性と
+$b^{(n)}\to b$ の $L^2$ 収束から，
+後者は有界収束定理を
+可積分測度 $|b_s|^2dt\,dP$ に適用して，
+いずれも $L^2(dt\otimes P)$ で零へ収束する．
+従ってIt\^o等長性により確率積分項は $L^2$ 収束する．
+
+二次変分項については
+\[
+ |(b^{(n)})^2-b^2|
+ \le|b^{(n)}-b|(|b^{(n)}|+|b|)
+\]
+とCauchy--Schwarzの不等式から
+$L^1(dt\otimes P)$ 収束が従う．
+これに $f_{xx}$ の有界性と
+$f_{xx}(s,X^{(n)}_s)\to f_{xx}(s,X_s)$ の
+概至る所の収束を組み合わせればよい．
+以上で \eqref{eq:ito} が有界な偏導関数の場合に成立する．
+
+一般の $f\in C^{1,2}$ に対しては，
+$C^\infty$ の切断関数 $\chi_R$ を用い，
+$f_R(t,x)=\chi_R(x)f(t,x)$ と置く．
+$\chi_R=1$ は $|x|\le R$ 上で成立し，
+$\chi_R$ はコンパクト台を持つように選ぶ．
+$[0,T]\times\mathbb R$ 上で
+$f_R$ と必要な偏導関数は有界である．
+停止時刻
+$\tau_R=\inf\{t\le T:|X_t|\ge R\}\wedge T$
+を導入すると，
+$R$ を十分大きくしたとき
+$[0,\tau_R]$ では $f_R=f$ と偏導関数が一致する．
+有界の場合の公式に停止定理と確率積分の停止との整合性を適用すれば，
+$t\wedge\tau_R$ までの \eqref{eq:ito} が成立する．
+$X$ は連続なので $\tau_R\uparrow T$ が概至る所成立し，
+各標本路で十分大きい $R$ に対して $\tau_R=T$ となる．
+従って一般の場合も式が成立する．
+\end{proof}
+
+\begin{remark}
+$f$ が単に $C^1$ 級である場合に二階微分の項を
+一般に意味づけることはできない．
+ここでの $C^{1,2}$ は時間について1回，
+空間について2回連続微分可能という意味である．
+\end{remark}
+
+\section{積の公式}
+
+\begin{proposition}[It\^oの積の公式]\label{prop:product}
+$X,Y$ を，同一Brown運動に関するIt\^o過程
+\begin{align*}
+ dX_t&=a_t\,dt+b_t\,dB_t,\\
+ dY_t&=c_t\,dt+d_t\,dB_t
+\end{align*}
+とする．このとき
+\[
+ X_tY_t-X_0Y_0
+ =\int_0^tX_s\,dY_s+\int_0^tY_s\,dX_s
+   +\int_0^tb_sd_s\,ds
+\]
+が成り立つ．確率積分は局所化によって定義する．
+\end{proposition}
+\begin{proof}
+二次元のIt\^oの公式を
+$f(x,y)=xy$ に適用する．
+そのHessianの非対角成分は共に $1$，
+対角成分は $0$ なので，
+二階の項が $\int_0^tb_sd_s\,ds$ となる．
+二次元の公式そのものは次節で
+1次元の証明を成分ごとに適用して導く．
+\end{proof}
+
+\section{多次元It\^oの公式}
+
+\begin{theorem}[多次元It\^oの公式]\label{thm:multi}
+$B=(B^1,\dots,B^m)$ を独立な標準Brown運動からなる過程とし，
+$X=(X^1,\dots,X^d)$ を
+\[
+ dX^i_t=a^i_t\,dt+\sum_{k=1}^mb^{ik}_t\,dB^k_t
+ \qquad(1\le i\le d)
+\]
+を満たすIt\^o過程とする．
+係数が局所的に二乗可積分であると仮定する．
+$f\in C^{1,2}([0,T]\times\mathbb R^d)$ に対し
+\begin{align*}
+ df(t,X_t)
+ &=f_t(t,X_t)\,dt
+   +\sum_{i=1}^df_{x_i}(t,X_t)\,dX^i_t\\
+ &\quad+\frac12\sum_{i,j=1}^d
+  f_{x_ix_j}(t,X_t)
+  \left(\sum_{k=1}^mb^{ik}_tb^{jk}_t\right)\,dt.
+\end{align*}
+\end{theorem}
+\begin{proof}
+まず係数と導関数が有界な単純過程の場合を考える．
+Taylor展開の2次項は
+$\frac12\sum_{i,j}f_{x_ix_j}\Delta X^i\Delta X^j$
+である．同一区間の
+$\Delta B^k\Delta B^\ell$ について，
+$k=\ell$ のときの平方の和は区間幅の和に収束し，
+$k\ne\ell$ のときの積の和は零に収束する．
+これは独立正規増分と四次モーメントを用いた
+命題\ref{prop:covar-bm}と同じ $L^2$ 評価による．
+従って一変数の定理\ref{thm:ito-simple}の証明における
+二次項の計算を成分ごとに行えば，表示式を得る．
+Taylor剰余の評価は，Hessianがコンパクト集合上で
+一様連続であることから同様に従う．
+一般の場合には，単純過程による $L^2$ 近似と
+停止時刻による局所化を
+定理\ref{thm:ito}の証明と同様に適用する．
+\end{proof}
+
+\begin{corollary}[共変動の計算]
+上の条件で
+\[
+ [X^i,X^j]_t
+ =\int_0^t\sum_{k=1}^m b_s^{ik}b_s^{jk}\,ds
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+$f(x)=x_ix_j$ に多次元It\^oの公式を適用し，
+通常の一次の積分項を取り出した残りを
+二次共変動として同定する．
+同定は単純過程では分割に沿う増分の積の極限から従い，
+一般の場合は $L^2$ 近似と局所化により保存される．
+\end{proof}
+
+\section{Stratonovich積分との関係}
+
+\begin{proposition}\label{prop:stratonovich}
+$h\in C^{1,2}([0,T]\times\mathbb R)$ とし，
+$h$ および一階偏導関数が有界であるとする．
+決定論的な分割 $\pi=\{0=t_0<\cdots<t_n=t\}$ に対し
+\[
+ S_\pi=\frac12\sum_{j=0}^{n-1}
+ \bigl(h(t_j,B_{t_j})+h(t_{j+1},B_{t_{j+1}})\bigr)
+ (B_{t_{j+1}}-B_{t_j})
+\]
+と置く．$|\pi|\to0$ のとき $S_\pi$ は確率収束し，
+\[
+ \lim_{|\pi|\to0}S_\pi
+ =\int_0^th(s,B_s)\,dB_s
+   +\frac12\int_0^th_x(s,B_s)\,ds
+\]
+となる．
+\end{proposition}
+\begin{proof}
+$S_\pi$ を左端和
+$\sum_jh(t_j,B_{t_j})\Delta_jB$ と差分
+\[
+ \frac12\sum_j
+ \bigl(h(t_{j+1},B_{t_{j+1}})
+       -h(t_j,B_{t_j})\bigr)\Delta_jB
+\]
+に分ける．左端和はIt\^o等長性と
+$h(s,B_s)$ の連続性・有界性から
+$\int_0^th(s,B_s)\,dB_s$ に $L^2$ 収束する．
+差分の括弧をTaylor展開すると
+\[
+ \begin{aligned}
+ &h(t_{j+1},B_{t_{j+1}})-h(t_j,B_{t_j})\\
+ &\quad=h_x(t_j,B_{t_j})\Delta_jB
+       +h_t(t_j,B_{t_j})\Delta_jt\\
+ &\qquad+O((\Delta_jB)^2)+o(\Delta_jt).
+ \end{aligned}
+\]
+となる．必要ならBrown運動の値を有界領域に停止し，
+導関数の一様連続性を用いて剰余を評価する．
+$\sum_j(\Delta_jB)^2$ は確率的に有界で，
+$\max_j|\Delta_jB|\to0$ が概至る所成立するため，
+剰余を $\Delta_jB$ 倍して足した項は確率収束で零へ向かう．
+同様に $\sum_j\Delta_jt\,\Delta_jB\to0$ である．
+主項は
+$\frac12\sum_jh_x(t_j,B_{t_j})(\Delta_jB)^2$
+であり，二次変分の証明と同じ
+マルチンゲール差の評価により
+$\frac12\int_0^th_x(s,B_s)\,ds$ へ収束する．
+以上で結論を得る．
+\end{proof}
+
+\section{計算例}
+
+\begin{example}[Brown運動の平方]
+$f(x)=x^2$ を定理\ref{thm:ito}に適用すると
+\[
+ B_t^2=2\int_0^tB_s\,dB_s+t
+\]
+を得る．従って $B_t^2-t$ はマルチンゲールである．
+\end{example}
+\begin{proof}
+$B$ のドリフトは $0$，拡散係数は $1$ である．
+$f_x=2x$，$f_{xx}=2$ なので公式から表示式が従う．
+$\int_0^tB_s\,dB_s$ は二乗可積分な
+It\^o積分でありマルチンゲールである．
+\end{proof}
+
+\begin{example}[指数マルチンゲール]
+任意の $\theta\in\mathbb R$ に対して
+\[
+ Z_t=\exp\!\left(\theta B_t-\frac12\theta^2t\right)
+\]
+はマルチンゲールである．
+\end{example}
+\begin{proof}
+$f(t,x)=\exp(\theta x-\theta^2t/2)$ と置けば
+$f_t=-\theta^2f/2$，$f_x=\theta f$，
+$f_{xx}=\theta^2f$ である．
+It\^oの公式から
+$dZ_t=\theta Z_t\,dB_t$ を得る．
+この式だけでは一般に局所マルチンゲール性しか分からない．
+真のマルチンゲールであることは直接確認する．
+$0\le s<t$ について，独立増分性と正規分布の
+指数モーメントを用いれば
+\begin{align*}
+ E[Z_t\mid\mathcal F_s]
+ &=Z_sE\left[
+ \exp\!\left(\theta(B_t-B_s)
+  -\tfrac12\theta^2(t-s)\right)\right]\\
+ &=Z_s.
+\end{align*}
+よって結論を得る．
+\end{proof}
+
+\begin{example}[幾何Brown運動]
+$a,b\in\mathbb R$，$x_0>0$ とし
+\[
+ X_t=x_0\exp\!\left((a-\tfrac12b^2)t+bB_t\right)
+\]
+と置けば
+$dX_t=aX_t\,dt+bX_t\,dB_t$ が成り立つ．
+\end{example}
+\begin{proof}
+$f(t,x)=x_0\exp((a-b^2/2)t+bx)$ に
+It\^oの公式を適用すると，
+\[
+ df(t,B_t)=f_t\,dt+f_x\,dB_t
+    +\tfrac12f_{xx}\,dt
+ =af(t,B_t)\,dt+bf(t,B_t)\,dB_t
+\]
+となる．
+\end{proof}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{Brown運動の二乗のItô分解．}
+\begin{proposition}
+標準Brown運動 $B_t$ に対し
+\[
+B_t^2=2\int_0^tB_s\,dB_s+t
+\quad(t\ge0)
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+$f(x)=x^2$ にItôの公式を適用する．
+$f'(x)=2x$，$f''(x)=2$ だから
+\[
+df(B_t)=2B_t\,dB_t+\tfrac12(2)\,dt.
+\]
+$B_0=0$ を用いて0から $t$ まで積分すると
+表示した式を得る．
+\end{proof}
+\begin{corollary}
+$E[B_t^2]=t$ である．
+\end{corollary}
+\begin{proof}
+Itô積分は平均零の二乗可積分マルチンゲールなので
+上式の期待値を取れば $E[B_t^2]=t$ となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$B_t^3$ のItô微分を求めよ．
+\par\noindent\textbf{解答．}
+$f'(x)=3x^2$，$f''(x)=6x$ より
+$d(B_t^3)=3B_t^2\,dB_t+3B_t\,dt$ である．
+\end{document}

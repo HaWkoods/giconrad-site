@@ -1,0 +1,627 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{It\^o積分の構成}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Itô積分の構成，Itô等長性．
+本稿の具体的な到達課題は，決定的被積分関数のItô積分の二乗平均を計算する．
+
+\section{確率積分を定義する空間}
+
+固定した $T>0$ に対し，
+$(\Omega,\mathcal F,(\mathcal F_t)_{0\le t\le T},P)$ を
+通常の条件を満たすフィルター付き確率空間とする．
+$(B_t)_{0\le t\le T}$ はこのフィルトレーションに適合し，
+$t\ge s$ について $B_t-B_s$ が
+$\mathcal F_s$ と独立で $N(0,t-s)$ に従う標準Brown運動とする．
+このノートではBrown運動の存在を前提にする．
+
+\begin{definition}
+$[0,T]\times\Omega$ 上の\emph{予測可能 $\sigma$-加法族}
+$\mathcal P$ を，
+\[
+ (s,t]\times A,\quad 0\le s<t\le T,\ A\in\mathcal F_s,
+ \qquad\text{および}\quad \{0\}\times A,\ A\in\mathcal F_0
+\]
+によって生成される $\sigma$-加法族とする．
+$\mathcal P$ 可測な実数値過程を\emph{予測可能過程}という．
+\[
+ \mathcal H^2_T
+ =L^2([0,T]\times\Omega,\mathcal P,dt\otimes P)
+\]
+と置き，ノルム
+\[
+ \norm H_{\mathcal H^2_T}^2
+ =E\int_0^T|H_s|^2\,ds
+\]
+を用いる．
+\end{definition}
+
+\begin{remark}
+予測可能過程は未来の情報を使って積分を定義しないための
+可測性条件である．
+過程が単に適合であるだけでは，
+その時間変数を含めた可測性が自動的に得られるとは限らない．
+\end{remark}
+
+\begin{lemma}\label{lem:predictable}
+左連続で適合な過程は予測可能である．
+また予測可能な過程 $H$ に対して
+$(t,\omega)\mapsto\int_0^tH_s(\omega)^2\,ds$
+が有限で定義される場合，これは連続かつ適合な過程である．
+\end{lemma}
+\begin{proof}
+左連続な適合過程 $H$ を取り，
+$t>0$ に対して
+\[
+ H^{(n)}_t
+ =\sum_{k=0}^{nT-1}
+ H_{k/n}\,1_{(k/n,(k+1)/n]}(t)
+\]
+の形の近似を，端点が $T$ を越える場合は切り詰めて定める．
+より正確には各 $n$ で $0=t_0<\cdots<t_{m_n}=T$ を
+最大幅 $1/n$ 以下に選び，
+$H^{(n)}_t=H_{t_{j-1}}$（$t_{j-1}<t\le t_j$）
+と置く．
+各 $H^{(n)}$ は予測可能であり，
+左連続性から $t>0$ について
+$H^{(n)}_t\to H_t$ が各標本路で成り立つ．
+$t=0$ では $H_0$ を別に指定できる．
+従って $H$ は $\mathcal P$ 可測である．
+
+第二の主張について，単純予測可能過程を出発点とし，
+一般の非負予測可能関数 $H^2$ を
+増加する単純 $\mathcal P$ 可測関数で近似する．
+各 $t$ に対する積分は，
+$[0,t]\times\Omega$ 上の可測性と
+$\mathcal F_t$ に含まれる係数の性質から
+$\mathcal F_t$ 可測である．
+有限値の時間積分は，標本路ごとに
+Lebesgue積分の絶対連続性によって連続となる．
+\end{proof}
+
+\begin{definition}
+有界な\emph{単純予測可能過程}とは，
+決定論的な分割 $0=t_0<\cdots<t_n=T$ と
+有界な $\mathcal F_{t_j}$ 可測確率変数 $\xi_j$
+を用いて
+\[
+ H_t=\sum_{j=0}^{n-1}\xi_j1_{(t_j,t_{j+1}]}(t)
+\]
+と書ける過程をいう．$t=0$ の値は任意に定めてよい．
+その全体を $\mathcal S$ と書く．
+\end{definition}
+
+\begin{lemma}[単純予測可能過程の稠密性]\label{lem:density}
+$\mathcal S$ は $\mathcal H^2_T$ に稠密である．
+\end{lemma}
+\begin{proof}
+$\mathcal S$ の像の線形包の
+$\mathcal H^2_T$ での閉包を $V$ と置く．
+まず全ての
+$(s,t]\times A$（$A\in\mathcal F_s$）の指示関数は
+$\mathcal S$ に属する．$t=0$ の集合は
+$dt\otimes P$ に関して測度零なので無視できる．
+
+$[0,T]\times\Omega$ の有限測度空間を考える．
+集合族
+\[
+ \mathcal D=\{D\in\mathcal P:1_D\in V\}
+\]
+は単調な集合列の和・共通部分について閉じている．
+実際，$D_n\uparrow D$ または $D_n\downarrow D$ なら
+$1_{D_n}\to1_D$ は $L^2(dt\otimes P)$ で成立する．
+
+生成用の長方形の交わりは，
+空集合または再び生成用の長方形となる．
+その有限和集合の指示関数は包含排除の等式により
+長方形の指示関数の有限線形結合で書ける．
+従って，生成用の長方形が生成する集合代数
+$\mathcal A$ に対して $\mathcal A\subset\mathcal D$ が成り立つ．
+$\mathcal A$ を含む単調類 $\mathcal D$ に
+集合代数版の単調類定理を適用すると
+$\sigma(\mathcal A)=\mathcal P\subset\mathcal D$ を得る．
+任意の $\mathcal P$ 可測な平方可積分関数は，
+有限値単純関数の切断近似を通じて $L^2$ で近似できる．
+従って $V=\mathcal H^2_T$ である．
+\end{proof}
+
+\section{単純過程に対するIt\^o積分}
+
+\begin{definition}
+$H\in\mathcal S$ を
+$H_t=\sum_{j=0}^{n-1}\xi_j1_{(t_j,t_{j+1}]}(t)$ と書く．
+その\emph{It\^o積分過程}を
+\[
+ I_t(H)=\sum_{j=0}^{n-1}
+ \xi_j(B_{t\wedge t_{j+1}}-B_{t\wedge t_j})
+ \qquad(0\le t\le T)
+\]
+と定義する．
+\end{definition}
+
+\begin{lemma}\label{lem:simple-well}
+この定義は $H$ の単純過程としての表示によらず，
+$dt\otimes P$ に関して同値な表示を除き一意である．
+$I_t(H)$ は連続な適合過程である．
+\end{lemma}
+\begin{proof}
+二つの表示がある場合には分割の端点をすべて集めて
+共通の細分を作ればよい．同じ区間上の係数は
+$dt\otimes P$ について等しいから概至る所で一致し，
+有限個の係数の和として定義された積分は一致する．
+各和の項は，$\xi_j$ が $\mathcal F_{t_j}$ 可測であることと
+Brown運動の適合性から適合である．
+標本路の連続性はBrown運動の連続性と有限和から従う．
+\end{proof}
+
+\begin{theorem}[It\^o等長性]\label{thm:isometry}
+任意の $H,G\in\mathcal S$ と $t\in[0,T]$ に対して
+\[
+ E[I_t(H)I_t(G)]
+ =E\int_0^tH_sG_s\,ds.
+\]
+特に $E[I_t(H)]=0$ および
+\[
+ E|I_t(H)|^2=E\int_0^t|H_s|^2\,ds
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$H,G$ の共通の決定論的分割を取り，
+$H=\sum_j\xi_j1_{(t_j,t_{j+1}]}$，
+$G=\sum_j\eta_j1_{(t_j,t_{j+1}]}$ とする．
+まず $t=T$ の場合を考える．
+$\Delta_jB=B_{t_{j+1}}-B_{t_j}$ と置くと，
+$\xi_j,\eta_j$ は $\mathcal F_{t_j}$ 可測であり，
+$\Delta_jB$ は $\mathcal F_{t_j}$ と独立で
+$E[\Delta_jB]=0$，
+$E[(\Delta_jB)^2]=t_{j+1}-t_j$ を満たす．
+$j<k$ のとき
+$\xi_j\Delta_jB\,\eta_k$ は $\mathcal F_{t_k}$ 可測なので
+\[
+ E[\xi_j\eta_k\Delta_jB\Delta_kB]
+ =E[\xi_j\eta_k\Delta_jB\,
+     E[\Delta_kB\mid\mathcal F_{t_k}]]=0.
+\]
+$j=k$ では
+\[
+ E[\xi_j\eta_j(\Delta_jB)^2]
+ =(t_{j+1}-t_j)E[\xi_j\eta_j].
+\]
+積分を展開して足し合わせれば等長性を得る．
+各項の平均が零であることも同様である．
+一般の $t$ は分割に $t$ を加えた共通細分を用いればよい．
+\end{proof}
+
+\begin{proposition}\label{prop:simple-mart}
+$H\in\mathcal S$ に対して
+$(I_t(H))_{0\le t\le T}$ は二乗可積分な
+連続マルチンゲールである．
+\end{proposition}
+\begin{proof}
+$0\le s<t\le T$ とする．
+分割に $s,t$ を加えて細分すると
+$I_t(H)-I_s(H)$ は
+$\sum_j\xi_j(B_{u_{j+1}}-B_{u_j})$ の形に表され，
+全ての区間は $[s,t]$ に含まれる．
+$u_j\ge s$ であり，積分の各項は
+$\mathcal F_{u_j}$ で条件付けると平均零であるから，
+塔の性質によって
+$E[I_t(H)-I_s(H)\mid\mathcal F_s]=0$ となる．
+従ってマルチンゲールである．
+二乗可積分性はIt\^o等長性から従う．
+\end{proof}
+
+\section{$L^2$ 拡張による積分の構成}
+
+\begin{theorem}[It\^o積分の存在と一意性]\label{thm:ito-existence}
+任意の $H\in\mathcal H^2_T$ に対し，
+各 $t\in[0,T]$ で定義された二乗可積分確率変数
+$I_t(H)$ が存在して次を満たす．
+\begin{enumerate}
+\item $H\in\mathcal S$ なら前節の定義と一致する．
+\item $H\mapsto I_t(H)$ は線形である．
+\item $E[I_t(H)]=0$ であり，
+\[
+ E|I_t(H)|^2=E\int_0^t|H_s|^2\,ds.
+\]
+\item 各 $t$ における $I_t(H)$ は
+$I_t(H)=\lim_{n\to\infty}I_t(H_n)$
+（$L^2(\Omega)$ 収束）によって定義される．
+ここで $(H_n)\subset\mathcal S$ は
+$\norm{H_n-H}_{\mathcal H^2_T}\to0$ を満たす任意の列である．
+\end{enumerate}
+さらに $(I_t(H))$ はマルチンゲールである．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:density}から
+$H_n\to H$ となる $H_n\in\mathcal S$ を取れる．
+It\^o等長性により任意の $n,m$ について
+\[
+ E|I_t(H_n)-I_t(H_m)|^2
+ =E\int_0^t|H_n-H_m|^2\,ds
+ \le\norm{H_n-H_m}_{\mathcal H^2_T}^2.
+\]
+従って $(I_t(H_n))$ は $L^2(\Omega)$ のCauchy列であり，
+その完備性から極限 $I_t(H)$ が存在する．
+別の近似列 $(G_n)$ を選んでも，
+同じ評価を $H_n-G_n$ に適用すれば同じ極限を得る．
+従って定義は近似列によらない．
+線形性，等長性，平均零は単純過程の場合の等式を
+$L^2$ 極限に移せば得られる．
+
+マルチンゲール性を示す．
+$0\le s\le t$ に対し
+$E[I_t(H_n)\mid\mathcal F_s]=I_s(H_n)$ が成り立つ．
+条件付き期待値は $L^2$ 縮小写像なので，
+$L^2$ 極限を取って
+\[
+ E[I_t(H)\mid\mathcal F_s]=I_s(H)
+\]
+を得る．各 $I_t(H)$ は $\mathcal F_t$ 可測であることも，
+$L^2$ 極限と閉性から従う．
+\end{proof}
+
+\begin{definition}
+定理\ref{thm:ito-existence}の $I_t(H)$ を
+\[
+ I_t(H)=\int_0^tH_s\,dB_s
+\]
+と書く．この記号は $L^2$ 極限によって定義されるものであり，
+各標本路に沿うRiemann--Stieltjes積分を意味しない．
+\end{definition}
+
+\section{積分過程の連続性}
+
+\begin{lemma}[連続なマルチンゲールの最大評価]\label{lem:cont-doob}
+$M=(M_t)_{0\le t\le T}$ を連続な二乗可積分マルチンゲールとする．
+このとき
+\[
+ E\left[\sup_{0\le t\le T}|M_t|^2\right]
+ \le4E|M_T|^2
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$n$ 等分した時刻集合 $D_n=\{kT/n:0\le k\le n\}$
+で $M$ を制限した離散時間マルチンゲールに
+Doobの $L^2$ 最大不等式を適用すると
+\[
+ E\left[\max_{t\in D_n}|M_t|^2\right]
+ \le4E|M_T|^2
+\]
+となる．
+$n=2^m$ を選べば $D_{2^m}$ は増大する有限集合であり，
+その和集合は $[0,T]$ に稠密である．
+標本路の連続性から
+$\max_{t\in D_{2^m}}|M_t|^2
+ \uparrow\sup_{0\le t\le T}|M_t|^2$ となる．
+単調収束定理によって結論を得る．
+\end{proof}
+
+\begin{theorem}[連続な修正の存在]\label{thm:ito-continuity}
+各 $H\in\mathcal H^2_T$ に対し，
+$(I_t(H))_{0\le t\le T}$ は連続な標本路を持つ修正を持つ．
+この修正は区別不能性を除いて一意であり，
+\[
+ E\left[\sup_{0\le t\le T}|I_t(H)|^2\right]
+ \le4E\int_0^T|H_s|^2\,ds
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$\mathcal S$ の列 $(H_n)$ を十分速く $H$ に近づけて，
+\[
+ \norm{H_{n+1}-H_n}_{\mathcal H^2_T}^2\le2^{-4n}
+ \qquad(n\ge1)
+\]
+となるように取る．
+$M^n_t=I_t(H_n)$ は連続マルチンゲールである．
+補題\ref{lem:cont-doob}とIt\^o等長性から
+\[
+ E\sup_{t\le T}|M^{n+1}_t-M^n_t|^2
+ \le4\cdot2^{-4n}.
+\]
+従ってChebyshevの不等式により
+\[
+ P\left(\sup_{t\le T}|M^{n+1}_t-M^n_t|>2^{-n}\right)
+ \le4\cdot2^{-2n}.
+\]
+右辺の和は有限だからBorel--Cantelliの補題により，
+確率 $1$ で十分大きい全ての $n$ について
+$\sup_t|M^{n+1}_t-M^n_t|\le2^{-n}$ となる．
+従って $(M^n)$ は確率 $1$ で一様Cauchy列であり，
+連続関数への一様収束から連続な極限過程 $M$ を得る．
+任意の固定した $t$ では
+$M^n_t\to I_t(H)$ が $L^2$ で成立するため，
+確率極限の一意性から $M_t=I_t(H)$ が概至る所成立する．
+よって $M$ は求める連続な修正である．
+
+連続な二つの修正は，各有理時刻で同時に一致する
+確率 $1$ の集合上で連続性から全時刻で一致する．
+従って区別不能性を除いて一意である．
+
+最後に $M$ に補題\ref{lem:cont-doob}を適用し，
+定理\ref{thm:ito-existence}の等長性を用いれば
+\[
+ E\sup_{t\le T}|M_t|^2
+ \le4E|M_T|^2
+ =4E\int_0^T|H_s|^2\,ds.
+\]
+\end{proof}
+
+\begin{remark}
+以下，It\^o積分過程にはこの連続な修正を選んで用いる．
+一つの固定時刻ごとの $L^2$ 定義から，
+全ての時刻にわたる連続標本路を持つ過程を得た点が重要である．
+\end{remark}
+
+\section{停止時刻による局所化}
+
+\begin{definition}
+予測可能過程 $H$ が
+\[
+ \int_0^T|H_s|^2\,ds<\infty
+ \qquad\text{ほとんど確実}
+\]
+を満たすとき，$H$ を\emph{局所的に二乗可積分}という．
+\end{definition}
+
+\begin{lemma}[停止との整合性]\label{lem:stop}
+$H\in\mathcal H^2_T$，$\tau\le T$ を停止時刻とする．
+このとき全ての $t\in[0,T]$ について
+\[
+ \int_0^{t\wedge\tau}H_s\,dB_s
+ =\int_0^t1_{\{s\le\tau\}}H_s\,dB_s
+\]
+が区別不能性の意味で成立する．
+\end{lemma}
+\begin{proof}
+まず有界単純過程 $H$ について考える．
+$\tau$ を決定論的な有限格子上の停止時刻で近似する場合，
+各格子区間を停止時刻の前後に分けると
+等式は積分を定義する和から直接得られる．
+一般の停止時刻に対しては
+$\tau_n=2^{-n}\lceil2^n\tau\rceil\wedge T$
+と置くと $\tau_n\downarrow\tau$ である．
+$H$ が単純で有界なら，
+Brown運動の連続性と
+停止時刻近似による積分表示の収束から
+両辺の等式が得られる．
+
+一般の $H\in\mathcal H^2_T$ について
+$H_n\in\mathcal S$，$H_n\to H$ を取る．
+\[
+ E\int_0^T
+ |1_{\{s\le\tau\}}(H_n-H)|^2\,ds
+ \le E\int_0^T|H_n-H|^2\,ds\to0
+\]
+なので，両辺に現れる積分の差は
+最大不等式によって
+一様ノルムに関する確率収束で零へ向かう．
+単純過程の等式を極限へ移せばよい．
+\end{proof}
+
+\begin{theorem}[局所It\^o積分]\label{thm:local}
+$H$ を予測可能で局所的に二乗可積分な過程とする．
+このとき区別不能性を除いて一意な連続適合過程
+$(M_t)_{0\le t\le T}$ が存在し，
+$M_0=0$ であって局所マルチンゲールとなる．
+この過程を
+$M_t=\int_0^tH_s\,dB_s$ と書く．
+\end{theorem}
+\begin{proof}
+\[
+ A_t=\int_0^t|H_s|^2\,ds,\qquad
+ \tau_n=\inf\{t\in[0,T]:A_t\ge n\}\wedge T
+\]
+と置く．$A$ は連続な適合増加過程なので
+$\tau_n$ は停止時刻である．
+$A_T<\infty$ が概至る所成り立つことから
+$\tau_n\uparrow T$ が概至る所成り立ち，
+しかも十分大きい $n$ について $\tau_n=T$ となる．
+$H^{(n)}_s=H_s1_{\{s\le\tau_n\}}$ と置くと
+予測可能であり，
+\[
+ E\int_0^T|H^{(n)}_s|^2\,ds
+ =E A_{\tau_n}\le n
+\]
+となるため $H^{(n)}\in\mathcal H^2_T$ である．
+$M^{(n)}_t=\int_0^tH^{(n)}_s\,dB_s$ と置くと，
+定理\ref{thm:ito-continuity}から連続マルチンゲールである．
+$n\le m$ なら補題\ref{lem:stop}によって
+\[
+ M^{(m)}_{t\wedge\tau_n}=M^{(n)}_{t}
+ \qquad(0\le t\le T)
+\]
+が区別不能性の意味で成立する．
+この整合性から，確率 $1$ の集合上で
+$M_t=M^{(n)}_t$（$t\le\tau_n$）と定めることができる．
+各標本路はある $n$ 以降で $\tau_n=T$ となるので，
+$M$ は連続な適合過程である．
+$(M_{t\wedge\tau_n})$ は二乗可積分マルチンゲールだから，
+$M$ は局所マルチンゲールである．
+他の局所化列から得た過程も，
+両方の停止時刻の最小値で比較すると一致するので一意である．
+\end{proof}
+
+\section{決定論的被積分関数}
+
+\begin{proposition}[Gaussian確率積分]\label{prop:gaussian-int}
+$h\in L^2([0,T],dt)$ を決定論的な実数値関数とする．
+\[
+ Z=\int_0^T h(s)\,dB_s
+\]
+は中心正規分布 $N(0,\int_0^Th(s)^2\,ds)$ に従う．
+さらに $h,g\in L^2([0,T])$ について
+\[
+ E\left[\left(\int_0^Th\,dB\right)
+          \left(\int_0^Tg\,dB\right)\right]
+ =\int_0^Th(s)g(s)\,ds.
+\]
+特に $h,g$ の支持がほとんど至る所交わらないなら，
+二つの積分は独立である．
+\end{proposition}
+\begin{proof}
+$h$ が決定論的階段関数の場合，
+積分は互いに独立な中心正規増分の線形結合だから正規分布に従う．
+平均は零，分散は
+$\int_0^Th(s)^2\,ds$ である．
+一般の $h$ は階段関数 $h_n$ で $L^2$ 近似する．
+It\^o等長性から
+$\int h_n\,dB\to\int h\,dB$ は $L^2(\Omega)$ で成立する．
+従って特性関数の収束と
+$\int h_n^2\to\int h^2$ により極限は上記の正規分布となる．
+共分散の公式はIt\^o等長性の偏極恒等式から従う．
+$(\int h\,dB,\int g\,dB)$ は任意の線形結合がGaussianなので
+同時Gaussianであり，共分散が零なら独立である．
+\end{proof}
+
+\section{基本的な計算例}
+
+\begin{proposition}\label{prop:bb}
+任意の $t\in[0,T]$ について
+\[
+ \int_0^tB_s\,dB_s=\frac12(B_t^2-t)
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+$H_s=B_s$ は連続かつ適合だから予測可能である．
+$E\int_0^T B_s^2\,ds=\int_0^Ts\,ds=T^2/2<\infty$
+なので $H\in\mathcal H^2_T$ である．
+$[0,t]$ の決定論的分割
+$\pi=\{0=t_0<\cdots<t_n=t\}$ に対し，
+$H^\pi_s=B_{t_j}$（$t_j<s\le t_{j+1}$）と置くと
+\begin{align*}
+ E\int_0^t|H^\pi_s-B_s|^2\,ds
+ &=\sum_{j=0}^{n-1}\int_{t_j}^{t_{j+1}}
+   E|B_{t_j}-B_s|^2\,ds\\
+ &=\frac12\sum_{j=0}^{n-1}(t_{j+1}-t_j)^2
+ \le\frac t2|\pi|\to0.
+\end{align*}
+It\^o等長性から
+\[
+ \sum_{j=0}^{n-1}B_{t_j}(B_{t_{j+1}}-B_{t_j})
+ \longrightarrow \int_0^tB_s\,dB_s
+\]
+が $L^2(\Omega)$ で成立する．
+一方，各分割について代数的恒等式
+\[
+ B_t^2
+ =2\sum_{j=0}^{n-1}B_{t_j}
+     (B_{t_{j+1}}-B_{t_j})
+  +\sum_{j=0}^{n-1}(B_{t_{j+1}}-B_{t_j})^2
+\]
+が成り立つ．
+最後の和は，独立な正規増分の四次モーメントから
+\[
+ E\left|\sum_j(\Delta_jB)^2-t\right|^2
+ =2\sum_j(t_{j+1}-t_j)^2\longrightarrow0
+\]
+を満たす．
+従って $L^2$ 極限を取れば結論を得る．
+\end{proof}
+
+\begin{remark}
+この恒等式は，通常の微分計算で予想される
+$\frac12B_t^2$ に対して $-t/2$ の補正項が必要なことを示す．
+その原因はBrown運動の二次変分が消えないことにある．
+一般のIt\^oの公式は次の独立したノートで証明する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{決定的関数のItô積分．}
+\begin{proposition}
+標準Brown運動に対し
+\[
+I_t=\int_0^t s\,dB_s
+\]
+は平均零で，$E[I_t^2]=t^3/3$ である．
+\end{proposition}
+\begin{proof}
+$s$ は $[0,t]$ 上の二乗可積分な決定的関数なので
+Itô積分が定義される．
+単純過程のItô積分の期待値は零で，
+その $L^2$ 極限でも期待値は零である．
+Itô等長性から
+\[
+E[I_t^2]
+=E\int_0^t s^2\,ds
+=\int_0^t s^2\,ds=\frac{t^3}{3}.
+\]
+\end{proof}
+\noindent\textbf{到達確認．}
+$J_t=\int_0^t 2s\,dB_s$ の分散を求めよ．
+\par\noindent\textbf{解答．}
+Itô等長性により
+$\operatorname{Var}(J_t)=\int_0^t4s^2ds
+=4t^3/3$ である．
+\end{document}

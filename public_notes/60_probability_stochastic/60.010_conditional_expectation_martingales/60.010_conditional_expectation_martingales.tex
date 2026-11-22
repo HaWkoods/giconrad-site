@@ -1,0 +1,723 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{条件付き期待値とマルチンゲール}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，条件付き期待値，$sigma$-代数と積分の定義．
+本稿の具体的な到達課題は，有限分割に関する条件付き期待値を自分で計算する．
+
+\section{確率空間と可積分確率変数}
+
+$(\Omega,\mathcal F,P)$ を確率空間とし，
+$\mathcal G\subset\mathcal F$ を部分 $\sigma$-加法族とする．
+以下，確率変数は実数値とする．
+$L^p(\mathcal F)$ は $P$ に関する同値類の空間を表し，
+$E[X]=\int_\Omega X\,dP$ と書く．
+
+\begin{definition}
+$X\in L^1(\mathcal F)$ に対し，
+$Y\in L^1(\mathcal G)$ が
+\[
+ \int_A Y\,dP=\int_A X\,dP\qquad(A\in\mathcal G)
+ \tag{$*$}
+\]
+を満たすとき，
+$Y$ を $X$ の $\mathcal G$ に関する\emph{条件付き期待値}といい，
+$E[X\mid\mathcal G]$ と書く．等号は概同値類として理解する．
+\end{definition}
+
+\begin{theorem}[条件付き期待値の存在と一意性]\label{thm:ce}
+任意の $X\in L^1(\mathcal F)$ に対し，
+$E[X\mid\mathcal G]$ が存在し，ほとんど至る所で一意である．
+\end{theorem}
+\begin{proof}
+$X\ge0$ の場合を考える．
+$A\in\mathcal G$ に対して
+$\nu(A)=\int_A X\,dP$ と置くと，
+$\nu$ は $\mathcal G$ 上の有限正測度であり，
+$\nu\ll P|_{\mathcal G}$ である．
+Radon--Nikodymの定理により
+$Y\in L^1(\mathcal G)$，$Y\ge0$ が存在して
+$\nu(A)=\int_A Y\,dP$ を満たす．
+
+一般の $X$ について $X=X^+-X^-$ と分解し，
+それぞれに対応する $Y^+,Y^-$ を取る．
+$Y=Y^+-Y^-\in L^1(\mathcal G)$ は $(*)$ を満たす．
+
+$Y,Z$ が $(*)$ を満たすなら，
+$W=Y-Z$ は $\mathcal G$ 可測で
+$\int_AW\,dP=0$ が全ての $A\in\mathcal G$ で成り立つ．
+$A_n=\{W>1/n\}$ を取ると
+$0=\int_{A_n}W\,dP\ge P(A_n)/n$ だから $P(A_n)=0$ である．
+$\{W>0\}=\bigcup_nA_n$ なので $P(W>0)=0$ となる．
+同様に $P(W<0)=0$ である．ゆえに $Y=Z$ 概至る所である．
+\end{proof}
+
+\begin{proposition}[基本性質]\label{prop:ce-basic}
+$X,Y\in L^1(\mathcal F)$，$a,b\in\mathbb R$ とする．
+\begin{enumerate}
+\item $E[aX+bY\mid\mathcal G]
+ =aE[X\mid\mathcal G]+bE[Y\mid\mathcal G]$．
+\item $X\ge0$ なら $E[X\mid\mathcal G]\ge0$．
+特に $X\le Y$ なら
+$E[X\mid\mathcal G]\le E[Y\mid\mathcal G]$．
+\item $X$ が $\mathcal G$ 可測なら
+$E[X\mid\mathcal G]=X$．
+\item $E[E[X\mid\mathcal G]]=E[X]$．
+\end{enumerate}
+いずれも等式・不等式はほとんど至る所の意味である．
+\end{proposition}
+\begin{proof}
+(1) は積分の線形性と定理\ref{thm:ce}の一意性から従う．
+(2) は存在証明の正値性と (1) から従う．
+(3) は $X$ 自身が定義の二条件を満たすからである．
+(4) は $(*)$ に $A=\Omega$ を代入すればよい．
+\end{proof}
+
+\begin{lemma}[有界な因子の取り出し]\label{lem:pullout}
+$X\in L^1(\mathcal F)$，
+$Z$ を有界な $\mathcal G$ 可測確率変数とする．
+このとき
+\[
+ E[ZX\mid\mathcal G]=Z\,E[X\mid\mathcal G].
+\]
+\end{lemma}
+\begin{proof}
+$Z=1_B$（$B\in\mathcal G$）の場合，
+$A\in\mathcal G$ に対して
+\[
+ \int_A1_B E[X\mid\mathcal G]\,dP
+ =\int_{A\cap B}X\,dP
+ =\int_A1_BX\,dP
+\]
+なので一意性から主張が成り立つ．
+単純 $\mathcal G$ 可測 $Z$ については線形性から従う．
+一般の有界 $Z$ については
+$\norm{Z_n-Z}_\infty\to0$ となる
+単純 $\mathcal G$ 可測関数列 $(Z_n)$ を取る．
+\[
+ E[|Z_nX-ZX|]
+ \le\norm{Z_n-Z}_\infty E|X|\to0
+\]
+であり，条件付き期待値の定義から
+\[
+ E[|E[W\mid\mathcal G]|]
+ \le E|W|
+ \tag{$**$}
+\]
+が成り立つ．実際，
+$-E[|W|\mid\mathcal G]\le E[W\mid\mathcal G]
+\le E[|W|\mid\mathcal G]$ に注意すればよい．
+従って両辺の $L^1$ 極限を取って主張を得る．
+\end{proof}
+
+\begin{proposition}[塔の性質]\label{prop:tower}
+$\mathcal H\subset\mathcal G\subset\mathcal F$ なら，
+$X\in L^1(\mathcal F)$ に対して
+\[
+ E[E[X\mid\mathcal G]\mid\mathcal H]
+   =E[X\mid\mathcal H]
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+左辺は $\mathcal H$ 可測かつ可積分である．
+任意の $A\in\mathcal H$ は $\mathcal G$ にも属するから
+\[
+ \int_A E[E[X\mid\mathcal G]\mid\mathcal H]\,dP
+ =\int_AE[X\mid\mathcal G]\,dP
+ =\int_AX\,dP.
+\]
+定理\ref{thm:ce}の一意性により結論を得る．
+\end{proof}
+
+\begin{proposition}[独立な情報]\label{prop:independent}
+$X\in L^1(\mathcal F)$ が $\mathcal G$ と独立なら
+$E[X\mid\mathcal G]=E[X]$ である．
+\end{proposition}
+\begin{proof}
+$X$ と $1_A$ は独立である（$A\in\mathcal G$）から
+$E[X1_A]=E[X]P(A)$ である．
+定数 $E[X]$ は $\mathcal G$ 可測であり，
+条件付き期待値の定義を満たす．
+\end{proof}
+
+\section{条件付きJensenの不等式}
+
+\begin{lemma}[凸関数のアフィン下界]\label{lem:convex-support}
+$\varphi:\mathbb R\to\mathbb R$ を有限値の凸関数とする．
+各 $r\in\mathbb R$ に対し
+$a_r\in\mathbb R$ が存在して
+\[
+ \varphi(x)\ge\varphi(r)+a_r(x-r)
+ \qquad(x\in\mathbb R)
+\]
+を満たす．また有理数 $r$ のみを使って
+\[
+ \varphi(x)=\sup_{r\in\mathbb Q}
+ \{\varphi(r)+a_r(x-r)\}
+\]
+と表せる．
+\end{lemma}
+\begin{proof}
+凸性から割線の傾きは端点を右へ動かすと単調増加する．
+従って
+\[
+ \sup_{u<r}\frac{\varphi(r)-\varphi(u)}{r-u}
+ \le
+ \inf_{v>r}\frac{\varphi(v)-\varphi(r)}{v-r}
+\]
+が成り立ち，
+両辺は $r$ の近傍の二点を固定して評価すれば有限である．
+この間から $a_r$ を取ると，
+$r$ より左右いずれにある $x$ についても
+上のアフィン下界が従う．
+有限値の凸関数は実数直線上で連続である．
+これは，$r$ の左右の固定した二点を用いて凸性による
+局所的な傾きの上下界を得れば示せる．
+任意の $x$ に有理数列 $r_n\to x$ を取ると，
+$\varphi(r_n)+a_{r_n}(x-r_n)$ の
+$x$ における値が $\varphi(x)$ に近づくことを示すには
+$r_n$ を $x$ の近傍に限定すればよい．
+凸関数の傾きはその近傍では一様有界なので
+$a_{r_n}(x-r_n)\to0$ であり，
+$\varphi(r_n)\to\varphi(x)$ となる．
+従って有理数に関する上限は $\varphi(x)$ と一致する．
+\end{proof}
+
+\begin{theorem}[条件付きJensenの不等式]\label{thm:jensen}
+$X\in L^1(\mathcal F)$ とし，
+$\varphi:\mathbb R\to\mathbb R$ を有限値の凸関数とする．
+$\varphi(X)\in L^1(\mathcal F)$ を仮定すると
+\[
+ \varphi(E[X\mid\mathcal G])
+ \le E[\varphi(X)\mid\mathcal G]
+ \qquad\text{概至る所}
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:convex-support}により，
+各 $r\in\mathbb Q$ について
+$\varphi(X)\ge\varphi(r)+a_r(X-r)$ である．
+条件付き期待値の単調性と線形性から
+\[
+ E[\varphi(X)\mid\mathcal G]
+ \ge\varphi(r)+a_r(E[X\mid\mathcal G]-r)
+\]
+が概至る所で成り立つ．
+有理数全体は可算なので，同時に全ての $r\in\mathbb Q$
+について成立する確率1の集合を取れる．
+その集合上で $r\in\mathbb Q$ の上限を取れば
+補題\ref{lem:convex-support}によって結論を得る．
+\end{proof}
+
+\begin{corollary}[$L^p$ 縮小性]\label{cor:lp}
+$1\le p<\infty$，$X\in L^p(\mathcal F)$ とすると
+\[
+ E[|E[X\mid\mathcal G]|^p]\le E[|X|^p]
+\]
+が成立する．
+\end{corollary}
+\begin{proof}
+$\varphi(t)=|t|^p$ は凸であるから
+定理\ref{thm:jensen}と期待値の塔の性質を用いればよい．
+\end{proof}
+
+\section{フィルトレーションとマルチンゲール}
+
+\begin{definition}
+$\mathcal F_0\subset\mathcal F_1\subset\cdots\subset\mathcal F$
+をフィルトレーションという．
+確率過程 $(X_n)_{n\ge0}$ が適合であるとは，
+$X_n$ が $\mathcal F_n$ 可測であることをいう．
+適合な可積分過程 $(M_n)$ が\emph{マルチンゲール}であるとは，
+\[
+ E[M_{n+1}\mid\mathcal F_n]=M_n
+\]
+を満たすことをいう．
+右辺を左辺が上回る場合を劣マルチンゲール，
+逆の場合を優マルチンゲールという．
+\end{definition}
+
+\begin{example}[独立増分]
+$\xi_1,\xi_2,\ldots$ を互いに独立な可積分確率変数とし，
+$E\xi_k=0$ とする．
+$M_n=\sum_{k=1}^n\xi_k$（$M_0=0$），
+$\mathcal F_n=\sigma(\xi_1,\dots,\xi_n)$ と置けば
+$(M_n)$ はマルチンゲールである．
+\end{example}
+\begin{proof}
+$M_{n+1}=M_n+\xi_{n+1}$ であり，
+$M_n$ は $\mathcal F_n$ 可測である．
+独立性から
+$E[\xi_{n+1}\mid\mathcal F_n]=E\xi_{n+1}=0$ なので
+条件付き期待値の線形性によって
+$E[M_{n+1}\mid\mathcal F_n]=M_n$ となる．
+\end{proof}
+
+\begin{proposition}\label{prop:martingale-time}
+$(M_n)$ がマルチンゲールなら，
+$m\ge n$ に対して
+$E[M_m\mid\mathcal F_n]=M_n$ である．
+また $(|M_n|^p)$ は $p\ge1$ で
+$M_n\in L^p$ のとき劣マルチンゲールとなる．
+\end{proposition}
+\begin{proof}
+最初の主張は塔の性質を繰り返して得る．
+二番目は凸関数 $t\mapsto|t|^p$ に対する
+条件付きJensenの不等式を用いれば
+\[
+ E[|M_{n+1}|^p\mid\mathcal F_n]
+ \ge|E[M_{n+1}\mid\mathcal F_n]|^p=|M_n|^p
+\]
+である．
+\end{proof}
+
+\begin{definition}
+$\{T\le n\}\in\mathcal F_n$ が
+すべての $n$ で成立する
+$\{0,1,\dots\}\cup\{\infty\}$ 値確率変数 $T$ を
+停止時刻という．
+$\mathcal F_T=\{A\in\mathcal F:
+ A\cap\{T\le n\}\in\mathcal F_n\text{ for all }n\}$
+と定める．
+\end{definition}
+
+\begin{theorem}[有界停止時刻の停止定理]\label{thm:optional}
+$(M_n)$ をマルチンゲール，
+$S\le T\le N$ を有界停止時刻とする．
+このとき
+\[
+ E[M_T\mid\mathcal F_S]=M_S
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$M_T,M_S$ は有限個の可積分確率変数の和として
+表されるため可積分である．また $M_S$ は
+$\mathcal F_S$ 可測である．
+任意の $A\in\mathcal F_S$ に対して
+\[
+ M_T-M_S=\sum_{k=1}^N
+ (M_k-M_{k-1})1_{\{S<k\le T\}}
+\]
+と書ける．
+$A\cap\{S<k\}\cap\{T\ge k\}$ は
+$\mathcal F_{k-1}$ に属する．
+実際，
+$A\cap\{S\le k-1\}\in\mathcal F_{k-1}$，
+$\{T\ge k\}=\{T\le k-1\}^{c}\in\mathcal F_{k-1}$
+だからである．
+従って
+\begin{align*}
+ E[(M_T-M_S)1_A]
+ &=\sum_{k=1}^NE[(M_k-M_{k-1})
+       1_{A\cap\{S<k\le T\}}]\\
+ &=\sum_{k=1}^NE[
+ E[M_k-M_{k-1}\mid\mathcal F_{k-1}]
+       1_{A\cap\{S<k\le T\}}]=0.
+\end{align*}
+よって条件付き期待値の特徴づけから結論が従う．
+\end{proof}
+
+\section{Doobの最大不等式}
+
+\begin{theorem}[弱型最大不等式]\label{thm:doob-weak}
+$(X_k)_{k=0}^N$ を非負の劣マルチンゲールとし，
+$\lambda>0$ とする．
+\[
+ A=\left\{\max_{0\le k\le N}X_k\ge\lambda\right\}
+\]
+と置くと
+\[
+ \lambda P(A)\le E[X_N1_A]\le E[X_N]
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$T=\min\{0\le k\le N:X_k\ge\lambda\}$ とし，
+該当する時刻がなければ $T=N$ とする．
+$A\cap\{T=k\}$（$0\le k\le N$）は
+$\mathcal F_k$ に属する．
+劣マルチンゲールの性質と塔の性質から
+$E[X_N\mid\mathcal F_k]\ge X_k$ である．
+従って
+\begin{align*}
+ E[X_N1_A]
+ &=\sum_{k=0}^NE[X_N1_{A\cap\{T=k\}}]\\
+ &\ge\sum_{k=0}^NE[X_k1_{A\cap\{T=k\}}]
+ =E[X_T1_A]\ge\lambda P(A).
+\end{align*}
+最後の不等式は $X_N\ge0$ から従う．
+\end{proof}
+
+\begin{theorem}[Doobの $L^p$ 最大不等式]\label{thm:doob-lp}
+$p>1$ とし，$(M_k)_{k=0}^N$ を
+$L^p$ 可積分なマルチンゲールとする．
+このとき
+\[
+ E\left[\max_{0\le k\le N}|M_k|^p\right]
+ \le \left(\frac{p}{p-1}\right)^p E|M_N|^p.
+\]
+\end{theorem}
+\begin{proof}
+$Y_k=|M_k|$ は非負の劣マルチンゲールである．
+$Y^*=\max_{0\le k\le N}Y_k$ と置く．
+定理\ref{thm:doob-weak}により
+$\lambda P(Y^*\ge\lambda)
+ \le E[Y_N1_{\{Y^*\ge\lambda\}}]$ である．
+$p\lambda^{p-2}$ を掛けて $\lambda>0$ で積分し，
+Tonelliの定理を用いると
+\[
+ E[(Y^*)^p]
+ \le \frac{p}{p-1}E[Y_N(Y^*)^{p-1}].
+\]
+右辺はH\"olderの不等式により
+\[
+ \frac{p}{p-1}
+ (E[Y_N^p])^{1/p}
+ (E[(Y^*)^p])^{(p-1)/p}
+\]
+以下である．
+$N$ は有限だから $E[(Y^*)^p]<\infty$ であり，
+これが零でない場合には両辺を適切な冪で割れば
+結論を得る．零の場合は自明である．
+\end{proof}
+
+\section{上方横断とマルチンゲール収束}
+
+\begin{definition}
+実数 $a<b$ と列 $x_0,\dots,x_N$ に対し，
+$x_k\le a$ となる時刻から
+$x_l\ge b$ となる後の時刻までの往復を一回の
+\emph{上方横断}と数える．
+このような互いに重ならない完了した上方横断の
+最大回数を $U_N(a,b)$ と書く．
+確率過程に対しては標本路ごとに定義する．
+\end{definition}
+
+\begin{theorem}[Doobの上方横断不等式]\label{thm:upcrossing}
+$(X_n)_{n=0}^N$ を劣マルチンゲールとする．
+任意の $a<b$ に対して
+\[
+ (b-a)E[U_N(a,b)]
+ \le E[(X_N-a)^+]-E[(X_0-a)^+]
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$Y_k=(X_k-a)^+$ とすると，
+条件付きJensenの不等式と単調性により
+$(Y_k)$ は非負の劣マルチンゲールである．
+時刻 $k$ の直前までの $X_0,\dots,X_{k-1}$ により，
+直前に $X\le a$ を観測してから
+まだ $X\ge b$ を観測していないとき
+$H_{k-1}=1$，そうでないとき $H_{k-1}=0$ と定める．
+$H_{k-1}$ は $\mathcal F_{k-1}$ 可測である．
+各完了上方横断に対応する増分の和は，
+開始時の $Y=0$ と終了時の $Y\ge b-a$ から
+$b-a$ 以上である．
+最後に未完了の横断がある場合にも，
+その区間の増分の和は $Y_N-0\ge0$ である．
+従って標本路ごとに
+\[
+ (b-a)U_N(a,b)
+ \le\sum_{k=1}^N H_{k-1}(Y_k-Y_{k-1}).
+ \tag{$*$}
+\]
+ここで
+\[
+ E[(1-H_{k-1})(Y_k-Y_{k-1})]\ge0
+\]
+が劣マルチンゲール性から従う．
+よって
+\[
+ E\sum_{k=1}^NH_{k-1}(Y_k-Y_{k-1})
+ \le E\sum_{k=1}^N(Y_k-Y_{k-1})
+ =E[Y_N]-E[Y_0].
+\]
+$(*)$ に期待値を取れば所望の不等式を得る．
+\end{proof}
+
+\begin{theorem}[マルチンゲール収束定理の基本形]
+\label{thm:mart-conv}
+$(X_n)_{n\ge0}$ を劣マルチンゲールとし，
+$\sup_nE|X_n|<\infty$ を仮定する．
+このとき $X_n$ はほとんど確実に有限値の
+確率変数 $X_\infty\in L^1$ に収束する．
+ただし，この仮定だけでは一般に $L^1$ 収束は従わない．
+\end{theorem}
+\begin{proof}
+任意の有理数 $a<b$ に対して
+定理\ref{thm:upcrossing}により
+\[
+ (b-a)E[U_N(a,b)]
+ \le E[(X_N-a)^+]\le\sup_nE|X_n|+|a|.
+\]
+$U_N(a,b)$ は $N$ に関して単調増加なので，
+単調収束定理によって
+$E[U_\infty(a,b)]<\infty$ を得る．
+従って $U_\infty(a,b)<\infty$ が概至る所で成立する．
+有理数の対 $(a,b)$ は可算だから，
+全ての有理数 $a<b$ についてこの性質が同時に成立する
+確率1の集合を取れる．
+その集合で
+$\liminf_nX_n<\limsup_nX_n$ なら，
+その間に有理数 $a<b$ を選ぶことによって
+無限回の上方横断が生じて矛盾する．
+よって $X_n$ は拡張実数値の極限 $X_\infty$ に収束する．
+Fatouの補題より
+\[
+ E[\liminf_n|X_n|]
+ \le\liminf_nE|X_n|
+ \le\sup_nE|X_n|<\infty
+\]
+なので極限は有限値であり，かつ $E|X_\infty|<\infty$ である．
+\end{proof}
+
+\begin{example}[$L^1$ 収束しない非負マルチンゲール]
+$\xi_1,\xi_2,\ldots$ を独立で
+$P(\xi_k=0)=P(\xi_k=2)=1/2$ とし，
+$M_n=\prod_{k=1}^n\xi_k$，$M_0=1$ と置く．
+$(M_n)$ は非負マルチンゲールで $EM_n=1$ だが，
+$M_n\to0$ はほとんど確実に成立する．
+\end{example}
+\begin{proof}
+独立性と $E\xi_k=1$ から
+$E[M_{n+1}\mid\mathcal F_n]=M_n$ となる．
+$M_n$ が零でないのは最初の $n$ 個全てが $2$ の場合に限り，
+その確率は $2^{-n}$ である．
+この確率は $0$ に収束し，一度零になれば以後零なので，
+$M_n\to0$ はほとんど確実に成立する．
+もし $L^1$ 収束するなら期待値も収束して
+$EM_n\to0$ となるはずだが，$EM_n=1$ なので矛盾する．
+\end{proof}
+
+\section{一様可積分性と $L^p$ 収束}
+
+\begin{definition}
+$\mathcal H\subset L^1(\mathcal F)$ が
+\emph{一様可積分}であるとは，
+\[
+ \lim_{K\to\infty}
+ \sup_{X\in\mathcal H}E[|X|1_{\{|X|>K\}}]=0
+\]
+を満たすことをいう．
+\end{definition}
+
+\begin{lemma}[一様可積分収束]\label{lem:ui-vitali}
+$(X_n)$ が一様可積分で，
+$X_n\to X$ が概至る所で成り立つなら，
+$X\in L^1$ かつ $E|X_n-X|\to0$ となる．
+\end{lemma}
+\begin{proof}
+一様可積分性から $\sup_nE|X_n|<\infty$ である．
+実際，任意の固定した $K>0$ について
+$E|X_n|\le K+E[|X_n|1_{\{|X_n|>K\}}]$ である．
+Fatouの補題より $E|X|<\infty$ を得る．
+任意の $K>0$ に対し，
+切断関数
+$\tau_K(t)=\max\{-K,\min\{t,K\}\}$ を用いれば
+より簡潔に
+\[
+ |X_n-X|
+ \le|\tau_K(X_n)-\tau_K(X)|
+    +|X_n|1_{\{|X_n|>K\}}
+    +|X|1_{\{|X|>K\}}
+\]
+と評価できる．
+最初の項の期待値は，
+$|\tau_K(X_n)-\tau_K(X)|\le2K$ と
+概収束からLebesgueの収束定理によって $0$ に向かう．
+一様可積分性により第二項は $K\to\infty$ で
+$n$ によらず $0$ に向かう．
+第三項も $X\in L^1$ なので $K\to\infty$ で $0$ に向かう．
+従って $E|X_n-X|\to0$ を得る．
+\end{proof}
+
+\begin{theorem}[一様可積分マルチンゲール]\label{thm:ui-mart}
+$(M_n)$ をマルチンゲールとする．
+次は同値である．
+\begin{enumerate}
+\item $(M_n)$ は一様可積分である．
+\item ある $M_\infty\in L^1$ が存在して
+$M_n\to M_\infty$ が概至る所かつ $L^1$ で成立する．
+\item ある $Z\in L^1$ が存在して
+$M_n=E[Z\mid\mathcal F_n]$ が各 $n$ について成り立つ．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) なら一様可積分性から $\sup_nE|M_n|<\infty$ となる．
+定理\ref{thm:mart-conv}により $M_n\to M_\infty$ は
+概至る所で成立し，補題\ref{lem:ui-vitali}から $L^1$ でも成立する．
+
+(2) とする．任意の $A\in\mathcal F_n$ と $m\ge n$ に対し
+$E[M_m1_A]=E[M_n1_A]$ である．
+$m\to\infty$ として $L^1$ 収束を用いれば
+$E[M_\infty1_A]=E[M_n1_A]$ である．
+従って $M_n=E[M_\infty\mid\mathcal F_n]$ となり (3) を得る．
+
+(3) とする．$Z\in L^1$ に対して
+$Z_K=Z1_{\{|Z|\le K\}}$，
+$R_K=Z-Z_K$ と置く．
+条件付き期待値の単調性により
+\[
+ |E[Z\mid\mathcal F_n]|
+ \le K+E[|R_K|\mid\mathcal F_n].
+\]
+$A_n=\{|E[Z\mid\mathcal F_n]|>2K\}$ と置くと，
+$A_n\in\mathcal F_n$ であり，
+$A_n$ 上で $E[|R_K|\mid\mathcal F_n]>K$ となる．
+従って
+\[
+ KP(A_n)\le E[|R_K|1_{A_n}]\le E|R_K|
+\]
+であり，
+\begin{align*}
+ E[|M_n|1_{A_n}]
+ &\le KP(A_n)+E[|R_K|1_{A_n}]\\
+ &\le 2E|R_K|.
+\end{align*}
+$K\to\infty$ とすると右辺は $0$ に収束するので，
+$(M_n)$ は一様可積分である．
+\end{proof}
+
+\begin{corollary}[$L^p$ 有界マルチンゲールの収束]\label{cor:lp-mart}
+$p>1$ とし $(M_n)$ をマルチンゲールとする．
+$\sup_nE|M_n|^p<\infty$ なら，
+ある $M_\infty\in L^p$ が存在して
+$M_n\to M_\infty$ がほとんど確実にかつ
+$L^p$ で成立する．
+\end{corollary}
+\begin{proof}
+$C=\sup_nE|M_n|^p<\infty$ と置く．
+$|M_n|1_{\{|M_n|>K\}}
+ \le |M_n|^p/K^{p-1}$ より一様可積分である．
+定理\ref{thm:ui-mart}によって概収束する
+$M_\infty\in L^1$ が存在する．Fatouの補題から
+$E|M_\infty|^p\le C$ である．
+定理\ref{thm:doob-lp}を各有限区間 $[0,N]$ に適用し，
+単調収束定理を用いれば
+\[
+ E\left[\sup_{n\ge0}|M_n|^p\right]
+ \le\left(\frac p{p-1}\right)^p C<\infty.
+\]
+従って
+$|M_n-M_\infty|^p
+ \le2^p\sup_{k\ge0}|M_k|^p$
+という可積分な優関数が存在する．
+Lebesgueの収束定理から
+$E|M_n-M_\infty|^p\to0$ を得る．
+\end{proof}
+
+\begin{remark}
+条件付き期待値の構成はRadon--Nikodymの定理に，
+マルチンゲール収束は上方横断の制御に依存する．
+確率積分論に進む際には，これらの結果が
+適合性と収束様式を保証するために用いられる．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{条件付き期待値の明示的構成．}
+\begin{proposition}
+$([0,1],\mathcal B,\lambda)$ を確率空間とし，
+$X(\omega)=\omega$ とする．
+$\mathcal G$ を
+$A=[0,1/2)$ と $B=[1/2,1]$ が生成する
+$\sigma$-代数とすると
+\[
+E[X\mid\mathcal G]
+=\frac14\mathbf1_A+\frac34\mathbf1_B
+\quad\text{a.s.}
+\]
+である．
+\end{proposition}
+\begin{proof}
+右辺 $Y$ は $\mathcal G$-可測で可積分である．
+$A$ 上で
+$\int_A X\,d\lambda=\int_0^{1/2}\omega\,d\omega=1/8$
+であり，
+$\int_A Y\,d\lambda=(1/4)(1/2)=1/8$．
+$B$ 上では
+$\int_BX\,d\lambda=3/8$，
+$\int_BY\,d\lambda=(3/4)(1/2)=3/8$．
+$\mathcal G=\{\varnothing,A,B,[0,1]\}$ なので
+全ての $\mathcal G$-可測集合で積分が一致し，
+条件付き期待値の定義を満たす．
+\end{proof}
+\noindent\textbf{到達確認．}
+同じ $\mathcal G$ で $E[X^2\mid\mathcal G]$ を求めよ．
+\par\noindent\textbf{解答．}
+$A$ 上では
+$2\int_0^{1/2}\omega^2\,d\omega=1/12$，
+$B$ 上では
+$2\int_{1/2}^1\omega^2\,d\omega=7/12$．
+従って $(1/12)\mathbf1_A+(7/12)\mathbf1_B$ である．
+\end{document}
