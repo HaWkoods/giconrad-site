@@ -1,0 +1,519 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{微分形式とPoincar\'eの補題}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，微分形式，外微分，Poincaréの補題．
+本稿の具体的な到達課題は，閉形式の原始関数を具体的に構成する．
+
+\section{交代多重線形形式}
+
+本稿では $U\subset\mathbb R^n$ を開集合とし，
+微分形式は特に断らない限り $C^\infty$ 級とする．
+
+\begin{definition}
+有限次元実線形空間 $V$ 上の交代 $k$-重線形形式全体を
+$\Lambda^kV^*$ と書く．$k=0$ のとき
+$\Lambda^0V^*=\mathbb R$ と約束する．
+交代形式 $\alpha\in\Lambda^kV^*$ と
+$\beta\in\Lambda^\ell V^*$ の\emph{外積}を
+\[
+ \begin{aligned}
+ &(\alpha\wedge\beta)(v_1,\dots,v_{k+\ell})\\
+ &=\frac1{k!\ell!}\sum_{\sigma\in S_{k+\ell}}
+   \operatorname{sgn}(\sigma)\,
+   \alpha(v_{\sigma(1)},\dots,v_{\sigma(k)})\\
+ &\qquad\cdot
+   \beta(v_{\sigma(k+1)},\dots,v_{\sigma(k+\ell)}).
+ \end{aligned}
+\]
+によって定める．
+\end{definition}
+
+\begin{lemma}[外積の基本性質]\label{lem:wedge}
+外積は結合的であり，
+\[
+ \alpha\wedge\beta=(-1)^{k\ell}\beta\wedge\alpha
+\]
+を満たす．
+また $V=\mathbb R^n$ の双対基底
+$dx^1,\dots,dx^n$ に対して
+$dx^{i_1}\wedge\cdots\wedge dx^{i_k}$
+（$1\le i_1<\cdots<i_k\le n$）は
+$\Lambda^kV^*$ の基底をなす．
+\end{lemma}
+\begin{proof}
+外積の定義は交代化したテンソル積である．
+$\alpha,\beta,\gamma$ の外積を三つまとめて展開すると，
+いずれの結合の仕方でも
+全ての $(k,\ell,m)$-shuffleについて
+同じ符号付き和になるため結合的である．
+$\alpha,\beta$ のブロックを入れ替える置換には
+$k\ell$ 回の隣接交換が必要なので
+符号は $(-1)^{k\ell}$ となり，
+次数付き交換法則を得る．
+最後に任意の交代 $k$-形式は基底ベクトル
+$(e_{i_1},\dots,e_{i_k})$ 上の値によって一意に決まり，
+重複添字を持つ値は零で，
+添字の交換による符号が決まる．
+従って上の外積全体が基底をなす．
+\end{proof}
+
+\section{微分形式と外微分}
+
+\begin{definition}
+$U$ 上の\emph{$k$-次微分形式}とは，
+各 $x\in U$ に交代 $k$-形式
+$\omega_x\in\Lambda^k(\mathbb R^n)^*$ を滑らかに対応させるものをいう．
+その全体を $\Omega^k(U)$ と書く．
+座標では
+\[
+ \omega=\sum_{i_1<\cdots<i_k}
+ a_{i_1\cdots i_k}(x)\,
+ dx^{i_1}\wedge\cdots\wedge dx^{i_k}
+\]
+と一意に書ける．
+\end{definition}
+
+\begin{definition}
+$\omega=\sum_I a_I\,dx^I\in\Omega^k(U)$ に対し，
+\[
+ d\omega=\sum_I\sum_{j=1}^n
+ \frac{\partial a_I}{\partial x^j}
+ dx^j\wedge dx^I
+\]
+と定める．これを\emph{外微分}という．
+\end{definition}
+
+\begin{proposition}[外微分の基本性質]\label{prop:exterior}
+$\omega\in\Omega^k(U)$，
+$\eta\in\Omega^\ell(U)$ とすると
+\[
+ d(\omega\wedge\eta)
+ =d\omega\wedge\eta+(-1)^k\omega\wedge d\eta,
+ \qquad d(d\omega)=0.
+\]
+また $d$ は線形である．
+\end{proposition}
+\begin{proof}
+線形性は定義から直ちに従う．
+$\omega=a\,dx^I$，$\eta=b\,dx^J$ の場合，
+\[
+ d(\omega\wedge\eta)
+ =d(ab)\wedge dx^I\wedge dx^J
+ =(b\,da+a\,db)\wedge dx^I\wedge dx^J.
+\]
+一方
+$d\omega=da\wedge dx^I$，
+$d\eta=db\wedge dx^J$ である．
+$dx^I$ の次数は $k$ なので
+$dx^I\wedge db=(-1)^kdb\wedge dx^I$
+となり，Leibniz則を得る．
+一般の場合は線形性で従う．
+
+また
+\[
+ d^2(a\,dx^I)
+ =\sum_{i,j}\partial_j\partial_i a\,
+ dx^j\wedge dx^i\wedge dx^I.
+\]
+$i,j$ を交換すると偏導関数の値は等しく，
+外積の符号は逆になる．$i=j$ の項は零なので，
+全ての項が打ち消し合い $d^2=0$ となる．
+\end{proof}
+
+\begin{definition}
+$d\omega=0$ を満たす形式を\emph{閉形式}，
+$\omega=d\eta$ と書ける形式を\emph{完全形式}という．
+$d^2=0$ によって任意の完全形式は閉形式である．
+\end{definition}
+
+\section{写像による引き戻し}
+
+\begin{definition}
+$U\subset\mathbb R^n$，
+$V\subset\mathbb R^m$ を開集合，
+$F:U\to V$ を滑らかな写像とする．
+$\omega\in\Omega^k(V)$ に対し
+\[
+ (F^*\omega)_x(v_1,\dots,v_k)
+ =\omega_{F(x)}(DF_xv_1,\dots,DF_xv_k)
+\]
+と定め，これを $\omega$ の\emph{引き戻し}という．
+\end{definition}
+
+\begin{theorem}[引き戻しと外微分]\label{thm:pullback}
+滑らかな写像 $F:U\to V$ と
+$\omega,\eta$ に対し
+\[
+ F^*(\omega\wedge\eta)=F^*\omega\wedge F^*\eta,
+ \qquad
+ d(F^*\omega)=F^*(d\omega)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+外積については，その交代和の各項で
+$DF_x$ を各変数に作用させればよく，
+定義を展開して直接一致する．
+外微分については，座標関数 $y^j$ を用いて
+$\omega=\sum_I a_I(y)\,dy^{i_1}\wedge\cdots\wedge dy^{i_k}$
+と書く．
+\[
+ F^*\omega=\sum_I(a_I\circ F)\,
+ dF^{i_1}\wedge\cdots\wedge dF^{i_k}
+\]
+である．
+$F^{i_j}$ は関数なので $d^2F^{i_j}=0$ であり，
+Leibniz則から
+\[
+ d(F^*\omega)=
+ \sum_I d(a_I\circ F)\wedge
+ dF^{i_1}\wedge\cdots\wedge dF^{i_k}.
+\]
+実多変数の連鎖律によって
+$d(a_I\circ F)=\sum_j(\partial_ja_I\circ F)\,dF^j
+=F^*(da_I)$ だから，
+右辺は $F^*(d\omega)$ に等しい．
+\end{proof}
+
+\section{星状領域とホモトピー作用素}
+
+\begin{definition}
+開集合 $U\subset\mathbb R^n$ が\emph{星状}であるとは，
+ある $a\in U$ が存在して
+$a+t(x-a)\in U$ が全ての $x\in U$，
+$0\le t\le1$ に対して成り立つことをいう．
+\end{definition}
+
+以下，座標を平行移動して星状中心を $0$ と仮定する．
+\begin{definition}
+$k\ge1$ と $\omega\in\Omega^k(U)$ に対して
+\[
+ (K\omega)_x(v_1,\dots,v_{k-1})
+ =\int_0^1t^{k-1}
+ \omega_{tx}(x,v_1,\dots,v_{k-1})\,dt
+\]
+と定める．$K:\Omega^k(U)\to\Omega^{k-1}(U)$ を
+\emph{ホモトピー作用素}という．
+$K:\Omega^0(U)\to0$ と約束する．
+\end{definition}
+
+\begin{lemma}\label{lem:k-smooth}
+$K\omega$ は滑らかな $(k-1)$-形式である．
+\end{lemma}
+\begin{proof}
+任意のコンパクト集合 $C\subset U$ を取ると，
+$\{tx:x\in C,\ 0\le t\le1\}$ は $U$ のコンパクト部分集合となる．
+$\omega$ の係数はその集合上で全ての階数について有界であり，
+微分も連続である．
+従って $t\in[0,1]$ に関する積分と
+$x$ に関する任意階の微分を
+コンパクト集合上で交換できる．
+これにより $K\omega$ の係数関数は滑らかである．
+交代性は $\omega$ の交代性から従う．
+\end{proof}
+
+\begin{theorem}[ホモトピー公式]\label{thm:homotopy-formula}
+$U$ を $0$ を中心とする星状開集合とする．
+任意の $\omega\in\Omega^k(U)$ に対して
+\[
+ d(K\omega)+K(d\omega)=\omega-c_0^*\omega
+\]
+が成り立つ．
+ここで $c_0:U\to U$ は定数写像 $c_0(x)=0$ であり，
+$k\ge1$ なら $c_0^*\omega=0$，
+$k=0$ なら $c_0^*f=f(0)$ とする．
+\end{theorem}
+\begin{proof}
+$H:[0,1]\times U\to U$ を
+$H(t,x)=tx$ とする．
+任意の $k$-形式 $\omega$ の引き戻しは
+一意に
+\[
+ H^*\omega=dt\wedge\eta_t+\theta_t
+\]
+と分解できる．ここで $\eta_t$ は $U$ 上の
+$(k-1)$-形式，$\theta_t$ は $k$-形式であり，
+各係数は $t$ に滑らかに依存する．
+$\eta_t$ の定義を展開すると
+\[
+ (\eta_t)_x(v_1,\dots,v_{k-1})
+ =t^{k-1}\omega_{tx}(x,v_1,\dots,v_{k-1})
+\]
+となるため
+$K\omega=\int_0^1\eta_t\,dt$ である．
+
+$[0,1]\times U$ の外微分を $d_{t,x}$，
+$U$ 方向の外微分を $d_x$ と書く．
+定義とLeibniz則から
+\[
+ d_{t,x}(H^*\omega)
+ =dt\wedge(\partial_t\theta_t-d_x\eta_t)
+  +d_x\theta_t.
+\]
+一方，定理\ref{thm:pullback}により
+$d_{t,x}(H^*\omega)=H^*(d\omega)$ である．
+右辺の $dt$ を含む成分は，
+$K(d\omega)$ の定義に現れるので，
+\[
+ K(d\omega)=\int_0^1(\partial_t\theta_t-d_x\eta_t)\,dt.
+\]
+従って
+\begin{align*}
+ d(K\omega)+K(d\omega)
+ &=d_x\int_0^1\eta_t\,dt
+   +\int_0^1(\partial_t\theta_t-d_x\eta_t)\,dt\\
+ &=\theta_1-\theta_0\\
+ &=H_1^*\omega-H_0^*\omega
+ =\omega-c_0^*\omega.
+\end{align*}
+最後に $H_1=\operatorname{id}_U$，
+$H_0=c_0$ を用いた．
+\end{proof}
+
+\section{Poincar\'eの補題}
+
+\begin{theorem}[Poincar\'eの補題]\label{thm:poincare}
+$U\subset\mathbb R^n$ を星状開集合とする．
+$k\ge1$ と $\omega\in\Omega^k(U)$ について
+$d\omega=0$ なら，
+ある $\eta\in\Omega^{k-1}(U)$ が存在して
+$\omega=d\eta$ となる．
+すなわち，星状領域上の閉形式は完全である．
+\end{theorem}
+\begin{proof}
+星状中心を平行移動して $0$ とする．
+定理\ref{thm:homotopy-formula}を適用すると，
+$k\ge1$ なので $c_0^*\omega=0$ であり，
+また $d\omega=0$ だから
+\[
+ d(K\omega)=\omega-K(d\omega)=\omega
+\]
+となる．
+従って $\eta=K\omega$ と置けば
+$\omega=d\eta$ を満たす．
+\end{proof}
+
+\begin{corollary}[局所Poincar\'eの補題]\label{cor:local-poincare}
+滑らかな多様体 $M$ 上の閉 $k$-形式
+$\omega$（$k\ge1$）は局所的に完全である．
+すなわち任意の $p\in M$ に対し，
+$p$ の開近傍 $V$ と
+$(k-1)$-形式 $\eta$ が存在して
+$\omega|_V=d\eta$ となる．
+\end{corollary}
+\begin{proof}
+$p$ の座標近傍 $(W,\varphi)$ を取る．
+$\varphi(p)$ を中心とする十分小さい開球
+$B\subset\varphi(W)$ を選び，$V=\varphi^{-1}(B)$ とする．
+$B$ は星状なので
+$\varphi^{-1}$ による $\omega$ の座標表示は
+$B$ 上の閉形式であり，
+定理\ref{thm:poincare}によって
+ある形式の外微分となる．
+その原始形式を $\varphi$ で引き戻せば
+$V$ 上の $\eta$ を得る．
+外微分と引き戻しの可換性は定理\ref{thm:pullback}による．
+\end{proof}
+
+\section{閉形式と完全形式の相違}
+
+\begin{example}[穴を持つ領域上の閉形式]\label{ex:angular}
+$U=\mathbb R^2\setminus\{0\}$ 上の1形式
+\[
+ \omega=\frac{-y\,dx+x\,dy}{x^2+y^2}
+\]
+は閉形式であるが，完全形式ではない．
+\end{example}
+\begin{proof}
+$P(x,y)=-y/(x^2+y^2)$，
+$Q(x,y)=x/(x^2+y^2)$ と置く．
+直接計算すると
+\[
+ \partial_xQ
+ =\frac{y^2-x^2}{(x^2+y^2)^2}
+ =\partial_yP
+\]
+なので
+$d\omega=(\partial_xQ-\partial_yP)\,dx\wedge dy=0$
+となる．
+一方，単位円を
+$\gamma(t)=(\cos t,\sin t)$（$0\le t\le2\pi$）
+とパラメータ表示すると
+\[
+ \gamma^*\omega
+ =\frac{-\sin t(-\sin t)+\cos t\cos t}
+       {\cos^2t+\sin^2t}\,dt=dt
+\]
+だから
+$\int_\gamma\omega=2\pi$ である．
+もし $\omega=df$ なら
+曲線積分の基本定理によって
+$\int_\gamma df=f(\gamma(2\pi))-f(\gamma(0))=0$
+となるはずであり，矛盾する．
+\end{proof}
+
+\section{de Rhamコホモロジーへの導入}
+
+\begin{definition}
+$U\subset\mathbb R^n$ に対して
+\[
+ \begin{aligned}
+ Z^k(U)&=\ker(d:\Omega^k(U)\to\Omega^{k+1}(U)),\\
+ B^k(U)&=\operatorname{im}(d:\Omega^{k-1}(U)\to\Omega^k(U)).
+ \end{aligned}
+\]
+と置く．$d^2=0$ によって
+$B^k(U)\subset Z^k(U)$ なので，
+\[
+ H_{\mathrm{dR}}^k(U)=Z^k(U)/B^k(U)
+\]
+を定め，$k$ 次de Rhamコホモロジー群という．
+\end{definition}
+
+\begin{theorem}[星状領域のde Rhamコホモロジー]\label{thm:star-cohom}
+$U\subset\mathbb R^n$ を空でない星状開集合とする．
+このとき
+\[
+ H_{\mathrm{dR}}^0(U)\cong\mathbb R,\qquad
+ H_{\mathrm{dR}}^k(U)=0\quad(k\ge1)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$k\ge1$ ではPoincar\'eの補題によって
+$Z^k(U)=B^k(U)$ となるので商は零である．
+$k=0$ では $B^0(U)=0$ と約束する．
+$Z^0(U)$ は $df=0$ を満たす滑らかな実数値関数全体である．
+星状領域は道連結であり，
+$df=0$ なら任意の道に沿う微分が零なので
+$f$ は定数関数である．
+従って $Z^0(U)$ は定数関数全体に等しく
+$\mathbb R$ と同型である．
+\end{proof}
+
+\section{複素解析への接続}
+
+\begin{proposition}[調和共役と閉1形式]\label{prop:harmonic-conjugate}
+$U\subset\mathbb R^2$ を星状開集合とし，
+$u\in C^\infty(U,\mathbb R)$ が
+$\Delta u=u_{xx}+u_{yy}=0$ を満たすとする．
+このとき $v\in C^\infty(U,\mathbb R)$ が存在して
+$u+iv$ は正則となる．
+$u+iv$ が正則となる $v$ は加法定数を除いて一意である．
+\end{proposition}
+\begin{proof}
+\[
+ \omega=-u_y\,dx+u_x\,dy
+\]
+と置く．外微分を計算すると
+\[
+ d\omega=(u_{xx}+u_{yy})\,dx\wedge dy=0
+\]
+である．定理\ref{thm:poincare}から
+$\omega=dv$ となる滑らかな実数値関数 $v$ が存在する．
+従って
+$v_x=-u_y$，$v_y=u_x$ となり，
+$u+iv$ はCauchy--Riemann方程式を満たす．
+$u,v$ は滑らかだから
+実微分と複素微分の同値性により $u+iv$ は正則である．
+二つの調和共役の差は勾配零の関数となる．
+$U$ は道連結なので，差は定数である．
+\end{proof}
+
+\begin{remark}
+Poincar\'eの補題は閉形式が局所的には完全であることを主張するが，
+大域的な完全性は領域の位相に依存する．
+de Rhamコホモロジーはこの障害を代数的に記録する．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{閉1形式の原始関数を計算する．}
+\begin{proposition}
+$\mathbb R^2$ 上の1形式
+$\omega=y\,dx+x\,dy$ は閉形式であり，
+$\omega=d(xy)$ なので完全形式でもある．
+\end{proposition}
+\begin{proof}
+$d(y\,dx)=dy\wedge dx$，
+$d(x\,dy)=dx\wedge dy$ より
+\[
+d\omega=dy\wedge dx+dx\wedge dy=0.
+\]
+一方積の微分公式から
+$d(xy)=y\,dx+x\,dy=\omega$ である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\eta=(2x+y)\,dx+x\,dy$ の原始関数を求めよ．
+\par\noindent\textbf{解答．}
+$d(x^2+xy)=(2x+y)\,dx+x\,dy$ だから
+$x^2+xy+C$ が原始関数である．
+\end{document}

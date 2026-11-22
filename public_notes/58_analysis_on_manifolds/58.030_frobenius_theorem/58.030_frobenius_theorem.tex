@@ -1,0 +1,257 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Frobeniusの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，分布の定義，Lie括弧，Frobeniusの定理．
+本稿の具体的な到達課題は，与えられたベクトル場族の可積分性をLie括弧で判定する．
+
+
+\section{分布と積分多様体}
+\begin{definition}
+$M$ 上の階数 $k$ の滑らかな分布 $\mathcal D$ とは，
+各点の接空間の $k$ 次元部分空間 $\mathcal D_p\subset T_pM$
+の滑らかな局所フレームによって定まる部分束をいう．
+滑らかなベクトル場 $X,Y$ が
+$\mathcal D$ に値を取るとき常に
+$[X,Y]$ も $\mathcal D$ に値を取るなら
+$\mathcal D$ は対合的という．
+\end{definition}
+\begin{definition}
+埋め込み部分多様体 $N\subset M$ が分布 $\mathcal D$ の
+積分多様体とは，任意の $p\in N$ で
+$T_pN=\mathcal D_p$ となることをいう．
+\end{definition}
+\begin{proposition}[積分多様体から対合性]
+$\mathcal D$ が各点を通る局所積分多様体を持つなら
+$\mathcal D$ は対合的である．
+\end{proposition}
+\begin{proof}
+局所積分多様体 $N$ を固定すると，
+$\mathcal D$ に値を取るベクトル場 $X,Y$ の制限は
+$N$ に接する．
+$N$ を定義する局所方程式 $f^\alpha=0$ に対し
+$Xf^\alpha=Yf^\alpha=0$ が $N$ 上で成立する．
+従って $[X,Y]f^\alpha=X(Yf^\alpha)-Y(Xf^\alpha)=0$
+が $N$ 上で成立し，Lie括弧も $N$ に接する．
+各点で $\mathcal D_p=T_pN$ なので対合性を得る．
+\end{proof}
+\section{正規化した局所フレーム}
+\begin{lemma}[正規化フレーム]\label{lem:normalframe}
+階数 $k$ の分布 $\mathcal D$ に対し，
+各点の近傍で局所座標 $x^1,\dots,x^n$ と
+$\mathcal D$ のフレーム
+\[
+ X_i=\frac{\partial}{\partial x^i}
+ +\sum_{\alpha=k+1}^n a_i^\alpha(x)
+ \frac{\partial}{\partial x^\alpha},
+ \qquad 1\le i\le k
+\]
+を取れる．
+\end{lemma}
+\begin{proof}
+点 $p$ における $\mathcal D_p$ の基底を
+$\mathbb R^n$ の最初の $k$ 個の座標方向となるように
+線形座標変換する．
+局所フレーム $Y_i$ の第1から第$k$成分で作る
+$k\times k$ 行列は $p$ で可逆なので近傍でも可逆である．
+その逆行列を係数として $Y_i$ の線形結合を取ると，
+最初の $k$ 成分が単位行列となり表示式を得る．
+\end{proof}
+\begin{lemma}[対合性と可換性]\label{lem:commuting}
+補題\ref{lem:normalframe}のフレームについて，
+$\mathcal D$ が対合的なら
+$[X_i,X_j]=0$（全ての $i,j$）である．
+\end{lemma}
+\begin{proof}
+$[X_i,X_j]$ の初めの $k$ 座標成分は
+$X_i(\delta_j^\ell)-X_j(\delta_i^\ell)=0$ である．
+対合性から $[X_i,X_j]=\sum_\ell b^\ell X_\ell$ と書ける．
+初めの $k$ 成分を比較すると $b^\ell=0$ であり，
+Lie括弧は零となる．
+\end{proof}
+\section{Frobeniusの定理}
+\begin{theorem}[Frobeniusの可積分性定理]\label{thm:frobenius}
+滑らかな階数一定の分布 $\mathcal D$ に対し，
+次は同値である．
+\begin{enumerate}
+\item $\mathcal D$ は対合的である．
+\item 各点の近傍で
+ $\mathcal D=\operatorname{span}
+ \{\partial/\partial y^1,\ldots,\partial/\partial y^k\}$
+ となる局所座標が存在する．
+\item 各点を通る局所積分多様体が存在する．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(2) なら $y^{k+1},\dots,y^n$ を定数とする
+座標切片が積分多様体となるので (3) が従う．
+(3) から (1) は前命題で示した．
+(1) から (2) を示す．
+補題\ref{lem:normalframe}の正規化フレーム $X_i$ を取り，
+補題\ref{lem:commuting}によって互いに可換である．
+各 $X_i$ の局所フローを $\Phi_i^t$ とする．
+Lie括弧が零なのでフローは定義される範囲で可換である．
+これは
+\[
+ \frac d{dt}(\Phi_i^{-t})_*X_j
+ =(\Phi_i^{-t})_*[X_i,X_j]=0
+\]
+を用いて $(\Phi_i^t)_*X_j=X_j$ を得ること，
+および同じ初期値からの積分曲線の一意性によって従う．
+$p$ の座標で，横断切片
+$\sigma(z)=(0,\dots,0,z^{k+1},\dots,z^n)$ を取り
+\[
+ F(t^1,\dots,t^k,z)=
+ \Phi_1^{t^1}\circ\cdots\circ\Phi_k^{t^k}(\sigma(z))
+\]
+を定義する．
+$DF_{(0,z_0)}$ の初めの $k$ 列は $X_i(p)$，
+残りの列は $\partial_\alpha(p)$（$\alpha>k$）である．
+正規化によりこれらは接空間の基底なので
+逆写像定理から $F$ は局所微分同相である．
+フローの可換性と生成性によって
+$F_*(\partial/\partial t^i)=X_i$ であり，
+$F$ の逆座標 $(t,z)$ では
+$\mathcal D=\operatorname{span}\{\partial/\partial t^i\}$
+となる．よって (2) が成立する．
+\end{proof}
+\section{1形式による記述}
+\begin{proposition}[余次元1のFrobenius条件]
+$\alpha$ を零にならない滑らかな1形式とし，
+$\mathcal D=\ker\alpha$ とする．
+このとき $\mathcal D$ が対合的であることと
+\[
+ \alpha\wedge d\alpha=0
+\]
+は同値である．
+\end{proposition}
+\begin{proof}
+$X,Y\in\Gamma(\mathcal D)$ について
+外微分の定義から
+$d\alpha(X,Y)=X(\alpha(Y))-Y(\alpha(X))-\alpha([X,Y])
+=-\alpha([X,Y])$．
+従って対合性は $d\alpha$ が
+$\mathcal D\times\mathcal D$ 上零であることと同値である．
+局所的に $\alpha=e^1$ となる余接フレームを取り
+$d\alpha=\sum_{i<j}b_{ij}e^i\wedge e^j$ と書く．
+$\alpha\wedge d\alpha=0$ は $b_{ij}=0$（$i,j>1$）
+と同値であり，これは
+$d\alpha|_{\mathcal D\times\mathcal D}=0$ と同値である．
+\end{proof}
+\begin{example}[非可積分な接平面場]
+$\mathbb R^3$ 上の $\alpha=dz-y\,dx$ と
+$\mathcal D=\ker\alpha$ を考える．これは対合的でない．
+\end{example}
+\begin{proof}
+$d\alpha=-dy\wedge dx=dx\wedge dy$ なので
+$\alpha\wedge d\alpha=dz\wedge dx\wedge dy\ne0$．
+前命題から対合的でなく，積分曲面は存在しない．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{接触分布の非可積分性を確かめる．}
+\begin{proposition}[非可積分な二次元分布]
+$\mathbb R^3$ のベクトル場
+\[
+X=\partial_x+y\partial_z,\qquad
+Y=\partial_y
+\]
+の張る階数2の分布 $D$ は可積分でない．
+\end{proposition}
+\begin{proof}
+Lie括弧は
+\[
+[X,Y]=-\partial_z
+\]
+である．
+もし $-\partial_z=aX+bY$ と書ければ
+$\partial_x$ 成分から $a=0$，
+$\partial_y$ 成分から $b=0$ となり矛盾する．
+よって $[X,Y]\notin D$．
+Frobeniusの定理の必要条件を満たさないため
+$D$ は可積分でない．
+\end{proof}
+\begin{proposition}[可積分な比較例]
+$X=\partial_x$，$Y=\partial_y$ の張る分布は可積分であり，
+積分多様体は $z=c$ の平面である．
+\end{proposition}
+\begin{proof}
+$[X,Y]=0$ だから括弧で閉じている．
+また $z=c$ 上では接空間が
+$\operatorname{span}\{\partial_x,\partial_y\}$
+と一致するので，実際に積分多様体を構成できる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$X=\partial_x+x\partial_z$，
+$Y=\partial_y$ の分布の可積分性を判定せよ．
+\par\noindent\textbf{解答．}
+$[X,Y]=0$ だからFrobeniusの定理より可積分である．
+実際 $z-x^2/2=c$ の曲面が積分多様体となる．
+\end{document}

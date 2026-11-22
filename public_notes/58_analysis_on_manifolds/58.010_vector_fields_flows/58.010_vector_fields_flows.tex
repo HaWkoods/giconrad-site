@@ -1,0 +1,242 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{ベクトル場とそのフロー}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，常微分方程式，ベクトル場とフローの定義．
+本稿の具体的な到達課題は，ベクトル場からフローを求め，完備性と一パラメータ群性を検証する．
+
+
+\section{ベクトル場と積分曲線}
+本稿では滑らかなHausdorff・第二可算多様体 $M$ と
+滑らかなベクトル場 $X\in\Gamma(TM)$ を考える．
+Euclid空間上のPicard--Lindel\"of定理とその
+初期値に関する滑らかな依存性を前提とする．
+\begin{definition}
+区間 $J\subset\mathbb R$ 上の滑らかな曲線
+$\gamma:J\to M$ が
+\[
+ \gamma'(t)=X_{\gamma(t)}
+\]
+を満たすとき $X$ の積分曲線という．
+\end{definition}
+\begin{theorem}[積分曲線の局所存在と一意性]
+任意の $p\in M$ に対し，$0$ を含む区間 $J$ 上の
+積分曲線 $\gamma$ で $\gamma(0)=p$ となるものが存在する．
+同じ初期値を持つ積分曲線は共通定義域上で一致する．
+\end{theorem}
+\begin{proof}
+$p$ の座標近傍 $(U,\varphi)$ において
+$X=\sum_i a_i(x)\partial/\partial x_i$ と書く．
+$a_i$ は滑らかなので局所Lipschitzである．
+座標表示の常微分方程式
+$\dot x=a(x)$ にPicard--Lindel\"of定理を適用すると
+局所解が存在し，初期値の近傍で一意である．
+座標変換の連鎖律によってこの方程式は座標不変である．
+二つの積分曲線が一致する時刻の集合は
+局所一意性で開，曲線の連続性で閉である．
+共通区間の連結性から全域で一致する．
+\end{proof}
+\section{極大積分曲線}
+\begin{theorem}[極大積分曲線と局所フロー]\label{thm:flow}
+各 $p\in M$ に対して極大積分曲線
+$\gamma_p:I_p\to M$ がただ一つ存在する．
+\[
+ \mathcal D=\{(t,p):t\in I_p\}\subset\mathbb R\times M
+\]
+は開集合であり，
+$\Phi:\mathcal D\to M$，$\Phi(t,p)=\gamma_p(t)$ は滑らかで，
+\[
+ \Phi(0,p)=p,\qquad
+ \Phi(s,\Phi(t,p))=\Phi(s+t,p)
+\]
+が両辺の定義される範囲で成立する．
+\end{theorem}
+\begin{proof}
+同じ初期値の局所解は共通域で一致するから，
+それらの定義域の和集合上に矛盾なく一つの曲線を貼り合わせられる．
+これが極大解であり一意である．
+局所解の存在定理は，初期値 $q$ の近傍で
+共通の時間幅 $(-\varepsilon,\varepsilon)$ に解を与え，
+その解が $(t,q)$ に滑らかに依存することも示す．
+極大解のある時刻 $t_0\in I_p$ に対し，
+$0$ から $t_0$ までの軌道を有限個のそのような
+局所解の座標領域で覆う．
+それらを有限回合成すると，
+$(t,p)$ が $(t_0,p)$ の近傍にある範囲で解が定義され，
+$\mathcal D$ が開で $\Phi$ が滑らかなことが従う．
+$t$ から $s$ だけ解を延長した曲線と
+時刻 $s+t$ での元の積分曲線は，
+時刻 $0$ に $\Phi(t,p)$ を通る同じODEの解である．
+一意性から合成公式が成立する．
+\end{proof}
+\begin{definition}
+全ての $p$ について $I_p=\mathbb R$ となるとき，
+$X$ を完備ベクトル場という．
+\end{definition}
+\section{完備性の十分条件}
+\begin{lemma}[コンパクト領域からの脱出]\label{lem:escape}
+極大解 $\gamma:(a,b)\to M$ について $b<\infty$ なら，
+任意のコンパクト集合 $K\subset M$ に対して
+$\gamma(t)$ が $K$ に含まれない時刻が $b$ に任意に近く存在する．
+\end{lemma}
+\begin{proof}
+もし $t$ が $b$ に十分近いところで
+$\gamma(t)\in K$ となるなら，
+$K$ を有限個の座標近傍で覆い，
+各座標におけるODEの右辺の局所Lipschitz定数と
+有界性を一様に抑えることができる．
+局所存在定理から $K$ の全点で共通な正の時間幅
+$\varepsilon$ に解が存在する．
+$b-\varepsilon/2<t<b$ を取って解を延長すると
+$b$ を越えるため極大性に矛盾する．
+\end{proof}
+\begin{theorem}[コンパクト台を持つベクトル場]
+$X$ の台がコンパクトなら $X$ は完備である．
+特にコンパクト多様体上の全ての滑らかなベクトル場は完備である．
+\end{theorem}
+\begin{proof}
+台を $K$ とする．
+$K$ の外では $X=0$ なので，
+その外へ出た積分曲線は局所一意性によってその点で停止し，
+その先も定数曲線として延長される．
+従って有限時刻での解の延長不能が起これば
+終端付近の軌道は $K$ に含まれることになり，
+補題\ref{lem:escape}に反する．
+負の時刻についても $-X$ を考えれば同様である．
+$M$ がコンパクトなら $\operatorname{supp}X\subset M$ は
+コンパクトである．
+\end{proof}
+\begin{proposition}[完備フローの一パラメータ群]
+$X$ が完備なら
+$\Phi_t:M\to M$ は微分同相写像で，
+$\Phi_{s+t}=\Phi_s\circ\Phi_t$，
+$\Phi_t^{-1}=\Phi_{-t}$ を満たす．
+\end{proposition}
+\begin{proof}
+定理\ref{thm:flow}の合成公式から
+$\Phi_t\circ\Phi_{-t}=\Phi_0=\mathrm{id}$
+および逆向きの等式を得る．
+$\Phi_t$ と $\Phi_{-t}$ は滑らかなので微分同相である．
+\end{proof}
+\section{フローボックス定理}
+\begin{theorem}[フローボックス定理]
+$X_p\ne0$ なら $p$ の近傍で
+$X=\partial/\partial x_1$ となる局所座標が存在する．
+\end{theorem}
+\begin{proof}
+$p$ の座標で $X_p$ を第1座標方向とし，
+$p$ を通る横断的な $(n-1)$ 次元の座標切片
+$\sigma(u)$ を取る．写像
+$F(t,u)=\Phi_t(\sigma(u))$ を考える．
+$DF_{(0,0)}$ の第1列は $X_p$，
+他の列は $\sigma$ の接ベクトルであり，
+これらは線形独立である．
+逆写像定理から $F$ は局所微分同相である．
+$\partial F/\partial t=X(F(t,u))$ なので
+逆座標では $X=\partial/\partial t$ と表示される．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{線形ベクトル場のフローを構成する．}
+\begin{proposition}[線形ベクトル場のフロー]
+$\mathbb R^n$ 上の $X(x)=Ax$（$A$ は実行列）
+のフローは
+\[
+\Phi_t(x)=e^{tA}x\qquad(t\in\mathbb R)
+\]
+であり，全時間で定義される．
+\end{proposition}
+\begin{proof}
+行列指数関数の微分から
+$\frac d{dt}e^{tA}x=Ae^{tA}x=X(\Phi_t(x))$
+となり，$\Phi_0(x)=x$ である．
+常微分方程式の解の一意性によりこれがフローである．
+行列指数関数は全実数 $t$ に対して定義されるので
+$X$ は完備である．
+また可換な行列 $sA,tA$ の指数法則から
+$\Phi_s\circ\Phi_t=\Phi_{s+t}$ である．
+\end{proof}
+\begin{proposition}[非完備なベクトル場]
+$\mathbb R$ 上の $X(x)=x^2\partial_x$ は完備でない．
+\end{proposition}
+\begin{proof}
+初期値 $x(0)=x_0>0$ に対する解は
+\[
+x(t)=\frac{x_0}{1-x_0t}
+\]
+である．$t\uparrow1/x_0$ で発散するから，
+全時間のフローを定義できない．
+\end{proof}
+\noindent\textbf{到達確認．}
+$X(x)=-2x\partial_x$ のフローを求めよ．
+\par\noindent\textbf{解答．}
+$\Phi_t(x)=e^{-2t}x$ であり，
+全実数 $t$ について定義される．
+\end{document}

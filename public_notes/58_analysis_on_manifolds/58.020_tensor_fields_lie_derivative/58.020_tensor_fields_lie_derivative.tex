@@ -1,0 +1,271 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{テンソル場とLie微分}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，テンソル場，フロー，Lie微分の定義．
+本稿の具体的な到達課題は，フローを用いたLie微分を座標計算に落とし，ベクトル場の括弧と比較する．
+
+
+\section{テンソル束と切断}
+\begin{definition}
+滑らかな $n$ 次元多様体 $M$ に対し
+\[
+ T^r_sM=
+ \bigl(TM\bigr)^{\otimes r}
+ \otimes\bigl(T^*M\bigr)^{\otimes s}
+\]
+を $(r,s)$ 型テンソル束という．
+その滑らかな切断をテンソル場という．
+局所座標 $x^1,\dots,x^n$ に関して
+\[
+ T=T^{i_1\cdots i_r}_{j_1\cdots j_s}
+ \partial_{i_1}\otimes\cdots\otimes\partial_{i_r}
+ \otimes dx^{j_1}\otimes\cdots\otimes dx^{j_s}
+\]
+と書く．
+\end{definition}
+\begin{proposition}[座標変換]
+座標 $x$ から $y$ への変換に対し，
+テンソル場の係数は反変添字ごとに
+$\partial y/\partial x$，共変添字ごとに
+$\partial x/\partial y$ を掛けて変換される．
+\end{proposition}
+\begin{proof}
+連鎖律から
+$\partial/\partial x^i=\sum_a(\partial y^a/\partial x^i)
+\partial/\partial y^a$，
+$dx^i=\sum_b(\partial x^i/\partial y^b)\,dy^b$
+である．これをテンソル積へ代入して多重線形性を用いる．
+\end{proof}
+\section{Lie括弧}
+\begin{definition}
+ベクトル場 $X,Y$ を滑らかな関数への導分として考え，
+\[
+ [X,Y]f=X(Yf)-Y(Xf)
+\]
+と定める．
+\end{definition}
+\begin{lemma}[Lie括弧はベクトル場]
+$[X,Y]$ は再び導分であり，
+局所座標で
+\[
+ [X,Y]^j=\sum_i(X^i\partial_iY^j-Y^i\partial_iX^j)
+\]
+となる．
+\end{lemma}
+\begin{proof}
+積 $fg$ に対し，$X(Y(fg))$ と $Y(X(fg))$ を
+Leibniz則で展開すると，二階微分を含む項と
+対称な混合項が相殺し，
+$[X,Y](fg)=([X,Y]f)g+f([X,Y]g)$ を得る．
+座標関数 $x^j$ へ作用させると表示式が従う．
+\end{proof}
+\begin{proposition}[Jacobi恒等式]
+ベクトル場 $X,Y,Z$ について
+\[
+ [X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]=0.
+\]
+\end{proposition}
+\begin{proof}
+各ベクトル場は関数空間上の線形作用素であり，
+Lie括弧は作用素の交換子 $AB-BA$ である．
+十二個の三重積を展開すると
+$XYZ$，$XZY$ 等の各単項式が正負一回ずつ現れて相殺する．
+\end{proof}
+\section{フローとLie微分}
+\begin{definition}
+$X$ の局所フローを $\Phi_t$ とする．
+関数 $f$ とベクトル場 $Y$ のLie微分を
+\[
+ \mathcal L_Xf=\left.\frac d{dt}\right|_{0}\Phi_t^*f=Xf,
+ \qquad
+ \mathcal L_XY=
+ \left.\frac d{dt}\right|_{0}(\Phi_{-t})_*Y
+\]
+によって定める．一般のテンソル場には各因子への
+引き戻し・押し出しを組み合わせて同様に定義する．
+\end{definition}
+\begin{theorem}[Lie微分とLie括弧]
+$\mathcal L_XY=[X,Y]$ が成り立つ．
+\end{theorem}
+\begin{proof}
+任意の滑らかな関数 $f$ について
+\[
+ ((\Phi_{-t})_*Y)_pf
+ =Y_{\Phi_t(p)}(f\circ\Phi_{-t})
+\]
+と書ける．
+$t=0$ で微分し，$\Phi_t$ の生成ベクトル場が
+$X$ であることを使うと
+$X(Yf)-Y(Xf)$ が得られる．
+全ての関数への作用が一致するのでベクトル場も一致する．
+\end{proof}
+\begin{proposition}[Lie微分のLeibniz則]
+任意のテンソル場 $S,T$ に対し
+\[
+ \mathcal L_X(S\otimes T)
+ =(\mathcal L_XS)\otimes T+S\otimes(\mathcal L_XT).
+\]
+また収縮演算と可換である．
+\end{proposition}
+\begin{proof}
+フローによる引き戻しはテンソル積・収縮と可換である．
+恒等式を $t=0$ で微分すればLeibniz則を得る．
+収縮についても同様である．
+\end{proof}
+\section{微分形式とCartanの公式}
+\begin{definition}
+$X$ と微分 $k$ 形式 $\omega$ に対し
+\[
+ (\iota_X\omega)(Y_1,\dots,Y_{k-1})
+ =\omega(X,Y_1,\dots,Y_{k-1})
+\]
+と定める．$k=0$ では $\iota_X\omega=0$ とする．
+\end{definition}
+\begin{lemma}
+$\mathcal L_X$ は外積に関して次数0の導分であり，
+外微分 $d$ と可換である．
+また $\iota_X$ は次数 $-1$ の反導分である．
+\end{lemma}
+\begin{proof}
+$\Phi_t^*(\alpha\wedge\beta)
+ =\Phi_t^*\alpha\wedge\Phi_t^*\beta$ と
+$d(\Phi_t^*\alpha)=\Phi_t^*(d\alpha)$ を
+$t=0$ で微分して前二つを得る．
+内積への挿入の定義を交代和で展開すると
+\[
+ \iota_X(\alpha\wedge\beta)
+ =\iota_X\alpha\wedge\beta
+ +(-1)^{\deg\alpha}\alpha\wedge\iota_X\beta
+\]
+となる．
+\end{proof}
+\begin{theorem}[Cartanの公式]\label{thm:cartan}
+任意の微分形式 $\omega$ に対し
+\[
+ \mathcal L_X\omega=d(\iota_X\omega)+\iota_X(d\omega).
+\]
+\end{theorem}
+\begin{proof}
+右辺を $D$ と書く．
+$d,\iota_X$ の次数付きLeibniz則から
+$D$ は次数0の導分となる．
+任意の関数 $f$ について
+$Df=\iota_Xdf=Xf=\mathcal L_Xf$ である．
+また $d^2=0$ から
+$D(df)=d(\iota_Xdf)=d(Xf)$ である．
+一方 $\mathcal L_X$ は $d$ と可換なので
+$\mathcal L_X(df)=d(\mathcal L_Xf)=d(Xf)$．
+局所的に任意の微分形式は
+$f\,dx^{i_1}\wedge\cdots\wedge dx^{i_k}$
+の有限和なので，両者は関数とその外微分上で一致し，
+導分として全ての形式上で一致する．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Lie微分の具体的計算．}
+\begin{proposition}[座標ベクトル場のLie微分]
+$\mathbb R^2$ に $X=x\partial_x$，
+$Y=y\partial_x+x\partial_y$ と置くと
+\[
+\mathcal L_XY=[X,Y]=-y\partial_x+x\partial_y.
+\]
+\end{proposition}
+\begin{proof}
+$X$ の成分は $(x,0)$，$Y$ の成分は $(y,x)$ である．
+一般に
+\[
+[X,Y]^i=\sum_j(X^j\partial_jY^i-Y^j\partial_jX^i).
+\]
+第一成分は $x\partial_x y-(y\partial_x x+x\partial_y x)
+=-y$，
+第二成分は $x\partial_x x=x$ となる．
+\end{proof}
+\begin{proposition}[微分形式のLie微分]
+$\alpha=x\,dy$ とすると
+\[
+\mathcal L_X\alpha=x\,dy=\alpha.
+\]
+\end{proposition}
+\begin{proof}
+Cartan公式
+$\mathcal L_X\alpha=\iota_Xd\alpha+d(\iota_X\alpha)$
+を用いる．
+$d\alpha=dx\wedge dy$ で，
+$\iota_Xd\alpha=x\,dy$．
+$\iota_X\alpha=0$ だから結論が従う．
+\end{proof}
+\noindent\textbf{到達確認．}
+$X=x\partial_x$ の作用による
+関数 $f(x,y)=x^2y$ のLie微分を求めよ．
+\par\noindent\textbf{解答．}
+関数のLie微分は方向微分なので
+$\mathcal L_Xf=X(f)=x\partial_x(x^2y)=2x^2y$ である．
+\end{document}
