@@ -1,0 +1,673 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{de Rhamコホモロジーと大域的位相}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，de Rhamコホモロジー，閉形式と完全形式．
+本稿の具体的な到達課題は，閉形式が大域的に完全でないことを積分で証明する．
+
+\section{de Rham複体}
+
+本稿では $M$ を第二可算Hausdorffな滑らかな多様体とし，
+微分形式，外微分，単位の分割，
+Poincar\'eの補題およびStokesの定理を前提とする．
+実係数のコホモロジーを扱う．
+
+\begin{definition}
+$k$-次閉形式全体と完全形式全体を
+\[
+ Z^k(M)=\ker(d:\Omega^k(M)\to\Omega^{k+1}(M)),
+\]
+\[
+ B^k(M)=\operatorname{im}
+ (d:\Omega^{k-1}(M)\to\Omega^k(M))
+\]
+と置く．$d^2=0$ により $B^k(M)\subset Z^k(M)$ なので，
+\[
+ H_{\mathrm{dR}}^k(M)=Z^k(M)/B^k(M)
+\]
+を第 $k$ de Rhamコホモロジー群という．
+$B^0(M)=0$ と約束する．
+\end{definition}
+
+\begin{proposition}[次数零]\label{prop:h0}
+$H_{\mathrm{dR}}^0(M)$ は
+$M$ の各連結成分上で定数となる滑らかな関数全体である．
+特に $M$ が連結なら
+$H_{\mathrm{dR}}^0(M)\cong\mathbb R$ である．
+\end{proposition}
+\begin{proof}
+$0$-形式は滑らかな関数である．
+$df=0$ なら任意の滑らかな曲線 $\gamma$ に対して
+$(f\circ\gamma)'=df_{\gamma(t)}(\gamma'(t))=0$
+となるので，$f$ は曲線の像の上で定数である．
+多様体は局所道連結なので，
+連結成分は道連結成分に等しい．
+従って $df=0$ なら各連結成分で定数である．
+逆に各連結成分で定数の関数は
+連結成分が開であることから滑らかであり，
+その外微分は零である．
+$B^0=0$ だから結論が従う．
+\end{proof}
+
+\begin{proposition}[引き戻しとコホモロジー]\label{prop:pullback}
+滑らかな写像 $F:M\to N$ は
+\[
+ F^*:H_{\mathrm{dR}}^k(N)\to H_{\mathrm{dR}}^k(M)
+\]
+を誘導し，
+$(G\circ F)^*=F^*\circ G^*$ を満たす．
+\end{proposition}
+\begin{proof}
+$d(F^*\omega)=F^*(d\omega)$ が成り立つので，
+閉形式は閉形式へ，完全形式は完全形式へ写る．
+従って商空間の写像がwell-definedとなる．
+微分形式の引き戻しの函手性から
+合成についての等式も従う．
+\end{proof}
+
+\section{ホモトピー不変性}
+
+\begin{theorem}[ホモトピー公式]\label{thm:homotopy}
+$F_0,F_1:M\to N$ を滑らかな写像とし，
+$H:[0,1]\times M\to N$ を滑らかなホモトピーとする．
+このとき線形写像
+$K:\Omega^k(N)\to\Omega^{k-1}(M)$ が存在して
+\[
+ F_1^*-F_0^*=dK+Kd
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$H^*\omega$ を $[0,1]\times M$ 上の形式として考える．
+局所座標において一意に
+\[
+ H^*\omega=dt\wedge\alpha_t+\beta_t
+\]
+と分解できる．
+ここで $\alpha_t$ は $M$ 上の $(k-1)$-形式，
+$\beta_t$ は $k$-形式であり，
+$t$ に滑らかに依存する．
+\[
+ K\omega=\int_0^1\alpha_t\,dt
+\]
+と定める．
+$M$ 上の外微分を $d_M$ とすると
+\[
+ d_{[0,1]\times M}(dt\wedge\alpha_t+\beta_t)
+ =dt\wedge(\partial_t\beta_t-d_M\alpha_t)
+ +d_M\beta_t.
+\]
+引き戻しと外微分の可換性から
+$H^*(d\omega)=d(H^*\omega)$ であり，
+$K(d\omega)=\int_0^1(\partial_t\beta_t-d_M\alpha_t)\,dt$
+となる．従って
+\begin{align*}
+ d(K\omega)+K(d\omega)
+ &=\int_0^1 d_M\alpha_t\,dt
+   +\int_0^1(\partial_t\beta_t-d_M\alpha_t)\,dt\\
+ &=\beta_1-\beta_0=F_1^*\omega-F_0^*\omega.
+\end{align*}
+これが主張である．
+\end{proof}
+
+\begin{corollary}[de Rhamコホモロジーのホモトピー不変性]
+\label{cor:homotopy}
+滑らかにホモトピックな写像は
+同じde Rhamコホモロジー準同型を誘導する．
+特に滑らかなホモトピー同値は
+de Rhamコホモロジーの同型を誘導する．
+\end{corollary}
+\begin{proof}
+閉形式 $\omega$ に対して
+定理\ref{thm:homotopy}から
+$F_1^*\omega-F_0^*\omega=d(K\omega)$
+となる．
+従って商空間 $H_{\mathrm{dR}}^k$ では
+両者の像が一致する．
+ホモトピー逆写像が存在する場合には，
+誘導写像の合成が恒等となるので同型である．
+\end{proof}
+
+\begin{corollary}[収縮可能な多様体]\label{cor:contractible}
+$M$ が滑らかに収縮可能なら
+\[
+ H_{\mathrm{dR}}^0(M)\cong\mathbb R,\qquad
+ H_{\mathrm{dR}}^k(M)=0\quad(k\ge1)
+\]
+となる．
+\end{corollary}
+\begin{proof}
+$M$ と一点空間の間の滑らかなホモトピー同値を取る．
+系\ref{cor:homotopy}によってde Rhamコホモロジーは
+一点空間のものと同型である．
+一点空間では0次の滑らかな関数は実数全体であり，
+正の次数の微分形式は零なので結論が従う．
+\end{proof}
+
+\section{Mayer--Vietorisの短完全列}
+
+\begin{theorem}[微分形式の短完全列]\label{thm:mv-short}
+$M=U\cup V$ を開被覆とする．
+各次数 $k$ に対し
+\[
+ 0\to\Omega^k(M)
+ \xrightarrow{r}\Omega^k(U)\oplus\Omega^k(V)
+ \xrightarrow{s}\Omega^k(U\cap V)\to0
+\]
+は短完全列である．
+ここで
+\[
+ r(\omega)=(\omega|_U,\omega|_V),\qquad
+ s(\alpha,\beta)=\alpha|_{U\cap V}-\beta|_{U\cap V}
+\]
+と定める．
+\end{theorem}
+\begin{proof}
+$r$ は単射である．
+実際 $\omega$ が $U,V$ の両方で零なら
+$U\cup V=M$ 上で零である．
+$s\circ r=0$ は定義から従う．
+$s(\alpha,\beta)=0$ なら
+$\alpha,\beta$ は $U\cap V$ で一致するので，
+微分形式の層の貼り合わせ公理から
+唯一の $\omega\in\Omega^k(M)$ が存在して
+$r(\omega)=(\alpha,\beta)$ となる．
+従って $\ker s=\operatorname{im}r$ である．
+
+$s$ が全射であることを示す．
+$\gamma\in\Omega^k(U\cap V)$ を取り，
+開被覆 $\{U,V\}$ に従属する滑らかな単位の分割
+$\rho_U+\rho_V=1$ を選ぶ．
+$U\cap V$ 上の
+$\rho_V\gamma$ は $U$ 上の形式へ零で延長できる．
+実際 $\rho_V$ の台は $V$ 内にあるため，
+$U\setminus V$ の各点の近傍で
+$\rho_V\gamma$ は零となる．
+同様に $\rho_U\gamma$ を $V$ 上へ零延長できる．
+\[
+ \alpha=\rho_V\gamma\text{ の }U\text{ への零延長},\quad
+ \beta=-\rho_U\gamma\text{ の }V\text{ への零延長}
+\]
+と置くと
+$s(\alpha,\beta)=(\rho_V+\rho_U)\gamma=\gamma$
+となる．従って全射である．
+\end{proof}
+
+\begin{corollary}[Mayer--Vietoris長完全列]\label{cor:mv}
+$M=U\cup V$ に対して自然な長完全列
+\[
+ \cdots\to H_{\mathrm{dR}}^k(M)\to
+ H_{\mathrm{dR}}^k(U)\oplus H_{\mathrm{dR}}^k(V)\to
+ H_{\mathrm{dR}}^k(U\cap V)\xrightarrow{\delta}
+ H_{\mathrm{dR}}^{k+1}(M)\to\cdots
+\]
+が存在する．
+\end{corollary}
+\begin{proof}
+定理\ref{thm:mv-short}の写像 $r,s$ は
+制限写像で定義されているので外微分と可換である．
+従って微分形式の複体の短完全列となる．
+ホモロジー代数における短完全複体の長完全列の定理を
+コホモロジーに適用すれば結論が従う．
+\end{proof}
+
+\section{球面のde Rhamコホモロジー}
+
+\begin{theorem}[球面の計算]\label{thm:sphere}
+$n\ge1$ に対して
+\[
+ H_{\mathrm{dR}}^k(S^n)\cong
+ \begin{cases}
+ \mathbb R&(k=0,n),\\
+ 0&(\text{その他})
+ \end{cases}
+\]
+が成立する．
+ただし $n=0$ では $S^0$ は二点集合なので
+$H_{\mathrm{dR}}^0(S^0)\cong\mathbb R^2$ である．
+\end{theorem}
+\begin{proof}
+まず $S^1$ を北極と南極を除いた二つの開弧
+$U,V$ の合併とする．
+$U,V$ は収縮可能であり，
+$U\cap V$ は二つの連結成分を持ち，
+それぞれ収縮可能である．
+従って
+\[
+ H^0(U)\cong H^0(V)\cong\mathbb R,\qquad
+ H^0(U\cap V)\cong\mathbb R^2
+\]
+であり，正の次数では零となる．
+Mayer--Vietoris長完全列は
+\[
+ 0\to H^0(S^1)\to\mathbb R^2
+ \xrightarrow{r}\mathbb R^2
+ \to H^1(S^1)\to0
+\]
+を与える．
+写像 $r$ は定数関数の差なので
+$r(a,b)=(a-b,a-b)$ であり，
+その核と余核はそれぞれ $\mathbb R$ と同型である．
+従って $H^0(S^1)\cong H^1(S^1)\cong\mathbb R$ である．
+
+$n\ge2$ とする．
+球面の北極と南極をそれぞれ除いた
+$U,V$ は $\mathbb R^n$ と微分同相なので収縮可能である．
+$U\cap V$ は $S^{n-1}$ と滑らかにホモトピー同値である．
+Mayer--Vietoris長完全列から，
+$k\ge2$ について
+\[
+ H_{\mathrm{dR}}^k(S^n)
+ \cong H_{\mathrm{dR}}^{k-1}(S^{n-1})
+\]
+となる．
+また $U\cap V$ が連結なので，
+零次から一次への長完全列を考えると
+$H_{\mathrm{dR}}^1(S^n)=0$ となる．
+帰納法によって $H_{\mathrm{dR}}^n(S^n)\cong\mathbb R$
+かつ $1\le k<n$ のコホモロジーは零となる．
+$S^n$ は連結なので $H^0(S^n)\cong\mathbb R$ である．
+$n$ より大きい次数の微分形式は零なので
+高次のコホモロジーも零である．
+\end{proof}
+
+\section{トーラスのコホモロジー}
+
+\begin{theorem}[二次元トーラスの計算]\label{thm:torus}
+$T^2=\mathbb R^2/(2\pi\mathbb Z)^2$ とすると，
+\[
+ H_{\mathrm{dR}}^0(T^2)\cong\mathbb R,\qquad
+ H_{\mathrm{dR}}^1(T^2)\cong\mathbb R^2,\qquad
+ H_{\mathrm{dR}}^2(T^2)\cong\mathbb R.
+\]
+一次の基底は $[dx]$，$[dy]$，二次の基底は
+$[dx\wedge dy]$ で与えられる．
+\end{theorem}
+\begin{proof}
+$T^2$ 上の滑らかな関数と微分形式の係数は
+$2\pi$-周期の滑らかな関数とみなせる．
+そのFourier係数は任意の階数で急減少する．
+これは部分積分を任意回数行うことで，
+各係数が
+$O((1+m^2+n^2)^{-N})$ となることから従う．
+従ってFourier級数は任意階の導関数について
+絶対・一様収束し，項別微分できる．
+
+閉1形式 $\omega=A(x,y)\,dx+B(x,y)\,dy$ を取る．
+閉形式の条件は $\partial_xB=\partial_yA$ である．
+Fourier係数を $A_{mn},B_{mn}$ と書くと
+\[
+ mB_{mn}=nA_{mn}
+\]
+が全ての $(m,n)\in\mathbb Z^2$ について成立する．
+$(m,n)\ne(0,0)$ なら
+\[
+ u_{mn}=
+ \frac{mA_{mn}+nB_{mn}}{i(m^2+n^2)}
+\]
+と置く．
+閉形式条件から
+$i m u_{mn}=A_{mn}$，
+$i n u_{mn}=B_{mn}$ が従う．
+係数は急減少するので，
+$u=\sum_{(m,n)\ne(0,0)}
+ u_{mn}e^{i(mx+ny)}$ は滑らかであり，
+\[
+ du=(A-A_{00})\,dx+(B-B_{00})\,dy.
+\]
+従って全ての閉1形式は
+$A_{00}dx+B_{00}dy$ と完全形式の和である．
+一方，$dx$ と $dy$ の線形結合が完全なら，
+それぞれ $x$ 方向・$y$ 方向の基本閉曲線で積分すると
+係数が零でなければならない．
+よって $[dx],[dy]$ は一次の基底となる．
+
+二次の形式は $f(x,y)\,dx\wedge dy$ の形であり，
+自動的に閉形式である．
+$f_{mn}$ をそのFourier係数とする．
+$(m,n)\ne(0,0)$ について
+\[
+ \eta_{mn}=
+ \frac{i f_{mn}}{m^2+n^2}
+ e^{i(mx+ny)}(n\,dx-m\,dy)
+\]
+と置くと
+\[
+ d\eta_{mn}=f_{mn}e^{i(mx+ny)}dx\wedge dy.
+\]
+係数の急減少性から
+$\eta=\sum_{(m,n)\ne(0,0)}\eta_{mn}$ は滑らかであり，
+$d\eta=(f-f_{00})dx\wedge dy$ となる．
+従って任意の二次形式は定数倍の
+$dx\wedge dy$ と完全形式の和である．
+もし $dx\wedge dy$ が完全なら
+Stokesの定理から
+$\int_{T^2}dx\wedge dy=0$ となるはずだが，
+実際には $(2\pi)^2\ne0$ である．
+従って二次コホモロジーの基底を与える．
+零次については連結性から $\mathbb R$ である．
+\end{proof}
+
+\section{微分形式の層とfine resolution}
+
+\begin{definition}
+$M$ の開集合 $U$ に対して
+$\boldsymbol\Omega^k(U)=\Omega^k(U)$ と置き，
+微分形式の制限を射とする．
+これによってAbel群の層 $\boldsymbol\Omega^k$ が定まる．
+また $\underline{\mathbb R}$ を局所定数実数値関数の層とする．
+\end{definition}
+
+\begin{theorem}[Poincar\'eの補題による層の完全分解]
+\label{thm:form-resolution}
+層の列
+\[
+ 0\to\underline{\mathbb R}\to
+ \boldsymbol\Omega^0\xrightarrow d
+ \boldsymbol\Omega^1\xrightarrow d\cdots
+ \xrightarrow d\boldsymbol\Omega^n\to0
+\]
+は完全である．
+\end{theorem}
+\begin{proof}
+層の完全性は各茎で検査できる．
+次数0では $df=0$ の滑らかな関数は局所定数なので
+$\ker(d:\boldsymbol\Omega^0\to\boldsymbol\Omega^1)
+=\underline{\mathbb R}$ である．
+任意の $p\in M$ では，十分小さい座標球 $U$ を取れる．
+座標球は星状開集合と微分同相であるため，
+Poincar\'eの補題により $U$ 上の閉 $k$-形式（$k\ge1$）は
+$U$ 上の $(k-1)$-形式の外微分となる．
+従って各茎で
+$\ker d=\operatorname{im}d$ となり，
+層の列は全ての次数で完全である．
+\end{proof}
+
+\begin{definition}
+Abel群の層 $\mathcal F$ が\emph{fine}であるとは，
+任意の局所有限開被覆 $\{U_i\}$ に対し，
+層の自己準同型 $\theta_i:\mathcal F\to\mathcal F$ で，
+$\theta_i$ が $U_i$ の外で零となり，
+$\sum_i\theta_i=\operatorname{id}_{\mathcal F}$
+が成立するものが存在することをいう．
+\end{definition}
+
+\begin{proposition}[微分形式の層はfine]\label{prop:fine-forms}
+任意の $k$ について $\boldsymbol\Omega^k$ はfine層である．
+\end{proposition}
+\begin{proof}
+局所有限開被覆 $\{U_i\}$ に従属する
+滑らかな単位の分割 $\{\rho_i\}$ を取る．
+$\theta_i(\omega)=\rho_i\omega$ と定めると，
+$\theta_i$ は制限と可換な層の準同型であり，
+$\operatorname{supp}\theta_i\subset U_i$ となる．
+さらに局所有限性から
+$\sum_i\theta_i(\omega)
+=(\sum_i\rho_i)\omega=\omega$ である．
+従ってfine層である．
+\end{proof}
+
+\begin{lemma}[fine層の非輪状性]\label{lem:fine-acyclic}
+パラコンパクトHausdorff空間 $X$ 上のfineなAbel群の層
+$\mathcal F$ に対して
+\[
+ H^q(X,\mathcal F)=0\qquad(q\ge1).
+\]
+\end{lemma}
+\begin{proof}
+局所有限な開被覆 $\{U_i\}$ とfine層の自己準同型
+$\theta_i$ を取る．
+\v Cechコチェイン $c$ に対し，
+\[
+ (hc)_{i_0\cdots i_{q-1}}
+ =\sum_j\theta_j
+ \bigl(c_{j i_0\cdots i_{q-1}}\bigr)
+\]
+と定める．
+右辺の各項は $U_j\cap U_{i_0}\cap\cdots\cap U_{i_{q-1}}$
+上で定義されるが，$\theta_j$ の台が $U_j$ 内にあるため
+必要に応じて零延長して
+$U_{i_0}\cap\cdots\cap U_{i_{q-1}}$ 上の切断にできる．
+局所有限性によって和は局所的に有限である．
+\v Cech微分の交代和を展開すると，
+$\delta h+h\delta=\operatorname{id}$ が
+正の次数で成立する．
+実際，二つの頂点を除く各項は符号を変えて打ち消し合い，
+残る項は $\sum_j\theta_j(c)=c$ となる．
+従って局所有限な開被覆での正の次数の
+\v Cechコホモロジーは零である．
+パラコンパクトHausdorff空間では，
+開被覆を局所有限細分することができ，
+層の導来函手コホモロジーは開被覆を細分したときの
+\v Cechコホモロジーの帰納極限として計算できる．
+この比較は，flabby分解の\v Cech二重複体を用いて
+横・縦のコホモロジーを順に計算することで得られる．
+従って全ての正の次数で
+$H^q(X,\mathcal F)=0$ となる．
+\end{proof}
+
+\begin{theorem}[de Rham複体は層コホモロジーを計算する]
+\label{thm:de-rham-sheaf}
+任意の滑らかな多様体 $M$ について
+\[
+ H_{\mathrm{dR}}^k(M)\cong
+ H^k(M,\underline{\mathbb R})
+\]
+が自然に成り立つ．
+\end{theorem}
+\begin{proof}
+定理\ref{thm:form-resolution}により
+\[
+ 0\to\underline{\mathbb R}\to
+ \boldsymbol\Omega^0\to\boldsymbol\Omega^1\to\cdots
+\]
+は層の完全分解である．
+命題\ref{prop:fine-forms}と
+補題\ref{lem:fine-acyclic}から，
+各 $\boldsymbol\Omega^k$ は
+大域切断函手に関して非輪状である．
+非輪状分解による導来函手の計算定理によって，
+$\underline{\mathbb R}$ の層コホモロジーは
+この分解に大域切断を適用した複体
+\[
+ \Omega^0(M)\xrightarrow d\Omega^1(M)\xrightarrow d\cdots
+\]
+のコホモロジーと自然同型である．
+右辺はde Rhamコホモロジーの定義に他ならない．
+\end{proof}
+
+\section{特異コホモロジーとの比較}
+
+\begin{definition}
+滑らかな特異 $k$-単体
+$\sigma:\Delta^k\to M$ と
+$\omega\in\Omega^k(M)$ に対して
+\[
+ I(\omega)(\sigma)=\int_{\Delta^k}\sigma^*\omega
+\]
+と定める．
+これは滑らかな特異コチェインを与える．
+\end{definition}
+
+\begin{proposition}[積分写像はコチェイン写像]\label{prop:integration-chain}
+任意の $\omega\in\Omega^k(M)$ に対し
+\[
+ \delta I(\omega)=I(d\omega)
+\]
+が成立する．
+\end{proposition}
+\begin{proof}
+任意の滑らかな特異 $(k+1)$-単体
+$\sigma:\Delta^{k+1}\to M$ に対して
+\begin{align*}
+ (\delta I(\omega))(\sigma)
+ &=I(\omega)(\partial\sigma)\\
+ &=\int_{\partial\Delta^{k+1}}\sigma^*\omega\\
+ &=\int_{\Delta^{k+1}}d(\sigma^*\omega)\\
+ &=\int_{\Delta^{k+1}}\sigma^*(d\omega)\\
+ &=I(d\omega)(\sigma).
+\end{align*}
+三行目は境界付き単体（角を持つ多様体）に対する
+Stokesの公式であり，
+通常の境界付き多様体の公式を各面に適用して得られる．
+従って任意の単体で評価した値が一致し，
+コチェイン写像である．
+\end{proof}
+
+\begin{theorem}[de Rhamの定理]\label{thm:de-rham}
+任意の滑らかな多様体 $M$ について
+積分写像は自然同型
+\[
+ H_{\mathrm{dR}}^k(M)\xrightarrow{\ \cong\ }
+ H_{\mathrm{sing}}^k(M;\mathbb R)
+\]
+を誘導する．
+\end{theorem}
+\begin{proof}
+滑らかな特異コチェインの前層を
+$U\mapsto C^k_{\mathrm{sm}}(U;\mathbb R)$ とし，
+その層化を $\mathcal S^k$ とする．
+各点の十分小さい座標球は収縮可能であるから，
+特異コホモロジーのホモトピー不変性により
+局所的なコチェイン複体は正の次数で完全であり，
+零次の核は局所定数関数である．
+従って
+\[
+ 0\to\underline{\mathbb R}\to
+ \mathcal S^0\to\mathcal S^1\to\cdots
+\]
+は層の完全分解となる．
+$\mathcal S^k$ はflabbyである：
+開集合上の局所コチェインを，十分細かな単体に対する値を
+選んで貼り合わせ，残る単体には零を割り当てることで
+大きな開集合へ延長できる．
+従って層コホモロジーをこの分解から計算できる．
+
+さらに滑らかな特異コチェインからその層化への自然写像は，
+大域コホモロジーで同型を誘導する．
+実際，任意の開被覆に対して
+特異単体の十分細かい重心細分を取れば，
+全ての小単体が被覆のどれかの元に含まれる．
+重心細分写像は鎖ホモトピーによって恒等写像と
+結ばれるため，局所的なコチェインを貼り合わせる操作は
+コホモロジーを変えない．
+従って
+\[
+ H^k(M,\underline{\mathbb R})
+ \cong H_{\mathrm{sing}}^k(M;\mathbb R)
+\]
+が得られる．
+一方，定理\ref{thm:de-rham-sheaf}によって
+左辺はde Rhamコホモロジーである．
+
+積分写像がこの同型と一致することを確認する．
+微分形式の層分解から滑らかな特異コチェインの層分解へ，
+各局所形式の単体上の積分によって
+コチェイン写像が定まる．
+命題\ref{prop:integration-chain}から微分と可換であり，
+次数零の局所定数関数に対してはその値を保つ．
+従って二つの $\underline{\mathbb R}$ の分解を結ぶ
+恒等写像の持ち上げとなり，
+導来函手の比較定理から誘導写像は上記の自然同型に等しい．
+これで積分写像がコホモロジー同型を与える．
+\end{proof}
+
+\begin{remark}
+de Rhamの定理は，微分形式の局所的な微分方程式
+$d\omega=0$ と，空間の大域的な位相的不変量を結びつける．
+Poincar\'eの補題は局所的な完全性を保証するが，
+大域的な完全性の障害はde Rhamコホモロジー群として現れる．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{原点を除いた平面の一次コホモロジー．}
+\begin{proposition}
+$U=\mathbb R^2\setminus\{0\}$ 上の1形式
+\[
+\omega=\frac{-y\,dx+x\,dy}{x^2+y^2}
+\]
+は閉形式であるが完全形式でない．
+\end{proposition}
+\begin{proof}
+$P=-y/(x^2+y^2)$，$Q=x/(x^2+y^2)$ と置くと
+$\partial_xQ=(y^2-x^2)/(x^2+y^2)^2$，
+$\partial_yP=(y^2-x^2)/(x^2+y^2)^2$．
+従って $d\omega=0$ である．
+単位円周 $\gamma(t)=(\cos t,\sin t)$ では
+$\gamma^*\omega=dt$ だから
+$\int_\gamma\omega=2\pi$．
+もし $\omega=df$ なら閉曲線上の積分は
+$\int_\gamma df=0$ となるので矛盾する．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\omega$ の定数倍 $3\omega$ は完全形式か．
+\par\noindent\textbf{解答．}
+単位円周上の積分は $6\pi\ne0$ なので完全でない．
+\end{document}

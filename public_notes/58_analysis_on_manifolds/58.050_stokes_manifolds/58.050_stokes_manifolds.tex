@@ -1,0 +1,535 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{多様体上の微分形式とStokesの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，微分形式，向き，Stokesの定理．
+本稿の具体的な到達課題は，Stokesの定理を具体的な境界積分で検算する．
+
+\section{余接空間と微分形式}
+
+本稿では滑らかな多様体の接空間・接束，
+Euclid空間上の外微分と引き戻し，
+多変数積分の変数変換公式を前提とする．
+多様体はHausdorffかつ第二可算とし，
+境界を持つ場合も含める．
+
+\begin{definition}
+$p\in M$ に対し $T_p^*M$ を
+接空間 $T_pM$ の実線形双対空間という．
+$k$-次微分形式とは，$p\in M$ ごとに
+$\omega_p\in\Lambda^kT_p^*M$ を対応させ，
+局所座標 $(x^1,\dots,x^n)$ で
+\[
+ \omega=\sum_{i_1<\cdots<i_k}
+ a_{i_1\cdots i_k}(x)\,
+ dx^{i_1}\wedge\cdots\wedge dx^{i_k}
+\]
+と書いたとき全係数が滑らかであるものをいう．
+全体を $\Omega^k(M)$ と書く．
+\end{definition}
+
+\begin{proposition}[外微分の座標独立性]
+\label{prop:d-global}
+各座標近傍で
+\[
+ d\left(\sum_Ia_I\,dx^I\right)
+ =\sum_{I,j}\frac{\partial a_I}{\partial x^j}
+ dx^j\wedge dx^I
+\]
+と定義すると，局所定義は座標変換によって一致し，
+大域的な線形写像
+$d:\Omega^k(M)\to\Omega^{k+1}(M)$ を定める．
+また
+$d^2=0$ および
+\[
+ d(\omega\wedge\eta)
+ =d\omega\wedge\eta+(-1)^k\omega\wedge d\eta
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+座標変換 $\phi$ に対して
+$d(\phi^*\omega)=\phi^*(d\omega)$ が
+Euclid空間の微分形式で成立することを用いる．
+この等式は連鎖律と二階偏導関数の交換法則を
+座標表示に代入して直接確認できる．
+従って重なり合う座標近傍では
+外微分の表示が同じ形式を定めるため，
+局所定義を貼り合わせて大域的な $d$ が得られる．
+残る二つの等式はEuclid空間上で
+係数の微分と交代性を用いて成立するので，
+全ての座標近傍上で成立し，
+従って多様体上でも成立する．
+\end{proof}
+
+\section{引き戻しと変数変換}
+
+\begin{definition}
+滑らかな写像 $F:M\to N$ と
+$\omega\in\Omega^k(N)$ に対して
+\[
+ (F^*\omega)_p(v_1,\dots,v_k)
+ =\omega_{F(p)}(dF_pv_1,\dots,dF_pv_k)
+\]
+を引き戻しという．
+\end{definition}
+
+\begin{proposition}[引き戻しの函手性]\label{prop:pullback}
+滑らかな写像 $F:M\to N$，$G:N\to P$ について
+\[
+ (G\circ F)^*=F^*\circ G^*,\qquad
+ d(F^*\omega)=F^*(d\omega)
+\]
+が成り立つ．
+また $F^*(\omega\wedge\eta)
+=F^*\omega\wedge F^*\eta$ である．
+\end{proposition}
+\begin{proof}
+第一式は
+$d(GF)_p=dG_{F(p)}dF_p$ を
+引き戻しの定義式へ代入して得る．
+外積については，交代多重線形形式の外積を定める
+有限個の置換の和へ $dF_p$ を各引数に適用すればよい．
+外微分との可換性は局所座標に還元すると
+Euclid空間上の同じ公式になるので，
+命題\ref{prop:d-global}の議論から成立する．
+\end{proof}
+
+\section{向き付けと体積形式}
+
+\begin{definition}
+$n$ 次元多様体 $M$ のAtlasが
+任意の二座標の遷移写像について
+Jacobi行列式が正となるとき，
+これを\emph{向き付けられたAtlas}という．
+そのようなAtlasを持つ多様体を向き付け可能という．
+\end{definition}
+
+\begin{lemma}[向き付けと正の体積形式]
+\label{lem:volume}
+滑らかな $n$ 次元多様体 $M$ が向き付け可能なら，
+各点で零でない滑らかな $n$-形式 $\nu$ が存在する．
+逆に各点で零でない $n$-形式は向き付けを定める．
+\end{lemma}
+\begin{proof}
+正の遷移行列式を持つ向き付けAtlasを取り，
+それに従属する単位の分割 $\rho_i$ を選ぶ．
+各座標近傍で
+$\omega_i=dx_i^1\wedge\cdots\wedge dx_i^n$
+を取り，
+\[
+ \nu=\sum_i\rho_i\omega_i
+\]
+と置く．各 $\rho_i\omega_i$ は台の外で零と延長し，
+局所有限性により $\nu$ は滑らかである．
+向き付けられた座標で見ると，
+各 $\omega_i$ は正のJacobi行列式を通じた
+正の倍数になるので，
+$\rho_i\ge0$ かつ $\sum_i\rho_i=1$ から
+$\nu$ は各点で正の非零形式となる．
+逆に非零な $n$-形式 $\nu$ があれば，
+$\nu$ が局所座標の標準体積形式の正の倍数となる
+座標だけを選ぶ．それらの遷移行列式は正だから
+向き付けAtlasを得る．
+\end{proof}
+
+\section{微分形式の積分}
+
+\begin{definition}
+$M$ を向き付けられた $n$ 次元多様体とする．
+$\omega$ をコンパクト台を持つ $n$-形式とする．
+向き付けられた座標近傍に従属する
+単位の分割 $\{\rho_i\}$ を取る．
+$\rho_i\omega$ の座標表示を
+$f_i(x)\,dx^1\wedge\cdots\wedge dx^n$ としたとき
+\[
+ \int_M\omega=\sum_i\int_{\varphi_i(U_i)}f_i(x)\,dx
+\]
+と定める．
+\end{definition}
+
+\begin{proposition}[積分の定義の独立性]
+\label{prop:integral-independent}
+上の積分は，向き付けられた座標近傍と
+それに従属する単位の分割の取り方によらない．
+\end{proposition}
+\begin{proof}
+二つの座標近傍の重なりで，
+$n$-形式の座標係数はJacobi行列式を掛けて変換される．
+向き付けられた座標変換では行列式が正なので，
+Lebesgue積分の変数変換公式から
+\[
+ \int_{\varphi(U\cap V)}(\varphi^{-1})^*\omega
+ =\int_{\psi(U\cap V)}(\psi^{-1})^*\omega
+\]
+が成り立つ．
+二組の単位の分割 $\{\rho_i\}$，$\{\eta_j\}$ を取ると
+$\sum_{i,j}\rho_i\eta_j=1$ であり，
+コンパクト台のため有限個の項だけが積分に寄与する．
+各交わりの座標で上の変数変換公式を適用すれば，
+二組の分割で定義した積分が共に
+$\sum_{i,j}\int_M\rho_i\eta_j\omega$ に等しくなる．
+従って定義は選択によらない．
+\end{proof}
+
+\section{境界付き多様体と誘導向き}
+
+\begin{definition}
+$n$ 次元\emph{境界付き滑らかな多様体}とは，
+局所座標が閉半空間
+\[
+ \mathbb H^n=\{x\in\mathbb R^n:x_n\ge0\}
+\]
+の相対開集合への同相写像であり，
+座標変換が半空間の近傍へ滑らかに延長できるものをいう．
+$x_n=0$ に対応する点全体を境界 $\partial M$ と書く．
+\end{definition}
+
+\begin{definition}
+$M$ を向き付けられた境界付き $n$ 次元多様体とする．
+$\partial M$ の向きは，境界における外向き接ベクトル
+$\nu_{\mathrm{out}}$ と
+$v_1,\dots,v_{n-1}\in T_p(\partial M)$ に対し，
+\[
+ (\nu_{\mathrm{out}},v_1,\dots,v_{n-1})
+\]
+が $T_pM$ の正の基底となるとき，
+$(v_1,\dots,v_{n-1})$ を正とする向きによって定める．
+これを外向き法線優先の向きという．
+\end{definition}
+
+\begin{proposition}\label{prop:boundary-orient}
+$\partial M$ は自然に $(n-1)$ 次元滑らかな多様体となる．
+$M$ が向き付けられていれば上の定義は
+境界の向きをwell-definedに定める．
+\end{proposition}
+\begin{proof}
+境界付き多様体の座標変換は境界を境界へ写すので，
+$x_n=0$ の部分へ制限した座標変換は
+$\mathbb R^{n-1}$ の開集合間の滑らかな微分同相となる．
+従って境界の座標近傍は
+$(n-1)$ 次元滑らかなAtlasをなす．
+外向き接ベクトルは境界に接するベクトルに
+正の外向き成分を足したものを取り，
+その違いは境界接ベクトルの加算と正のスカラー倍だけである．
+行列式の符号はこれらの変更で変化しないので，
+誘導向きは外向きベクトルの選択によらない．
+座標変換でも向き付けは保たれるため，
+境界の向きはwell-definedである．
+\end{proof}
+
+\section{Euclid空間でのStokes公式}
+
+\begin{lemma}[全空間での微分形式の積分]\label{lem:stokes-full}
+$\omega\in\Omega_c^{n-1}(\mathbb R^n)$ なら
+\[
+ \int_{\mathbb R^n}d\omega=0.
+\]
+\end{lemma}
+\begin{proof}
+$\omega$ を
+\[
+ \omega=\sum_{i=1}^n(-1)^{i-1}
+ a_i(x)\,dx^1\wedge\cdots
+ \wedge\widehat{dx^i}\wedge\cdots\wedge dx^n
+\]
+と書く．
+帽子はその因子を除くことを意味する．
+外微分の定義から
+\[
+ d\omega=
+ \left(\sum_{i=1}^n\partial_i a_i\right)
+ dx^1\wedge\cdots\wedge dx^n.
+\]
+各 $a_i$ はコンパクト台を持つので，
+Fubiniの定理と微積分の基本定理から
+\[
+ \int_{\mathbb R^n}\partial_i a_i(x)\,dx
+ =\int_{\mathbb R^{n-1}}
+ \left(\int_{-\infty}^\infty
+   \partial_i a_i(x)\,dx_i\right)dx_{\widehat i}=0.
+\]
+有限和を取って結論を得る．
+\end{proof}
+
+\begin{lemma}[半空間でのStokes公式]\label{lem:stokes-half}
+$\mathbb H^n=\{x_n\ge0\}$ に標準向きを与える．
+コンパクト台を持つ滑らかな $(n-1)$-形式
+$\omega$ に対して
+\[
+ \int_{\mathbb H^n}d\omega
+ =\int_{\partial\mathbb H^n}\omega
+\]
+が成り立つ．右辺の境界には外向き法線優先の向きを入れる．
+\end{lemma}
+\begin{proof}
+補題\ref{lem:stokes-full}と同様に
+\[
+ \omega=\sum_{i=1}^n(-1)^{i-1}
+ a_i\,dx^1\wedge\cdots
+ \wedge\widehat{dx^i}\wedge\cdots\wedge dx^n
+\]
+と書く．
+$i<n$ の項を $x_i$ について積分すると，
+コンパクト台とFubiniの定理によって零になる．
+$i=n$ の項だけは
+\[
+ \int_0^\infty\partial_n a_n(x',t)\,dt=-a_n(x',0)
+\]
+なので
+\[
+ \int_{\mathbb H^n}d\omega
+ =-\int_{\mathbb R^{n-1}}a_n(x',0)\,dx'.
+\]
+一方境界へ制限した $\omega$ は
+\[
+ \omega|_{x_n=0}
+ =(-1)^{n-1}a_n(x',0)
+ dx^1\wedge\cdots\wedge dx^{n-1}
+\]
+である．
+外向き法線は $-\partial_n$ であり，
+外向き法線優先の境界向きは，
+標準的な $(x_1,\dots,x_{n-1})$ の向きの
+$(-1)^n$ 倍となる．
+従って
+\[
+ \int_{\partial\mathbb H^n}\omega
+ =(-1)^n(-1)^{n-1}
+ \int_{\mathbb R^{n-1}}a_n(x',0)\,dx'
+ =-\int a_n(x',0)\,dx',
+\]
+左辺と一致する．
+\end{proof}
+
+\section{一般Stokesの定理}
+
+\begin{theorem}[Stokesの定理]\label{thm:stokes}
+$M$ を向き付けられた $n$ 次元境界付き滑らかな多様体とし，
+$\omega\in\Omega_c^{n-1}(M)$ とする．
+このとき
+\[
+ \boxed{\displaystyle
+ \int_Md\omega=\int_{\partial M}\omega}
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+$M$ の向き付けられた座標近傍からなる開被覆を取り，
+それに従属する滑らかな単位の分割
+$\{\rho_i\}$ を選ぶ．
+$\omega$ はコンパクト台なので，
+積分に寄与する項は有限個であり，
+$\omega=\sum_i\rho_i\omega$ と書ける．
+外微分は線形だから
+$d\omega=\sum_i d(\rho_i\omega)$ である．
+従って各 $\rho_i\omega$ について公式を示せば十分である．
+
+$\rho_i\omega$ は一つの座標近傍内にコンパクト台を持つ．
+その近傍が境界に接しない場合には，
+Euclid空間の開集合に座標変換できる．
+コンパクト台なので零延長を行い，
+補題\ref{lem:stokes-full}から
+$\int_Md(\rho_i\omega)=0$ を得る．
+境界上では $\rho_i\omega=0$ なので
+右辺も零である．
+
+座標近傍が境界に接する場合には，
+半空間 $\mathbb H^n$ の相対開集合に座標変換する．
+コンパクト台のため零延長した滑らかな
+$(n-1)$-形式を半空間全体に考えられる．
+座標変換が外微分と可換であることと，
+向き付けられた変数変換公式を用い，
+補題\ref{lem:stokes-half}を適用すると
+\[
+ \int_Md(\rho_i\omega)
+ =\int_{\partial M}\rho_i\omega
+\]
+となる．
+これを有限個の $i$ について足し合わせれば
+\[
+ \int_Md\omega
+ =\sum_i\int_Md(\rho_i\omega)
+ =\sum_i\int_{\partial M}\rho_i\omega
+ =\int_{\partial M}\omega
+\]
+が得られる．
+\end{proof}
+
+\section{古典的な積分定理との関係}
+
+\begin{proposition}[Greenの公式]\label{prop:green}
+$D\subset\mathbb R^2$ をコンパクトな滑らかな境界を持つ領域，
+$P,Q$ をその近傍の滑らかな関数とする．
+$\partial D$ に正の境界向きを入れると
+\[
+ \oint_{\partial D}P\,dx+Q\,dy
+ =\iint_D\left(\frac{\partial Q}{\partial x}
+               -\frac{\partial P}{\partial y}\right)dx\,dy.
+\]
+\end{proposition}
+\begin{proof}
+$\omega=P\,dx+Q\,dy$ と置くと
+\[
+ d\omega=(Q_x-P_y)\,dx\wedge dy
+\]
+である．
+定理\ref{thm:stokes}を二次元領域 $D$ に適用すると
+表示式を得る．
+\end{proof}
+
+\begin{proposition}[発散定理]\label{prop:divergence}
+$D\subset\mathbb R^3$ を滑らかなコンパクト領域，
+$F=(F_1,F_2,F_3)$ を滑らかなベクトル場とする．
+外向き単位法線を $n$ とすると
+\[
+ \int_{\partial D}F\cdot n\,dS
+ =\int_D\operatorname{div}F\,dV.
+\]
+\end{proposition}
+\begin{proof}
+\[
+ \omega=F_1\,dy\wedge dz+
+ F_2\,dz\wedge dx+
+ F_3\,dx\wedge dy
+\]
+と置く．
+外微分を計算すると
+$d\omega=(\partial_xF_1+\partial_yF_2+\partial_zF_3)
+ dx\wedge dy\wedge dz$ である．
+境界へ $\omega$ を引き戻したものは，
+向き付けられた接ベクトル $u,v$ に対して
+$F\cdot(u\times v)$ に等しいので，
+その積分は外向き法線への流束積分
+$\int_{\partial D}F\cdot n\,dS$ に一致する．
+Stokesの定理を適用すれば結論を得る．
+\end{proof}
+
+\begin{proposition}[古典的Stokes公式]\label{prop:curl}
+向き付けられた滑らかな曲面 $S\subset\mathbb R^3$ と
+その境界 $\partial S$ に対して，
+滑らかなベクトル場 $F$ が
+\[
+ \oint_{\partial S}F\cdot d\boldsymbol r
+ =\int_S(\operatorname{curl}F)\cdot n\,dS
+\]
+を満たす．
+\end{proposition}
+\begin{proof}
+$\omega=F_1dx+F_2dy+F_3dz$ と置く．
+微分計算により
+\[
+ d\omega=(\partial_yF_3-\partial_zF_2)\,dy\wedge dz
+ +(\partial_zF_1-\partial_xF_3)\,dz\wedge dx
+ +(\partial_xF_2-\partial_yF_1)\,dx\wedge dy.
+\]
+これは曲面に引き戻すと
+$(\operatorname{curl}F)\cdot n\,dS$ に一致する．
+境界への $\omega$ の引き戻しは
+線積分の被積分形式である．
+定理\ref{thm:stokes}を二次元多様体 $S$ に適用すれば
+表示式を得る．
+\end{proof}
+
+\begin{remark}
+一般Stokesの定理は境界付き多様体上の外微分と積分の関係であり，
+Green・Gauss・古典Stokesの公式を同じ等式の
+異なる座標表現として統一する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{円板上のStokesの定理．}
+\begin{proposition}
+$D=\{(x,y):x^2+y^2\le1\}$ に標準の向きを入れ，
+$\alpha=x\,dy$ とする．このとき
+\[
+\int_{\partial D}\alpha
+=\int_Dd\alpha=\pi
+\]
+である．
+\end{proposition}
+\begin{proof}
+$d\alpha=dx\wedge dy$ なので
+$\int_Dd\alpha$ は単位円板の面積 $\pi$ である．
+境界を反時計回りに
+$\gamma(t)=(\cos t,\sin t)$
+（$0\le t\le2\pi$）と置くと
+\[
+\int_{\partial D}\alpha
+=\int_0^{2\pi}\cos t\cdot\cos t\,dt=\pi.
+\]
+双方が一致するのでStokesの定理を検算できる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\beta=-y\,dx$ の境界積分を求めよ．
+\par\noindent\textbf{解答．}
+$d\beta=-dy\wedge dx=dx\wedge dy$ だから
+$\int_{\partial D}\beta=\pi$ である．
+\end{document}

@@ -1,0 +1,298 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Morse理論と多様体の位相}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Morse関数，Hessian，Morse指数．
+本稿の具体的な到達課題は，具体的な閉多様体のMorse関数を計算してEuler標数と照合する．
+
+
+\section{Morse関数と臨界点}
+本稿では滑らかな多様体 $M$ 上の滑らかな実関数
+$f:M\to\mathbb R$ を考える．
+\begin{definition}
+$p$ が臨界点であるとは $df_p=0$ となることをいう．
+臨界点 $p$ でのHessianを
+\[
+ \operatorname{Hess}_p(f)(u,v)
+ =\sum_{i,j}u^iv^j\frac{\partial^2f}{\partial x^i\partial x^j}(p)
+\]
+で定める．これが非退化なら非退化臨界点という．
+全ての臨界点が非退化である関数をMorse関数という．
+Hessianの負固有値の個数を臨界点の指数という．
+\end{definition}
+\begin{lemma}[Hessianの座標不変性]
+臨界点 $p$ でのHessianは座標変換で双線形形式として変換される．
+従って非退化性と指数は座標に依存しない．
+\end{lemma}
+\begin{proof}
+$y$ 座標への変換で二階微分の連鎖律を適用すると，
+二階の座標変換の導関数には $df_p$ が係数として掛かる．
+臨界点では $df_p=0$ なのでその項は消え，
+Hessian行列は $J^THJ$ に変換される．
+Sylvesterの慣性法則から正負の指数は不変である．
+\end{proof}
+\section{Morseの補題}
+\begin{theorem}[Morseの補題]\label{thm:morselemma}
+$p$ を指数 $\lambda$ の非退化臨界点とする．
+$p$ の局所座標 $y^1,\dots,y^n$ で
+\[
+ f(y)=f(p)-\sum_{i=1}^{\lambda}(y^i)^2
+ +\sum_{i=\lambda+1}^n(y^i)^2
+\]
+となるものがある．
+\end{theorem}
+\begin{proof}
+$p$ を原点とする座標を選ぶ．
+$f(0)=c$，$df_0=0$ である．
+Taylorの積分剰余公式により
+\[
+ f(x)-c=\sum_{i,j}x^ix^jA_{ij}(x),\qquad
+ A_{ij}(x)=\int_0^1(1-t)\partial_i\partial_jf(tx)\,dt.
+\]
+$A(x)$ は滑らかな対称行列値写像で，
+$A(0)=\tfrac12\operatorname{Hess}_0(f)$ は非退化である．
+$A(0)$ に対して線形座標変換を施して
+$A(0)=J=\operatorname{diag}(-I_\lambda,I_{n-\lambda})$
+としてよい．
+$A(x)$ が $J$ に十分近い近傍で，
+行列値写像 $B(x)$ を滑らかに選び
+$A(x)=B(x)^T J B(x)$，$B(0)=I$ とできる．
+具体的には，負部分空間と正部分空間に沿って
+$A(x)$ に関するGram--Schmidt直交化を行う．
+各段階の負／正の平方根の分母は $x=0$ で非零なので
+近傍で滑らかに選べる．
+$y=B(x)x$ と置くと
+$Dy_0=B(0)=I$ だから逆写像定理によって
+$y$ は局所座標となる．
+\[
+ f(x)-c=x^TA(x)x
+ =x^TB(x)^TJB(x)x=y^TJy
+\]
+となり結論を得る．
+\end{proof}
+\begin{corollary}[臨界点の孤立性]
+Morse関数の臨界点は孤立している．
+コンパクト多様体上のMorse関数は有限個の臨界点を持つ．
+\end{corollary}
+\begin{proof}
+Morse座標で $df=0$ となるのは $y=0$ のみである．
+従って臨界点集合は離散的である．
+また臨界点集合は $df$ の零集合なので閉であり，
+コンパクト多様体ではコンパクトかつ離散の集合となる．
+従って有限である．
+\end{proof}
+\section{臨界値のない区間}
+\begin{theorem}[臨界点のない区間の同相型]\label{thm:regular}
+$f^{-1}([a,b])$ がコンパクトで，
+その中に臨界点がないと仮定する．
+このとき劣位集合
+$M^a=\{x:f(x)\le a\}$ と
+$M^b=\{x:f(x)\le b\}$
+は変形レトラクトによりホモトピー同値である．
+\end{theorem}
+\begin{proof}
+$df\ne0$ の領域ではRiemann計量を固定して
+\[
+ X=-\frac{\nabla f}{|\nabla f|^2}
+\]
+と置くと $Xf=-1$ である．
+コンパクトな帯 $f^{-1}([a,b])$ の近傍で
+$X$ の台を切り取った滑らかなベクトル場に延長できる．
+この場のフローを $\Phi_t$ とすると，
+点が帯内にとどまる限り
+$f(\Phi_t(x))=f(x)-t$ である．
+$x\in M^b$ について
+$t(x)=\max(f(x)-a,0)$ と置き
+$H(x,s)=\Phi_{s\,t(x)}(x)$ とする．
+$x\in M^a$ なら $t(x)=0$ なので固定され，
+$s=1$ で像は $M^a$ に入る．
+$H$ は連続であるから強変形レトラクトを与える．
+\end{proof}
+\section{臨界点を通過するときの変化}
+\begin{lemma}[局所モデルの相対位相]
+$Q(u,v)=-|u|^2+|v|^2$，
+$u\in\mathbb R^\lambda$，
+$v\in\mathbb R^{n-\lambda}$ とする．
+零点近くの十分小さな閉球 $B$ について
+$Q$ の劣位集合が負の臨界値を越えると，
+相対的に $\lambda$ 次元の胞体を付加する操作が生じる．
+\end{lemma}
+\begin{proof}
+局所的な対 $(Q\le\varepsilon,Q\le-\varepsilon)$ を考える．
+負方向の円板
+$D^\lambda\times\{0\}$ と
+正方向の円板 $\{0\}\times D^{n-\lambda}$ を用い，
+$Q(u,v)$ の値を増加させない方向へ $v$ を縮める
+ホモトピー
+$(u,v)\mapsto(u,(1-t)v)$ を考える．
+これにより正方向を収縮し，残る変化は
+$|u|^2\le\varepsilon$ の円板をその境界
+$S^{\lambda-1}$ に沿って加える場合に帰着する．
+一般の小球による切断では境界でこのホモトピーを
+切り替える必要があるが，
+半径方向のcutoff関数を用いれば，
+球の外側を固定して同じ相対変形を得る．
+\end{proof}
+\begin{theorem}[Morseの胞体付加定理]\label{thm:cell}
+$f^{-1}([a,b])$ がコンパクトで，
+その中の臨界点がただ一つ $p$ で，
+指数 $\lambda$，臨界値 $c\in(a,b)$ とする．
+このとき $M^b$ は $M^a$ に
+$\lambda$ 次元胞体を一つ付加した空間とホモトピー同値である．
+\end{theorem}
+\begin{proof}
+Morseの補題によって $p$ の近傍で
+$f-c=-|u|^2+|v|^2$ と表示できる．
+$[a,c-\delta]$ と $[c+\delta,b]$ には臨界点がないので，
+定理\ref{thm:regular}を使ってこの部分の劣位集合を
+フローで変形できる．
+残る臨界点近傍では前補題の局所モデルを使用する．
+局所モデルの外の領域では正規化した負勾配流を用い，
+境界でcutoff関数を選んで両変形を一致させると，
+$M^b$ のホモトピー型は
+$M^a$ と
+$D^\lambda$ を境界 $S^{\lambda-1}$ に沿って貼り合わせた
+空間に等しくなる．
+\end{proof}
+\section{Morse不等式}
+\begin{theorem}[弱Morse不等式と強Morse不等式]\label{thm:inequality}
+$M$ をコンパクト滑らかな多様体，$f$ をMorse関数とし，
+指数 $k$ の臨界点の個数を $m_k$，
+体 $\mathbb F$ 係数のBetti数を
+$b_k=\dim_{\mathbb F}H_k(M;\mathbb F)$ とする．
+このとき
+\[
+ m_k\ge b_k,\qquad
+ \sum_{j=0}^q(-1)^{q-j}m_j
+ \ge\sum_{j=0}^q(-1)^{q-j}b_j
+\]
+が全ての $q$ について成立し，
+$q=n$ では等号となる．
+\end{theorem}
+\begin{proof}
+Morse胞体付加定理によって
+$M$ は指数 $k$ の臨界点ごとに $k$ 胞体を一つ持つ
+有限CW複体のホモトピー型を持つ．
+体係数の胞体鎖群を $C_k$ とすれば
+$\dim C_k=m_k$ である．
+境界写像 $\partial_k:C_k\to C_{k-1}$ の階数を
+$r_k$ と置くと
+\[
+ b_k=\dim\ker\partial_k-\dim\operatorname{im}\partial_{k+1}
+ =m_k-r_k-r_{k+1}.
+\]
+従って $m_k-b_k=r_k+r_{k+1}\ge0$．
+また交代和を取ると
+\[
+ \sum_{j=0}^q(-1)^{q-j}(m_j-b_j)=r_{q+1}\ge0
+\]
+となる．$q=n$ では $C_{n+1}=0$ なので $r_{n+1}=0$，
+従って等号が成立する．
+\end{proof}
+\begin{remark}
+胞体付加定理の詳細な技術的部分，
+とくに臨界点近傍と外側の勾配フローの貼り合わせは
+最終校閲で補強する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{球面の高さ関数の臨界点．}
+\begin{proposition}
+$S^2\subset\mathbb R^3$ 上の高さ関数
+$h(x,y,z)=z$ は北極と南極だけを臨界点として持ち，
+南極のMorse指数は0，北極の指数は2である．
+\end{proposition}
+\begin{proof}
+$S^2$ の接空間は $p^\perp$ であるから，
+$dh_p$ が接空間上零になるのは
+鉛直方向が法線 $p$ に平行なときであり，
+$p=(0,0,\pm1)$ に限られる．
+各極付近で $(x,y)$ を局所座標とすると
+$z=\pm\sqrt{1-x^2-y^2}$．
+原点でのHessianは北極で $-I_2$，
+南極で $I_2$ だからいずれも非退化で，
+負固有値の個数はそれぞれ2と0である．
+\end{proof}
+\begin{corollary}
+Morse臨界点の交代和は
+$1+1=2=\chi(S^2)$ となる．
+\end{corollary}
+\begin{proof}
+指数0の臨界点が一つ，指数2の臨界点が一つ，
+指数1の臨界点は存在しない．
+Morse理論のEuler標数公式に代入する．
+\end{proof}
+\noindent\textbf{到達確認．}
+$S^1$ 上の高さ関数 $h(x,y)=y$ の
+Morse指数を求めよ．
+\par\noindent\textbf{解答．}
+最下点で指数0，最上点で指数1である．
+交代和は $1-1=0=\chi(S^1)$．
+\end{document}

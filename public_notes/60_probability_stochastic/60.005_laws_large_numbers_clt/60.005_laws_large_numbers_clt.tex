@@ -1,0 +1,769 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{大数の法則と中心極限定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，期待値，分散，Chebyshevの不等式，確率収束．
+本稿の具体的な到達課題は，具体的な確率モデルで大数の法則を分散評価から導く．
+
+\section{確率収束と大数の法則}
+$(\Omega,\mathcal F,\mathbb P)$ を確率空間とする．
+\begin{definition}
+$X_n\to X$ が確率収束するとは，任意の $\varepsilon>0$ で
+$\mathbb P(|X_n-X|>\varepsilon)\to0$ となることをいう．
+\end{definition}
+\begin{theorem}[弱大数の法則]
+$X_1,X_2,\ldots$ が独立同分布で
+$\mathbb E X_i=\mu$，$\operatorname{Var}(X_i)=\sigma^2<\infty$ とする．
+標本平均 $\bar X_n=n^{-1}\sum_{i=1}^nX_i$ は $\mu$ に確率収束する．
+\end{theorem}
+\begin{proof}
+独立性より $\mathbb E\bar X_n=\mu$，
+$\operatorname{Var}(\bar X_n)=\sigma^2/n$．
+Chebyshevの不等式から
+$\mathbb P(|\bar X_n-\mu|>\varepsilon)\le\sigma^2/(n\varepsilon^2)\to0$．
+\end{proof}
+\section{特性関数}
+\begin{definition}
+実確率変数 $X$ の特性関数を $\varphi_X(t)=\mathbb E(e^{itX})$ とする．
+\end{definition}
+\begin{lemma}
+$\mathbb E X=0$，$\mathbb E X^2=1$ とすると
+$\varphi_X(t)=1-t^2/2+o(t^2)$（$t\to0$）となる．
+\end{lemma}
+\begin{proof}
+$g(y)=(e^{iy}-1-iy)/y^2$（$y\ne0$），$g(0)=-1/2$ と置く．
+$g$ は有界連続である（$|e^{iy}-1-iy|\le y^2/2$）．
+従って
+$\{\varphi_X(t)-1-it\mathbb E X\}/t^2
+=\mathbb E[X^2g(tX)]\to-\mathbb E X^2/2$ が優収束定理から従う．
+\end{proof}
+\section{中心極限定理}
+\begin{lemma}[特性関数から分布収束]
+$Y_n$ の特性関数 $\varphi_n(t)$ が各 $t$ で
+$e^{-t^2/2}$ に収束すると仮定する．このとき $Y_n$ は標準正規分布へ分布収束する．
+\end{lemma}
+\begin{proof}
+まず $e^{-t^2/2}$ は標準正規分布 $\gamma$ の特性関数である．
+$h\in C_c^\infty(\mathbb R)$ についてFourier反転とFubiniから
+\[
+ \mathbb E h(Y_n)=\frac1{2\pi}\int_\mathbb R\widehat h(t)\varphi_n(t)dt.
+\]
+$\widehat h$ は可積分，$|\varphi_n|\le1$ なので優収束定理により
+右辺は $\int h\,d\gamma$ に収束する．
+$h$ を $(-\infty,a]$ の指示関数の上下から近似するため，
+まず大きい $R$ に支えを持つ滑らかな関数で $[-R,a]$ を覆う．
+極限分布 $\gamma$ の端点質量は零であり，この近似によって
+$\liminf\mathbb P(Y_n\le a)$ と $\limsup$ を
+$\gamma(( -\infty,a])$ に挟める．
+左側の $-R$ 以下の質量については，$[-R,R]$ 上で1となる非負の
+滑らかな関数の期待値を用い，$R\to\infty$ で一様な緊密性を得る．
+従って全ての $a$ で分布関数が収束する．
+\end{proof}
+\begin{theorem}[Lindeberg--L\'evyの中心極限定理]
+$X_i$ が独立同分布で平均 $\mu$，分散 $0<\sigma^2<\infty$ を持つとする．
+このとき
+\[
+ \frac1{\sigma\sqrt n}\sum_{i=1}^n(X_i-\mu)
+ \xrightarrow{\mathcal D}N(0,1).
+\]
+\end{theorem}
+\begin{proof}
+$Z_i=(X_i-\mu)/\sigma$ とする．
+前補題により $\varphi_Z(t)=1-t^2/2+o(t^2)$ である．
+独立性より正規化された和の特性関数は
+$[\varphi_Z(t/\sqrt n)]^n$．
+$\varphi_Z(t/\sqrt n)=1-t^2/(2n)+o(1/n)$ だから，
+対数の級数展開によって
+$[\varphi_Z(t/\sqrt n)]^n\to e^{-t^2/2}$．
+前補題を適用する．
+\end{proof}
+\begin{remark}
+分散が無限大の場合には上の中心極限定理の証明は適用できない．
+後続の節では強大数の法則および独立非同分布のCLTを別途証明する．
+\end{remark}
+
+
+\section{強大数の法則}
+\begin{lemma}[Kolmogorovの最大不等式]
+独立で平均零・有限分散の確率変数 $Y_1,\ldots,Y_N$ と
+$S_k=\sum_{j=1}^kY_j$ に対し，任意の $\lambda>0$ について
+\[
+ \mathbb P\left(\max_{1\le k\le N}|S_k|\ge\lambda\right)
+ \le\frac{\sum_{j=1}^N\mathbb E Y_j^2}{\lambda^2}.
+\]
+\end{lemma}
+\begin{proof}
+$A_k=\{|S_1|<\lambda,\ldots,|S_{k-1}|<\lambda,
+|S_k|\ge\lambda\}$ と置くと $A_k$ は互いに素で，
+その和が最大値の事象である．$A_k$ は $Y_1,\ldots,Y_k$ のみで決まる．
+独立性と $\mathbb E(S_N-S_k)=0$ から
+$\mathbb E[S_N^2\mathbf1_{A_k}]
+=\mathbb E[S_k^2\mathbf1_{A_k}]
+ +\mathbb E[(S_N-S_k)^2\mathbf1_{A_k}]
+\ge\lambda^2\mathbb P(A_k)$．
+両辺を $k$ について和し，左辺を
+$\mathbb E S_N^2=\sum_j\mathbb E Y_j^2$ で抑える．
+\end{proof}
+\begin{theorem}[有限分散の場合の強大数の法則]
+$X_1,X_2,\ldots$ が独立同分布で
+$\mathbb E X_i=\mu$，$\operatorname{Var}(X_i)=\sigma^2<\infty$ とする．
+このとき $n^{-1}\sum_{i=1}^nX_i\to\mu$ はほとんど確実に成り立つ．
+\end{theorem}
+\begin{proof}
+$Y_i=X_i-\mu$，$S_k=\sum_{i=1}^kY_i$ とする．
+最大不等式より任意の $\varepsilon>0$ に対し
+\[
+ \mathbb P\left(\max_{k\le2^m}|S_k|
+ \ge\varepsilon2^m\right)
+ \le\frac{\sigma^2}{\varepsilon^2 2^m}.
+\]
+右辺は $m$ について総和可能だから，Borel--Cantelliの補題により，
+ほとんどすべての $\omega$ で十分大きい $m$ について
+$\max_{k\le2^m}|S_k(\omega)|<\varepsilon2^m$ となる．
+$2^{m-1}<n\le2^m$ なら $|S_n|/n\le2\varepsilon$ である．
+$\varepsilon=1/j$（$j\in\mathbb N$）について可算個の
+確率1の事象の共通部分を取ると，$S_n/n\to0$ を得る．
+\end{proof}
+\section{独立非同分布変数の中心極限定理}
+\begin{theorem}[Lindeberg--Feller型中心極限定理]
+各 $n$ に対し $X_{n1},\ldots,X_{nk_n}$ は独立で平均零，
+$\sum_j\mathbb E X_{nj}^2=1$ とする．任意の $\varepsilon>0$ について
+\[
+ \sum_{j=1}^{k_n}\mathbb E\bigl[X_{nj}^2
+ \mathbf1_{\{|X_{nj}|>\varepsilon\}}\bigr]
+ \longrightarrow0
+\]
+と仮定する．このとき $\sum_jX_{nj}\xrightarrow{\mathcal D}N(0,1)$．
+\end{theorem}
+\begin{proof}
+固定した $t\in\mathbb R$ に対し
+$e^{ity}=1+ity-t^2y^2/2+y^2\rho_t(y)$ と書く．
+$\rho_t$ は有界で $y\to0$ のとき零へ収束する．
+$\sigma_{nj}^2=\mathbb E X_{nj}^2$ とすると，Lindeberg条件より
+\[
+ \sum_j\left|\mathbb E[X_{nj}^2\rho_t(X_{nj})]\right|\to0.
+\]
+実際，$|X_{nj}|\le\varepsilon$ とその補集合に分割して，
+前者を $\sup_{|y|\le\varepsilon}|\rho_t(y)|$，
+後者を $\norm{\rho_t}_\infty$ 倍のLindeberg和で抑え，
+先に $n\to\infty$，次に $\varepsilon\downarrow0$ とすればよい．
+また $\sigma_{nj}^2\le\varepsilon^2+
+\sum_i\mathbb E[X_{ni}^2\mathbf1_{|X_{ni}|>\varepsilon}]$ なので
+$\max_j\sigma_{nj}^2\to0$．
+特性関数を $\varphi_{nj}(t)$ とすると
+$\sum_j(\varphi_{nj}(t)-1)\to-t^2/2$，かつ
+$|\varphi_{nj}(t)-1|\le(t^2/2)\sigma_{nj}^2$ より
+$\sum_j|\varphi_{nj}(t)-1|^2\to0$ である．
+従って積の対数を展開して
+$\prod_j\varphi_{nj}(t)\to e^{-t^2/2}$．
+独立性により積は和の特性関数だから，
+既に示した特性関数による分布収束の補題を適用する．
+\end{proof}
+
+\section{可積分な独立同分布変数の強大数の法則}
+\begin{lemma}[Kolmogorovの収束判定]
+$(Z_n)$ を独立な平均零の有限分散確率変数列とし，
+$\sum_{n=1}^\infty\operatorname{Var}(Z_n)<\infty$ とする．
+このとき級数 $\sum_{n=1}^\infty Z_n$ はほとんど確実に収束する．
+\end{lemma}
+\begin{proof}
+部分和を $S_n=\sum_{j=1}^n Z_j$ と置く．
+Kolmogorovの最大不等式を $Z_m,\ldots,Z_N$ に適用すると
+\[
+ \mathbb P\!\left(\max_{m\le k\le N}
+ |S_k-S_{m-1}|>\varepsilon\right)
+ \le\varepsilon^{-2}\sum_{j=m}^N\operatorname{Var}(Z_j).
+\]
+$N\to\infty$ として事象の単調性を用いれば
+$\mathbb P(\sup_{k\ge m}|S_k-S_{m-1}|>\varepsilon)
+\le\varepsilon^{-2}\sum_{j\ge m}\operatorname{Var}(Z_j)$ を得る．
+分散の尾和が零に収束するので，増大する整数列 $m_r$ を選んで
+$\varepsilon=2^{-r}$ とした右辺が $2^{-r}$ 以下となるようにできる．
+Borel--Cantelliの補題より，ほとんど確実に十分大きい $r$ で
+$\sup_{k\ge m_r}|S_k-S_{m_r-1}|\le2^{-r}$ である．
+従って任意の $k,\ell\ge m_r$ について
+$|S_k-S_\ell|\le2^{1-r}$ となり，$S_n$ は収束する．
+\end{proof}
+\begin{lemma}[Kroneckerの補題]
+実数列 $(a_n)$ に対し $\sum_{n\ge1}a_n/n$ が収束すれば
+$n^{-1}\sum_{j=1}^na_j\to0$ となる．
+\end{lemma}
+\begin{proof}
+$T_n=\sum_{j=1}^na_j/j$，$T_0=0$ と置く．
+部分和の変形によって
+\[
+ \frac1n\sum_{j=1}^na_j
+ =\frac1n\sum_{j=1}^nj(T_j-T_{j-1})
+ =T_n-\frac1n\sum_{j=1}^{n-1}T_j.
+\]
+$T_n\to T$ なら右辺の二項は共に $T$ へ収束するから差は零となる．
+\end{proof}
+\begin{theorem}[Kolmogorovの強大数の法則]
+$X_1,X_2,\ldots$ を独立同分布とし，
+$\mathbb E|X_1|<\infty$ とする．このとき
+\[
+ \frac1n\sum_{j=1}^nX_j\longrightarrow
+ \mathbb E X_1\qquad\text{ほとんど確実に}
+\]
+となる．分散が無限大でも結論は成り立つ．
+\end{theorem}
+\begin{proof}
+$Y_j=X_j\mathbf1_{\{|X_j|\le j\}}$ と置く．
+可積分性から
+$\sum_{j\ge1}\mathbb P(|X_j|>j)
+=\sum_{j\ge1}\mathbb P(|X_1|>j)\le\mathbb E|X_1|$ である．
+従ってBorel--Cantelliの補題から
+$X_j=Y_j$ はほとんどすべての標本経路で十分大きい $j$ に成立する．
+
+次に $Z_j=(Y_j-\mathbb E Y_j)/j$ とすると $Z_j$ は独立で平均零である．
+$\mathbb E|X_1|<\infty$ と積分・和の交換を用いれば
+\[
+ \begin{aligned}
+ \sum_{j\ge1}\operatorname{Var}(Z_j)
+ &\le\sum_{j\ge1}\frac{\mathbb E[X_1^2
+ \mathbf1_{\{|X_1|\le j\}}]}{j^2}\\
+ &=\mathbb E\left[X_1^2
+ \sum_{j\ge\max(1,\lceil|X_1|\rceil)}j^{-2}\right]
+ \le C\,\mathbb E|X_1|<\infty.
+ \end{aligned}
+\]
+最後の不等式は，$u\ge1$ のとき
+$\sum_{j\ge\lceil u\rceil}j^{-2}\le C/u$，
+$0\le u<1$ のとき $u^2\sum_{j\ge1}j^{-2}\le Cu$
+を用いた．前補題より $\sum_j Z_j$ はほとんど確実に収束する．
+Kroneckerの補題から
+$n^{-1}\sum_{j=1}^n(Y_j-\mathbb E Y_j)\to0$ を得る．
+さらに優収束定理で $\mathbb E Y_j\to\mathbb E X_1$ だから，
+Ces\`aro平均の収束により
+$n^{-1}\sum_{j=1}^n\mathbb E Y_j\to\mathbb E X_1$．
+最初の段落により $X_j-Y_j$ は有限個を除いて零なので，
+そのCes\`aro平均も零へ収束する．以上を合わせて結論を得る．
+\end{proof}
+
+\section{単純対称ランダムウォークの局所中心極限定理}
+\begin{theorem}[二項分布の局所Gauss近似]
+$X_1,X_2,\ldots$ を独立に $P(X_i=1)=P(X_i=-1)=1/2$
+に従う確率変数とし，$S_m=\sum_{i=1}^mX_i$ とする．
+整数列 $k=k(n)$ が $|k|=o(n^{2/3})$ を満たすなら
+\[
+ P(S_{2n}=2k)
+ =\frac{1+o(1)}{\sqrt{\pi n}}\exp\!\left(-\frac{k^2}{n}\right)
+ \qquad(n\to\infty)
+\]
+が成り立つ．$o(1)$ はこの範囲で $k$ を動かしても一様な評価である．
+\end{theorem}
+\begin{proof}
+$|k|\le n$ なら二項係数の表示から
+\[
+ P(S_{2n}=2k)=\frac{(2n)!}{4^n(n+k)!(n-k)!}.
+\]
+Stirlingの公式
+$\log m!=(m+1/2)\log m-m+\frac12\log(2\pi)+O(1/m)$
+を三つの階乗に適用する．$u=k/n$ と置けば
+$|u|=o(n^{-1/3})$ なので $|u|<1/2$ としてよく，
+直接整理すると
+\begin{align*}
+ \log P(S_{2n}=2k)={}&-\frac12\log(\pi n)\\
+ &-n\bigl[(1+u)\log(1+u)\\
+ &\qquad+(1-u)\log(1-u)\bigr]\\
+ &-\frac12\log(1-u^2)+O(1/n)
+\end{align*}
+を得る．Taylor展開
+\begin{align*}
+ &(1+u)\log(1+u)+(1-u)\log(1-u)\\
+ &\qquad=u^2+\frac{u^4}{6}+O(u^6),\\
+ &\log(1-u^2)=O(u^2)
+\end{align*}
+を代入すると
+\[
+ \log P(S_{2n}=2k)
+ =-\frac12\log(\pi n)-\frac{k^2}{n}
+ +O\!\left(\frac1n+\frac{k^2}{n^2}+\frac{k^4}{n^3}\right).
+\]
+$|k|=o(n^{2/3})$ のもとでは最後の誤差は $o(1)$ である．
+指数を取れば主張が従う．
+\end{proof}
+\begin{remark}
+これは格子の偶奇性を考慮した局所中心極限定理の特別な場合である．
+任意の非格子分布や重い裾の分布での局所極限定理は別の仮定・証明を要する．
+\end{remark}
+
+\section{多次元・非格子局所極限定理への拡張}
+既述の単純対称ランダムウォークの特別例を，多次元の任意の強非周期的格子分布と，特性函数の可積分性を仮定した非格子分布に拡張する．
+
+\section{問題設定と結論}
+確率変数 $X_1,X_2,\ldots$ を独立同分布とし，
+$S_n=X_1+\cdots+X_n$ とする．通常の中心極限定理は
+$S_n$ の分布函数の極限を述べるが，本稿では
+各点の確率や密度の収束を扱う．後者には分布の算術的な性質が必要である．
+
+\begin{definition}
+$\mathbb Z^d$ 値確率変数 $X$ を\emph{強非周期的}というのは，
+$\{a-b:a,b\in\operatorname{supp}(X)\}$ の生成する
+加法部分群が $\mathbb Z^d$ 全体である場合をいう．
+ここで $\operatorname{supp}(X)=\{a\in\mathbb Z^d:\Pr(X=a)>0\}$ とする．
+\end{definition}
+
+\begin{theorem}[多次元格子局所中心極限定理]\label{thm:llclt}
+$X_1,X_2,\ldots$ を独立同分布な $\mathbb Z^d$ 値確率変数とし，
+$\mathbb E|X_1|^2<\infty$ とする．$X_1$ は強非周期的であり，
+平均 $\mu=\mathbb E X_1\in\mathbb R^d$，共分散行列
+$\Sigma=\mathbb E[(X_1-\mu)(X_1-\mu)^T]$ が正定値であると仮定する．
+$z_{n,k}=\Sigma^{-1/2}(k-n\mu)/\sqrt n$ とおくと
+\[
+ \sup_{k\in\mathbb Z^d}\left|
+ n^{d/2}\sqrt{\det\Sigma}\,\Pr(S_n=k)
+ -(2\pi)^{-d/2}e^{-|z_{n,k}|^2/2}
+ \right|\longrightarrow0.
+\]
+\end{theorem}
+
+ここでの収束は $k$ に関して一様である．特定の点 $k=k_n$ が
+$n\mu+O(\sqrt n)$ にある場合だけでなく，すべての格子点を同時に扱う．
+
+\section{Fourier反転と算術的非周期性}
+\begin{lemma}[格子上のFourier反転]\label{lem:inv}
+$Y$ を $\mathbb Z^d$ 値確率変数とし，
+$\varphi_Y(t)=\mathbb E(e^{it\cdot Y})$ とおく．
+任意の $k\in\mathbb Z^d$ に対して
+\[
+ \Pr(Y=k)=(2\pi)^{-d}\int_{[-\pi,\pi]^d}
+             e^{-it\cdot k}\varphi_Y(t)\,dt
+\]
+である．
+\end{lemma}
+\begin{proof}
+各 $x,k\in\mathbb Z^d$ について
+\[
+ (2\pi)^{-d}\int_{[-\pi,\pi]^d}e^{it\cdot(x-k)}\,dt
+ =\prod_{j=1}^d\frac1{2\pi}\int_{-\pi}^{\pi}
+         e^{it_j(x_j-k_j)}\,dt_j
+ =\mathbf1_{\{k\}}(x)
+\]
+となる．積分内の絶対値は1だから，Fubiniの定理によって
+期待値と積分を交換し，$x=Y$ として結論を得る．
+\end{proof}
+
+\begin{lemma}[単位円上で絶対値が1となる条件]\label{lem:unit}
+$Y$ を任意の確率変数，$Z=e^{it\cdot Y}$ とする．
+$|\mathbb EZ|=1$ であることと，$Z$ が確率1である
+定数に一致することは同値である．
+\end{lemma}
+\begin{proof}
+$|Z|=1$ である．$m=\mathbb EZ$ とすれば
+\[
+ \mathbb E|Z-m|^2=\mathbb E|Z|^2-|m|^2=1-|m|^2.
+\]
+ゆえに $|m|=1$ のとき右辺は0となり，$Z=m$ が確率1で成立する．
+逆向きは明らかである．
+\end{proof}
+
+\begin{lemma}[強非周期性のFourier的特徴付け]\label{lem:period}
+$\mathbb Z^d$ 値確率変数 $X$ が強非周期的であることと
+\[
+ |\varphi_X(t)|<1\qquad
+  (t\in[-\pi,\pi]^d\setminus\{0\})
+\]
+が同値である．
+\end{lemma}
+\begin{proof}
+$|\varphi_X(t)|=1$ なら前補題により
+$e^{it\cdot a}=e^{it\cdot b}$ が
+すべての $a,b\in\operatorname{supp}(X)$ について成立する．
+つまり $t\cdot(a-b)\in2\pi\mathbb Z$ である．
+差の生成する群が $\mathbb Z^d$ なら
+$t_j\in2\pi\mathbb Z$ が全ての $j$ に対して成立する．
+$[-\pi,\pi]^d$ 内では $t=0$ 以外にこの性質を持つ点はない．
+
+逆に差の生成する部分群 $G$ が真部分群なら，
+$\mathbb Z^d/G$ は非自明な有限生成Abel群である．
+有限生成Abel群の構造定理により，
+$\mathbb Z^d/G$ には非自明な $\mathbb T$ 値指標が存在する．
+この指標は $t\in[-\pi,\pi]^d\setminus\{0\}$ による
+$a\mapsto e^{it\cdot a}$ と表せ，$G$ 上で1である．
+従って $e^{it\cdot X}$ は確率1で一定となり，
+$|\varphi_X(t)|=1$ を得る．
+\end{proof}
+
+\begin{remark}
+ここで「差の生成する群」が重要である．
+値そのものが $\mathbb Z^d$ を生成するだけでは十分でない．
+例えば $\{+1,-1\}$ の値を取る単純対称ランダムウォークでは
+値の生成する群は $\mathbb Z$ だが，差の生成する群は
+$2\mathbb Z$ である．
+\end{remark}
+
+\section{原点近傍の特性函数評価}
+\begin{lemma}[二次展開]\label{lem:tay}
+$X$ を $\mathbb R^d$ 値確率変数とし，
+$\mathbb E|X|^2<\infty$ とする．平均を $\mu$，
+共分散行列を $\Sigma$ とする．
+$\psi(t)=e^{-it\cdot\mu}\mathbb E(e^{it\cdot X})$
+とおけば
+\[
+ \psi(t)=1-\tfrac12t^T\Sigma t+o(|t|^2)
+ \qquad(t\longrightarrow0).
+\]
+\end{lemma}
+\begin{proof}
+$Z=X-\mu$ とする．
+\[
+ e^{iu}=1+iu-\frac{u^2}{2}+u^2r(u)
+\]
+で $r(u)\to0$（$u\to0$）かつ $r$ が全実数上で有界となる
+函数 $r$ を取れる．実際 $u=0$ では $r(0)=0$ とし，
+$|u|\ge1$ で $|e^{iu}-1-iu+u^2/2|/u^2$ は有界である．
+従って
+\[
+ \mathbb E(e^{it\cdot Z})
+ =1-\tfrac12\mathbb E[(t\cdot Z)^2]
+  +\mathbb E[(t\cdot Z)^2r(t\cdot Z)].
+\]
+$\mathbb E(t\cdot Z)=0$ であり
+$\mathbb E[(t\cdot Z)^2]=t^T\Sigma t$ である．
+最後の項を $|t|^2$ で割った絶対値は
+$|Z|^2\sup|r|$ で支配され，
+各 $Z$ に対して $r(t\cdot Z)\to0$ だから
+優収束定理によって0に収束する．
+\end{proof}
+
+\begin{lemma}[小さい周波数でのGaussian減衰]\label{lem:bound}
+$\Sigma$ が正定値なら，ある $\delta>0$ と $c>0$ が存在して
+\[
+ |\psi(t)|\le\exp(-c|t|^2)\qquad(|t|\le\delta)
+\]
+が成立する．
+\end{lemma}
+\begin{proof}
+$\Sigma$ の最小固有値を $\lambda>0$ とする．
+前補題により
+$|\psi(t)|^2=1-t^T\Sigma t+o(|t|^2)$ である．
+$\delta$ を十分小さく取れば
+$|\psi(t)|^2\le1-\lambda|t|^2/2
+\le\exp(-\lambda|t|^2/2)$ なので
+$c=\lambda/4$ とすればよい．
+\end{proof}
+
+\begin{lemma}[GaussianのFourier積分]\label{lem:gauss}
+$y\in\mathbb R^d$ に対して
+\[
+ (2\pi)^{-d}\int_{\mathbb R^d}
+     e^{-iu\cdot y}e^{-|u|^2/2}\,du
+       =(2\pi)^{-d/2}e^{-|y|^2/2}.
+\]
+\end{lemma}
+\begin{proof}
+各変数の積に分解できるから $d=1$ だけ示せばよい．
+$I(y)=\int_{\mathbb R}e^{-u^2/2}e^{-iuy}\,du$ とする．
+微分と積分の交換は $|u|e^{-u^2/2}$ の可積分性から従う．
+部分積分を使うと
+\[
+ I'(y)=-i\int ue^{-u^2/2}e^{-iuy}\,du=-yI(y)
+\]
+である．よって $I(y)=I(0)e^{-y^2/2}$．
+Gaussian積分 $I(0)=\sqrt{2\pi}$ を用いればよい．
+後者は積分の二乗を極座標で計算して得られる．
+\end{proof}
+
+\section{多次元格子局所中心極限定理の証明}
+\begin{proof}[定理\ref{thm:llclt}の証明]
+$\varphi(t)=\mathbb Ee^{it\cdot X_1}$，
+$\psi(t)=e^{-it\cdot\mu}\varphi(t)$ と置く．
+Fourier反転により
+\[
+ \Pr(S_n=k)=(2\pi)^{-d}\int_{[-\pi,\pi]^d}
+  e^{-it\cdot(k-n\mu)}\psi(t)^n\,dt.
+\]
+$x_{n,k}=\Sigma^{-1/2}(k-n\mu)/\sqrt n$ とし，
+$u=\sqrt n\,\Sigma^{1/2}t$ と変数変換すると
+\[
+ n^{d/2}\sqrt{\det\Sigma}\,\Pr(S_n=k)
+ =(2\pi)^{-d}\int_{D_n}
+ e^{-iu\cdot x_{n,k}}\psi(\Sigma^{-1/2}u/\sqrt n)^n\,du,
+\]
+ただし $D_n=\sqrt n\,\Sigma^{1/2}[-\pi,\pi]^d$ とする．
+
+$u$ が固定なら補題\ref{lem:tay}により
+\[
+ \psi(\Sigma^{-1/2}u/\sqrt n)^n
+ \longrightarrow e^{-|u|^2/2}.
+\]
+補題\ref{lem:bound}から，
+$|\Sigma^{-1/2}u/\sqrt n|\le\delta$ の領域では
+\[
+ |\psi(\Sigma^{-1/2}u/\sqrt n)|^n\le
+  e^{-c|\Sigma^{-1/2}u|^2}\le e^{-c'|u|^2}
+\]
+となる．ここで $c'>0$ は $\Sigma$ の固有値にのみ依存する．
+これによりこの領域での差の絶対値を，
+$L^1(\mathbb R^d)$ 上の優収束定理で評価できる．
+
+他方 $t\in[-\pi,\pi]^d$ で $|t|\ge\delta$ の部分では
+強非周期性と特性函数の連続性から
+$\rho=\max_{\delta\le|t|,\ t\in[-\pi,\pi]^d}|\varphi(t)|<1$ とできる．
+したがってこの領域に対応する $u$ の積分は
+$O(n^{d/2}\rho^n)$ であり0に収束する．
+以上から，$\mathbf1_{D_n}(u)\psi(\Sigma^{-1/2}u/\sqrt n)^n$
+は $L^1(\mathbb R^d)$ で $e^{-|u|^2/2}$ に収束する．
+ここで複素値の優収束定理を実部・虚部に適用してよい．
+
+$|e^{-iu\cdot x_{n,k}}|=1$ であるから，
+両者のFourier積分の差の絶対値は
+$L^1$ ノルムで一様に評価できる．
+補題\ref{lem:gauss}を用いて
+\[
+ \sup_{k\in\mathbb Z^d}
+ \left|n^{d/2}\sqrt{\det\Sigma}\,\Pr(S_n=k)
+        -(2\pi)^{-d/2}e^{-|x_{n,k}|^2/2}\right|\to0
+\]
+を得る．これは定理の主張である．
+\end{proof}
+
+\section{一次元の一般格子と非格子密度}
+\begin{corollary}[任意のspanをもつ整数分布]\label{cor:span}
+$X_1,X_2,\ldots$ を独立同分布の整数値確率変数とし，
+$0<\sigma^2=\operatorname{Var}(X_1)<\infty$ とする．
+その台の差が生成する部分群を $q\mathbb Z$ とする
+（$q$ は正整数）．$a\in\operatorname{supp}(X_1)$ を取る．
+このとき $S_n$ は $na+q\mathbb Z$ 上に値を取り，
+\[
+ \sup_{k\in na+q\mathbb Z}\left|
+   \frac{\sigma\sqrt n}{q}\,\Pr(S_n=k)
+   -(2\pi)^{-1/2}
+    \exp\!\left(-\frac{(k-n\mu)^2}{2n\sigma^2}\right)
+ \right|\longrightarrow0.
+\]
+$k\notin na+q\mathbb Z$ では $\Pr(S_n=k)=0$ である．
+\end{corollary}
+\begin{proof}
+$Y_i=(X_i-a)/q$ と置くと $Y_i\in\mathbb Z$ であり，
+その台の差の最大公約数は1である．ゆえに定理\ref{thm:llclt}を
+$Y_i$ に $d=1$ として適用できる．
+$\operatorname{Var}(Y_i)=\sigma^2/q^2$，
+$S_n=na+q\sum_iY_i$ を代入すればよい．
+\end{proof}
+
+\begin{lemma}[可積分な特性函数の無限遠での減衰]\label{lem:decay}
+$X$ を $\mathbb R$ 値確率変数とし，
+その特性函数 $\varphi$ が $L^1(\mathbb R)$ に属するとする．
+このとき $\varphi(t)\to0$（$|t|\to\infty$）であり，
+$X$ は有界連続密度
+\[
+ f(x)=\frac1{2\pi}\int_{\mathbb R}e^{-itx}\varphi(t)\,dt
+\]
+をもつ．
+\end{lemma}
+\begin{proof}
+$\varphi$ は一様連続である．実際
+$|\varphi(t+h)-\varphi(t)|\le\mathbb E|e^{ihX}-1|$ であり，
+右辺は優収束定理により $h\to0$ で0へ収束する．
+$\varphi$ が無限遠で0に収束しないなら，
+$|\varphi(t_j)|\ge\varepsilon>0$，$|t_j|\to\infty$ とできる．
+一様連続性によって一定幅の互いに素な区間上で
+$|\varphi|\ge\varepsilon/2$ となり，$L^1$ 可積分性に矛盾する．
+
+表示された $f$ は有界連続である．Fourier反転による
+$\mathbb E g(X)=\int f(x)g(x)\,dx$ は
+任意の $g\in C_c^\infty(\mathbb R)$ に対して
+$g$ のFourier反転式とFubiniを用いて得られる．
+$\int|\widehat g|<\infty$ だから積分交換は正当である．
+測度の一意性から $f(x)dx$ が $X$ の分布を与え，
+$f\ge0$ は連続性から，$\int f=1$ は確率測度の総質量から従う．
+\end{proof}
+
+\begin{theorem}[非格子密度の局所中心極限定理]\label{thm:density}
+$X_i$ を独立同分布の実確率変数とし，
+$0<\sigma^2=\operatorname{Var}(X_1)<\infty$，
+$\mu=\mathbb EX_1$ とする．
+$X_1$ は非格子型，すなわち
+ある $a\in\mathbb R$，$h>0$ について
+$\Pr(X_1\in a+h\mathbb Z)=1$ となることがないと仮定する．
+さらに $X_1$ の特性函数 $\varphi$ が $L^1(\mathbb R)$ に
+属すると仮定する．$S_n$ の連続密度を $f_n$ とすると
+\[
+ \sup_{x\in\mathbb R}\left|
+ \sigma\sqrt n\,f_n(x)
+ -(2\pi)^{-1/2}\exp\!\left(-\frac{(x-n\mu)^2}{2n\sigma^2}\right)
+ \right|\longrightarrow0.
+\]
+\end{theorem}
+\begin{proof}
+前補題により各 $S_n$ は有界連続密度をもつ．
+非格子性と補題\ref{lem:unit}から
+$|\varphi(t)|<1$（$t\ne0$）である．
+原点近傍では補題\ref{lem:tay}，\ref{lem:bound}を用いる．
+$|t|\ge\delta>0$ 上では
+$\varphi(t)\to0$（$|t|\to\infty$）と連続性により
+$\rho=\sup_{|t|\ge\delta}|\varphi(t)|<1$ となる．
+Fourier反転で $u=\sigma\sqrt n\,t$ と変数変換すると
+\[
+ \sigma\sqrt n\,f_n(x)
+ =\frac1{2\pi}\int_{\mathbb R}
+     e^{-iu(x-n\mu)/(\sigma\sqrt n)}
+     \psi(u/(\sigma\sqrt n))^n\,du.
+\]
+原点近傍の項については前定理と同じGaussian減衰を用いる．
+外側の積分は
+\[
+ \int_{|u|>\delta\sigma\sqrt n}
+  |\psi(u/(\sigma\sqrt n))|^n\,du
+ \le\sigma\sqrt n\,\rho^{n-1}
+                      \int_{\mathbb R}|\varphi(t)|\,dt\to0
+\]
+である．従って積分核は
+$e^{-u^2/2}$ に $L^1(\mathbb R)$ 収束する．
+補題\ref{lem:gauss}とFourier積分の一様評価から結論を得る．
+\end{proof}
+
+\section{例と適用上の注意}
+\begin{example}[二項分布]
+$X_i\in\{0,1\}$ で $\Pr(X_i=1)=p$，$0<p<1$ とする．
+台の差は $\mathbb Z$ を生成し，$\mu=p$，$\sigma^2=p(1-p)$ である．
+従って $S_n\sim\operatorname{Bin}(n,p)$ に対し
+\[
+ \sup_{k\in\mathbb Z}\left|
+ \sqrt{np(1-p)}\binom nk p^k(1-p)^{n-k}
+ -(2\pi)^{-1/2}e^{-(k-np)^2/(2np(1-p))}
+ \right|\to0.
+\]
+ここで $k\notin\{0,\ldots,n\}$ では二項係数項を0と解釈する．
+\end{example}
+
+\begin{example}[単純対称ランダムウォーク]
+$X_i\in\{-1,+1\}$ で両者の確率が1/2とする．
+台の差が生成する群は $2\mathbb Z$ であるから，
+偶奇条件 $k\equiv n\pmod2$ の点に限り
+\[
+ \sup_{k\equiv n\ (\mathrm{mod}\,2)}
+ \left|\frac{\sqrt n}{2}\Pr(S_n=k)
+ -(2\pi)^{-1/2}e^{-k^2/(2n)}\right|\to0.
+\]
+偶奇条件を落とすと $k$ に一様な誤差評価は成立しない．
+\end{example}
+
+\begin{example}[多次元遅延ランダムウォーク]
+$\mathbb Z^d$ 上で $X_i=0$ を確率1/2で取り，
+$\pm e_j$（$j=1,\ldots,d$）をそれぞれ確率 $1/(4d)$ で取る．
+この分布は強非周期的であり
+$\mu=0$，$\Sigma=(2d)^{-1}I_d$ である．
+従って定理\ref{thm:llclt}により特に
+\[
+ \Pr(S_n=0)\sim\left(\frac d{\pi n}\right)^{d/2}.
+\]
+\end{example}
+
+\begin{remark}
+一般格子分布では台の差の生成する部分群を無視できない．
+非格子分布については本稿で $\varphi\in L^1$ という
+十分条件を仮定した．この条件を仮定しない最も一般的な
+非格子局所極限定理（区間確率に関するStone型の定理）は
+本稿の証明の射程外である．また重尾分布の安定則や
+多変量非格子型の一般定理は扱わない．
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{feller} W. Feller, \emph{An Introduction to Probability Theory
+ and Its Applications}, Vol. II, 2nd ed., Wiley, 1971.
+\bibitem{petrov} V. V. Petrov, \emph{Sums of Independent Random Variables},
+ Springer, 1975.
+\bibitem{durrett} R. Durrett, \emph{Probability: Theory and Examples},
+ 5th ed., Cambridge University Press, 2019.
+\end{thebibliography}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Bernoulli標本の大数の法則．}
+\begin{proposition}
+$X_1,\dots,X_n$ を独立同分布のBernoulli$(p)$
+確率変数とし，
+$\overline X_n=n^{-1}\sum_iX_i$ とする．
+任意の $\varepsilon>0$ について
+\[
+P(|\overline X_n-p|\ge\varepsilon)
+\le\frac{p(1-p)}{n\varepsilon^2}.
+\]
+従って $\overline X_n\xrightarrow{P}p$ である．
+\end{proposition}
+\begin{proof}
+$E\overline X_n=p$，
+$\operatorname{Var}(\overline X_n)=
+n^{-2}\sum_i\operatorname{Var}(X_i)
+=p(1-p)/n$ である．
+Chebyshevの不等式を適用すれば表示した上界を得る．
+右辺は固定された $\varepsilon$ について零へ向かうので
+確率収束の定義が満たされる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$p=1/2$，$n=100$，
+$\varepsilon=1/10$ のとき上界を求めよ．
+\par\noindent\textbf{解答．}
+$(1/4)/(100\cdot(1/10)^2)=1/4$ である．
+この評価は上界であって，実際の確率と等しいとは限らない．
+\end{document}
