@@ -1,0 +1,548 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{生命保険・年金の数理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+死亡力と金利が与えられたときに，
+死亡保険金・生存中の保険料の現在価値を積分で計算し，
+等価原理から純保険料を決定できるようになる．
+さらに契約途中の責任準備金を検算する．
+前提は確率密度・期待値・積分である．
+
+\section{将来生存時間と死亡力}
+
+本稿では時間を連続量として扱い，
+生存期間を確率変数によりモデル化する．
+金利は特に断らない限り一定の連続複利
+$\delta>0$ とし，時刻 $t$ の割引因子を
+$v(t)=e^{-\delta t}$ とする．
+
+\begin{definition}
+非負確率変数 $T$ を将来生存時間という．
+その\emph{生存関数}を
+\[
+ S(t)=P(T>t)\qquad(t\ge0)
+\]
+と定める．
+$T$ が絶対連続な分布を持つとき，
+密度 $f(t)$ に対して
+$S(t)=1-\int_0^t f(u)\,du$ が成立する．
+\end{definition}
+
+\begin{definition}
+$S(t)>0$ の範囲で，
+\[
+ \mu(t)=\frac{f(t)}{S(t)}
+\]
+を\emph{死亡力}という．
+本稿では $S(0)=1$ とし，
+必要な区間で $S$ が正かつ微分可能であると仮定する．
+\end{definition}
+
+\begin{theorem}[生存関数と死亡力]\label{thm:force}
+$\mu$ が局所可積分で，$S$ が絶対連続かつ
+$S'(t)=-\mu(t)S(t)$ をほとんど至る所満たすとする．
+このとき
+\[
+ S(t)=\exp\!\left(-\int_0^t\mu(u)\,du\right)
+\]
+が成り立つ．
+また $S(s)>0$ なら
+\[
+ P(T>s+t\mid T>s)=\frac{S(s+t)}{S(s)}
+ =\exp\!\left(-\int_s^{s+t}\mu(u)\,du\right).
+\]
+\end{theorem}
+\begin{proof}
+$S(t)>0$ なので $\log S$ は局所絶対連続であり，
+ほとんど至る所
+\[
+ \frac d{dt}\log S(t)=\frac{S'(t)}{S(t)}=-\mu(t)
+\]
+となる．
+積分の基本定理を用い
+$\log S(t)-\log S(0)=-\int_0^t\mu(u)\,du$ を得る．
+$S(0)=1$ なので指数を取って最初の式を得る．
+条件付き確率の定義から
+\[
+ P(T>s+t\mid T>s)
+ =\frac{P(T>s+t)}{P(T>s)}
+ =\frac{S(s+t)}{S(s)}
+\]
+である．指数表示の比を取れば後半が従う．
+\end{proof}
+
+\begin{example}[一定死亡力]
+$\mu(t)=\lambda>0$ なら
+$S(t)=e^{-\lambda t}$，
+$f(t)=\lambda e^{-\lambda t}$ であり，
+$T$ は指数分布に従う．
+\end{example}
+\begin{proof}
+定理\ref{thm:force}から
+$S(t)=\exp(-\lambda t)$ である．
+$f(t)=-S'(t)$ なので密度の表示式を得る．
+\end{proof}
+
+\section{保険金の現在価値}
+
+\begin{definition}
+死亡時刻 $T$ に一単位を支払う終身死亡保険の
+\emph{現在価値確率変数}を
+\[
+ Z=e^{-\delta T}
+\]
+と定める．
+期間 $n>0$ の定期死亡保険では
+\[
+ Z_n=e^{-\delta T}1_{\{T\le n\}}
+\]
+とする．
+その期待値を\emph{保険数理現価}という．
+\end{definition}
+
+\begin{proposition}[死亡保険の現価]\label{prop:insurance-apv}
+$T$ が密度 $f$ を持つとき
+\[
+ A_n=E[Z_n]=\int_0^n e^{-\delta t}f(t)\,dt.
+\]
+さらに $E[Z_n^2]=\int_0^n e^{-2\delta t}f(t)\,dt$
+であり，
+\[
+ \operatorname{Var}(Z_n)
+ =\int_0^n e^{-2\delta t}f(t)\,dt-A_n^2.
+\]
+\end{proposition}
+\begin{proof}
+確率変数 $Z_n$ は $T$ の可測関数なので，
+密度に関する期待値の積分表示から
+\[
+ E[Z_n]=\int_0^\infty
+ e^{-\delta t}1_{\{t\le n\}}f(t)\,dt
+ =\int_0^n e^{-\delta t}f(t)\,dt.
+\]
+同じ式を $Z_n^2$ に適用すれば二乗モーメントを得る．
+分散の恒等式
+$\operatorname{Var}(Z_n)=E[Z_n^2]-(E[Z_n])^2$
+に代入して結論を得る．
+\end{proof}
+
+\begin{definition}
+生存している間，単位時間あたり一単位を
+連続的に受け取る期間 $n$ の年金の現在価値を
+\[
+ Y_n=\int_0^{\min(T,n)}e^{-\delta t}\,dt
+\]
+と定める．
+\end{definition}
+
+\begin{theorem}[年金の現価]\label{thm:annuity}
+$T$ が非負確率変数なら
+\[
+ a_n=E[Y_n]=\int_0^n e^{-\delta t}S(t)\,dt.
+\]
+さらに $T$ が絶対連続な分布を持つ場合
+\[
+ A_n=1-e^{-\delta n}S(n)-\delta a_n
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+$Y_n=\int_0^n e^{-\delta t}1_{\{T>t\}}\,dt$
+と書ける．被積分関数は非負なので
+Tonelliの定理を用いて
+\begin{align*}
+ E[Y_n]
+ &=\int_0^n e^{-\delta t}E[1_{\{T>t\}}]\,dt\\
+ &=\int_0^n e^{-\delta t}S(t)\,dt
+\end{align*}
+となる．
+次に $f(t)=-S'(t)$ を用いると
+\begin{align*}
+ A_n
+ &=-\int_0^n e^{-\delta t}S'(t)\,dt\\
+ &=-[e^{-\delta t}S(t)]_{0}^{n}
+   -\delta\int_0^n e^{-\delta t}S(t)\,dt\\
+ &=1-e^{-\delta n}S(n)-\delta a_n.
+\end{align*}
+ここで $S(0)=1$ を用いた．
+\end{proof}
+
+\begin{proposition}[生存保険の現価]\label{prop:endowment}
+期間 $n$ に生存していれば一単位を支払う
+純生存保険の現在価値を
+$W_n=e^{-\delta n}1_{\{T>n\}}$ とすると，
+\[
+ E[W_n]=e^{-\delta n}S(n).
+\]
+死亡・生存の両方で一単位を支払う養老保険の現価は
+$A_n+e^{-\delta n}S(n)=1-\delta a_n$ である．
+\end{proposition}
+\begin{proof}
+$E[1_{\{T>n\}}]=S(n)$ により最初の式を得る．
+死亡保険と生存保険の現在価値を足したものの期待値は，
+期待値の線形性から
+$A_n+e^{-\delta n}S(n)$ である．
+定理\ref{thm:annuity}の恒等式を代入すると
+$1-\delta a_n$ となる．
+\end{proof}
+
+\section{純保険料と等価原理}
+
+\begin{definition}
+期間 $n$ の定期死亡保険で，
+生存している間に単位時間あたり一定額 $P$ を
+連続的に払い込む契約を考える．
+\[
+ E[\text{将来保険料の現在価値}]
+ =E[\text{将来給付の現在価値}]
+\]
+となるように $P$ を選ぶ原理を
+\emph{等価原理}という．
+\end{definition}
+
+\begin{proposition}[純保険料]\label{prop:level-premium}
+定期死亡保険の給付額を $B>0$，
+払込期間を $n>0$ とする．
+$a_n>0$ なら，等価原理による一定の純保険料率は
+\[
+ P=B\frac{A_n}{a_n}
+\]
+である．
+\end{proposition}
+\begin{proof}
+単位保険料率の現在価値確率変数は $Y_n$ なので，
+保険料率 $P$ の現在価値は $P Y_n$ である．
+期待値は $P a_n$ となる．
+給付額 $B$ の定期死亡保険の現在価値期待値は
+$B A_n$ である．
+等価原理は $P a_n=B A_n$ という等式だから，
+$a_n>0$ で割って表示式を得る．
+\end{proof}
+
+\section{責任準備金の将来法と過去法}
+
+ここでは時刻 $n$ で終了する一般的な生命保険を考える．
+時刻 $t$ に死亡したときの給付を $b(t)\ge0$，
+生存中に払い込む保険料率を $\pi(t)\ge0$，
+時刻 $n$ に生存していたときの満期給付を $C\ge0$ とする．
+$0\le t\le n$ で $S(t)>0$ と仮定する．
+
+\begin{definition}
+時刻 $t$ で生存しているという条件のもとで，
+将来給付の現在価値から将来保険料の現在価値を
+差し引いた条件付き期待値を
+\emph{将来法責任準備金} $V(t)$ という．
+\end{definition}
+
+\begin{proposition}[将来法の積分表示]\label{prop:prospective}
+上の仮定のもとで
+\begin{align*}
+ V(t)
+ &=\frac1{S(t)}
+ \int_t^n e^{-\delta(s-t)}
+ \{b(s)f(s)-\pi(s)S(s)\}\,ds\\
+ &\quad+\frac{e^{-\delta(n-t)}C S(n)}{S(t)}
+\end{align*}
+となる．
+\end{proposition}
+\begin{proof}
+$T>t$ の条件のもとで，
+死亡時刻 $s\in(t,n]$ の条件付き密度は
+$f(s)/S(t)$ である．
+死亡給付の条件付き期待現在価値は
+\[
+ \frac1{S(t)}
+ \int_t^n e^{-\delta(s-t)}b(s)f(s)\,ds
+\]
+となる．
+一方，$s\ge t$ の時点まで生存する条件付き確率は
+$S(s)/S(t)$ であるから，
+Tonelliの定理によって保険料の条件付き期待現在価値は
+\[
+ \frac1{S(t)}
+ \int_t^n e^{-\delta(s-t)}\pi(s)S(s)\,ds
+\]
+となる．
+満期生存給付の条件付き期待現在価値は
+$e^{-\delta(n-t)}C S(n)/S(t)$ である．
+これらを定義どおりに足し引きして表示式を得る．
+\end{proof}
+
+\begin{proposition}[過去法の積分表示]\label{prop:retrospective}
+$V(0)$ が与えられているとする．
+時刻 $t$ の準備金は
+\[
+ V(t)=\frac{e^{\delta t}}{S(t)}
+ \left\{
+ V(0)+\int_0^t e^{-\delta s}
+ [\pi(s)S(s)-b(s)f(s)]\,ds
+ \right\}.
+\]
+特に等価原理により $V(0)=0$ なら，
+これは払込済保険料から既発生の死亡給付を引いた
+累積現価の生存者一人あたりの値に等しい．
+\end{proposition}
+\begin{proof}
+命題\ref{prop:prospective}を
+\[
+ V(t)=\frac{e^{\delta t}}{S(t)}
+ \left[
+ \int_t^n e^{-\delta s}
+ (b(s)f(s)-\pi(s)S(s))\,ds
+ +e^{-\delta n}C S(n)
+ \right]
+\]
+と書く．
+$t=0$ を代入すると $S(0)=1$ により
+\[
+ V(0)=
+ \int_0^n e^{-\delta s}
+ (b(s)f(s)-\pi(s)S(s))\,ds
+ +e^{-\delta n}C S(n)
+\]
+となる．
+この式を上の角括弧の中に代入して
+区間 $[0,t]$ と $[t,n]$ の積分を整理すると
+表示式が得られる．
+\end{proof}
+
+\section{Thieleの微分方程式}
+
+\begin{theorem}[Thieleの方程式]\label{thm:thiele}
+$\mu,b,\pi$ が $[0,n]$ 上で連続で，
+$S$ は正で $S'=-\mu S$ を満たすと仮定する．
+将来法責任準備金 $V$ は微分可能で，
+\[
+ V'(t)=\delta V(t)+\pi(t)
+       -\mu(t)\bigl(b(t)-V(t)\bigr)
+ \qquad(0\le t<n)
+\]
+を満たす．
+終端条件は $V(n)=C$ である．
+逆にこの線形微分方程式と終端条件を満たす
+$C^1$ 関数は，将来法の積分表示に一致する．
+\end{theorem}
+\begin{proof}
+\[
+ A(t)=
+ \int_t^n e^{-\delta s}
+ (b(s)f(s)-\pi(s)S(s))\,ds
+ +e^{-\delta n}C S(n)
+\]
+と置くと $V(t)=e^{\delta t}A(t)/S(t)$ である．
+微積分の基本定理から
+\[
+ A'(t)=-e^{-\delta t}(b(t)f(t)-\pi(t)S(t))
+\]
+となる．
+また $S'/S=-\mu$ なので
+\begin{align*}
+ V'(t)
+ &=(\delta+\mu(t))V(t)
+   +\frac{e^{\delta t}}{S(t)}A'(t)\\
+ &=(\delta+\mu(t))V(t)+\pi(t)-b(t)\mu(t).
+\end{align*}
+整理すれば表示の微分方程式を得る．
+$t=n$ では積分が零なので $V(n)=C$ である．
+
+逆に二つの解 $V_1,V_2$ の差 $W$ は
+\[
+ W'=(\delta+\mu)W,\qquad W(n)=0
+\]
+を満たす．
+$\delta+\mu$ の積分因子を掛けると
+$\frac d{dt}\bigl(
+ e^{-\int_0^t(\delta+\mu(s))ds}W(t)\bigr)=0$
+となるので $W\equiv0$ である．
+既に積分表示が解を与えることを示したから，
+終端値問題の唯一解はその積分表示に等しい．
+\end{proof}
+
+\begin{example}[一定死亡力の定期保険]
+$\mu(t)=\lambda>0$，$b(t)=B$，
+満期給付 $C=0$ とし，
+$\pi(t)=P$ を一定とする．
+このとき
+\[
+ V(t)=\frac{B\lambda-P}{\delta+\lambda}
+ \left(1-e^{-(\delta+\lambda)(n-t)}\right).
+\]
+等価原理による保険料率は $P=B\lambda$ であり，
+その場合 $V(t)=0$ が全ての $0\le t\le n$ で成立する．
+\end{example}
+\begin{proof}
+$S(s)/S(t)=e^{-\lambda(s-t)}$，
+$f(s)/S(t)=\lambda e^{-\lambda(s-t)}$ を
+将来法の積分表示へ代入すると
+\[
+ V(t)=\int_t^n
+ e^{-(\delta+\lambda)(s-t)}(B\lambda-P)\,ds
+\]
+となる．これを積分すれば表示式を得る．
+$t=0$ における等価原理は $V(0)=0$ を要求するので
+$B\lambda-P=0$ が従う．
+\end{proof}
+
+\section{集団保険と危険の平均化}
+
+\begin{proposition}[独立契約の平均]\label{prop:portfolio}
+$Z_1,\dots,Z_N$ を独立同分布で
+$E[Z_i]=m$，
+$\operatorname{Var}(Z_i)=\sigma^2<\infty$
+を満たす現在価値確率変数とする．
+このとき
+\[
+ E\left[\frac1N\sum_{i=1}^NZ_i\right]=m,\qquad
+ \operatorname{Var}\left(\frac1N\sum_{i=1}^NZ_i\right)
+ =\frac{\sigma^2}N.
+\]
+従って標本平均は $m$ に $L^2$ 収束する．
+\end{proposition}
+\begin{proof}
+期待値の線形性から第一式が従う．
+独立性によって異なる $i,j$ の共分散が零なので
+\[
+ \operatorname{Var}\left(\frac1N\sum_iZ_i\right)
+ =\frac1{N^2}\sum_i\operatorname{Var}(Z_i)
+ =\frac{\sigma^2}N.
+\]
+従って
+$E[(N^{-1}\sum_iZ_i-m)^2]=\sigma^2/N\to0$
+となり，$L^2$ 収束を得る．
+\end{proof}
+
+\begin{remark}
+等価原理は期待値が一致する保険料率を定めるが，
+分散・資本要件・契約間の依存関係までは決定しない．
+また死亡力を確定的に与えるモデルでは，
+実際の死亡率推定の不確実性は別の確率モデルを必要とする．
+\end{remark}
+
+\section{死亡力が一定の場合に保険料を設計する}
+\begin{example}[連続払いの定期死亡保険]
+死亡力を $\mu(t)=\lambda>0$，割引利力を
+$\delta>0$ とし，期間 $n>0$ の間に死亡すれば
+死亡時点で1単位を支払う保険を考える．
+被保険者が生存している間だけ，
+保険料を単位時間当たり $P$ の率で連続徴収する．
+生存関数と密度は
+$S(t)=e^{-\lambda t}$，
+$f(t)=\lambda e^{-\lambda t}$ だから，
+死亡保険金の数理現価は
+\[
+ A_n=\int_0^n e^{-\delta t}\lambda e^{-\lambda t}\,dt
+ =\frac{\lambda}{\lambda+\delta}
+   (1-e^{-(\lambda+\delta)n}).
+\]
+保険料率1の場合の生存年金現価は
+\[
+ a_n=\int_0^n e^{-(\lambda+\delta)t}\,dt
+ =\frac{1-e^{-(\lambda+\delta)n}}{\lambda+\delta}.
+\]
+等価原理 $P a_n=A_n$ を用いれば，
+純保険料率は $P=\lambda$ と求まる．
+この単純なモデルで純保険料率が期間 $n$ や
+金利 $\delta$ に依存しないのは，
+一定死亡力という強い仮定による．
+\end{example}
+\begin{proposition}[途中時点の責任準備金]
+上の定期保険について，
+$0\le t<n$ で生存しているという条件の下での
+将来法の純責任準備金は零である．
+\end{proposition}
+\begin{proof}
+指数分布の無記憶性から，$t$ 時点で生存していれば
+残存期間 $n-t$ について同じ死亡力 $\lambda$ を用いられる．
+将来給付の期待現価は
+\[
+ A_{n-t}=\frac{\lambda}{\lambda+\delta}
+                 (1-e^{-(\lambda+\delta)(n-t)}),
+\]
+将来保険料の期待現価は
+$P a_{n-t}=\lambda(1-e^{-(\lambda+\delta)(n-t)})
+/(\lambda+\delta)$．
+差は零である．これは個々の契約に損失が生じないという
+意味ではなく，条件付き期待現価が等しいという意味である．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+$\lambda=0.02$，$\delta=0.03$，$n=10$
+としたとき，1単位の定期死亡保険に対する
+純保険料率と保険金の期待現在価値を求めよ．
+
+\medskip\noindent\textbf{解答．}
+純保険料率は $P=\lambda=0.02$．保険金の現価は
+\[
+ A_{10}=\frac{0.02}{0.05}(1-e^{-0.5})
+ =0.4(1-e^{-0.5}).
+\]
+途中の金利・死亡時刻の割引を省略せずに得た値である．
+
+\end{document}

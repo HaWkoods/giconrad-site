@@ -1,0 +1,607 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{数値最適化法と収束の定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，勾配降下法，収束とスペクトル半径．
+本稿の具体的な到達課題は，簡単な二次関数で刻み幅の収束条件を厳密に求める．
+
+
+\section{滑らかな凸関数と降下補題}
+
+本稿では $\mathbb R^n$ にEuclid内積とノルムを入れる．
+微分可能な凸関数の一次不等式
+\[
+ f(y)\ge f(x)+\langle\nabla f(x),y-x\rangle
+\]
+を既知とする．
+
+\begin{definition}
+微分可能な関数 $f:\mathbb R^n\to\mathbb R$ の
+勾配が\emph{$L$-Lipschitz連続}であるとは，
+$L>0$ が存在して
+\[
+ \norm{\nabla f(x)-\nabla f(y)}
+ \le L\norm{x-y}\qquad(x,y\in\mathbb R^n)
+\]
+を満たすことをいう．
+\end{definition}
+
+\begin{lemma}[降下補題]\label{lem:descent}
+$f$ の勾配が $L$-Lipschitz連続なら
+\[
+ f(y)\le f(x)+\langle\nabla f(x),y-x\rangle
+       +\frac L2\norm{y-x}^2
+\]
+が任意の $x,y$ に対して成立する．
+\end{lemma}
+\begin{proof}
+$h=y-x$ と置く．
+微積分の基本定理から
+\[
+ f(y)-f(x)
+ =\int_0^1\langle\nabla f(x+th),h\rangle\,dt.
+\]
+従って
+\begin{align*}
+ &f(y)-f(x)-\langle\nabla f(x),h\rangle\\
+ &\quad=\int_0^1
+ \langle\nabla f(x+th)-\nabla f(x),h\rangle\,dt\\
+ &\quad\le\int_0^1Lt\norm h^2\,dt
+ =\frac L2\norm h^2.
+\end{align*}
+\end{proof}
+
+\begin{definition}
+微分可能な関数 $f$ が $\mu$-\emph{強凸}
+（$\mu>0$）であるとは，
+\[
+ f(y)\ge f(x)+\langle\nabla f(x),y-x\rangle
+ +\frac\mu2\norm{y-x}^2
+\]
+が任意の $x,y$ に対して成立することをいう．
+\end{definition}
+
+\begin{proposition}[強凸関数の最小点]\label{prop:strong-min}
+$f$ が微分可能で $\mu$-強凸なら，
+$f$ はただ一つの最小点 $x_*$ を持ち，
+$\nabla f(x_*)=0$ を満たす．
+\end{proposition}
+\begin{proof}
+強凸性を $x=0$ に適用すると
+\[
+ f(y)\ge f(0)+\langle\nabla f(0),y\rangle
+ +\frac\mu2\norm y^2
+\]
+となる．右辺は $\norm y\to\infty$ で
+$\infty$ へ向かうので $f$ は強制的である．
+連続性とHeine--Borelの定理によって最小点が存在する．
+微分可能な関数の内点の最小点では $\nabla f=0$ である．
+二つの最小点 $x_*,y_*$ があれば強凸性から
+\[
+ f(y_*)\ge f(x_*)+\frac\mu2\norm{y_*-x_*}^2
+\]
+となる．両辺の関数値は等しいので $y_*=x_*$ である．
+\end{proof}
+
+\section{勾配降下法}
+
+\begin{definition}
+勾配が $L$-Lipschitz連続な $f$ に対して，
+\[
+ x_{k+1}=x_k-\frac1L\nabla f(x_k)
+\]
+で定める列を固定歩長の\emph{勾配降下法}という．
+\end{definition}
+
+\begin{lemma}[一歩の降下]\label{lem:one-step}
+勾配降下列について
+\[
+ f(x_{k+1})\le f(x_k)
+ -\frac1{2L}\norm{\nabla f(x_k)}^2
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+降下補題において
+$y=x_k-\frac1L\nabla f(x_k)$ と置く．
+\begin{align*}
+ f(x_{k+1})
+ &\le f(x_k)
+ -\frac1L\norm{\nabla f(x_k)}^2
+ +\frac L2\frac1{L^2}\norm{\nabla f(x_k)}^2\\
+ &=f(x_k)-\frac1{2L}\norm{\nabla f(x_k)}^2.
+\end{align*}
+\end{proof}
+
+\begin{theorem}[凸関数に対する収束率]\label{thm:convex-rate}
+$f:\mathbb R^n\to\mathbb R$ を微分可能な凸関数で，
+勾配は $L$-Lipschitz連続とする．
+最小点 $x_*$ が存在すると仮定する．
+勾配降下列に対して任意の $N\ge1$ で
+\[
+ 0\le f(x_N)-f(x_*)
+ \le\frac{L\norm{x_0-x_*}^2}{2N}
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+凸性の一次不等式から
+\[
+ f(x_k)-f(x_*)
+ \le\langle\nabla f(x_k),x_k-x_*\rangle.
+\]
+補題\ref{lem:one-step}と合わせると
+\[
+ f(x_{k+1})-f(x_*)
+ \le\langle\nabla f(x_k),x_k-x_*\rangle
+ -\frac1{2L}\norm{\nabla f(x_k)}^2.
+\]
+一方，更新式から
+\begin{align*}
+ \norm{x_{k+1}-x_*}^2
+ &=\norm{x_k-x_*}^2
+ -\frac2L\langle\nabla f(x_k),x_k-x_*\rangle\\
+ &\qquad+\frac1{L^2}\norm{\nabla f(x_k)}^2.
+\end{align*}
+両式を比較すると
+\[
+ f(x_{k+1})-f(x_*)
+ \le\frac L2
+ \bigl(\norm{x_k-x_*}^2-\norm{x_{k+1}-x_*}^2\bigr).
+\]
+$k=0,\dots,N-1$ について足すと
+\[
+ \sum_{k=1}^N(f(x_k)-f(x_*))
+ \le\frac L2\norm{x_0-x_*}^2.
+\]
+補題\ref{lem:one-step}から $f(x_k)$ は単調非増加なので
+左辺は $N(f(x_N)-f(x_*))$ 以上である．
+従って結論が従う．
+\end{proof}
+
+\begin{corollary}[勾配の消失]\label{cor:grad-zero}
+$f$ が下に有界で勾配は $L$-Lipschitz連続なら，
+勾配降下列は
+\[
+ \sum_{k=0}^\infty\norm{\nabla f(x_k)}^2<\infty,
+ \qquad \norm{\nabla f(x_k)}\to0
+\]
+を満たす．
+\end{corollary}
+\begin{proof}
+補題\ref{lem:one-step}を $k=0,\dots,N-1$ について足すと
+\[
+ \frac1{2L}\sum_{k=0}^{N-1}\norm{\nabla f(x_k)}^2
+ \le f(x_0)-f(x_N)
+ \le f(x_0)-\inf f.
+\]
+$N\to\infty$ とすれば非負項級数が収束する．
+従って一般項は零に収束する．
+\end{proof}
+
+\section{強凸性による線形収束}
+
+\begin{lemma}[強凸関数の勾配下界]\label{lem:pl}
+$f$ を微分可能な $\mu$-強凸関数，
+$x_*$ をその最小点とする．
+このとき
+\[
+ \norm{\nabla f(x)}^2
+ \ge2\mu\bigl(f(x)-f(x_*)\bigr)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+強凸性により任意の $y$ に対して
+\[
+ f(y)\ge f(x)+\langle\nabla f(x),y-x\rangle
+ +\frac\mu2\norm{y-x}^2.
+\]
+右辺は $y=x-\mu^{-1}\nabla f(x)$ のとき最小であり，
+その最小値は
+$f(x)-\norm{\nabla f(x)}^2/(2\mu)$ となる．
+特に $y=x_*$ として
+\[
+ f(x_*)\ge f(x)-\frac1{2\mu}\norm{\nabla f(x)}^2
+\]
+なので整理して結論を得る．
+\end{proof}
+
+\begin{theorem}[強凸の場合の線形収束]\label{thm:linear-rate}
+$f$ を微分可能な $\mu$-強凸関数とし，
+その勾配は $L$-Lipschitz連続とする．
+このとき $0<\mu\le L$ であり，
+勾配降下法について
+\[
+ f(x_k)-f(x_*)
+ \le\left(1-\frac\mu L\right)^k
+ \bigl(f(x_0)-f(x_*)\bigr)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+強凸性と降下補題を同じ二点について比較すると，
+その差から $\mu\le L$ が従う
+（$x\ne y$ として一次項を打ち消せばよい）．
+補題\ref{lem:one-step}と補題\ref{lem:pl}から
+\begin{align*}
+ f(x_{k+1})-f(x_*)
+ &\le f(x_k)-f(x_*)-\frac1{2L}\norm{\nabla f(x_k)}^2\\
+ &\le\left(1-\frac\mu L\right)
+       (f(x_k)-f(x_*)).
+\end{align*}
+これを帰納的に繰り返して結論を得る．
+\end{proof}
+
+\section{Newton法と局所二次収束}
+
+\begin{definition}
+$f:\mathbb R^n\to\mathbb R$ が二回連続微分可能で，
+$\nabla^2f(x_k)$ が可逆であるとき，
+\[
+ x_{k+1}
+ =x_k-\nabla^2f(x_k)^{-1}\nabla f(x_k)
+\]
+を\emph{Newton法}という．
+\end{definition}
+
+\begin{theorem}[Newton法の局所二次収束]\label{thm:newton}
+$f\in C^2(\mathbb R^n)$ とし，
+$\nabla f(x_*)=0$ かつ
+$H_*=\nabla^2f(x_*)$ は正定値とする．
+ある $r_0>0$ と $M>0$ が存在して，
+$B(x_*,r_0)$ 上で
+\[
+ \norm{\nabla^2f(x)-\nabla^2f(y)}
+ \le M\norm{x-y}
+\]
+が成り立つと仮定する．
+このとき $x_*$ の十分小さい近傍内から開始するNewton列は
+well-definedで $x_*$ に収束し，
+ある定数 $C>0$ について
+\[
+ \norm{x_{k+1}-x_*}\le C\norm{x_k-x_*}^2
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$H_*$ は可逆であり，
+Hessianは連続なので，
+十分小さい閉球 $\overline{B(x_*,r)}$
+において全ての $\nabla^2f(x)$ は可逆で，
+その逆行列のノルムは一様に $B>0$ で抑えられる．
+実際
+\[
+ \nabla^2f(x)=H_*
+ \bigl(I+H_*^{-1}(\nabla^2f(x)-H_*)\bigr)
+\]
+と書き，括弧内にNeumann級数を適用すればよい．
+$e=x-x_*$ と置く．
+$\nabla f(x_*)=0$ と微積分の基本定理から
+\[
+ \nabla f(x)=\int_0^1\nabla^2f(x_*+te)e\,dt.
+\]
+Newton更新点を $N(x)$ と書くと
+\begin{align*}
+ N(x)-x_*
+ &=e-\nabla^2f(x)^{-1}\nabla f(x)\\
+ &=\nabla^2f(x)^{-1}
+ \int_0^1\bigl(\nabla^2f(x)
+ -\nabla^2f(x_*+te)\bigr)e\,dt.
+\end{align*}
+HessianのLipschitz条件から
+\[
+ \norm{N(x)-x_*}
+ \le BM\norm e^2\int_0^1(1-t)\,dt
+ =\frac{BM}{2}\norm e^2.
+\]
+$C=BM/2$ と置き，
+必要なら $r$ をさらに小さくして $Cr<1$ とする．
+$\norm{x_0-x_*}<r$ なら上の評価から
+$\norm{N(x_0)-x_*}<r$ であり，
+帰納的に全ての反復点は球内に留まる．
+さらに
+$\norm{x_{k+1}-x_*}\le Cr\norm{x_k-x_*}$
+なので誤差は零へ収束する．
+同時に二次誤差評価も成立する．
+\end{proof}
+
+\section{射影勾配法}
+
+\begin{theorem}[閉凸集合への射影]\label{thm:projection}
+$C\subset\mathbb R^n$ を空でない閉凸集合とする．
+任意の $x\in\mathbb R^n$ に対して
+\[
+ P_C(x)=\operatorname*{argmin}_{z\in C}\norm{x-z}
+\]
+は一意に存在する．
+また
+\[
+ \langle x-P_C(x),z-P_C(x)\rangle\le0
+ \qquad(z\in C)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$z_0\in C$ を固定する．
+距離を最小化する点は
+$C\cap\overline{B(x,\norm{x-z_0})}$ の中に存在すれば十分である．
+この集合は非空・閉・有界なのでコンパクトであり，
+連続関数 $z\mapsto\norm{x-z}$ は最小値を達成する．
+二つの異なる最小点 $u,v$ があるとすると，
+中点 $(u+v)/2\in C$ に対して
+\[
+ \norm{x-\frac{u+v}2}^2
+ =\frac12\norm{x-u}^2+\frac12\norm{x-v}^2
+  -\frac14\norm{u-v}^2
+\]
+となり，最小性に矛盾する．
+従って射影は一意である．
+$u=P_C(x)$ と置くと，
+任意の $z\in C$ と $0<t<1$ に対して
+$u+t(z-u)\in C$ なので
+$\norm{x-u}^2\le\norm{x-u-t(z-u)}^2$ である．
+展開して $t$ で割り $t\downarrow0$ とすると
+$\langle x-u,z-u\rangle\le0$ を得る．
+\end{proof}
+
+\begin{proposition}[射影の非拡大性]\label{prop:projection-lipschitz}
+$P_C$ は $1$-Lipschitz連続である．
+\end{proposition}
+\begin{proof}
+$u=P_C(x)$，$v=P_C(y)$ と置く．
+定理\ref{thm:projection}から
+$\langle x-u,v-u\rangle\le0$，
+$\langle y-v,u-v\rangle\le0$ である．
+両辺を整理して足すと
+\[
+ \norm{u-v}^2\le\langle x-y,u-v\rangle
+ \le\norm{x-y}\norm{u-v}.
+\]
+$u=v$ なら明らかであり，そうでなければ
+$\norm{u-v}$ で割って
+$\norm{P_C(x)-P_C(y)}\le\norm{x-y}$ を得る．
+\end{proof}
+
+\begin{definition}
+$C\subset\mathbb R^n$ を空でない閉凸集合，
+$f$ を微分可能で勾配が $L$-Lipschitz連続な凸関数とする．
+反復
+\[
+ x_{k+1}
+ =P_C\left(x_k-\frac1L\nabla f(x_k)\right)
+\]
+を\emph{射影勾配法}という．
+\end{definition}
+
+\begin{theorem}[射影勾配法の収束率]\label{thm:proj-rate}
+上の仮定のもとで $f$ は $C$ 上で最小点 $x_*$ を持つとする．
+$x_0\in C$ として射影勾配法を実行すると，
+\[
+ f(x_N)-f(x_*)\le
+ \frac{L\norm{x_0-x_*}^2}{2N}\qquad(N\ge1)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$z=x_k$，$u=x_{k+1}$ と置く．
+射影の特徴づけを
+$x=z-\nabla f(z)/L$ に適用すると，
+任意の $y\in C$ に対して
+\[
+ \langle\nabla f(z)+L(u-z),y-u\rangle\ge0
+\]
+となる．
+これを整理し，恒等式
+\[
+ 2\langle u-z,y-u\rangle
+ =\norm{y-z}^2-\norm{y-u}^2-\norm{u-z}^2
+\]
+を用いると
+\begin{align*}
+ \langle\nabla f(z),u-y\rangle
+ &\le\frac L2\bigl(
+ \norm{y-z}^2-\norm{y-u}^2-\norm{u-z}^2
+ \bigr).
+\end{align*}
+一方，降下補題と凸性から
+\[
+ f(u)-f(y)
+ \le\langle\nabla f(z),u-y\rangle
+ +\frac L2\norm{u-z}^2.
+\]
+両式を足すと
+\[
+ f(u)-f(y)
+ \le\frac L2(\norm{y-z}^2-\norm{y-u}^2).
+ \tag{*}
+\]
+$y=x_k=z$ とすると $f(x_{k+1})\le f(x_k)$ だから
+関数値は単調非増加である．
+$y=x_*$ として (*) を $k=0,\dots,N-1$ について足すと
+\[
+ \sum_{k=1}^N(f(x_k)-f(x_*))
+ \le\frac L2\norm{x_0-x_*}^2.
+\]
+単調性により左辺は
+$N(f(x_N)-f(x_*))$ 以上であるから，
+結論を得る．
+\end{proof}
+
+\section{近接作用素と反例}
+
+\begin{definition}
+$f:\mathbb R^n\to\mathbb R$ を連続な凸関数，
+$\tau>0$ とする．
+\[
+ \operatorname{prox}_{\tau f}(x)
+ =\operatorname*{argmin}_{z\in\mathbb R^n}
+ \left\{f(z)+\frac1{2\tau}\norm{z-x}^2\right\}
+\]
+を\emph{近接作用素}という．
+\end{definition}
+
+\begin{proposition}[近接作用素の存在と非拡大性]
+\label{prop:prox}
+$\operatorname{prox}_{\tau f}(x)$ は
+全ての $x$ に対して一意に存在する．
+また
+\[
+ \norm{\operatorname{prox}_{\tau f}(x)
+       -\operatorname{prox}_{\tau f}(y)}
+ \le\norm{x-y}
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+凸関数の一次下界
+$f(z)\ge f(0)+\langle v,z\rangle$ を取れる．
+連続な有限値凸関数は劣勾配を持つので，
+例えば $v\in\partial f(0)$ を取ればよい．
+従って目的関数は二次項によって強制的であり，
+連続なので最小点が存在する．
+二次項が厳密凸で $f$ が凸だから，最小点は一意である．
+
+$u=\operatorname{prox}_{\tau f}(x)$，
+$v=\operatorname{prox}_{\tau f}(y)$ と置く．
+最小性の一次条件から
+\[
+ \frac{x-u}{\tau}\in\partial f(u),\qquad
+ \frac{y-v}{\tau}\in\partial f(v)
+\]
+を得る．
+劣微分の単調性を示すため，
+$p\in\partial f(u)$，$q\in\partial f(v)$ に対し
+\[
+ f(v)\ge f(u)+\langle p,v-u\rangle,\qquad
+ f(u)\ge f(v)+\langle q,u-v\rangle
+\]
+を足すと
+$\langle p-q,u-v\rangle\ge0$ となる．
+これを上の二つの劣勾配に適用すると
+\[
+ 0\le\langle(x-u)-(y-v),u-v\rangle
+ =\langle x-y,u-v\rangle-\norm{u-v}^2.
+\]
+Cauchy--Schwarzの不等式から
+$\norm{u-v}\le\norm{x-y}$ が従う．
+\end{proof}
+
+\begin{example}[歩長が大きすぎる場合]
+$f(x)=Lx^2/2$（$L>0$）とする．
+歩長 $\alpha>0$ の勾配法
+$x_{k+1}=x_k-\alpha f'(x_k)$ は
+\[
+ x_k=(1-\alpha L)^kx_0
+\]
+となる．従って
+$\alpha>2/L$ で $x_0\ne0$ なら発散する．
+\end{example}
+\begin{proof}
+$f'(x)=Lx$ なので
+$x_{k+1}=(1-\alpha L)x_k$ である．
+帰納法から表示式を得る．
+$\alpha>2/L$ なら
+$|1-\alpha L|>1$ だから
+$|x_k|\to\infty$ となる．
+\end{proof}
+
+\begin{remark}
+勾配法・Newton法・射影勾配法は，
+目的関数の平滑性，強凸性，制約集合の幾何といった
+仮定に依存して収束の速さが異なる．
+収束率の主張には，これらの定量的仮定を
+明示することが不可欠である．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{勾配法の刻み幅の限界．}
+\begin{proposition}
+$f(x)=x^2/2$ に一定刻み幅 $\alpha>0$ の
+勾配法を適用すると
+$x_{n+1}=(1-\alpha)x_n$ となる．
+任意の初期値 $x_0$ に対し $x_n\to0$ となる
+必要十分条件は $0<\alpha<2$ である．
+\end{proposition}
+\begin{proof}
+$f'(x)=x$ なので
+$x_{n+1}=x_n-\alpha f'(x_n)=(1-\alpha)x_n$．
+帰納法で $x_n=(1-\alpha)^nx_0$ となる．
+全ての $x_0$ に対し収束するためには
+$|1-\alpha|<1$ が必要十分であり，
+これは $0<\alpha<2$ と同値である．
+$\alpha=2$ では $x_n=(-1)^nx_0$ となり，
+非零初期値で収束しない．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\alpha=1/2$，$x_0=8$ のとき $x_3$ を求めよ．
+\par\noindent\textbf{解答．}
+$x_3=(1-1/2)^3\cdot8=1$ である．
+\end{document}

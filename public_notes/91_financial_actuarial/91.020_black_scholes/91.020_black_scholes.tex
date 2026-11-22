@@ -1,0 +1,574 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Black--Scholes方程式と数理ファイナンス}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Black--Scholes方程式，無裁定価格，リスク中立測度．
+本稿の具体的な到達課題は，線形ペイオフの価格を期待値と偏微分方程式の両方で検証する．
+
+\section{市場モデルと自己金融戦略}
+
+$T>0$ を固定し，
+$(\Omega,\mathcal F,(\mathcal F_t)_{0\le t\le T},P)$ を
+Brown運動 $B$ の自然フィルトレーションの通常の拡大とする．
+銀行口座の価値を $\beta_t=e^{rt}$ とし，
+株価 $S$ は
+\begin{equation}\label{eq:stock}
+ dS_t=\mu S_t\,dt+\sigma S_t\,dB_t,\qquad S_0=s_0>0
+\end{equation}
+を満たすものとする．
+ここで $r,\mu\in\mathbb R$，$\sigma>0$ は定数である．
+It\^oの公式により
+\[
+ S_t=s_0\exp\!\left(
+ (\mu-\tfrac12\sigma^2)t+\sigma B_t\right)>0
+\]
+である．
+
+\begin{definition}
+予測可能な組 $(\varphi_t,\psi_t)$ を取引戦略といい，
+$\varphi_t$ を株式保有数，$\psi_t$ を銀行口座保有数と解釈する．
+その価値を
+\[
+ V_t=\varphi_tS_t+\psi_t\beta_t
+\]
+と定める．
+積分が定義可能なとき，戦略が\emph{自己金融}であるとは
+\[
+ V_t=V_0+\int_0^t\varphi_u\,dS_u
+             +\int_0^t\psi_u\,d\beta_u
+\]
+が成立することをいう．
+割引価値を
+$\widetilde V_t=e^{-rt}V_t$，
+割引株価を $\widetilde S_t=e^{-rt}S_t$ と書く．
+\end{definition}
+
+\begin{proposition}[自己金融条件の割引表示]\label{prop:self-finance}
+自己金融戦略について
+\[
+ d\widetilde V_t=\varphi_t\,d\widetilde S_t
+\]
+が成り立つ．逆に，予測可能な $\varphi$ と
+連続過程 $\widetilde V$ がこの積分等式を満たすなら，
+\[
+ \psi_t=\widetilde V_t-\varphi_t\widetilde S_t
+\]
+と置くことで，$\varphi,\psi$ は自己金融戦略を定める．
+\end{proposition}
+\begin{proof}
+$\widetilde V=e^{-rt}V$ に積の公式を適用する．
+$e^{-rt}$ は決定論的な有限変動過程であるから
+\[
+ d\widetilde V_t=e^{-rt}\,dV_t-re^{-rt}V_t\,dt.
+\]
+自己金融条件と $d\beta_t=r\beta_tdt$ を用いれば
+\[
+ d\widetilde V_t
+ =e^{-rt}\varphi_t\,dS_t
+  +r\psi_t\,dt-r(\varphi_t\widetilde S_t+\psi_t)\,dt
+ =\varphi_t\,d\widetilde S_t.
+\]
+逆に $\widetilde V$ と $\varphi$ が与えられた場合，
+$\psi=\widetilde V-\varphi\widetilde S$ とすると
+$V=e^{rt}\widetilde V=\varphi S+\psi\beta$ となり，
+前の等式を逆に計算すれば自己金融条件が従う．
+\end{proof}
+
+\section{リスク中立測度}
+
+\begin{theorem}[等価なマルチンゲール測度]\label{thm:emm}
+$\theta=(\mu-r)/\sigma$ と置き，
+\[
+ Z_T=\exp\!\left(-\theta B_T-\frac12\theta^2T\right),
+ \qquad dQ=Z_T\,dP
+\]
+と定める．このとき $Q$ は $P$ と同値な確率測度である．
+さらに
+\[
+ W_t=B_t+\theta t
+\]
+は $Q$ のもとで標準Brown運動であり，
+\[
+ dS_t=rS_t\,dt+\sigma S_t\,dW_t,\qquad
+ d\widetilde S_t=\sigma\widetilde S_t\,dW_t.
+\]
+特に $(\widetilde S_t)$ は $Q$ のもとで真のマルチンゲールである．
+\end{theorem}
+\begin{proof}
+$B_T\sim N(0,T)$ なのでGaussian分布の指数モーメントから
+$E_PZ_T=1$ となる．$Z_T>0$ は概至る所成立するから
+$Q$ は $P$ と同値である．
+Girsanovの定理を定数 $\theta$ に適用すると
+$W=B+\theta t$ は $Q$-Brown運動となる．
+$dB_t=dW_t-\theta\,dt$ を \eqref{eq:stock} に代入すれば
+\[
+ dS_t=(\mu-\sigma\theta)S_t\,dt+\sigma S_t\,dW_t
+ =rS_t\,dt+\sigma S_t\,dW_t.
+\]
+従って割引株価についての式を得る．
+この方程式は
+\[
+ \widetilde S_t=s_0
+ \exp\!\left(\sigma W_t-\tfrac12\sigma^2t\right)
+\]
+と解ける．
+$W_t-W_s$ の独立性と正規分布の指数モーメントより
+$E_Q[\widetilde S_t\mid\mathcal F_s]
+=\widetilde S_s$ となる．
+\end{proof}
+
+\begin{definition}
+自己金融戦略の割引価値 $\widetilde V$ が
+ある決定論的な定数 $-C$ 以上に保たれるとき，
+その戦略を\emph{許容戦略}という．
+初期価値 $V_0\le0$ であり，
+終端価値 $V_T\ge0$ が概至る所成り立ち，
+$P(V_T>0)>0$ となる許容自己金融戦略が存在するとき，
+裁定機会が存在するという．
+\end{definition}
+
+\begin{theorem}[無裁定性]\label{thm:no-arb}
+上のBlack--Scholesモデルには
+許容自己金融戦略による裁定機会は存在しない．
+\end{theorem}
+\begin{proof}
+命題\ref{prop:self-finance}と定理\ref{thm:emm}から
+許容自己金融戦略の割引価値は
+\[
+ \widetilde V_t
+ =V_0+\int_0^t\varphi_s\sigma\widetilde S_s\,dW_s
+\]
+と書ける．右辺は $Q$ のもとで連続局所マルチンゲールである．
+$\widetilde V_t\ge-C$ なので
+$\widetilde V_t+C$ は非負局所マルチンゲールとなり，
+Fatouの補題によって優マルチンゲールである．
+従って $E_Q\widetilde V_T\le V_0$ である．
+
+もし裁定機会が存在すれば
+$\widetilde V_T=e^{-rT}V_T\ge0$ であり，
+$Q$ と $P$ の同値性から
+$Q(\widetilde V_T>0)>0$ となる．
+従って $E_Q\widetilde V_T>0$ となるが，
+$E_Q\widetilde V_T\le V_0\le0$ に矛盾する．
+\end{proof}
+
+\section{複製戦略と価格の一意性}
+
+\begin{definition}
+$\mathcal F_T$ 可測な終端ペイオフ $H$ に対し，
+自己金融戦略の終端価値が $V_T=H$ を満たすとき，
+その戦略は $H$ を\emph{複製する}という．
+\end{definition}
+
+\begin{theorem}[二乗可積分な請求権の複製]\label{thm:complete}
+$H\in L^2(Q)$ とし，
+$\mathcal F_t$ は $B$ の自然フィルトレーションの
+通常の拡大とする．
+このとき
+\[
+ \widetilde V_t
+ =E_Q[e^{-rT}H\mid\mathcal F_t]
+\]
+を割引価値に持つ自己金融戦略が存在する．
+その初期価値は
+\[
+ V_0=E_Q[e^{-rT}H]
+\]
+であり，終端価値は $H$ となる．
+$H\ge0$ ならこの戦略は許容である．
+\end{theorem}
+\begin{proof}
+$\xi=e^{-rT}H\in L^2(Q)$ と置く．
+$\theta$ は決定論的定数で
+$W_t=B_t+\theta t$ だから，
+$W$ が生成する自然フィルトレーションの通常の拡大は
+$B$ のそれと一致する．
+Brown運動のマルチンゲール表現定理により
+ある予測可能過程 $h$ が存在して
+\[
+ E_Q[\xi\mid\mathcal F_t]
+ =E_Q\xi+\int_0^th_s\,dW_s,\qquad
+ E_Q\int_0^Th_s^2\,ds<\infty.
+\]
+$\sigma>0$ かつ $\widetilde S_t>0$ なので
+\[
+ \varphi_t=\frac{h_t}{\sigma\widetilde S_t}
+\]
+と置ける．
+$\varphi_t\sigma\widetilde S_t=h_t$ なので
+$\varphi$ は $\widetilde S$ に関して可積分である．
+$\widetilde V_t=E_Q[\xi\mid\mathcal F_t]$ とし，
+$\psi_t=\widetilde V_t-\varphi_t\widetilde S_t$
+と置く．命題\ref{prop:self-finance}から
+$(\varphi,\psi)$ は自己金融戦略であり，
+\[
+ \widetilde V_T=\xi=e^{-rT}H
+\]
+だから $V_T=H$ である．
+初期価値は $\widetilde V_0=E_Q\xi$ となる．
+$H\ge0$ なら条件付き期待値も非負なので
+$\widetilde V_t\ge0$ であり，許容である．
+\end{proof}
+
+\begin{corollary}[二乗可積分な複製価格の一意性]
+$H\in L^2(Q)$ の二つの自己金融複製戦略について，
+割引価値がともに二乗可積分な
+$Q$-マルチンゲールであるなら，
+両者の初期価格は
+$E_Q[e^{-rT}H]$ に一致する．
+\end{corollary}
+\begin{proof}
+両方の割引価値はマルチンゲールであり，
+終端値は $\xi=e^{-rT}H$ なので，
+それぞれの初期値は
+$E_Q\widetilde V_T=E_Q\xi$ である．
+\end{proof}
+
+\begin{remark}
+許容性を課さない無制限の取引戦略には，
+局所マルチンゲールであるが真のマルチンゲールでない
+価格過程が現れ得る．
+価格の一意性の議論では，複製戦略の積分可能性や
+許容性を明示する必要がある．
+\end{remark}
+
+\section{ヨーロピアン・コールの評価}
+
+\begin{definition}
+権利行使価格 $K>0$ のヨーロピアン・コールの
+終端ペイオフを
+\[
+ H=(S_T-K)^+
+\]
+とする．満期前 $0\le t<T$ の価格関数を
+\[
+ C(t,s)=e^{-r(T-t)}
+ E_Q[(S_T-K)^+\mid S_t=s]
+\]
+と定める．これは時刻 $t$ に株価が $s>0$ である状態から
+出発するリスク中立モデルによる期待値を意味する．
+\end{definition}
+
+\begin{lemma}[Gaussian指数の切断積分]\label{lem:gaussian}
+$Z\sim N(0,1)$ とし，$a,c\in\mathbb R$ とする．
+標準正規分布関数を $\Phi$，
+その密度を
+$\phi(z)=(2\pi)^{-1/2}e^{-z^2/2}$ と書く．
+このとき
+\[
+ E[e^{cZ}1_{\{Z>a\}}]
+ =e^{c^2/2}\Phi(c-a).
+\]
+\end{lemma}
+\begin{proof}
+平方完成により
+\[
+ e^{cz}\phi(z)
+ =\frac1{\sqrt{2\pi}}
+   \exp\!\left(-\frac{z^2-2cz}{2}\right)
+ =e^{c^2/2}\phi(z-c)
+\]
+である．従って
+\[
+ E[e^{cZ}1_{\{Z>a\}}]
+ =e^{c^2/2}\int_a^\infty\phi(z-c)\,dz
+ =e^{c^2/2}\Phi(c-a)
+\]
+となる．
+\end{proof}
+
+\begin{theorem}[Black--Scholes公式]\label{thm:bs-formula}
+$\tau=T-t>0$ と置き，
+\[
+ d_1=\frac{\log(s/K)+(r+\sigma^2/2)\tau}{\sigma\sqrt\tau},
+ \qquad
+ d_2=d_1-\sigma\sqrt\tau
+\]
+と定める．このとき
+\[
+ C(t,s)=s\Phi(d_1)-Ke^{-r\tau}\Phi(d_2)
+ \qquad(t<T,\ s>0)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$Q$ のもとで，時刻 $t$ の株価が $s$ のとき，
+\[
+ S_T=s\exp\!\left(
+ (r-\tfrac12\sigma^2)\tau+\sigma\sqrt\tau\,Z\right),
+ \qquad Z\sim N(0,1)
+\]
+と表せる．
+$S_T>K$ は
+\[
+ Z>\frac{\log(K/s)-(r-\sigma^2/2)\tau}
+          {\sigma\sqrt\tau}=-d_2
+\]
+と同値である．従って
+$Q(S_T>K)=\Phi(d_2)$ である．
+また補題\ref{lem:gaussian}を
+$c=\sigma\sqrt\tau$，$a=-d_2$ として適用すると
+\begin{align*}
+ E_Q[S_T1_{\{S_T>K\}}\mid S_t=s]
+ &=s e^{(r-\sigma^2/2)\tau}
+   E[e^{\sigma\sqrt\tau Z}1_{\{Z>-d_2\}}]\\
+ &=s e^{(r-\sigma^2/2)\tau}
+   e^{\sigma^2\tau/2}\Phi(d_2+\sigma\sqrt\tau)\\
+ &=s e^{r\tau}\Phi(d_1).
+\end{align*}
+よって
+\begin{align*}
+ C(t,s)
+ &=e^{-r\tau}E_Q[(S_T-K)^+\mid S_t=s]\\
+ &=e^{-r\tau}
+ \left(s e^{r\tau}\Phi(d_1)-K\Phi(d_2)\right)\\
+ &=s\Phi(d_1)-Ke^{-r\tau}\Phi(d_2).
+\end{align*}
+\end{proof}
+
+\section{Black--Scholes偏微分方程式}
+
+\begin{proposition}[価格関数の正則性とPDE]\label{prop:bs-pde}
+$C(t,s)$ は $0\le t<T$，$s>0$ で $C^{1,2}$ 級であり，
+\begin{equation}\label{eq:bs-pde}
+ C_t+rsC_s+\frac12\sigma^2s^2C_{ss}-rC=0
+\end{equation}
+を満たす．さらに
+\[
+ \lim_{t\uparrow T}C(t,s)=(s-K)^+
+ \qquad(s>0)
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+定理\ref{thm:bs-formula}の表示は $t<T$，$s>0$ で滑らかである．
+$d_1=d_2+\sigma\sqrt\tau$ と密度の定義から
+\[
+ s\phi(d_1)=Ke^{-r\tau}\phi(d_2)
+ \tag{$*$}
+\]
+が直接計算で従う．
+$C$ を $s$ で微分すると，
+$d_1,d_2$ を含む密度の項が $(*)$ によって打ち消し合い，
+\[
+ C_s=\Phi(d_1),\qquad
+ C_{ss}=\frac{\phi(d_1)}{s\sigma\sqrt\tau}
+\]
+を得る．
+同様に $t$ について微分すると
+\[
+ C_t=-\frac{s\sigma\phi(d_1)}{2\sqrt\tau}
+      -rKe^{-r\tau}\Phi(d_2)
+\]
+となる．
+これらを \eqref{eq:bs-pde} の左辺に代入すると
+全ての項が打ち消し合い，零となる．
+最後に $\tau\downarrow0$ とする．
+$s>K$ なら $d_1,d_2\to+\infty$，
+$s<K$ なら $d_1,d_2\to-\infty$ なので，
+それぞれ $C(t,s)\to s-K$ または $0$ である．
+$s=K$ のとき $d_1,d_2\to0$ であり，
+$C(t,K)\to K(1/2)-K(1/2)=0$ である．
+従って終端条件を得る．
+\end{proof}
+
+\section{Deltaヘッジと複製}
+
+\begin{theorem}[コールの複製戦略]\label{thm:delta}
+$K>0$ とし，
+\[
+ \varphi_t=C_s(t,S_t)=\Phi(d_1(t,S_t)),\qquad
+ \psi_t=\frac{C(t,S_t)-\varphi_tS_t}{e^{rt}}
+ \qquad(t<T)
+\]
+と置く．この戦略の価値は $V_t=C(t,S_t)$ であり，
+自己金融条件を満たす．
+さらに終端値は $(S_T-K)^+$ となる．
+\end{theorem}
+\begin{proof}
+$t<T$ で $C$ にIt\^oの公式を適用すると
+\[
+ dC(t,S_t)=
+ \left(C_t+\mu S_t C_s
+ +\frac12\sigma^2S_t^2C_{ss}\right)dt
+ +\sigma S_tC_s\,dB_t.
+\]
+命題\ref{prop:bs-pde}の偏微分方程式を用いて
+ドリフトを書き換えると
+\[
+ C_t+\mu SC_s+\frac12\sigma^2S^2C_{ss}
+ =r(C-SC_s)+\mu SC_s.
+\]
+従って
+\[
+ dC(t,S_t)
+ =C_s(t,S_t)\,dS_t+r(C(t,S_t)-S_tC_s(t,S_t))\,dt
+ =\varphi_t\,dS_t+\psi_t\,d\beta_t.
+\]
+$\varphi_tS_t+\psi_t\beta_t=C(t,S_t)$ なので
+自己金融条件が成立する．
+価格関数は $t\uparrow T$ で終端ペイオフに連続的に近づき，
+$S_t\to S_T$ が概至る所で成り立つ．
+従って $V_T=(S_T-K)^+$ となる．
+また $V_t=C(t,S_t)\ge0$ なので戦略は許容である．
+\end{proof}
+
+\begin{remark}
+$\varphi_t=\Phi(d_1(t,S_t))$ はDeltaと呼ばれる．
+偏微分方程式の導出とリスク中立期待値による価格表示は，
+同じ複製戦略によって結びつく．
+このモデルではDeltaヘッジが厳密な複製を与えるが，
+連続取引などのモデルの仮定を欠く場合には
+同じ結論をそのまま適用できない．
+\end{remark}
+
+\section{プット価格とプット・コール・パリティ}
+
+\begin{proposition}\label{prop:put}
+ヨーロピアン・プットの終端ペイオフを
+$(K-S_T)^+$ とし，その価格を $P(t,s)$ と書く．
+このとき
+\[
+ P(t,s)=Ke^{-r\tau}\Phi(-d_2)-s\Phi(-d_1)
+\]
+であり，
+\[
+ C(t,s)-P(t,s)=s-Ke^{-r\tau}
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+任意の実数 $z$ について
+$(z-K)^+-(K-z)^+=z-K$ が成り立つ．
+リスク中立条件付き期待値を取り，
+割引すると
+\[
+ C(t,s)-P(t,s)
+ =e^{-r\tau}\bigl(E_Q[S_T\mid S_t=s]-K\bigr)
+ =s-Ke^{-r\tau}.
+\]
+定理\ref{thm:bs-formula}のコール価格を代入し，
+$\Phi(-z)=1-\Phi(z)$ を用いて整理すれば，
+プット価格の表示を得る．
+\end{proof}
+
+\section{モデルの仮定}
+
+\begin{remark}
+本稿の結果は，少なくとも以下の条件に依存している．
+株価は連続拡散過程であること，$\sigma>0$ が定数であること，
+銀行口座に一定の金利 $r$ が適用されること，
+取引費用がなく連続時刻で自己金融取引が可能であること，
+および許容戦略に取引上の下方制約を課すことである．
+現実市場の価格をこのモデルだけで決定できると主張するものではない．
+\end{remark}
+
+\begin{remark}
+Girsanovの定理は市場のドリフトを変換する道具であり，
+マルチンゲール表現定理は終端請求権の複製を保証する道具である．
+Black--Scholes公式はこれらの確率解析的道具と，
+It\^oの公式から得られる偏微分方程式を一つに結びつける．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{先渡しペイオフのBlack--Scholes価格．}
+\begin{proposition}
+配当のないBlack--Scholes市場で
+満期 $T$ に $S_T-K$ を支払う契約の
+時刻 $t$ における無裁定価格は
+\[
+V(t,S)=S-Ke^{-r(T-t)}
+\]
+である．
+\end{proposition}
+\begin{proof}
+リスク中立測度のもとで
+$E[S_T\mid S_t=S]=Se^{r(T-t)}$ だから，
+割引条件付き期待値は
+\[
+e^{-r(T-t)}E[S_T-K\mid S_t=S]
+=S-Ke^{-r(T-t)}
+\]
+となる．
+また $V_t=-rKe^{-r(T-t)}$，
+$V_S=1$，$V_{SS}=0$ なので
+Black--Scholes方程式
+\[
+V_t+\tfrac12\sigma^2S^2V_{SS}
++rSV_S-rV=0
+\]
+へ代入すると左辺は零となる．
+満期には $V(T,S)=S-K$ となり終端条件を満たす．
+\end{proof}
+\noindent\textbf{到達確認．}
+$r=0$ のとき価格公式を求めよ．
+\par\noindent\textbf{解答．}
+$V(t,S)=S-K$ であり，満期までの時間に依存しない．
+\end{document}

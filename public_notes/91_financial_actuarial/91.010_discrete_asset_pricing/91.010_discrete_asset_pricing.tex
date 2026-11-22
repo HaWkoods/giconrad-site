@@ -1,0 +1,572 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{離散時間金融市場と無裁定価格理論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+有限状態モデルの無裁定条件を確かめ，
+一期間二項市場で条件付き請求権を株式と銀行口座で
+実際に複製し，その価格を求められるようになる．
+前提は線形代数，有限確率空間，期待値である．
+
+
+\section{有限状態の金融市場}
+
+本稿では $\Omega$ を有限集合とし，
+確率測度 $P$ は全ての $\omega\in\Omega$ に
+$P(\{\omega\})>0$ を割り当てると仮定する．
+時刻は $t=0,1,\dots,T$ とし，
+$\mathcal F_0\subset\cdots\subset\mathcal F_T
+=\mathcal P(\Omega)$ をフィルトレーションとする．
+各 $\mathcal F_t$ の原子を時刻 $t$ の節点という．
+
+\begin{definition}
+銀行口座の価値を $B_t>0$，
+$d$ 個の危険資産の価値を
+$S_t=(S_t^1,\dots,S_t^d)$ とする．
+各 $B_t,S_t$ は $\mathcal F_t$-可測とする．
+割引価格を
+\[
+ \widetilde S_t^i=\frac{S_t^i}{B_t},
+ \qquad \widetilde S_t=(\widetilde S_t^1,\dots,\widetilde S_t^d)
+\]
+と定める．
+$B_t$ は正の確定数であると仮定する．
+\end{definition}
+
+\begin{definition}
+戦略とは，各 $t=1,\dots,T$ に対し
+$\mathcal F_{t-1}$-可測な株式保有量
+$\theta_t\in\mathbb R^d$ と，
+対応する銀行口座保有量を定めることをいう．
+戦略が\emph{自己金融的}であるとは，
+再配分によって外部から資金を投入・引き出ししないことをいう．
+割引資産価値を $\widetilde V_t=V_t/B_t$ と書く．
+\end{definition}
+
+\begin{proposition}[自己金融条件]\label{prop:self-financing}
+自己金融戦略の割引資産価値は
+\[
+ \widetilde V_t
+ =\widetilde V_0+
+ \sum_{k=1}^t\theta_k\cdot
+ (\widetilde S_k-\widetilde S_{k-1})
+ \qquad(t=1,\dots,T)
+ \tag{SF}
+\]
+を満たす．
+逆に初期資本 $\widetilde V_0$ と任意の予測可能な
+株式保有量 $(\theta_k)$ に対し，
+銀行口座の保有量を適切に選べば
+式 (SF) を満たす自己金融戦略が存在する．
+\end{proposition}
+\begin{proof}
+時刻 $k-1$ の再配分直後の銀行口座保有量を
+$\eta_k$ とすると，
+時刻 $k-1$ での割引価値は
+$\eta_k+\theta_k\cdot\widetilde S_{k-1}$ である．
+時刻 $k$ まで保有量を変更しなければ
+割引価値は
+$\eta_k+\theta_k\cdot\widetilde S_k$ になる．
+自己金融条件から前者は
+$\widetilde V_{k-1}$ に等しく，
+後者は $\widetilde V_k$ に等しいから
+\[
+ \widetilde V_k-\widetilde V_{k-1}
+ =\theta_k\cdot(\widetilde S_k-\widetilde S_{k-1}).
+\]
+これを足し合わせて (SF) を得る．
+逆に $(\theta_k)$ と $\widetilde V_0$ が与えられたら，
+式 (SF) によって割引価値を帰納的に定め，
+$\eta_k=\widetilde V_{k-1}
+ -\theta_k\cdot\widetilde S_{k-1}$ と置けば，
+各時点の再配分前後の価値は一致する．
+$\eta_k$ は $\mathcal F_{k-1}$-可測であるから
+予測可能な自己金融戦略となる．
+\end{proof}
+
+\begin{definition}
+初期資本零の自己金融戦略で，
+\[
+ \widetilde V_T\ge0\ \text{（全ての状態で）},\qquad
+ P(\widetilde V_T>0)>0
+\]
+を満たすものを\emph{裁定取引}という．
+裁定取引が存在しないことを\emph{無裁定}（NA）という．
+\end{definition}
+
+\section{一期間市場の無裁定基本定理}
+
+一期間の有限市場を考える．
+状態を $\omega_1,\dots,\omega_m$ とし，
+割引資産価格の変化を
+\[
+ v_i=\widetilde S_1(\omega_i)-\widetilde S_0
+ \in\mathbb R^d
+\]
+と書く．
+$\mathcal F_0$ は自明な $\sigma$-代数とする．
+
+\begin{lemma}[正確な有限次元の分離]\label{lem:finite-alternative}
+$v_1,\dots,v_m\in\mathbb R^d$ に対し，
+次は同値である．
+\begin{enumerate}
+\item $\theta\in\mathbb R^d$ が
+$\theta\cdot v_i\ge0$ を全ての $i$ で満たすなら，
+$\theta\cdot v_i=0$ が全ての $i$ で成り立つ．
+\item 正の実数 $q_1,\dots,q_m>0$ が存在して
+$\sum_iq_i=1$ および
+$\sum_iq_iv_i=0$ を満たす．
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(2) を仮定する．
+$\theta\cdot v_i\ge0$ なら
+\[
+ 0=\theta\cdot\sum_iq_iv_i
+ =\sum_iq_i(\theta\cdot v_i)
+\]
+である．各 $q_i>0$ なので
+$\theta\cdot v_i=0$ が全ての $i$ で成立する．
+
+逆に (1) を仮定する．
+\[
+ L=\{(\theta\cdot v_1,\dots,\theta\cdot v_m):
+ \theta\in\mathbb R^d\}\subset\mathbb R^m
+\]
+と置く．
+$L$ は有限次元線形部分空間であり閉である．
+仮定は $L\cap[0,\infty)^m=\{0\}$ と同値である．
+標準単体
+\[
+ \Delta=\{u\in[0,\infty)^m:\sum_iu_i=1\}
+\]
+はコンパクト凸集合で，$L\cap\Delta=\varnothing$ である．
+従って $\Delta$ と $L$ の距離は正である．
+$\Delta$ 上で
+$\norm{u-P_Lu}$ を最小にする元 $u_*$ を取り，
+$w=u_*-P_Lu_*\in L^\perp$ と置く．
+$w\ne0$ である．
+任意の $u\in\Delta$ と $0<t<1$ について
+$u_*+t(u-u_*)\in\Delta$ であり，
+$u_*$ の最小性から
+\[
+ \norm{P_{L^\perp}u_*}^2
+ \le\norm{P_{L^\perp}(u_*+t(u-u_*))}^2.
+\]
+展開して $t\downarrow0$ とすると
+\[
+ \langle w,u-u_*\rangle\ge0.
+\]
+また $\langle w,u_*\rangle=\norm w^2>0$ なので
+$\langle w,u\rangle\ge\norm w^2$ が全ての $u\in\Delta$ で成り立つ．
+$\Delta$ の各頂点である標準基底ベクトルを代入すると
+$w_i\ge\norm w^2>0$ となる．
+$w\in L^\perp$ だから
+$\sum_iw_iv_i=0$ である．
+$q_i=w_i/\sum_jw_j$ と置けば
+(2) の条件を満たす．
+\end{proof}
+
+\begin{definition}
+$Q$ が $P$ と\emph{同値}であるとは，
+$P(A)=0$ と $Q(A)=0$ が同値であることをいう．
+有限状態で $P(\omega_i)>0$ なら，
+$Q$ が同値であることは $Q(\omega_i)>0$ が
+全ての $i$ で成り立つことと同値である．
+\end{definition}
+
+\begin{theorem}[一期間市場の無裁定基本定理]
+\label{thm:one-period-ftap}
+一期間の有限市場が無裁定であるための必要十分条件は，
+$P$ と同値な確率測度 $Q$ が存在して
+\[
+ E_Q[\widetilde S_1]=\widetilde S_0
+\]
+となることである．
+\end{theorem}
+\begin{proof}
+無裁定の定義は
+$\theta\cdot v_i\ge0$ が全ての $i$ で成り立ち，
+少なくとも一つの $i$ で真に正となる
+$\theta$ が存在しないことである．
+これは補題\ref{lem:finite-alternative}の (1) に等しい．
+従って正の重み $q_i$ で
+$\sum_iq_i=1$，
+$\sum_iq_iv_i=0$ となるものが存在することと同値である．
+$Q(\omega_i)=q_i$ と定めれば $Q$ は $P$ と同値であり，
+$\sum_iq_iv_i=0$ は
+$E_Q[\widetilde S_1]=\widetilde S_0$ と同値である．
+\end{proof}
+
+\section{多期間市場とマルチンゲール測度}
+
+\begin{definition}
+$Q$ が $P$ と同値で，
+割引価格過程 $(\widetilde S_t)$ が
+$Q$-マルチンゲール，すなわち
+\[
+ E_Q[\widetilde S_t\mid\mathcal F_{t-1}]
+ =\widetilde S_{t-1}\qquad(t=1,\dots,T)
+\]
+を満たすとき，
+$Q$ を\emph{同値マルチンゲール測度}（EMM）という．
+\end{definition}
+
+\begin{proposition}[マルチンゲール測度と無裁定]
+\label{prop:emm-no-arb}
+有限多期間市場にEMM $Q$ が存在すれば，
+その市場は無裁定である．
+\end{proposition}
+\begin{proof}
+初期資本零の自己金融戦略を取る．
+式 (SF) より
+\[
+ \widetilde V_T
+ =\sum_{k=1}^T\theta_k\cdot
+  (\widetilde S_k-\widetilde S_{k-1}).
+\]
+$\theta_k$ は $\mathcal F_{k-1}$-可測であり，
+状態数が有限なので全ての項は可積分である．
+条件付き期待値の塔の性質から
+\begin{align*}
+ E_Q[\theta_k\cdot(\widetilde S_k-\widetilde S_{k-1})]
+ &=E_Q[\theta_k\cdot
+   E_Q[\widetilde S_k-\widetilde S_{k-1}
+       \mid\mathcal F_{k-1}]]\\
+ &=0.
+\end{align*}
+従って $E_Q[\widetilde V_T]=0$ である．
+もし $\widetilde V_T\ge0$ かつ
+$P(\widetilde V_T>0)>0$ なら，
+$Q\sim P$ により $Q(\widetilde V_T>0)>0$
+となり，非負確率変数の期待値が正となる．
+これは矛盾する．
+\end{proof}
+
+\begin{lemma}[節点ごとの無裁定]\label{lem:local-na}
+有限多期間市場が無裁定なら，
+任意の時刻 $t<T$ と $\mathcal F_t$ の原子 $A$ に対し，
+$A$ から次の時刻へ進む一期間の条件付き市場は
+無裁定である．
+\end{lemma}
+\begin{proof}
+$A$ における条件付き市場に裁定ポジション
+$\theta\in\mathbb R^d$ があると仮定する．
+$t+1$ の時刻だけ $A$ 上で $\theta$ を保有し，
+それ以外の時刻と節点では零を保有する戦略を考える．
+$\theta_{t+1}=\theta\,1_A$ は
+$\mathcal F_t$-可測なので予測可能である．
+初期資本零に対する式 (SF) により，
+この戦略の最終割引利益は
+\[
+ 1_A\,\theta\cdot
+ (\widetilde S_{t+1}-\widetilde S_t)
+\]
+である．
+$A$ の内部で非負かつ正の値を取る状態があり，
+$A$ の外では零だから全体の裁定となる．
+仮定に反するので条件付き市場は無裁定である．
+\end{proof}
+
+\begin{theorem}[有限多期間市場の無裁定基本定理]
+\label{thm:finite-ftap}
+有限状態・有限期間市場について，
+無裁定であることとEMMが存在することは同値である．
+\end{theorem}
+\begin{proof}
+EMMの存在から無裁定は
+命題\ref{prop:emm-no-arb}による．
+逆に無裁定とする．
+補題\ref{lem:local-na}によって任意の時刻
+$t<T$ と $\mathcal F_t$ の原子 $A$ 上の
+条件付き一期間市場は無裁定である．
+その次の時刻の子節点を
+$A_1,\dots,A_r$ とし，
+割引価格の変化を $v_i$ とする．
+一期間の定理\ref{thm:one-period-ftap}から，
+全て正の重み $q(A_i\mid A)>0$ で
+\[
+ \sum_iq(A_i\mid A)=1,\qquad
+ \sum_iq(A_i\mid A)v_i=0
+\]
+となるものが存在する．
+有限個の節点全てについてこのような重みを選ぶ．
+$\mathcal F_0$ の原子が複数ある場合は，
+それぞれに正の初期確率を割り当てる．
+次に各時刻で親節点から子節点へ
+$q(A_i\mid A)$ を掛け合わせることにより，
+終端状態の確率 $Q(\omega)>0$ を定める．
+各節点からの遷移重みの和は1なので，
+これは全確率が1となる確率測度である．
+全状態に正の重みがあるため $Q\sim P$ である．
+さらに各節点 $A$ で
+\[
+ E_Q[\widetilde S_{t+1}-\widetilde S_t
+       \mid\mathcal F_t](A)
+ =\sum_iq(A_i\mid A)v_i=0.
+\]
+従って $\widetilde S$ は $Q$-マルチンゲールであり，
+$Q$ はEMMである．
+\end{proof}
+
+\section{複製価格とマルチンゲール}
+
+\begin{definition}
+満期 $T$ の非負とは限らない確率変数 $H$ を
+\emph{請求権}と呼ぶ．
+自己金融戦略の満期価値が $H$ に等しくなるとき，
+その戦略は $H$ を\emph{複製}するという．
+\end{definition}
+
+\begin{theorem}[複製可能な請求権の価格]\label{thm:replication}
+有限多期間市場にEMM $Q$ が存在し，
+請求権 $H$ が初期資本 $V_0$ の自己金融戦略で
+複製可能であるとする．
+このとき
+\[
+ \frac{V_0}{B_0}=E_Q\left[\frac H{B_T}\right].
+\]
+特に複製可能な請求権の初期価格は，
+EMMの選択によらず一意に定まる．
+\end{theorem}
+\begin{proof}
+自己金融式 (SF) の両辺について
+$Q$-期待値を取る．
+命題\ref{prop:emm-no-arb}の証明と同様に
+各割引利益の期待値は零なので
+\[
+ E_Q[\widetilde V_T]=\widetilde V_0=\frac{V_0}{B_0}
+\]
+となる．
+複製戦略の満期価値は $V_T=H$ であるから
+$\widetilde V_T=H/B_T$ となり表示式を得る．
+$Q$ は任意のEMMだったので，
+右辺はEMMによらず同じ値となる．
+\end{proof}
+
+\section{完全市場と二項モデル}
+
+\begin{definition}
+全ての請求権 $H:\Omega\to\mathbb R$ が
+自己金融戦略で複製可能である市場を\emph{完備市場}という．
+\end{definition}
+
+\begin{theorem}[一期間市場の完備性]\label{thm:complete-oneperiod}
+無裁定な一期間有限市場では，
+次の条件は同値である．
+\begin{enumerate}
+\item 市場は完備である．
+\item EMMは一意である．
+\item $\mathbb R^m$ は
+\[
+ (1,\dots,1),\quad
+ (v_1^{(j)},\dots,v_m^{(j)})\quad(j=1,\dots,d)
+\]
+によって張られる．
+ここで $v_i^{(j)}$ は状態 $\omega_i$ での
+割引価格変化 $v_i$ の第 $j$ 成分である．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+初期割引資本 $c$ と保有量 $\theta$ による
+満期割引価値は
+$(c+\theta\cdot v_i)_{i=1}^m\in\mathbb R^m$
+である．
+全ての請求権が複製可能であることは，
+これらの価値ベクトルが $\mathbb R^m$ を尽くすこと，
+すなわち (3) と同値である．
+
+EMMの確率ベクトル $q=(q_i)$ は
+\[
+ q_i>0,\qquad\sum_iq_i=1,\qquad
+ \sum_iq_iv_i=0
+\]
+を満たす．
+そのような正の解 $q_*$ が少なくとも一つ存在するのは
+無裁定基本定理による．
+上の等式の係数行列の各行が
+(3) に挙げたベクトルなので，
+その張る空間が $\mathbb R^m$ なら
+線形方程式の解は高々一つであり，
+EMMは一意である．
+逆に張る空間が真部分空間なら，
+それに直交する非零ベクトル $h\in\mathbb R^m$ が存在する．
+十分小さい $\varepsilon>0$ に対して
+$q_\pm=q_*\pm\varepsilon h$ はどちらも
+全ての成分が正であり，
+\[
+ \sum_i(q_\pm)_i=1,\qquad
+ \sum_i(q_\pm)_iv_i=0
+\]
+を満たす．
+二つは相異なるEMMなので一意性に反する．
+従って (2) から (3) が従う．
+\end{proof}
+
+\begin{example}[一期間二項モデル]
+銀行口座は $B_0=1$，$B_1=R>0$，
+株価は $S_0=s>0$ とする．
+$S_1=su$ または $S_1=sd$ となり，
+$u>d>0$ とする．
+この市場が無裁定となる条件は
+\[
+ d<R<u
+\]
+である．
+このときEMMは一意であり，上昇確率は
+\[
+ q=\frac{R-d}{u-d}
+\]
+となる．
+\end{example}
+\begin{proof}
+割引株価の上昇・下降時の変化はそれぞれ
+$s(u/R-1)$ と $s(d/R-1)$ である．
+無裁定はこれらが異符号であることに等しく，
+$u>R>d$ となる．
+一期間のEMM条件は
+\[
+ q\frac{su}{R}+(1-q)\frac{sd}{R}=s
+\]
+である．
+これを解くと $q=(R-d)/(u-d)$ となり，
+無裁定の条件から $0<q<1$ である．
+二つの状態に対し現金と株式の二つの
+独立な満期価値ベクトルがあるため，
+定理\ref{thm:complete-oneperiod}から市場は完備である．
+\end{proof}
+
+\begin{remark}
+有限状態の無裁定基本定理は，
+状態ごとの割引利益の線形空間と非負錐の分離によって
+証明できる．
+連続時間のBlack--Scholesモデルでは，
+これに対応する役割をGirsanovの定理と
+マルチンゲール表現定理が担う．
+\end{remark}
+
+\section{一期間市場で複製戦略を構成する}
+\begin{example}[株式オプションの無裁定価格]
+時刻0の株価を $S_0=100$ とし，
+時刻1には $S_u=120$ または $S_d=80$
+となる一期間二項市場を考える．
+銀行口座は時刻0の1単位が時刻1に $R=1.05$
+となる．$80<RS_0=105<120$ なので無裁定である．
+行使価格 $K=100$ のヨーロピアン・コールの満期支払は
+\[
+ H_u=(120-100)^+=20,\quad H_d=(80-100)^+=0.
+\]
+時刻0に株式を $\Delta$ 単位，銀行口座へ $B$ の金額を
+置く戦略で複製するには
+\[
+ 120\Delta+1.05 B=20,\qquad
+ 80\Delta+1.05 B=0
+\]
+が必要十分である．差を取ると
+$\Delta=20/(120-80)=1/2$．
+下の式に戻すと $B=-40/1.05=-800/21$．
+したがって無裁定価格は
+\[
+ V_0=100\Delta+B
+ =50-\frac{800}{21}=\frac{250}{21}.
+\]
+\end{example}
+\begin{proposition}[リスク中立確率での検算]
+上の価格は，リスク中立確率
+$q=(105-80)/(120-80)=5/8$ を用いた
+割引期待値 $R^{-1}E_QH$ と一致する．
+\end{proposition}
+\begin{proof}
+$0<q<1$ であり
+$q\,120+(1-q)\,80=105=RS_0$ だから
+割引株価は $Q$ の下でマルチンゲールである．
+\[
+ R^{-1}E_QH
+ =\frac1{1.05}\left(\frac58\cdot20
+                  +\frac38\cdot0\right)
+ =\frac{250}{21}.
+\]
+この値が複製費用に等しいことを確認した．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+同じ市場で満期支払が上状態10，下状態30となる
+請求権を複製する株式保有量と銀行口座への投資額を求めよ．
+
+\medskip\noindent\textbf{解答．}
+$120\Delta+1.05B=10$ と
+$80\Delta+1.05B=30$ の差から
+$\Delta=-1/2$．第二式より
+$1.05B=70$ なので $B=200/3$．
+初期費用は $100(-1/2)+200/3=50/3$．
+リスク中立期待値からも
+$R^{-1}((5/8)10+(3/8)30)
+ =(20/21)(35/2)=50/3$ と一致する．
+
+\end{document}
