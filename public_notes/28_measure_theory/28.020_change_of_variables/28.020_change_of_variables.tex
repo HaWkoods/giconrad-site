@@ -1,0 +1,939 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode 28.020_change_of_variables.tex (2回)
+%              dvipdfmx 28.020_change_of_variables.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false,pdfborder={0 0 0}]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Lebesgue積分の変数変換公式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+
+\section{変数変換公式の定式化}
+
+$\R^n$ に標準的なEuclidノルムを入れ，$m_n$ をその上の
+$n$ 次元Lebesgue測度とする．Lebesgue可測集合の全体を
+$\mathcal L^n$，Borel集合の全体を $\mathcal B^n$ と書く．
+開集合 $U$ 上の積分 $\int_U f(x)\,dx$ は
+$\int_U f\,dm_n$ を意味する．零集合とはLebesgue測度が零の
+可測集合をいう．$n=1$ のときには $m=m_1$ と略記する．
+
+\begin{definition}[微分同相写像]
+$U,V\subset\R^n$ を開集合とする．全単射
+$\Phi:U\to V$ が $C^1$ 級微分同相写像であるとは，
+$\Phi$ および $\Phi^{-1}$ がいずれも $C^1$ 級であることをいう．
+そのJacobi行列を $D\Phi(x)$ と書き，Jacobi行列式を
+$J_\Phi(x)=\det D\Phi(x)$ と書く．
+\end{definition}
+
+逆関数定理によって，$C^1$ 級写像 $\Phi$ が微分同相ならば
+$J_\Phi(x)\ne0$ がすべての $x\in U$ で成り立つ．逆に，
+$\Phi:U\to V$ が $C^1$ 級全単射で
+$J_\Phi\ne0$ ならば，逆関数定理を各点に適用して
+$\Phi^{-1}$ が $C^1$ 級であることが従う．
+
+\begin{theorem}[Lebesgue積分の変数変換公式]\label{thm:main}
+$U,V$ を $\R^n$ の開集合，$\Phi:U\to V$ を
+$C^1$ 級微分同相写像とする．このとき，
+任意の非負Lebesgue可測関数 $f:V\to[0,\infty]$ に対して，
+$f\circ\Phi$ はLebesgue可測であり，
+\begin{equation}\label{eq:main}
+ \int_V f(y)\,dy
+ =\int_U f(\Phi(x))\abs{J_\Phi(x)}\,dx
+\end{equation}
+が成り立つ．両辺が $+\infty$ となることも許す．
+また，複素数値Lebesgue可測関数 $f$ については，
+\[
+ f\in L^1(V)
+ \quad\Longleftrightarrow\quad
+ (f\circ\Phi)\abs{J_\Phi}\in L^1(U)
+\]
+であり，可積分ならば式~\eqref{eq:main} が成立する．
+\end{theorem}
+
+この定理の証明を第\ref{sec:global}節までに与える．
+注意すべき点は，Lebesgue可測性がBorel可測性とは異なり，
+任意の連続写像で逆像に関して保存されるわけではないことである．
+以下では測度零集合を適切に扱うことによって，
+合成関数の可測性を先に確立する．
+
+\begin{remark}[積分の二つの向き]
+$\Phi$ の逆写像を用いると，式~\eqref{eq:main} は
+\[
+ \int_U g(x)\,dx
+ =\int_V g(\Phi^{-1}(y))
+ \abs{\det D\Phi^{-1}(y)}\,dy
+\]
+とも書ける．ここで
+$\abs{\det D\Phi^{-1}(\Phi(x))}
+ =\abs{J_\Phi(x)}^{-1}$ である．
+公式を使用する際は，どちらが積分領域の元の座標かを
+明示しなければならない．
+\end{remark}
+
+\section{可測性と零集合}
+
+\begin{lemma}[Lipschitz写像による零集合の像]\label{lem:lipschitz-null}
+$E\subset\R^n$ をLebesgue零集合とし，$K\subset\R^n$ 上の写像
+$T:K\to\R^n$ がある $L\ge0$ に対して
+\[
+ \norm{T(x)-T(y)}\le L\norm{x-y}
+ \qquad(x,y\in K)
+\]
+を満たすとする．このとき $T(E\cap K)$ はLebesgue零集合である．
+\end{lemma}
+
+\begin{proof}
+$L=0$ ならば $T(K)$ は高々一点であり，結論は明らかである．
+$L>0$ とする．任意の $\varepsilon>0$ に対し，
+外測度の定義と零集合の特徴づけによって，
+$E$ を覆う可算個の開立方体
+$Q_j$（辺の長さを $\ell_j$ とする）で
+$\sum_j\ell_j^n<\varepsilon$ を満たすものが取れる．
+$Q_j\cap K\ne\varnothing$ ならば $z_j\in Q_j\cap K$ を取る．
+$x\in Q_j\cap K$ に対して
+\[
+ \norm{T(x)-T(z_j)}\le L\sqrt n\,\ell_j
+\]
+となる．したがって $T(Q_j\cap K)$ は，
+$T(z_j)$ を中心とする辺長 $2L\sqrt n\,\ell_j$ の
+閉立方体に含まれる．よって外測度の劣加法性より
+\[
+ m_n^*(T(E\cap K))
+ \le (2L\sqrt n)^n\sum_j\ell_j^n
+ <(2L\sqrt n)^n\varepsilon.
+\]
+$\varepsilon$ は任意であるから，この外測度は零である．
+Lebesgue測度の完備性により結論を得る．
+\end{proof}
+
+\begin{lemma}[局所Lipschitz写像と零集合]\label{lem:local-lip}
+$U\subset\R^n$ を開集合とし，$T:U\to\R^n$ を
+局所Lipschitz写像とする．このとき $U$ 内の任意の
+Lebesgue零集合 $E$ の像 $T(E)$ は零集合である．
+特に，$C^1$ 級写像はこの性質をもつ．
+\end{lemma}
+
+\begin{proof}
+$U$ の各点は，閉包が $U$ に含まれる小さい開立方体で覆える．
+有理座標の中心と有理数の辺長を用いることにより，
+このような立方体の可算族 $\{Q_j\}$ で $U=\bigcup_j Q_j$
+を満たすものが選べる．局所Lipschitz性によって各点の近傍に
+Lipschitz定数が存在するため，必要ならば $Q_j$ をさらに小さくして，
+$T$ が各 $Q_j$ 上Lipschitzであるような可算開被覆を取れる．
+補題~\ref{lem:lipschitz-null} を $E\cap Q_j$ に適用すれば
+$T(E\cap Q_j)$ は零集合である．したがって
+$T(E)=\bigcup_j T(E\cap Q_j)$ も零集合である．
+
+$T$ が $C^1$ 級ならば，任意の点を中心とする十分小さい閉球上で
+$\norm{DT}$ が有界である．その内部の任意の二点を結ぶ
+線分上で平均値の不等式を適用すれば，その球内で
+$T$ はLipschitzとなる．
+\end{proof}
+
+\begin{remark}
+一般の局所Lipschitz写像について「像の零集合性」は成立するが，
+Borel集合の像がBorel集合となるとは限らない．
+次の命題では，写像が同相であることも使用する．
+\end{remark}
+
+\begin{proposition}[微分同相写像による可測性の保存]\label{prop:measurable-sets}
+$U,V\subset\R^n$ を開集合とし，$\Phi:U\to V$ を
+$C^1$ 級微分同相写像とする．このとき
+$E\subset U$ がLebesgue可測であることと
+$\Phi(E)\subset V$ がLebesgue可測であることは同値である．
+また，$E$ が零集合であることと $\Phi(E)$ が零集合であることも同値である．
+\end{proposition}
+
+\begin{proof}
+$E$ がLebesgue可測ならば，あるBorel集合 $B\subset U$ と
+零集合 $N\subset U$ が存在して $E\mathbin\triangle B\subset N$
+となる．$\Phi$ は同相写像であるから $\Phi(B)$ は
+$V$ のBorel集合，したがって $\R^n$ のBorel集合である．
+また，補題~\ref{lem:local-lip} により $\Phi(N)$ は零集合である．
+全単射性から
+\[
+ \Phi(E)\mathbin\triangle\Phi(B)
+ =\Phi(E\mathbin\triangle B)\subset\Phi(N)
+\]
+となるので，$\Phi(E)$ はLebesgue可測である．
+$\Phi^{-1}$ について同じ議論を適用すると逆向きの含意が従う．
+零集合の同値性も，$\Phi$ および $\Phi^{-1}$ への
+補題~\ref{lem:local-lip} の適用から従う．
+\end{proof}
+
+\begin{corollary}[可測関数の合成]\label{cor:meascomp}
+命題~\ref{prop:measurable-sets} の仮定のもとで，
+$f:V\to\overline\R$ がLebesgue可測ならば
+$f\circ\Phi:U\to\overline\R$ はLebesgue可測である．
+複素数値の場合も同じである．
+\end{corollary}
+
+\begin{proof}
+任意の $a\in\R$ に対して
+\[
+ \{x\in U:f(\Phi(x))>a\}
+ =\Phi^{-1}(\{y\in V:f(y)>a\})
+\]
+が命題~\ref{prop:measurable-sets} によって可測である．
+複素数値の場合は実部と虚部に適用すればよい．
+\end{proof}
+
+\begin{lemma}[Borel代表]\label{lem:borelrep}
+$W\subset\R^n$ を開集合とする．Lebesgue可測な
+$f:W\to[0,\infty]$ に対して，Borel可測関数
+$g:W\to[0,\infty]$ で $f=g$ がほとんど至る所で
+成り立つものが存在する．実数値または複素数値の
+可測関数についても同様である．
+\end{lemma}
+
+\begin{proof}
+非負可測関数は非負単関数の増大列 $s_k$ の極限で表せる．
+各 $s_k$ は有限個のLebesgue可測集合の指示関数の線形結合である．
+各集合を零集合を除いて一致するBorel集合で置き換え，
+得られるBorel単関数を $t_k$ とする．これらの置換で生じる
+零集合の可算和を $N$ とすれば，$W\setminus N$ 上で
+$t_k=s_k$ がすべての $k$ について成り立つ．
+$g=\limsup_k t_k$ と定めればBorel可測であり，
+$W\setminus N$ 上で $g=f$ となる．
+一般の実数値関数には正負部分，複素数値関数には実部と
+虚部を適用すればよい．
+\end{proof}
+
+\section{一変数の変数変換}
+
+$C^1$ 級微分同相写像 $\phi:I\to J$ を考える．
+ここで $I,J$ は $\R$ の開区間（有界性は仮定しない）とする．
+$\phi'$ は零にならず連続であるから，符号は区間 $I$ 上で
+一定であり，$\phi$ は狭義単調である．
+
+\begin{lemma}[区間の測度と導関数]\label{lem:oneinterval}
+$\phi:I\to J$ を $C^1$ 級微分同相写像とする．
+$a,b\in J$，$a<b$ に対して
+\[
+ \int_{\phi^{-1}([a,b))}\abs{\phi'(t)}\,dt=b-a
+\]
+が成り立つ．
+\end{lemma}
+
+\begin{proof}
+$\alpha=\phi^{-1}(a)$，$\beta=\phi^{-1}(b)$ とする．
+$\phi$ が増加ならば $\alpha<\beta$ であり，
+$\phi^{-1}([a,b))=[\alpha,\beta)$ である．
+$\phi'>0$ と微積分学の基本定理から
+\[
+ \int_{\alpha}^{\beta}\abs{\phi'(t)}\,dt
+ =\phi(\beta)-\phi(\alpha)=b-a.
+\]
+減少の場合は $\beta<\alpha$ であり，
+$\phi^{-1}([a,b))=(\beta,\alpha]$ だから
+\[
+ \int_{\beta}^{\alpha}\abs{\phi'(t)}\,dt
+ =-\int_{\beta}^{\alpha}\phi'(t)\,dt=b-a.
+\]
+端点の取扱いはLebesgue積分に影響しない．
+\end{proof}
+
+\begin{proposition}[一変数の変数変換公式]\label{prop:onevar}
+$I,J\subset\R$ を開区間，$\phi:I\to J$ を
+$C^1$ 級微分同相写像とする．任意の非負Lebesgue可測関数
+$f:J\to[0,\infty]$ に対して
+\begin{equation}\label{eq:onevar}
+ \int_J f(s)\,ds
+ =\int_I f(\phi(t))\abs{\phi'(t)}\,dt
+\end{equation}
+が成立する．複素数値可積分関数にも成立する．
+\end{proposition}
+
+\begin{proof}
+$J$ 上のBorel集合 $A$ に対して
+\[
+ \mu(A)=\int_{\phi^{-1}(A)}\abs{\phi'(t)}\,dt
+\]
+と定める．$\mu$ はBorel集合族上の測度である．
+実際，$\phi$ は連続であり，互いに素なBorel集合
+$A_j$ の逆像も互いに素なので，積分の単調収束定理より
+$\mu(\bigcup_j A_j)=\sum_j\mu(A_j)$ である．
+補題~\ref{lem:oneinterval} により
+$\mu([a,b))=b-a=m([a,b))$ が $[a,b)\subset J$ で
+成立する．$J$ は有界な半開区間の可算個の和で被覆でき，
+両測度はそれらの上で有限である．半開区間族は
+Borel集合族を生成するので，測度の一意性定理から
+\begin{equation}\label{eq:mu-equals}
+ \mu(A)=m(A)\qquad(A\in\mathcal B(J))
+\end{equation}
+が従う．ここで端点が $J$ に含まれる有界半開区間だけに
+限ったとしても，一意性定理を適用するための生成族と
+可算有限測度被覆が得られる．
+
+$\mathbf1_A$ については式~\eqref{eq:onevar} が
+\eqref{eq:mu-equals} そのものである．
+Borel単関数については線形性で成り立ち，
+Borel可測な非負関数については単関数近似と
+単調収束定理によって成り立つ．
+
+一般のLebesgue可測な非負関数 $f$ については，
+補題~\ref{lem:borelrep} によりBorel可測な $g$ と
+零集合 $N\subset J$ を取って，$J\setminus N$ 上で
+$f=g$ とする．$\phi^{-1}$ は $C^1$ 級だから，
+補題~\ref{lem:local-lip} を $\phi^{-1}$ に適用すると
+$\phi^{-1}(N)$ は零集合である．よって両辺で
+$f$ を $g$ に置き換えても積分は変わらない．
+これで非負の場合が示された．
+複素数値可積分関数については $\abs f$ に公式を適用すると
+右辺の絶対可積分性が従う．実部・虚部の正負部分に
+同じ等式を適用して結論を得る．
+\end{proof}
+
+\begin{remark}[単調性とJacobi行列式の符号]
+$\phi$ が減少ならば $\phi'(t)<0$ であり，
+$\phi'$ そのものではなく絶対値を取る必要がある．
+例えば $\phi(t)=-t$ に $f=\mathbf1_{(-1,1)}$ を用いると，
+絶対値を外した右辺は $-2$ となるが左辺は $2$ である．
+\end{remark}
+
+\begin{example}[指数関数による変数変換]
+$\phi(t)=e^t$ は $\R$ から $(0,\infty)$ への微分同相である．
+したがって非負可測関数 $f$ に対して
+\[
+ \int_0^{\infty}f(s)\,ds
+ =\int_{-\infty}^{\infty}f(e^t)e^t\,dt.
+\]
+例えば $f(s)=e^{-s}$ を代入すると
+$\int_{-\infty}^{\infty}e^{-e^t+t}\,dt=1$ を得る．
+\end{example}
+
+\section{基本的な座標変換}\label{sec:elementary}
+
+ここから $n\ge2$ とする．$k\in\{1,\ldots,n\}$ に対して
+$x=(x_1,\ldots,x_n)$ の第 $k$ 座標を除いたベクトルを
+$\widehat x_k$ と書く．
+
+\begin{definition}[一座標変換]
+$W,Z\subset\R^n$ を開集合とする．$C^1$ 級微分同相写像
+$T:W\to Z$ が第 $k$ 座標のみを変更するとは，
+\[
+ T(x_1,\ldots,x_n)
+ =(x_1,\ldots,x_{k-1},\tau(x),x_{k+1},\ldots,x_n)
+\]
+と書けることをいう．このとき
+$\det DT(x)=\partial_k\tau(x)$ である．
+\end{definition}
+
+\begin{lemma}[開集合の切断]\label{lem:slices}
+$W\subset\R^n$ が開集合ならば，任意の
+$z\in\R^{n-1}$ に対して
+\[
+ W_z=\{t\in\R:(z_1,\ldots,z_{k-1},t,z_k,\ldots,z_{n-1})\in W\}
+\]
+は $\R$ の開集合であり，高々可算個の互いに素な
+開区間の和として表せる．
+\end{lemma}
+
+\begin{proof}
+座標挿入写像 $t\mapsto(z_1,\ldots,t,\ldots,z_{n-1})$ は
+連続なので $W_z$ は開集合である．$\R$ の任意の開集合の
+各連結成分は開区間であり，各成分に異なる有理数を
+対応させられるから，連結成分の個数は高々可算である．
+\end{proof}
+
+\begin{proposition}[一座標変換に対する公式]\label{prop:coordinate}
+$W,Z\subset\R^n$ を開集合とし，
+$T:W\to Z$ を第 $k$ 座標のみを変更する
+$C^1$ 級微分同相写像とする．このとき，任意の
+非負Lebesgue可測関数 $f:Z\to[0,\infty]$ に対して
+\begin{equation}\label{eq:coordinate}
+ \int_Z f(y)\,dy
+ =\int_W f(T(x))\abs{\partial_k\tau(x)}\,dx
+\end{equation}
+が成り立つ．
+\end{proposition}
+
+\begin{proof}
+まず $f$ が非負Borel可測であるとする．
+座標の置換により $k=n$ の場合だけを考えればよい．
+$x=(z,t)$，$z\in\R^{n-1}$，$t\in\R$ と書く．
+$T(z,t)=(z,\tau(z,t))$ である．
+$W_z$ の各連結成分 $I$ 上で $t\mapsto\tau(z,t)$ は
+$C^1$ 級写像であり，$\partial_t\tau\ne0$ だから
+狭義単調である．さらに $T$ が単射であるため，
+相異なる連結成分の像は交わらない．
+各成分 $I$ での写像 $t\mapsto\tau(z,t)$ は，
+開区間 $\tau(z,I)$ への $C^1$ 級微分同相写像となる．
+各成分に命題~\ref{prop:onevar} を適用し，
+非負性によってその等式を加え合わせると
+\begin{equation}\label{eq:slice}
+ \int_{Z_z}f(z,s)\,ds
+ =\int_{W_z}f(z,\tau(z,t))
+             \abs{\partial_t\tau(z,t)}\,dt
+\end{equation}
+を得る．ここで $Z_z$ は $Z$ の対応する切断である．
+実際，$T(W)=Z$ と $T$ が第 $n$ 座標以外を固定することから
+$Z_z=\tau(z,W_z)$ である．
+
+$\mathbf1_Z f$ および
+$\mathbf1_W(f\circ T)\abs{\partial_t\tau}$ は
+$\R^n$ 上に零拡張すれば非負Borel可測である．
+Tonelliの定理をこれらに適用し，式~\eqref{eq:slice} を
+$z\in\R^{n-1}$ 上で積分すれば式~\eqref{eq:coordinate} が従う．
+
+次に $f$ がLebesgue可測とする．補題~\ref{lem:borelrep} によって
+Borel代表 $g$ と零集合 $N\subset Z$ を取る．
+命題~\ref{prop:measurable-sets} により $T^{-1}(N)$ は
+零集合であるから，$f\circ T$ と $g\circ T$ は
+ほとんど至る所で一致する．これに非負可測な
+$\abs{\partial_k\tau}$ を掛けても，積分値は変わらない．
+左辺でも $f,g$ の積分値は一致する．ゆえに一般の場合にも成立する．
+\end{proof}
+
+\begin{corollary}[平行移動と座標置換]\label{cor:translation}
+$a\in\R^n$ とする．平行移動 $T_a(x)=x+a$ について
+任意の非負Lebesgue可測関数 $f$ に対し
+\[
+ \int_{\R^n}f(x+a)\,dx=\int_{\R^n}f(y)\,dy
+\]
+が成り立つ．また，座標を置換する線形写像 $P$ についても
+$\int_{\R^n}f(Px)\,dx=\int_{\R^n}f(y)\,dy$ である．
+\end{corollary}
+
+\begin{proof}
+平行移動は各座標への定数の加算を行う
+$n$ 個の一座標変換の合成として表せる．
+各変換の対応する偏導関数は $1$ なので
+命題~\ref{prop:coordinate} を繰り返し適用する．
+座標置換の場合，Lebesgue測度が一次元Lebesgue測度の
+$n$ 重積測度であることから，非負Borel可測関数に
+Tonelliの定理を繰り返し適用して積分順序を交換する．
+一般の非負Lebesgue可測関数の場合はBorel代表を取り，
+座標置換とその逆がLipschitzであることから
+零集合の逆像を無視できる．
+\end{proof}
+
+\begin{proposition}[正則線形変換]\label{prop:linear}
+$A\in GL_n(\R)$ とする．任意の非負Lebesgue可測関数
+$f:\R^n\to[0,\infty]$ について
+\begin{equation}\label{eq:linear}
+ \int_{\R^n}f(Ax)\abs{\det A}\,dx
+ =\int_{\R^n}f(y)\,dy
+\end{equation}
+が成り立つ．特に任意のLebesgue可測集合 $E$ に対して
+$\,m_n(AE)=\abs{\det A}\,m_n(E)$ が成り立つ．
+\end{proposition}
+
+\begin{proof}
+Gaussの消去法により，任意の正則行列 $A$ は有限個の
+基本行列の積として表せる．基本行列は
+(1) 二つの行を交換するもの，
+(2) 一つの行を非零数倍するもの，
+(3) 一つの行に別の行の定数倍を加えるもの
+の三種類である．
+
+(1) の座標置換は系~\ref{cor:translation} によって
+積分を変えず，行列式の絶対値は $1$ である．
+(2) は一座標変換であり，命題~\ref{prop:coordinate} による
+変換係数はその非零倍率の絶対値である．
+(3) も一座標変換で，変換される座標自身に関する偏導関数は
+$1$ だから，積分を変えない．
+したがって各基本行列 $E$ について
+\[
+ \int_{\R^n}f(Ex)\abs{\det E}\,dx
+ =\int_{\R^n}f(y)\,dy
+\]
+が成立する．これを行列の積に沿って順に適用し，
+$\det(AB)=\det A\det B$ を用いると式~\eqref{eq:linear} が従う．
+最後の主張は $f=\mathbf1_{AE}$ を代入すればよい．
+$AE$ の可測性は命題~\ref{prop:measurable-sets} から従う．
+\end{proof}
+
+\begin{example}[線形変換での面積と体積]
+$A=\begin{pmatrix}2&1\\1&1\end{pmatrix}$ とすると $\det A=1$ である．
+したがって $A$ は正則で，単位正方形の像の面積は $1$ となる．
+これに対し $B=\operatorname{diag}(2,3)$ は
+単位正方形を面積 $6$ の長方形に移す．
+この二つの例は，Jacobi行列式が座標方向ごとの倍率の
+単純な和ではなく，符号付き体積倍率であることを示す．
+\end{example}
+
+\section{局所的な変数変換公式}\label{sec:local}
+
+$C^1$ 級微分同相写像を各座標についての変換に分解する．
+証明の中心は，導関数を一点で恒等行列に正規化した上で，
+出力座標を一つずつ元の座標と置き換えることである．
+
+\begin{lemma}[座標ごとの局所分解]\label{lem:decomposition}
+$U,V\subset\R^n$ を開集合とし，$\Phi:U\to V$ を
+$C^1$ 級微分同相写像とする．任意の $p\in U$ に対して，
+ある開近傍 $W\subset U$ と，正則線形写像 $A$，平行移動 $b$，
+および一座標変換 $T_1,\ldots,T_n$ が存在して，$W$ 上で
+\begin{equation}\label{eq:decomp}
+ \Phi(x)=b+A(T_n\circ\cdots\circ T_1)(x)
+\end{equation}
+と表せる．ただし各 $T_k$ はその定義域と像との間の
+$C^1$ 級微分同相写像で，第 $k$ 座標のみを変更する．
+\end{lemma}
+
+\begin{proof}
+$b=\Phi(p)$，$A=D\Phi(p)$ とおく．
+$A$ は正則である．$H(x)=A^{-1}(\Phi(x)-b)$ と定めれば
+$H$ は $C^1$ 級であり
+\[
+ H(p)=0,\qquad DH(p)=I_n
+\]
+を満たす．$H=(h_1,\ldots,h_n)$ と書き，$0\le k\le n$ に対して
+\[
+ H_k(x)=(h_1(x),\ldots,h_k(x),x_{k+1},\ldots,x_n)
+\]
+とおく．$H_0$ は恒等写像，$H_n=H$ である．
+$DH(p)=I_n$ から，すべての $k$ で
+$DH_k(p)=I_n$，したがって $\det DH_k(p)=1$ が成り立つ．
+
+逆関数定理により各 $k$ について $p$ の開近傍 $W_k$ が存在し，
+$H_k|_{W_k}$ は像への $C^1$ 級微分同相写像である．
+$W=\bigcap_{k=0}^n W_k$ と置き，必要ならば $p$ を含む
+小さい開球に縮める．すると各制限
+$H_k|_W:W\to H_k(W)$ は微分同相写像である．
+$H_k(W)$ は開集合である．
+
+$1\le k\le n$ について
+\[
+ T_k=H_k\circ(H_{k-1}|_W)^{-1}:
+ H_{k-1}(W)\longrightarrow H_k(W)
+\]
+と定める．これは $C^1$ 級微分同相写像である．
+$H_k$ と $H_{k-1}$ は第 $k$ 座標以外のすべての
+座標が一致するので，任意の $u\in H_{k-1}(W)$ に対して
+$T_k(u)$ の第 $k$ 座標以外は $u$ に一致する．
+ゆえに $T_k$ は第 $k$ 座標のみを変更する．
+さらに定義から
+\[
+ T_n\circ\cdots\circ T_1
+ =H_n\circ H_0^{-1}=H|_W
+\]
+であり，$\Phi=b+AH$ に代入して式~\eqref{eq:decomp} を得る．
+\end{proof}
+
+\begin{remark}[局所性の必要性]
+各 $H_k$ のJacobi行列式が点 $p$ で非零であることは，
+全域 $U$ で $H_k$ が単射になることを意味しない．
+そのため補題~\ref{lem:decomposition} は局所的な分解である．
+大域的な公式を得るには局所公式を貼り合わせる必要がある．
+\end{remark}
+
+\begin{theorem}[局所的な変数変換公式]\label{thm:local}
+$\Phi:U\to V$ を定理~\ref{thm:main} の仮定を満たす写像とする．
+任意の $p\in U$ に対して，ある開近傍 $W\subset U$ が存在し，
+任意の非負Lebesgue可測関数 $f:\Phi(W)\to[0,\infty]$ に対し
+\begin{equation}\label{eq:local}
+ \int_{\Phi(W)}f(y)\,dy
+ =\int_W f(\Phi(x))\abs{\det D\Phi(x)}\,dx
+\end{equation}
+が成り立つ．
+\end{theorem}
+
+\begin{proof}
+補題~\ref{lem:decomposition} の $W$ を用い
+$H=T_n\circ\cdots\circ T_1$ とする．
+まず命題~\ref{prop:coordinate} を $T_n$ に適用し，
+次いで $T_{n-1},\ldots,T_1$ に順次適用する．
+非負可測性は系~\ref{cor:meascomp} により各段階で保たれる．
+その結果，任意の非負可測関数 $g$ に対し
+\[
+ \int_{H(W)}g(z)\,dz
+ =\int_W g(H(x))
+ \prod_{k=1}^{n}\abs{\det DT_k(H_{k-1}(x))}\,dx
+\]
+を得る．連鎖律と行列式の乗法性より
+\[
+ \prod_{k=1}^{n}\det DT_k(H_{k-1}(x))
+ =\det DH(x).
+\]
+ゆえに
+\begin{equation}\label{eq:Hlocal}
+ \int_{H(W)}g(z)\,dz
+ =\int_W g(H(x))\abs{\det DH(x)}\,dx.
+\end{equation}
+次に命題~\ref{prop:linear} と系~\ref{cor:translation} により，
+$z\mapsto b+Az$ に対する変数変換が成立する．
+$f$ を $\Phi(W)=b+AH(W)$ 上の非負可測関数とすると
+\[
+ \int_{\Phi(W)}f(y)\,dy
+ =\int_{H(W)}f(b+Az)\abs{\det A}\,dz.
+\]
+これを式~\eqref{eq:Hlocal} に代入する．
+$\Phi(x)=b+AH(x)$ と
+\[
+ \det D\Phi(x)=\det A\det DH(x)
+\]
+を用いれば式~\eqref{eq:local} が従う．
+\end{proof}
+
+\begin{corollary}[局所的な測度の変換]\label{cor:measurelocal}
+定理~\ref{thm:local} の近傍 $W$ とLebesgue可測集合
+$E\subset W$ に対して
+\[
+ m_n(\Phi(E))=\int_E\abs{\det D\Phi(x)}\,dx
+\]
+が成り立つ．
+\end{corollary}
+
+\begin{proof}
+$\Phi(E)$ は命題~\ref{prop:measurable-sets} により可測である．
+定理~\ref{thm:local} に $f=\mathbf1_{\Phi(E)}$ を適用する．
+$\Phi$ の単射性より
+$\mathbf1_{\Phi(E)}(\Phi(x))=\mathbf1_E(x)$ である．
+\end{proof}
+
+\section{大域的な変数変換公式}\label{sec:global}
+
+局所公式を足し合わせるためには，開被覆を
+単に重ね合わせるのではなく，互いに素な可測集合に
+分割する必要がある．
+
+\begin{lemma}[局所近傍の可算化]\label{lem:countablecover}
+$U\subset\R^n$ を開集合とし，各 $p\in U$ に対して
+$p\in W_p\subset U$ となる開集合 $W_p$ が与えられているとする．
+このとき，$U$ を覆う可算部分族
+$\{W_j\}_{j\ge1}$ が存在する．
+\end{lemma}
+
+\begin{proof}
+$\R^n$ の有理中心・有理半径の開球全体は可算な位相基底をなす．
+各基底球 $B$ で，ある $p\in U$ に対して
+$B\subset W_p$ となるものについて一つずつ
+対応する $W_p$ を選ぶ．得られる集合族は可算である．
+任意の $x\in U$ について $x\in W_x$ であるから，
+位相基底の性質により $x\in B\subset W_x$ となる
+基底球が存在する．したがって選ばれた $W_p$ の合併は $U$ に等しい．
+\end{proof}
+
+\begin{theorem}[大域的な変数変換公式]\label{thm:global}
+定理~\ref{thm:main} の結論は，すべての
+$C^1$ 級微分同相写像 $\Phi:U\to V$ について成立する．
+\end{theorem}
+
+\begin{proof}
+まず $n=1$ とする．$U$ の連結成分は高々可算個の
+互いに素な開区間 $I_j$ である．微分同相写像 $\Phi$ は
+連結成分を連結成分へ写すから，$J_j=\Phi(I_j)$ は
+$V$ の互いに素な開区間であり，$V=\bigsqcup_j J_j$ である．
+各 $\Phi|_{I_j}:I_j\to J_j$ に命題~\ref{prop:onevar} を適用し，
+非負積分の可算加法性を用いれば結論が得られる．
+複素数値可積分関数についても，絶対値に対する等式の後に
+実部・虚部を扱えばよい．以下 $n\ge2$ とする．
+
+各 $p\in U$ に定理~\ref{thm:local} を適用し，
+局所公式が成立する近傍 $W_p$ を取る．
+補題~\ref{lem:countablecover} により可算個
+$W_1,W_2,\ldots$ で $U$ を覆える．
+\[
+ E_1=W_1,\qquad
+ E_j=W_j\setminus\bigcup_{i<j}W_i\quad(j\ge2)
+\]
+とおく．各 $E_j$ はBorel集合であり，互いに素で，
+$U=\bigsqcup_{j=1}^{\infty}E_j$ である．
+$F_j=\Phi(E_j)$ とおけば，$F_j$ もBorel集合で，
+$V=\bigsqcup_{j=1}^{\infty}F_j$ となる．
+
+任意の非負Lebesgue可測関数 $f:V\to[0,\infty]$ について，
+$\Phi(W_j)$ 上の非負可測関数 $f\mathbf1_{F_j}$ を考える．
+定理~\ref{thm:local} を $W_j$ 上で適用すると
+\begin{align*}
+ \int_{F_j}f(y)\,dy
+ &=\int_{\Phi(W_j)}f(y)\mathbf1_{F_j}(y)\,dy\\
+ &=\int_{W_j}f(\Phi(x))
+  \mathbf1_{F_j}(\Phi(x))\abs{J_\Phi(x)}\,dx\\
+ &=\int_{E_j}f(\Phi(x))\abs{J_\Phi(x)}\,dx.
+\end{align*}
+最後の等式では $\Phi$ の単射性を用いた．
+各辺を $j$ について和を取ると，Lebesgue積分の
+可算加法性（単調収束定理）より
+\begin{align*}
+ \int_V f(y)\,dy
+ &=\sum_j\int_{F_j}f(y)\,dy\\
+ &=\sum_j\int_{E_j}f(\Phi(x))\abs{J_\Phi(x)}\,dx\\
+ &=\int_U f(\Phi(x))\abs{J_\Phi(x)}\,dx.
+\end{align*}
+系~\ref{cor:meascomp} により合成関数の可測性も既に示されている．
+これで非負関数に対する定理~\ref{thm:main} が証明された．
+
+複素数値可測関数 $f$ について，非負関数 $\abs f$ に
+示した公式を適用すると
+\[
+ \int_V\abs{f(y)}\,dy
+ =\int_U\abs{f(\Phi(x))}\abs{J_\Phi(x)}\,dx.
+\]
+$\abs{J_\Phi(x)}>0$ であることに注意すれば，
+両辺の有限性は絶対可積分性の同値性を意味する．
+有限である場合に，実部・虚部の正負部分それぞれに
+非負関数版を適用して差を取れば，複素数値の
+式~\eqref{eq:main} が成立する．
+\end{proof}
+
+\begin{corollary}[可測集合の体積]\label{cor:volume}
+定理~\ref{thm:main} の仮定のもとで，任意の
+Lebesgue可測集合 $E\subset U$ に対して
+\begin{equation}\label{eq:volume}
+ m_n(\Phi(E))=\int_E\abs{J_\Phi(x)}\,dx
+\end{equation}
+が成り立つ．両辺が無限大でもよい．
+\end{corollary}
+
+\begin{proof}
+命題~\ref{prop:measurable-sets} によって $\Phi(E)$ は可測である．
+定理~\ref{thm:main} に $f=\mathbf1_{\Phi(E)}$ を代入し，
+単射性から
+$\mathbf1_{\Phi(E)}\circ\Phi=\mathbf1_E$ を用いる．
+\end{proof}
+
+\begin{corollary}[領域を制限した公式]\label{cor:restricted}
+$A\subset U$ をLebesgue可測集合とする．
+任意の非負Lebesgue可測関数 $f:V\to[0,\infty]$ に対して
+\[
+ \int_{\Phi(A)}f(y)\,dy
+ =\int_A f(\Phi(x))\abs{J_\Phi(x)}\,dx
+\]
+が成り立つ．複素数値絶対可積分関数にも同様の等式が成立する．
+\end{corollary}
+
+\begin{proof}
+可測集合 $\Phi(A)$ の指示関数を $f$ に掛けた
+$g=f\mathbf1_{\Phi(A)}$ に定理~\ref{thm:main} を適用する．
+$g\circ\Phi=(f\circ\Phi)\mathbf1_A$ が成り立つ．
+\end{proof}
+
+\begin{remark}[測度の押し出しとしての解釈]
+$U$ 上の測度 $\nu(E)=\int_E\abs{J_\Phi(x)}\,dx$ を考えると，
+式~\eqref{eq:volume} は
+$\Phi_*\nu=m_n|_V$ を意味する．ここで
+$\Phi_*\nu(B)=\nu(\Phi^{-1}(B))$ である．
+したがって変数変換公式は，測度の押し出しに関する
+等式とみなすこともできる．この見方はRadon--Nikodymの定理と
+結び付くが，本証明では同定理を用いていない．
+\end{remark}
+
+\section{応用と注意}
+
+\subsection{極座標と零集合の除去}
+
+\begin{proposition}[平面の極座標変換]\label{prop:polar}
+$\R^2$ 上の任意の非負Lebesgue可測関数 $f$ に対して
+\begin{equation}\label{eq:polar}
+ \int_{\R^2}f(x,y)\,dx\,dy
+ =\int_0^{2\pi}\int_0^{\infty}
+  f(r\cos\theta,r\sin\theta)r\,dr\,d\theta
+\end{equation}
+が成り立つ．$f$ が絶対可積分ならば，複素数値の場合にも成立する．
+\end{proposition}
+
+\begin{proof}
+$U=(0,\infty)\times(0,2\pi)$ とし，
+\[
+ \Phi(r,\theta)=(r\cos\theta,r\sin\theta)
+\]
+とおく．その像は
+$V=\R^2\setminus\{(x,0):x\ge0\}$ である．
+$\Phi:U\to V$ は $C^1$ 級微分同相写像である．
+実際，各 $V$ の点には一意に
+$r=\sqrt{x^2+y^2}>0$ と $\theta\in(0,2\pi)$ が定まり，
+その逆写像は $V$ 上 $C^1$ 級である．
+Jacobi行列は
+\[
+ D\Phi(r,\theta)
+ =\begin{pmatrix}
+   \cos\theta&-r\sin\theta\\
+   \sin\theta&r\cos\theta
+  \end{pmatrix},
+ \qquad\det D\Phi(r,\theta)=r.
+\]
+定理~\ref{thm:main} を $U,V$ に適用して
+$\int_Vf=\int_U(f\circ\Phi)r$ を得る．
+$\R^2\setminus V$ は一次元の半直線であり，
+二次元Lebesgue測度は零である．したがって
+$\int_Vf=\int_{\R^2}f$ であり，Tonelliの定理によって
+右辺を逐次積分と書けば式~\eqref{eq:polar} を得る．
+\end{proof}
+
+\begin{example}[Gauss積分の計算]\label{ex:gauss}
+$f(x,y)=e^{-(x^2+y^2)}$ と置く．
+式~\eqref{eq:polar} により
+\begin{align*}
+ \int_{\R^2}e^{-(x^2+y^2)}\,dx\,dy
+ &=\int_0^{2\pi}\int_0^\infty e^{-r^2}r\,dr\,d\theta\\
+ &=2\pi\left[-\frac12 e^{-r^2}\right]_{r=0}^{\infty}=\pi.
+\end{align*}
+一方，Tonelliの定理から左辺は
+$(\int_{\R}e^{-t^2}\,dt)^2$ に等しい．
+この積分は正であるから
+\[
+ \int_{-\infty}^{\infty}e^{-t^2}\,dt=\sqrt\pi.
+\]
+\end{example}
+
+\subsection{球面座標}
+
+\begin{proposition}[三次元の球面座標変換]\label{prop:spherical}
+任意の非負Lebesgue可測関数 $f:\R^3\to[0,\infty]$ に対して
+\begin{align}\label{eq:spherical}
+ \int_{\R^3}f(x,y,z)\,dx\,dy\,dz
+ &=\int_0^{2\pi}\int_0^\pi\int_0^\infty
+ f(r\sin\varphi\cos\theta,\notag\\[-1pt]
+ &\qquad r\sin\varphi\sin\theta,r\cos\varphi)
+ r^2\sin\varphi\,dr\,d\varphi\,d\theta
+\end{align}
+が成り立つ．$f$ が絶対可積分ならば，複素数値の場合にも成立する．
+\end{proposition}
+
+\begin{proof}
+$U=(0,\infty)\times(0,\pi)\times(0,2\pi)$ 上で
+\[
+ \Psi(r,\varphi,\theta)
+ =(r\sin\varphi\cos\theta,
+   r\sin\varphi\sin\theta,r\cos\varphi)
+\]
+と定める．$\Psi$ の像は
+$V=\R^3\setminus\{(x,0,z):x\ge0,\ z\in\R\}$ である．
+すなわち，$y=0$ の非負 $x$ 側の半平面を除いた集合である．
+$\Psi:U\to V$ は $C^1$ 級微分同相写像である．
+実際，$r=\sqrt{x^2+y^2+z^2}$，
+$\varphi=\arccos(z/r)$ とし，$\theta$ を
+$xy$ 平面内の偏角で $(0,2\pi)$ に取ることにより
+逆写像が与えられ，各関数は $V$ 上で $C^1$ 級である．
+
+Jacobi行列は
+\[
+ D\Psi=\begin{pmatrix}
+ \sin\varphi\cos\theta&r\cos\varphi\cos\theta&-r\sin\varphi\sin\theta\\
+ \sin\varphi\sin\theta&r\cos\varphi\sin\theta&r\sin\varphi\cos\theta\\
+ \cos\varphi&-r\sin\varphi&0
+ \end{pmatrix}.
+\]
+直接展開すると $\det D\Psi=r^2\sin\varphi$ となる．
+これは $U$ 上で正である．定理~\ref{thm:main} により
+$\int_V f=\int_U(f\circ\Psi)r^2\sin\varphi$ となる．
+$\R^3\setminus V$ は平面内に含まれるから
+三次元Lebesgue測度が零であり，
+Tonelliの定理と合わせて式~\eqref{eq:spherical} を得る．
+\end{proof}
+
+\begin{example}[球の体積]
+$B_R=\{(x,y,z)\in\R^3:x^2+y^2+z^2<R^2\}$ とする．
+式~\eqref{eq:spherical} に $f=\mathbf1_{B_R}$ を代入すると
+\begin{align*}
+ m_3(B_R)
+ &=\int_0^{2\pi}d\theta\int_0^\pi\sin\varphi\,d\varphi
+  \int_0^R r^2\,dr\\
+ &=2\pi\cdot2\cdot\frac{R^3}{3}
+ =\frac{4\pi R^3}{3}.
+\end{align*}
+\end{example}
+
+\subsection{非単射写像と仮定の境界}
+
+\begin{example}[非単射性による重複]\label{ex:noninjective}
+$\phi:(-1,1)\to[0,1)$，$\phi(t)=t^2$ を考える．
+$\phi$ は単射ではない．任意の非負可測関数
+$f:[0,1)\to[0,\infty]$ に対して，
+$(0,1)$ と $(-1,0)$ に分けて命題~\ref{prop:onevar} を適用すれば
+\[
+ \int_{-1}^1 f(t^2)\,2\abs t\,dt
+ =2\int_0^1 f(s)\,ds.
+\]
+すなわちJacobi行列式の絶対値だけで積分すると，
+像を二重に数えてしまう．
+非単射写像に対する一般の公式では，像の各点の
+逆像の個数を表す重複度を考慮する必要がある．
+\end{example}
+
+\begin{remark}[微分同相条件は十分条件である]
+$\phi(t)=t^3$ は $\R$ 上の $C^1$ 級全単射だが，
+$\phi'(0)=0$ のため逆写像は原点で微分可能ではない．
+それでも $(-\infty,0)$ と $(0,\infty)$ の各区間で
+命題~\ref{prop:onevar} が適用でき，原点は零集合なので
+\[
+ \int_{\R}f(s)\,ds
+ =\int_{\R}f(t^3)\,3t^2\,dt
+\]
+がすべての非負Lebesgue可測関数 $f$ について成立する．
+したがって定理~\ref{thm:main} の仮定は必要条件ではない．
+\end{remark}
+
+\begin{remark}[公式の適用範囲]
+$C^1$ 級でなくても成立する変数変換公式や，
+非単射写像について重複度を加えた面積公式は存在する．
+しかし，その証明には一般に測度の微分定理や
+Lipschitz写像の近似微分などが関わる．
+本ノートはそれらを仮定せず，微分同相写像に対する公式を
+測度論の基本定理と逆関数定理から導いた．
+\end{remark}
+
+\section*{参考文献}
+\begin{enumerate}[label={[\arabic*]},leftmargin=2.6zw]
+ \item V. I. Bogachev, \emph{Measure Theory}, Vol. I,
+ Springer, 2007, \S3.7, pp.~194--197.
+ \item V. I. Bogachev and O. G. Smolyanov,
+ \emph{Real and Functional Analysis}, Springer, 2020,
+ Chap.~3 (change of variables and Lebesgue integration).
+\end{enumerate}
+
+\end{document}

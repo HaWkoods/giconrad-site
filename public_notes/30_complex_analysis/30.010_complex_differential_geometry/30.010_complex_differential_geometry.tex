@@ -1,0 +1,487 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{複素微分の幾何学}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Cauchy--Riemann方程式，Jacobi行列，正則関数．
+本稿の具体的な到達課題は，正則写像の微分を回転と拡大縮小に分解する．
+
+\section{複素構造と実線形写像}
+
+本稿では $\mathbb C$ を実二次元線形空間 $\mathbb R^2$ と同一視し，
+$z=x+iy$ と書く．
+複素数の乗法が与える実線形写像を幾何学的に記述する．
+
+\begin{definition}
+$\mathbb R^2$ 上の線形写像
+\[
+ J:\mathbb R^2\to\mathbb R^2,\qquad J(x,y)=(-y,x)
+\]
+を標準複素構造という．行列表示は
+$J=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$ であり，
+$J^2=-I$ を満たす．
+\end{definition}
+
+\begin{lemma}[複素線形性の特徴づけ]\label{lem:complex-linear}
+実線形写像 $A:\mathbb R^2\to\mathbb R^2$ について，
+以下は同値である．
+\begin{enumerate}
+\item $A$ は $\mathbb C$ 上線形である．
+\item $AJ=JA$ が成り立つ．
+\item ある $a,b\in\mathbb R$ に対して
+\[
+ A=\begin{pmatrix}a&-b\\ b&a\end{pmatrix}
+\]
+と書ける．
+\end{enumerate}
+このとき $A$ は複素数 $a+ib$ の乗法に等しい．
+\end{lemma}
+\begin{proof}
+実線形な $A$ が複素線形であることは
+$A(iz)=iA(z)$ が全ての $z$ に対して成立することと同値であり，
+これは $AJ=JA$ に等しい．
+$A=\begin{pmatrix}a&c\\b&d\end{pmatrix}$ として
+$AJ$ と $JA$ を計算すると
+\[
+ AJ=\begin{pmatrix}c&-a\\d&-b\end{pmatrix},\qquad
+ JA=\begin{pmatrix}-b&-d\\a&c\end{pmatrix}
+\]
+なので $AJ=JA$ は $c=-b,d=a$ と同値である．
+最後の行列は $x+iy$ を
+$(a+ib)(x+iy)$ に写す作用に一致する．
+\end{proof}
+
+\begin{proposition}\label{prop:rotation}
+$a+ib\ne0$ とすると，
+複素数 $a+ib$ の乗法を表す実行列は
+正の相似拡大と回転の合成である．
+具体的には
+\[
+ \begin{pmatrix}a&-b\\b&a\end{pmatrix}
+ =|a+ib|
+ \begin{pmatrix}\cos\theta&-\sin\theta\\
+                 \sin\theta&\cos\theta\end{pmatrix},
+ \qquad a+ib=|a+ib|e^{i\theta}.
+\]
+その行列式は $a^2+b^2>0$ である．
+\end{proposition}
+\begin{proof}
+極形式の定義から $a=r\cos\theta$，
+$b=r\sin\theta$ と表せる．
+行列に代入すれば表示式が得られる．
+行列式は $a^2+b^2=r^2>0$ である．
+\end{proof}
+
+\section{実微分と複素微分}
+
+\begin{definition}
+開集合 $U\subset\mathbb C$ 上の写像
+$f:U\to\mathbb C$ が $z_0\in U$ で
+\emph{複素微分可能}であるとは，
+\[
+ f'(z_0)=\lim_{h\to0,\ h\ne0}
+ \frac{f(z_0+h)-f(z_0)}{h}
+\]
+が複素数として存在することをいう．
+$U$ の全点で複素微分可能な関数を正則関数という．
+\end{definition}
+
+\begin{theorem}[複素微分と実Fr\'echet微分]\label{thm:cr}
+$f=u+iv:U\to\mathbb C$ とし，
+$z_0=x_0+iy_0\in U$ とする．
+次の二条件は同値である．
+\begin{enumerate}
+\item $f$ は $z_0$ で複素微分可能である．
+\item $f:\mathbb R^2\to\mathbb R^2$ は $z_0$ で
+実Fr\'echet微分可能であり，その微分 $Df(z_0)$ は
+複素線形である．
+\end{enumerate}
+この場合，偏導関数は
+\[
+ u_x=v_y,\qquad u_y=-v_x
+ \tag{CR}
+\]
+を満たし，
+$f'(z_0)=u_x(z_0)+iv_x(z_0)$ である．
+\end{theorem}
+\begin{proof}
+$f$ が複素微分可能なら
+\[
+ f(z_0+h)=f(z_0)+f'(z_0)h+o(|h|)
+\]
+が成立する．$h\mapsto f'(z_0)h$ は
+複素線形，従って実線形なので，
+これは実Fr\'echet微分可能性と
+$Df(z_0)h=f'(z_0)h$ を意味する．
+よって $Df(z_0)$ は複素線形である．
+
+逆に実Fr\'echet微分可能で
+$Df(z_0)$ が複素線形なら，
+補題\ref{lem:complex-linear}により
+$Df(z_0)h=ch$ となる $c\in\mathbb C$ が存在する．
+\[
+ \frac{f(z_0+h)-f(z_0)}h
+ =c+\frac{o(|h|)}h\longrightarrow c
+\]
+なので複素微分可能で $f'(z_0)=c$ である．
+実ヤコビ行列は
+$\begin{pmatrix}u_x&u_y\\v_x&v_y\end{pmatrix}$
+である．補題\ref{lem:complex-linear}から
+これが複素線形であることは
+$u_x=v_y,u_y=-v_x$ と同値である．
+また複素乗法係数は $u_x+iv_x$ である．
+\end{proof}
+
+\begin{remark}
+Cauchy--Riemann方程式がある点で成立するだけでは，
+その点で複素微分可能であることは一般には従わない．
+定理\ref{thm:cr}の逆方向には
+\emph{実Fr\'echet微分可能性}を仮定している．
+ただし $u,v$ が $C^1$ 級であれば実Fr\'echet微分可能なので，
+Cauchy--Riemann方程式は複素微分可能性の十分条件となる．
+\end{remark}
+
+\begin{example}[Cauchy--Riemann方程式だけでは不十分]
+\[
+ g(z)=
+ \begin{cases}
+ \dfrac{x^2y}{x^2+y^2}&(z=x+iy\ne0),\\
+ 0&(z=0)
+ \end{cases}
+\]
+と定める．このとき原点で
+$u_x=u_y=v_x=v_y=0$ が成立するが，
+$g$ は原点で複素微分可能でない．
+\end{example}
+\begin{proof}
+$g$ は実数値であり，$x$ 軸上と $y$ 軸上で
+恒等的に零である．従って原点で両偏導関数は零で，
+虚部も零なのでCauchy--Riemann方程式が成立する．
+しかし $x=y=t\ne0$ とすると
+$g(t+it)=t/2$ だから
+\[
+ \frac{g(t+it)-g(0)}{t+it}=\frac1{2(1+i)}
+\]
+となる．一方，実数方向 $h=t$ では差商が零であるため，
+複素微分係数は存在しない．
+\end{proof}
+
+\section{Wirtinger微分}
+
+\begin{definition}
+$C^1$ 級関数 $f=u+iv$ に対して
+\[
+ \partial_zf=\frac12(\partial_xf-i\partial_yf),
+ \qquad
+ \partial_{\bar z}f=\frac12(\partial_xf+i\partial_yf)
+\]
+と定める．これらをWirtinger微分という．
+\end{definition}
+
+\begin{proposition}\label{prop:wirtinger}
+$f$ が $C^1$ 級であるとする．
+このとき実微分は
+\[
+ df=(\partial_zf)\,dz+(\partial_{\bar z}f)\,d\bar z
+\]
+と書ける．さらに $f$ が正則であることと
+$\partial_{\bar z}f=0$ が成立することは同値である．
+\end{proposition}
+\begin{proof}
+$dz=dx+i\,dy$，$d\bar z=dx-i\,dy$ と書けば
+\begin{align*}
+ (\partial_zf)\,dz+(\partial_{\bar z}f)\,d\bar z
+ &=\tfrac12(f_x-if_y)(dx+i\,dy)\\
+ &\quad+\tfrac12(f_x+if_y)(dx-i\,dy)\\
+ &=f_xdx+f_ydy=df.
+\end{align*}
+$\partial_{\bar z}f=0$ は $f_x+if_y=0$ と同値であり，
+$f=u+iv$ に分けると
+$u_x=v_y$，$u_y=-v_x$ という
+Cauchy--Riemann方程式になる．
+$f$ は $C^1$ 級なので定理\ref{thm:cr}から
+正則性と同値である．
+\end{proof}
+
+\begin{example}
+$f(z)=z^2$ は $\partial_{\bar z}f=0$，
+$f(z)=\bar z$ は $\partial_zf=0$，
+$f(z)=|z|^2=z\bar z$ は
+$\partial_zf=\bar z$，
+$\partial_{\bar z}f=z$ を満たす．
+\end{example}
+\begin{proof}
+$x,y$ に関する偏微分をそれぞれ計算すればよい．
+例えば $|z|^2=x^2+y^2$ について
+$f_x=2x$，$f_y=2y$ だから
+$\partial_zf=x-iy=\bar z$，
+$\partial_{\bar z}f=x+iy=z$ である．
+\end{proof}
+
+\section{等角性と向き}
+
+\begin{theorem}[正則写像の局所等角性]\label{thm:conformal}
+$f:U\to\mathbb C$ を正則関数とし，
+$z_0\in U$ で $f'(z_0)\ne0$ とする．
+このとき $Df(z_0)$ は非零の相似拡大と回転の合成であり，
+任意の非零の接ベクトル $v,w\in\mathbb R^2$ の間の
+向き付き角度を保つ．さらに
+\[
+ \det Df(z_0)=|f'(z_0)|^2>0.
+\]
+\end{theorem}
+\begin{proof}
+定理\ref{thm:cr}から
+$Df(z_0)$ は $f'(z_0)$ の複素乗法を表す．
+命題\ref{prop:rotation}によって，
+これが正の相似拡大と回転の合成であることが従う．
+相似拡大はベクトルの長さを同じ比で変え，
+回転は内積を保存する．
+従って二つのベクトルのなす角を保つ．
+行列式は $|f'(z_0)|^2$ で正なので，向きも保つ．
+\end{proof}
+
+\begin{remark}
+$f'(z_0)=0$ の場合には，
+微分 $Df(z_0)$ は零写像である．
+その点で微分を使って角度を定義することはできないため，
+等角性の主張には $f'(z_0)\ne0$ が必要である．
+例えば $f(z)=z^2$ は原点で $f'(0)=0$ である．
+\end{remark}
+
+\begin{proposition}[反正則写像の向き]\label{prop:antihol}
+$f(z)=\overline z$ は実線形の等長写像であるが，
+$\det Df=-1$ なので向きを反転する．
+\end{proposition}
+\begin{proof}
+$f(x+iy)=x-iy$ なので
+\[
+ Df=\begin{pmatrix}1&0\\0&-1\end{pmatrix}.
+\]
+これは直交行列で行列式が $-1$ である．
+従って長さと角度の絶対値は保存するが向きは反転する．
+\end{proof}
+
+\section{局所逆写像}
+
+\begin{theorem}[正則逆写像の局所的存在]\label{thm:local-inverse}
+$f:U\to\mathbb C$ を $C^1$ 級正則関数，
+$f'(z_0)\ne0$ とする．
+このとき $z_0$ の開近傍 $U_0$ と
+$f(z_0)$ の開近傍 $V_0$ が存在して
+$f|_{U_0}:U_0\to V_0$ は全単射となり，
+その逆写像は正則である．
+さらに $w=f(z)\in V_0$ に対して
+\[
+ (f^{-1})'(w)=\frac1{f'(z)}
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+定理\ref{thm:conformal}により
+$\det Df(z_0)=|f'(z_0)|^2>0$ だから
+$Df(z_0)$ は実線形な可逆写像である．
+実逆写像定理を適用すると，
+適切な開近傍 $U_0,V_0$ に対して
+$f|_{U_0}$ は $C^1$ 級微分同相となり，
+その逆写像 $g:V_0\to U_0$ の実微分は
+$Dg(w)=(Df(z))^{-1}$ となる．
+$Df(z)$ は複素数 $f'(z)$ の乗法なので，
+その逆写像は複素数 $1/f'(z)$ の乗法である．
+従って $Dg(w)$ は複素線形であり，
+定理\ref{thm:cr}から $g$ は複素微分可能である．
+また複素導関数は $1/f'(z)$ である．
+\end{proof}
+
+\section{調和関数と正則関数}
+
+\begin{definition}
+開集合 $U\subset\mathbb R^2$ 上の実数値
+$C^2$ 級関数 $u$ が\emph{調和}であるとは，
+\[
+ \Delta u=u_{xx}+u_{yy}=0
+\]
+を満たすことをいう．
+\end{definition}
+
+\begin{proposition}[正則関数の実部と虚部]\label{prop:harmonic}
+$f=u+iv$ が $C^2$ 級正則関数なら，
+$u,v$ はいずれも調和関数である．
+\end{proposition}
+\begin{proof}
+Cauchy--Riemann方程式から
+$u_x=v_y$，$u_y=-v_x$ である．
+両辺をさらに微分すると
+\[
+ u_{xx}=(v_y)_x=v_{yx},\qquad
+ u_{yy}=-(v_x)_y=-v_{xy}.
+\]
+$C^2$ 級なので混合偏導関数の交換が可能であり，
+$\Delta u=0$ を得る．
+同様に
+$v_x=-u_y$，$v_y=u_x$ から
+$\Delta v=-u_{yx}+u_{xy}=0$ が従う．
+\end{proof}
+
+\begin{theorem}[星状領域における調和共役]\label{thm:conjugate}
+$U\subset\mathbb R^2$ を星状開集合とし，
+$u\in C^2(U,\mathbb R)$ が調和関数であるとする．
+このとき $v\in C^2(U,\mathbb R)$ が存在して
+$f=u+iv$ は正則となる．
+さらに $v$ は加法定数を除いて一意である．
+\end{theorem}
+\begin{proof}
+$U$ の星状中心を $a=(a_1,a_2)$ とする．
+$P=-u_y$，$Q=u_x$ と置くと
+\[
+ \partial_xQ-\partial_yP=u_{xx}+u_{yy}=\Delta u=0.
+\]
+そこで
+\[
+ v(x)=\int_0^1
+ \bigl(P(a+t(x-a))(x_1-a_1)
+       +Q(a+t(x-a))(x_2-a_2)\bigr)\,dt
+\]
+と定める．$u\in C^2$ なので積分と偏微分を交換できる．
+$x_1$ に関する微分は
+\begin{align*}
+ \partial_{x_1}v(x)
+ &=\int_0^1\bigl(
+   P(a+t(x-a))\\
+ &\qquad+t(x_1-a_1)P_x(a+t(x-a))\\
+ &\qquad+t(x_2-a_2)Q_x(a+t(x-a))
+ \bigr)\,dt.
+\end{align*}
+$\partial_xQ=\partial_yP$ を用いると，
+被積分関数は
+$\frac d{dt}[tP(a+t(x-a))]$ に等しい．
+従って積分の基本定理から
+$v_{x_1}(x)=P(x)=-u_y(x)$ を得る．
+同様に $x_2$ に関して微分すると
+被積分関数は
+$\frac d{dt}[tQ(a+t(x-a))]$ となり，
+$v_{x_2}(x)=Q(x)=u_x(x)$ を得る．
+従って $v\in C^2(U)$ である．
+従って $u+iv$ はCauchy--Riemann方程式を満たし，
+定理\ref{thm:cr}から正則である．
+
+$v_1,v_2$ がともに調和共役なら
+$(v_1-v_2)_x=(v_1-v_2)_y=0$ である．
+星状領域は道連結なので，
+任意の二点を結ぶ折れ線または線分に沿って積分すれば
+$v_1-v_2$ は定数である．
+\end{proof}
+
+\begin{remark}
+一般の非単連結領域では，
+閉1形式 $\omega$ が大域的に完全でないことがある．
+例えば $\mathbb C\setminus\{0\}$ 上の
+$u(z)=\log|z|$ は調和だが，
+大域的な調和共役は存在しない．
+この障害は $\omega$ の閉曲線に沿う積分の非零性として現れる．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{複素微分の幾何学的な意味．}
+\begin{proposition}
+$f(z)=z^2$ を $\mathbb R^2$ の写像と見たとき，
+$z=x+iy$ におけるJacobi行列は
+\[
+Df(x,y)=\begin{pmatrix}2x&-2y\\2y&2x\end{pmatrix}.
+\]
+$z\ne0$ ではこれは倍率 $2|z|$ の拡大と，
+角度 $\arg z$ の回転の合成である．
+\end{proposition}
+\begin{proof}
+$z^2=(x^2-y^2)+i(2xy)$ なので
+実部・虚部を偏微分すると表示行列となる．
+$z=|z|(\cos\theta+i\sin\theta)$ とすれば
+\[
+Df=2|z|
+\begin{pmatrix}\cos\theta&-\sin\theta\\
+\sin\theta&\cos\theta\end{pmatrix}.
+\]
+よって結論が従う．
+\end{proof}
+\begin{corollary}
+$z\ne0$ では $f$ は局所微分同相であり，
+$z=0$ では微分が零写像となる．
+\end{corollary}
+\begin{proof}
+$\det Df=4|z|^2$ なので非零点では逆関数定理を適用できる．
+原点では表示行列が零となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$f(z)=iz$ のJacobi行列を求めよ．
+\par\noindent\textbf{解答．}
+$i(x+iy)=-y+ix$ だから
+$\left(\begin{smallmatrix}0&-1\\1&0\end{smallmatrix}\right)$
+であり，$\pi/2$ 回転を表す．
+\end{document}

@@ -1,0 +1,587 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{偏角の原理とRouch\'eの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Cauchyの積分定理・積分公式，Taylor展開，および区分的滑らかな平面領域に対するGreenの定理である．
+偏角の原理とRouchéの定理は本稿で証明する．
+本稿の具体的な到達課題は，多項式の根の数を境界での不等式だけから決定する．
+
+\section{正則関数の零点と位数}
+
+本稿では領域とは空でない連結開集合をいう．
+前提としてCauchyの積分定理・積分公式，Taylor展開を用いる．
+
+\begin{lemma}[零点の孤立性と位数]\label{lem:zero-order}
+$U\subset\mathbb C$ を領域，$f:U\to\mathbb C$ を
+恒等的に零ではない正則関数とする．
+$f(a)=0$ なら，唯一の正整数 $m$ と
+$a$ の近傍で正則な $g$ で $g(a)\ne0$ となるものが存在して
+\[
+ f(z)=(z-a)^m g(z)
+\]
+と書ける．この $m$ を $a$ における零点の位数という．
+さらに $a$ は孤立零点である．
+\end{lemma}
+\begin{proof}
+$f$ のTaylor展開を
+$f(z)=\sum_{n=0}^\infty c_n(z-a)^n$ とする．
+全ての $c_n$ が零なら $f$ は $a$ の近傍で恒等的に零となり，
+恒等定理から $U$ 全体で零となるので仮定に反する．
+従って最初の非零係数 $c_m$ が存在する．
+$f(a)=0$ だから $m\ge1$ である．
+\[
+ g(z)=\sum_{k=0}^\infty c_{m+k}(z-a)^k
+\]
+と置くと $g$ は正則で $g(a)=c_m\ne0$，
+$f(z)=(z-a)^m g(z)$ を満たす．
+$g$ の連続性から $a$ の十分小さい近傍で
+$g(z)\ne0$ なので，その近傍の零点は $a$ のみである．
+$m$ の一意性は最初の非零Taylor係数の番号が
+一意であることから従う．
+\end{proof}
+
+\begin{proposition}[対数微分の局所形]\label{prop:log-der}
+$f$ が $a$ に位数 $m$ の零点を持つとする．
+このとき $a$ の近傍で
+\[
+ \frac{f'(z)}{f(z)}
+ =\frac{m}{z-a}+\frac{g'(z)}{g(z)}
+\]
+と書ける．ここで $g$ は $a$ の近傍で零を持たない正則関数である．
+\end{proposition}
+\begin{proof}
+補題\ref{lem:zero-order}により
+$f(z)=(z-a)^mg(z)$ と書く．
+積の微分法によって
+$f'(z)=m(z-a)^{m-1}g(z)+(z-a)^mg'(z)$ なので，
+$z\ne a$ で両辺を $f(z)$ で割れば表示式を得る．
+$g(a)\ne0$ だから十分小さい近傍で $g$ は零を持たない．
+\end{proof}
+
+\section{Laurent展開と有理型関数}
+
+Greenの定理を複素数値函数に適用する際，
+$w=x+iy$ に対して
+\[
+ \partial_{\overline w}
+ =\frac12(\partial_x+i\partial_y),\qquad
+ dA(w)=dx\,dy
+\]
+と書く．$C^1$ 級函数 $h$ と正向きの区分的
+$C^1$ 境界を持つ有界平面領域 $D$ について，
+Greenの定理は
+\[
+ \int_{\partial D}h(w)\,dw
+ =2i\iint_D\partial_{\overline w}h(w)\,dA(w)
+\]
+を与える．以下でこの形を用いる．
+
+\begin{lemma}[円環上のCauchy積分公式]
+\label{lem:annular-cauchy}
+$0\le r<R\le\infty$ とし，
+$f$ が円環 $A=\{w:r<|w-a|<R\}$ 上で正則とする．
+$r<\rho_1<|z-a|<\rho_2<R$ なら
+\[
+ f(z)=\frac1{2\pi i}
+ \left(
+ \int_{|w-a|=\rho_2}\frac{f(w)}{w-z}\,dw
+ -\int_{|w-a|=\rho_1}\frac{f(w)}{w-z}\,dw
+ \right)
+\]
+が成り立つ．ここで両円周は反時計回りとする．
+\end{lemma}
+\begin{proof}
+$0<\varepsilon<
+ \min\{|z-a|-\rho_1,\rho_2-|z-a|\}$
+を取り，
+\[
+ D_\varepsilon
+ =\{w:\rho_1<|w-a|<\rho_2,\ |w-z|>\varepsilon\}
+\]
+と置く．$D_\varepsilon$ は有界で，
+境界が互いに交わらない三つの滑らかな円周からなる．
+$h(w)=f(w)/(w-z)$ は $\overline{D_\varepsilon}$ の
+近傍で正則，従って $C^1$ 級であり，
+$\partial_{\overline w}h=0$ を満たす．
+Greenの定理を実部と虚部に適用すると
+\[
+ \int_{\partial D_\varepsilon}h(w)\,dw
+ =2i\iint_{D_\varepsilon}
+     \partial_{\overline w}h(w)\,dA(w)=0
+\]
+となる．境界の正の向きは外円周で反時計回り，
+内円周と $z$ の周囲の小円周で時計回りである．
+従って
+\[
+ \int_{|w-a|=\rho_2}\frac{f(w)}{w-z}\,dw
+ -\int_{|w-a|=\rho_1}\frac{f(w)}{w-z}\,dw
+ =\int_{|w-z|=\varepsilon}\frac{f(w)}{w-z}\,dw .
+\]
+右辺で $w=z+\varepsilon e^{it}$ とおくと
+\[
+ \int_{|w-z|=\varepsilon}\frac{f(w)}{w-z}\,dw
+ =i\int_0^{2\pi}f(z+\varepsilon e^{it})\,dt
+ \longrightarrow 2\pi i f(z)
+\]
+である．最後の極限は $f$ の $z$ での連続性と
+円周上の一様収束から従う．
+左辺は $\varepsilon$ に依存しないので結論を得る．
+\end{proof}
+
+\begin{theorem}[Laurent展開]\label{thm:laurent}
+$0\le r<R\le\infty$ とし，
+$f$ が円環
+$A=\{z:r<|z-a|<R\}$ 上で正則であるとする．
+このとき唯一の係数列 $(c_n)_{n\in\mathbb Z}$ が存在して
+\[
+ f(z)=\sum_{n=-\infty}^\infty c_n(z-a)^n
+ \qquad(z\in A)
+\]
+と表され，級数は円環の任意のコンパクト部分集合上で
+一様収束する．
+任意の $r<\rho<R$ と $n\in\mathbb Z$ について
+\[
+ c_n=\frac1{2\pi i}
+ \int_{|w-a|=\rho}\frac{f(w)}{(w-a)^{n+1}}\,dw.
+\]
+\end{theorem}
+\begin{proof}
+$r<\rho_1<|z-a|<\rho_2<R$ を取る．
+補題\ref{lem:annular-cauchy}から
+\[
+ f(z)=\frac1{2\pi i}\int_{|w-a|=\rho_2}
+       \frac{f(w)}{w-z}\,dw
+      -\frac1{2\pi i}\int_{|w-a|=\rho_1}
+       \frac{f(w)}{w-z}\,dw
+\]
+を得る．
+外円周では $|(z-a)/(w-a)|<1$ なので
+\[
+ \frac1{w-z}
+ =\sum_{n=0}^\infty\frac{(z-a)^n}{(w-a)^{n+1}}.
+\]
+内円周では $|(w-a)/(z-a)|<1$ なので
+\[
+ \frac1{w-z}
+ =-\sum_{k=0}^\infty\frac{(w-a)^k}{(z-a)^{k+1}}.
+\]
+いずれも円周上で一様収束し，
+積分と和を交換できる．
+従って正の冪と負の冪の級数表示を得る．
+
+係数が積分半径によらないことを示す．
+$r<\rho<\rho'<R$ とすると，
+$h(w)=f(w)/(w-a)^{n+1}$ は
+閉円環 $\rho\le|w-a|\le\rho'$ の近傍で正則である．
+そこでGreenの定理を用いれば
+\[
+ \int_{|w-a|=\rho'}h(w)\,dw
+ -\int_{|w-a|=\rho}h(w)\,dw
+ =2i\iint_{\rho<|w-a|<\rho'}
+       \partial_{\overline w}h(w)\,dA(w)=0
+\]
+を得る．従って両円周の積分は一致し，
+係数の表示は積分半径に依存しない．
+局所一様収束は，
+任意のコンパクト部分円環に対して
+$\rho_1,\rho_2$ をその内外に固定し，
+上の幾何級数を一様評価すれば得る．
+一意性は表示式に $(z-a)^{-m-1}$ を掛けて
+円周積分し，冪関数の積分
+\[
+ \frac1{2\pi i}\int_{|z-a|=\rho}(z-a)^k\,dz
+ =\begin{cases}1&(k=-1),\\0&(k\ne-1)\end{cases}
+\]
+を用いれば従う．
+\end{proof}
+
+\begin{definition}
+孤立特異点 $a$ の近傍で
+$f(z)=(z-a)^{-m}g(z)$，
+$m\ge1$，$g$ 正則，$g(a)\ne0$ と書けるとき，
+$a$ を位数 $m$ の\emph{極}という．
+領域上の有理型関数とは，
+極を除いて正則であり，極の集合が領域内に集積点を持たない
+関数をいう．
+\end{definition}
+
+\begin{proposition}[極における対数微分]\label{prop:pole}
+$f$ が $a$ に位数 $m$ の極を持つとき，
+$a$ の近傍で
+\[
+ \frac{f'(z)}{f(z)}
+ =-\frac{m}{z-a}+\frac{g'(z)}{g(z)}
+\]
+と書ける．
+\end{proposition}
+\begin{proof}
+$f(z)=(z-a)^{-m}g(z)$ を微分して
+$f(z)$ で割ればよい．
+$g(a)\ne0$ なので $g'/g$ は $a$ の近傍で正則である．
+\end{proof}
+
+\begin{definition}
+Laurent展開の $(z-a)^{-1}$ の係数 $c_{-1}$ を
+$f$ の $a$ における\emph{留数}といい，
+$\operatorname{Res}(f,a)$ と書く．
+\end{definition}
+
+\section{曲線の巻き数}
+
+\begin{definition}
+$\gamma:[0,1]\to\mathbb C\setminus\{a\}$ を
+区分的 $C^1$ 閉曲線とする．
+\[
+ \operatorname{Ind}(\gamma,a)
+ =\frac1{2\pi i}\int_\gamma\frac{dz}{z-a}
+\]
+を $\gamma$ の $a$ に関する巻き数という．
+\end{definition}
+
+\begin{theorem}[巻き数の整数性]\label{thm:index-int}
+上の巻き数は整数である．
+また $\mathbb C\setminus\gamma([0,1])$ の各連結成分上で
+$a\mapsto\operatorname{Ind}(\gamma,a)$ は定数である．
+十分遠い $a$ に対して巻き数は零となる．
+\end{theorem}
+\begin{proof}
+$h(t)=\gamma(t)-a\ne0$ と置く．
+$[0,1]$ を十分細かく分割すると，
+各小区間の $h$ の像は原点を含まない開円板に収まる．
+そのような円板では連続な偏角を選べるので，
+隣接区間の偏角に $2\pi$ の整数倍を加えることで
+連続な関数 $\vartheta:[0,1]\to\mathbb R$ を選び，
+\[
+ h(t)=|h(t)|e^{i\vartheta(t)}
+\]
+と表せる．
+区分的 $C^1$ の区間では偏角を微分でき，
+\[
+ \frac{h'(t)}{h(t)}
+ =\frac d{dt}\log|h(t)|+i\vartheta'(t)
+\]
+である．従って
+\[
+ \int_\gamma\frac{dz}{z-a}
+ =\log|h(1)|-\log|h(0)|
+   +i(\vartheta(1)-\vartheta(0)).
+\]
+$\gamma$ は閉曲線だから $h(1)=h(0)$ であり，
+$\vartheta(1)-\vartheta(0)\in2\pi\mathbb Z$ となる．
+従って巻き数は整数である．
+
+$a$ を $\gamma$ の像から離れた小さい円板内で動かせば，
+被積分関数 $1/(\gamma(t)-a)$ は $a$ に関して一様連続に変化するため，
+巻き数は $a$ に関して連続である．
+整数値連続関数は各連結成分で定数なので後半の主張を得る．
+$|a|>\sup_t|\gamma(t)|$ なら
+$\frac1{\gamma(t)-a}$ は $\gamma$ を含む円板上で
+原始関数を持つため，巻き数は零である．
+\end{proof}
+
+\begin{proposition}[巻き数のホモトピー不変性]\label{prop:index-homotopy}
+$\gamma_0,\gamma_1:[0,1]\to\mathbb C\setminus\{a\}$ を
+区分的 $C^1$ 閉曲線とする．
+連続写像 $H:[0,1]^2\to\mathbb C\setminus\{a\}$ が存在して
+\[
+ H(0,t)=\gamma_0(t),\qquad
+ H(1,t)=\gamma_1(t),\qquad
+ H(s,0)=H(s,1)
+\]
+を満たすならば，
+$\operatorname{Ind}(\gamma_0,a)=\operatorname{Ind}(\gamma_1,a)$
+である．途中の曲線 $t\mapsto H(s,t)$ の微分可能性は仮定しない．
+\end{proposition}
+\begin{proof}
+$K=H([0,1]^2)$ はコンパクトで $a\notin K$ だから
+$d=\min_{z\in K}|z-a|>0$ である．
+$H$ の一様連続性から正方形を十分細かい長方形に分割し，
+各長方形を二つの三角形に分ける．
+頂点の像を各三角形内でアフィン補間して
+連続な区分的アフィン写像 $H_N$ を作る．
+分割は $t=0,1$ で同じ $s$ 座標を用いる．
+各三角形で $H$ の値と三頂点の像との差が $d/4$ 未満に
+なるように分割を選べるので，
+\[
+ \sup_{(s,t)\in[0,1]^2}|H_N(s,t)-H(s,t)|<d/4.
+\]
+特に $H_N$ の像は $a$ を避け，
+$H_N(s,0)=H_N(s,1)$ である．
+また各三角形の像は $a$ を含まない一つの開円板に
+含まれる．その円板では $1/(z-a)$ は原始関数を持つから，
+各三角形の境界像に沿う積分は零である．
+全三角形について足すと内部辺は消え，
+$t=0$ と $t=1$ の像も互いに逆向きで打ち消し合う．
+従って
+\[
+ \int_{\gamma_0^N}\frac{dz}{z-a}
+ =\int_{\gamma_1^N}\frac{dz}{z-a},
+ \qquad \gamma_i^N(t)=H_N(i,t)\quad(i=0,1)
+\]
+を得る．
+
+さらに各 $i$ について
+\[
+ R_i(t)=\frac{\gamma_i^N(t)-a}{\gamma_i(t)-a}
+\]
+と置くと，$|R_i(t)-1|<1/4$ である．
+$|w-1|<1/2$ 上の正則な対数を $\log w$ と書けば，
+区分的 $C^1$ の区間ごとに
+\[
+ \frac{d}{dt}\log R_i(t)
+ =\frac{(\gamma_i^N)'(t)}{\gamma_i^N(t)-a}
+  -\frac{\gamma_i'(t)}{\gamma_i(t)-a}
+\]
+が成り立つ．端点では
+$\gamma_i^N(0)=\gamma_i(0)$，
+$\gamma_i^N(1)=\gamma_i(1)$ なので
+$R_i(0)=R_i(1)=1$ である．
+上式を積分すれば
+\[
+ \int_{\gamma_i^N}\frac{dz}{z-a}
+ =\int_{\gamma_i}\frac{dz}{z-a}
+\]
+となる．先の等式に代入して結論を得る．
+\end{proof}
+
+\section{偏角の原理}
+
+\begin{theorem}[偏角の原理]\label{thm:argument}
+$D\subset\mathbb C$ を有界領域とし，
+境界 $\Gamma=\partial D$ が有限個の互いに交わらない
+区分的 $C^1$ のJordan曲線からなり，
+$D$ を左側に見る向きに向きづけられているとする．
+$f$ を $\overline D$ の近傍で有理型とし，
+$\Gamma$ 上に零点・極を持たないとする．
+$D$ 内の零点の位数の和を $N$，
+極の位数の和を $P$ とすると
+\[
+ \frac1{2\pi i}\int_\Gamma\frac{f'(z)}{f(z)}\,dz
+ =N-P.
+\]
+\end{theorem}
+\begin{proof}
+$f$ の零点・極は孤立しており，
+$\overline D$ のコンパクト性と境界に零点・極がないことから，
+$D$ 内の零点・極は有限個しかない．
+それらを $a_1,\dots,a_m$ とし，
+各 $a_j$ の周囲に互いに交わらない十分小さい閉円板
+$\overline{B(a_j,\rho_j)}\subset D$ を取る．
+\[
+ D'=D\setminus\bigcup_{j=1}^m\overline{B(a_j,\rho_j)}
+\]
+上では $f'/f$ は正則である．
+$h=f'/f$ は $\overline{D'}$ の近傍で正則である．
+実際，取り除いた円板はすべての零点・極を含み，
+その境界にも零点・極がなく，$\Gamma$ 上にも存在しない．
+従って $h$ はこの近傍で $C^1$ 級かつ
+$\partial_{\overline z}h=0$ である．
+$D'$ は有限個の区分的 $C^1$ Jordan曲線を
+境界に持つので，Greenの定理から
+\[
+ \int_{\partial D'}h(z)\,dz
+ =2i\iint_{D'}\partial_{\overline z}h(z)\,dA(z)
+ =0
+\]
+を得る．$D'$ の境界の正の向きは，$\Gamma$ 上では
+$D$ を左側に見て進む向きであり，
+取り除いた小円周上では時計回りである．
+従って
+\[
+ \int_\Gamma\frac{f'}f\,dz
+ =\sum_{j=1}^m\int_{|z-a_j|=\rho_j}\frac{f'}f\,dz,
+\]
+ただし右辺の円周は反時計回りとする．
+
+$a_j$ が位数 $n_j$ の零点なら
+命題\ref{prop:log-der}により
+$f'/f=n_j/(z-a_j)+g'/g$ と書ける．
+$g'/g$ は小円板内で正則だからその円周積分は零であり，
+\[
+ \frac1{2\pi i}\int_{|z-a_j|=\rho_j}\frac{f'}f\,dz=n_j
+\]
+を得る．
+$a_j$ が位数 $n_j$ の極なら
+命題\ref{prop:pole}によって同じ積分は $-n_j$ となる．
+全てを足し合わせれば $N-P$ を得る．
+\end{proof}
+
+\begin{remark}
+領域の境界が一つの正向きJordan曲線のみである場合は，
+零点と極の個数を単純に数える公式となる．
+穴を持つ領域では内側の境界が負の向きになる点に注意する．
+\end{remark}
+
+\section{Rouch\'eの定理}
+
+\begin{theorem}[Rouch\'eの定理]\label{thm:rouche}
+$D\subset\mathbb C$ を，単純な閉曲線 $\Gamma$ で囲まれた
+有界領域とする．
+$f,g$ は $\overline D$ の近傍で正則であり，
+\[
+ |g(z)|<|f(z)|\qquad(z\in\Gamma)
+\]
+を満たすとする．
+このとき $f$ と $f+g$ は，
+$D$ 内の零点を重複度込みで数えると同じ個数だけ持つ．
+\end{theorem}
+\begin{proof}
+$t\in[0,1]$ に対して $h_t=f+tg$ と置く．
+境界 $\Gamma$ 上では
+\[
+ |h_t(z)|\ge|f(z)|-t|g(z)|
+ \ge|f(z)|-|g(z)|>0
+\]
+だから，$h_t$ は $\Gamma$ 上に零点を持たない．
+従って
+\[
+ \frac1{2\pi i}\int_\Gamma\frac{h_t'(z)}{h_t(z)}\,dz
+\]
+は $t$ に関して連続である．
+実際，分母はコンパクト集合
+$[0,1]\times\Gamma$ 上で零でないため，
+積分核は一様連続に変化する．
+一方，偏角の原理から各値は $D$ 内の零点の個数に等しく，
+整数値である．
+連続な整数値関数は連結集合 $[0,1]$ 上で定数なので，
+$t=0$ と $t=1$ の零点数は等しい．
+\end{proof}
+
+\begin{corollary}[多項式の零点の局所化]\label{cor:polynomial}
+多項式 $p(z)=z^5+3z+1$ は，
+$|z|<1$ にちょうど1個の零点，
+$1<|z|<2$ にちょうど4個の零点を持つ．
+いずれも重複度を込めた個数である．
+\end{corollary}
+\begin{proof}
+$|z|=1$ では $|3z|=3$ であり，
+$|z^5+1|\le2<3$ なので，
+Rouch\'eの定理を
+$f(z)=3z$，$g(z)=z^5+1$ に適用すると
+$|z|<1$ で $p$ はちょうど1個の零点を持つ．
+$|z|=2$ では $|z^5|=32$ であり
+$|3z+1|\le7<32$ なので，
+$f(z)=z^5$，$g(z)=3z+1$ として適用すれば
+$|z|<2$ に零点はちょうど5個ある．
+どちらの円周上でも不等式は狭義であり，
+$p$ は境界に零点を持たない．
+従って環状領域 $1<|z|<2$ にちょうど4個の零点を持つ．
+\end{proof}
+
+\begin{corollary}[代数学の基本定理の別証明]\label{cor:fta}
+次数 $n\ge1$ の複素係数多項式は，
+重複度を込めてちょうど $n$ 個の複素零点を持つ．
+\end{corollary}
+\begin{proof}
+$p(z)=a_nz^n+\cdots+a_0$，
+$a_n\ne0$ とする．
+$R>0$ を十分大きく取れば
+$|z|=R$ 上で
+\[
+ \left|\sum_{k=0}^{n-1}a_kz^k\right|
+ <|a_nz^n|
+\]
+となる．
+Rouch\'eの定理を $f=a_nz^n$，
+$g=\sum_{k<n}a_kz^k$ に適用すると，
+$|z|<R$ における $p$ の零点数は $n$ である．
+\end{proof}
+
+\begin{remark}
+偏角の原理は閉曲線の像が原点を何回回るかという
+位相的整数を，正則関数の零点・極の位数と結びつける．
+Rouch\'eの定理はその整数が境界上の小さな摂動で
+変化しないことの帰結である．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{根を求めずに根の個数を決める．}
+\begin{proposition}
+多項式 $p(z)=z^5+2z+1$ は
+開円板 $\{z:|z|<2\}$ に重複度を込めて
+ちょうど5個の零点を持つ．
+\end{proposition}
+\begin{proof}
+円周 $|z|=2$ 上では
+$|z^5|=32$ であり，
+$|2z+1|\le2|z|+1=5$ だから
+$|2z+1|<|z^5|$ が成立する．
+Rouchéの定理を $f(z)=z^5$，
+$g(z)=2z+1$ に適用すれば
+$p=f+g$ と $f$ の円板内の零点数は同じである．
+$f$ は原点に位数5の零点を持つので結論が従う．
+\end{proof}
+\noindent\textbf{到達確認．}
+$z^4+z+1$ は $|z|<2$ に零点を何個持つか．
+\par\noindent\textbf{解答．}
+$|z|=2$ では $|z^4|=16$，
+$|z+1|\le3<16$ である．
+Rouchéの定理から重複度を込め4個である．
+\end{document}

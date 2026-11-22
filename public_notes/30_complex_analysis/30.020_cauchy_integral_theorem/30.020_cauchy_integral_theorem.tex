@@ -1,0 +1,630 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Cauchyの積分定理と積分公式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，複素微分の定義，正則関数の基本的性質，実変数の積分，および区分的 $C^1$ 曲線である．
+Goursatの定理とCauchyの積分公式は本稿で証明する．
+本稿の具体的な到達課題は，Cauchy積分公式から具体的な周回積分を計算する．
+
+\section{複素曲線積分}
+
+$U\subset\mathbb C$ を開集合とし，
+$f:U\to\mathbb C$ を連続関数とする．
+\begin{definition}
+区間 $[a,b]$ 上の区分的 $C^1$ 曲線
+$\gamma:[a,b]\to U$ に対し，
+\[
+ \int_\gamma f(z)\,dz
+ =\int_a^b f(\gamma(t))\gamma'(t)\,dt
+\]
+と定める．分割点では各区間で積分して和を取る．
+$\gamma(a)=\gamma(b)$ なら閉曲線という．
+\end{definition}
+
+\begin{proposition}[基本性質]\label{prop:path-basic}
+区分的 $C^1$ 曲線の連結を $\gamma*\eta$，
+向きを反転した曲線を $\gamma^{-1}$ とすると，
+\[
+ \int_{\gamma*\eta}f\,dz
+ =\int_\gamma f\,dz+\int_\eta f\,dz,\qquad
+ \int_{\gamma^{-1}}f\,dz=-\int_\gamma f\,dz.
+\]
+また曲線の長さを $L(\gamma)$ として
+\[
+ \left|\int_\gamma f\,dz\right|
+ \le L(\gamma)\sup_{z\in\gamma([a,b])}|f(z)|.
+\]
+\end{proposition}
+\begin{proof}
+最初の等式は積分区間の分割と変数変換から従う．
+向きの反転は $t\mapsto a+b-t$ の変数変換による．
+最後は
+\[
+ \left|\int_a^bf(\gamma(t))\gamma'(t)\,dt\right|
+ \le\int_a^b|f(\gamma(t))|\,|\gamma'(t)|\,dt
+ \le\left(\sup_{\gamma}|f|\right)L(\gamma)
+\]
+である．
+\end{proof}
+
+\begin{theorem}[原始関数がある場合の積分定理]\label{thm:primitive}
+$f:U\to\mathbb C$ が原始関数 $F$ を持つ，
+すなわち $F'=f$ であるとする．
+このとき任意の区分的 $C^1$ 曲線 $\gamma:[a,b]\to U$
+に対して
+\[
+ \int_\gamma f(z)\,dz=F(\gamma(b))-F(\gamma(a)).
+\]
+特に閉曲線に沿う積分は零である．
+\end{theorem}
+\begin{proof}
+各 $C^1$ 区間において，合成関数の微分法から
+\[
+ \frac d{dt}F(\gamma(t))=f(\gamma(t))\gamma'(t)
+\]
+である．実数変数の微積分学の基本定理を適用し，
+分割区間の端点の値を足し合わせれば結論を得る．
+\end{proof}
+
+\section{Goursatの定理}
+
+\begin{theorem}[三角形に対するGoursatの定理]\label{thm:goursat}
+$U\subset\mathbb C$ を開集合とし，
+$f:U\to\mathbb C$ を正則関数とする．
+閉三角形 $\Delta$ が $U$ に含まれていれば，
+正向きの三角形の境界 $\partial\Delta$ について
+\[
+ \int_{\partial\Delta}f(z)\,dz=0
+\]
+が成り立つ．
+導関数 $f'$ の連続性は仮定しない．
+\end{theorem}
+\begin{proof}
+三角形 $\Delta$ を各辺の中点で四つの相似な三角形に分割する．
+内部辺は互いに逆向きで打ち消し合うから，
+元の境界積分は四つの小三角形の境界積分の和に等しい．
+従ってその一つ $\Delta_1$ を
+\[
+ \left|\int_{\partial\Delta_1}f\,dz\right|
+ \ge\frac14\left|\int_{\partial\Delta}f\,dz\right|
+\]
+となるように選べる．
+この操作を繰り返して入れ子の閉三角形
+$\Delta=\Delta_0\supset\Delta_1\supset\cdots$ を作ると，
+\[
+ \left|\int_{\partial\Delta_n}f\,dz\right|
+ \ge4^{-n}\left|\int_{\partial\Delta}f\,dz\right|,
+\]
+かつ
+$\operatorname{diam}\Delta_n=2^{-n}\operatorname{diam}\Delta$，
+$L(\partial\Delta_n)=2^{-n}L(\partial\Delta)$ である．
+入れ子のコンパクト集合の性質から
+$\bigcap_n\Delta_n=\{z_0\}$ となる．
+
+$f$ は $z_0$ で複素微分可能なので，
+\[
+ f(z)=f(z_0)+f'(z_0)(z-z_0)+\varepsilon(z)(z-z_0),
+ \qquad \varepsilon(z)\to0\quad(z\to z_0)
+\]
+と書ける．
+定数関数と一次関数の閉曲線積分は原始関数を持つので零である．
+従って
+\begin{align*}
+ \left|\int_{\partial\Delta_n}f\,dz\right|
+ &=\left|\int_{\partial\Delta_n}
+       \varepsilon(z)(z-z_0)\,dz\right|\\
+ &\le L(\partial\Delta_n)\,
+       \operatorname{diam}\Delta_n\,
+       \sup_{z\in\Delta_n}|\varepsilon(z)|\\
+ &=4^{-n}L(\partial\Delta)\,
+       \operatorname{diam}\Delta\,
+       \sup_{\Delta_n}|\varepsilon|.
+\end{align*}
+これを前の下界と比較すると
+\[
+ \left|\int_{\partial\Delta}f\,dz\right|
+ \le L(\partial\Delta)\operatorname{diam}\Delta
+      \sup_{\Delta_n}|\varepsilon|\to0.
+\]
+よって境界積分は零である．
+\end{proof}
+
+\begin{lemma}[円板上の局所原始関数]\label{lem:local-primitive}
+$D=D(a,r)\subset U$ を開円板とし，
+$f$ を $U$ 上の正則関数とする．
+このとき
+\[
+ F(z)=\int_{[a,z]}f(w)\,dw
+\]
+は $D$ 上で正則であり，$F'=f$ を満たす．
+\end{lemma}
+\begin{proof}
+$z,z+h\in D$ とすると，
+凸集合 $D$ は三角形 $[a,z,z+h]$ を含む．
+定理\ref{thm:goursat}から
+\[
+ F(z+h)-F(z)=\int_{[z,z+h]}f(w)\,dw
+ =h\int_0^1f(z+th)\,dt.
+\]
+$h\to0$ とすると右辺を $h$ で割ったものは，
+$f$ の連続性により $f(z)$ に収束する．
+従って $F'(z)=f(z)$ となる．
+\end{proof}
+
+\section{星状領域と単連結領域}
+
+\begin{definition}
+開集合 $U\subset\mathbb C$ が\emph{星状}であるとは，
+ある $a\in U$ が存在して，
+任意の $z\in U$ と $0\le t\le1$ に対し
+$a+t(z-a)\in U$ が成り立つことをいう．
+この $a$ を星状中心という．
+\end{definition}
+
+\begin{theorem}[星状領域のCauchy積分定理]\label{thm:star-shaped}
+$U$ を星状開集合，$f:U\to\mathbb C$ を正則関数とする．
+このとき $f$ は $U$ 上に原始関数を持つ．
+従って $U$ 内の任意の区分的 $C^1$ 閉曲線 $\gamma$ に対し
+\[
+ \int_\gamma f(z)\,dz=0
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+星状中心を $a$ とし，
+$F(z)=\int_{[a,z]}f(w)\,dw$ と定める．
+任意の $z_0\in U$ に対し
+線分 $[a,z_0]$ はコンパクトで $U$ に含まれるので，
+ある $\delta>0$ が存在して，
+この線分の $\delta$-近傍が $U$ に含まれる．
+従って $z,z+h$ が $z_0$ に十分近ければ
+三角形 $[a,z,z+h]$ は $U$ に含まれる．
+Goursatの定理から
+$F(z+h)-F(z)=\int_{[z,z+h]}f(w)\,dw$ である．
+局所原始関数の補題と同じ差商の極限計算により
+$F'(z)=f(z)$ を得る．
+最後の積分定理は
+定理\ref{thm:primitive}による．
+\end{proof}
+
+\begin{lemma}[ホモトピー不変性]\label{lem:homotopy}
+$f$ を $U$ 上の正則関数とする．
+二つの区分的 $C^1$ 閉曲線
+$\gamma_0,\gamma_1:[0,1]\to U$ の間に，
+区分的 $C^1$ 写像 $H:[0,1]^2\to U$ が存在して
+\[
+ H(0,t)=\gamma_0(t),\quad H(1,t)=\gamma_1(t),
+ \quad H(s,0)=H(s,1)
+\]
+を満たすなら，
+\[
+ \int_{\gamma_0}f\,dz=\int_{\gamma_1}f\,dz
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$H([0,1]^2)$ はコンパクトである．
+各点は補題\ref{lem:local-primitive}によって
+$f$ の原始関数が存在する開円板の内部に含まれる．
+この有限開被覆にLebesgue数を取り，
+$H$ の一様連続性によって
+$[0,1]^2$ を十分細かい長方形の格子に分割すれば，
+各格子セルの像が一つの原始関数を持つ円板に含まれる．
+定理\ref{thm:primitive}から，
+各セルの境界の像に沿う $f$ の積分は零である．
+これらを全セルについて足し合わせると，
+隣接するセルの共通辺は互いに逆向きで打ち消し合う．
+残るのは外周の四辺に沿う積分である．
+$s=0,1$ の二辺は $\gamma_0,\gamma_1$ に対応し，
+$t=0,1$ の二辺は
+$H(s,0)=H(s,1)$ により同じ曲線を逆向きに
+たどるため，積分が打ち消し合う．
+よって $\int_{\gamma_1}f\,dz-\int_{\gamma_0}f\,dz=0$
+となる．特に始点を固定するホモトピーについても成り立つ．
+\end{proof}
+
+\begin{corollary}[単連結領域上の積分定理]\label{cor:simply}
+$U\subset\mathbb C$ を単連結な領域とする．
+$f$ が $U$ 上で正則なら，
+任意の区分的 $C^1$ 閉曲線 $\gamma\subset U$ に対して
+$\int_\gamma f(z)\,dz=0$ が成り立つ．
+特に $f$ は原始関数を持つ．
+\end{corollary}
+\begin{proof}
+単連結性により，$\gamma$ の始点を $a$ とすると，
+連続写像 $H:[0,1]^2\to U$ で
+\[
+ H(0,t)=\gamma(t),\qquad H(1,t)=a,\qquad
+ H(s,0)=H(s,1)=a
+\]
+を満たすものが存在する．
+$K=H([0,1]^2)$ はコンパクトで $U$ に含まれる．
+従ってある $\varepsilon>0$ が存在し，
+$K$ の $\varepsilon$-近傍は $U$ に含まれる．
+$H$ は一様連続なので，正方形を十分細かい
+有限個の三角形に分割し，各頂点の $H$ による像を
+三角形内でアフィン補間した写像 $H_N$ を作ると，
+\[
+ \sup_{(s,t)\in[0,1]^2}|H_N(s,t)-H(s,t)|
+ <\varepsilon
+\]
+とできる．実際，一つの三角形内の $H_N$ の値は
+その三頂点の像の凸結合であるから，一様連続性で
+各頂点像と $H(s,t)$ との差を一様に小さくすればよい．
+ゆえに $H_N([0,1]^2)\subset U$ である．
+
+分割の境界辺を $s=0,1$ および $t=0,1$ に沿うように選ぶ．
+すると $H_N(1,t)=H_N(s,0)=H_N(s,1)=a$ である．
+$\gamma_N(t)=H_N(0,t)$ と置けば，$\gamma_N$ は
+$a$ を始点とする閉折線で，$H_N$ は $\gamma_N$ と
+定数曲線を結ぶ端点固定の区分的 $C^1$ ホモトピーとなる．
+補題\ref{lem:homotopy}より
+\[
+ \int_{\gamma_N}f(z)\,dz=0
+\]
+を得る．さらに
+$\sup_t|\gamma_N(t)-\gamma(t)|<\varepsilon$ であり，
+\[
+ G(s,t)=(1-s)\gamma(t)+s\gamma_N(t)
+\]
+は $U$ に値を取る端点固定の区分的 $C^1$
+ホモトピーである．
+もう一度補題\ref{lem:homotopy}を適用して
+$\int_\gamma f\,dz=\int_{\gamma_N}f\,dz=0$ を得る．
+
+任意の基点 $a\in U$ を固定し，
+$z\in U$ へ至る区分的 $C^1$ 曲線 $\gamma_z$ を選ぶ．
+$U$ は開かつ道連結なのでそのような曲線が存在する．
+$F(z)=\int_{\gamma_z}f\,dw$ と置くと，
+閉曲線積分が零であることから経路の選択によらない．
+$z$ の近傍の円板で積分路の終端に短い線分を加えると，
+補題\ref{lem:local-primitive}の計算から $F'(z)=f(z)$ となる．
+\end{proof}
+
+\section{円周の積分とCauchyの公式}
+
+\begin{lemma}[円周の変形]\label{lem:circle-deform}
+$|z-a|<R$ とし，$0<\rho<R-|z-a|$ を取る．
+\[
+ \gamma_s(t)=((1-s)a+sz)
+       +((1-s)R+s\rho)e^{2\pi it}
+ \quad(0\le s\le1,\ 0\le t\le1)
+\]
+と置く．このとき $\gamma_s$ は
+$\overline{D(a,R)}\setminus\{z\}$ 内の
+滑らかな閉曲線族であり，
+$\gamma_0(t)=a+Re^{2\pi it}$，
+$\gamma_1(t)=z+\rho e^{2\pi it}$ を満たす．
+\end{lemma}
+\begin{proof}
+\[
+ \gamma_s(t)=(1-s)(a+Re^{2\pi it})+s(z+\rho e^{2\pi it})
+\]
+であり，二つの括弧内の点はいずれも
+$\overline{D(a,R)}$ に属する．閉円板は凸だから
+$\gamma_s(t)\in\overline{D(a,R)}$ である．
+一方，中心 $c_s=(1-s)a+sz$ と半径
+$r_s=(1-s)R+s\rho$ に対して
+\[
+ |z-c_s|=(1-s)|z-a|
+ <(1-s)R+s\rho=r_s
+\]
+となる．従って円周 $\gamma_s$ は $z$ を通らない．
+$s,t$ に関する滑らかさと端点の表示は定義から従う．
+\end{proof}
+
+\begin{lemma}[円周の巻き数]\label{lem:winding}
+$a\in\mathbb C$，$R>0$ とし，
+$C=\{w:|w-a|=R\}$ に正の向きを与える．
+このとき
+\[
+ \frac1{2\pi i}\int_C\frac{dw}{w-z}
+ =
+ \begin{cases}
+ 1&(|z-a|<R),\\
+ 0&(|z-a|>R).
+ \end{cases}
+\]
+\end{lemma}
+\begin{proof}
+$|z-a|>R$ の場合は，$R<R'<|z-a|$ と取れば
+$w\mapsto1/(w-z)$ は星状開円板 $D(a,R')$ 上で正則である．
+定理\ref{thm:star-shaped}によって積分は零となる．
+
+$|z-a|<R$ の場合は補題\ref{lem:circle-deform}を用い，
+$0<\rho<R-|z-a|$ とする．
+$w\mapsto1/(w-z)$ は
+$\mathbb C\setminus\{z\}$ 上で正則だから，
+補題\ref{lem:homotopy}によって
+\[
+ \int_C\frac{dw}{w-z}
+ =\int_{|w-z|=\rho}\frac{dw}{w-z}
+ =\int_0^{2\pi}
+   \frac{i\rho e^{it}}{\rho e^{it}}\,dt
+ =2\pi i
+\]
+を得る．
+\end{proof}
+
+\begin{theorem}[Cauchyの積分公式]\label{thm:cauchy}
+$f$ を閉円板 $\overline{D(a,R)}$ の近傍で正則とする．
+$|z-a|<R$ なら，正向きの円周 $C=\partial D(a,R)$ に対し
+\[
+ f(z)=\frac1{2\pi i}\int_C\frac{f(w)}{w-z}\,dw
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$z$ を固定し，$0<\rho<R-|z-a|$ とする．
+$h(w)=f(w)/(w-z)$ は
+$\overline{D(a,R)}\setminus\{z\}$ の近傍で正則である．
+補題\ref{lem:circle-deform}の円周族はこの集合内にあり，
+補題\ref{lem:homotopy}から
+\[
+ \int_C\frac{f(w)}{w-z}\,dw
+ =\int_{|w-z|=\rho}\frac{f(w)}{w-z}\,dw
+\]
+を得る．
+右辺で $f(w)=f(z)+(f(w)-f(z))$ と分けると，
+補題\ref{lem:winding}により定数部分の積分は
+$2\pi i f(z)$ である．
+残りについて円周積分を評価すれば
+\[
+ \left|\int_{|w-z|=\rho}
+ \frac{f(w)-f(z)}{w-z}\,dw\right|
+ \le2\pi\sup_{|w-z|=\rho}|f(w)-f(z)|
+ \longrightarrow0\quad(\rho\downarrow0)
+\]
+となる．左辺の積分は $\rho$ によらないので，
+極限を取って結論を得る．
+\end{proof}
+
+\section{高階導関数とTaylor展開}
+
+\begin{theorem}[Cauchyの微分公式]\label{thm:derivative}
+$f$ を閉円板 $\overline{D(a,R)}$ の近傍で正則とする．
+任意の $n\ge0$ と $|z-a|<R$ について
+\[
+ f^{(n)}(z)=\frac{n!}{2\pi i}
+ \int_{|w-a|=R}\frac{f(w)}{(w-z)^{n+1}}\,dw.
+\]
+特に $f$ は無限回複素微分可能である．
+\end{theorem}
+\begin{proof}
+$z$ を円板内部の固定した点とし，
+$z$ の小近傍で積分路と $z$ の距離は正に保たれる．
+従って $w$ に関する有界な連続積分核
+$f(w)/(w-z)$ を $z$ について微分するとき，
+分母の導関数を積分の中へ移せる．
+実際，差商の極限はコンパクトな円周上で一様なので，
+曲線積分の連続性から微分と積分を交換できる．
+$\frac{d^n}{dz^n}(w-z)^{-1}
+ =n!(w-z)^{-n-1}$
+を用い，Cauchyの公式を $n$ 回微分すれば結論を得る．
+\end{proof}
+
+\begin{theorem}[正則関数のTaylor展開]\label{thm:taylor}
+$f$ を $D(a,R)$ 上の正則関数とする．
+任意の $0<r<R$ と $|z-a|<r$ に対して
+\[
+ f(z)=\sum_{n=0}^\infty\frac{f^{(n)}(a)}{n!}(z-a)^n
+\]
+が成り立ち，右辺は半径 $R$ の開円板内で局所一様収束する．
+\end{theorem}
+\begin{proof}
+$r<\rho<R$ を取ると，
+Cauchyの積分公式によって
+\[
+ f(z)=\frac1{2\pi i}\int_{|w-a|=\rho}
+   \frac{f(w)}{w-z}\,dw.
+\]
+$|z-a|<\rho$，$|w-a|=\rho$ なので
+\[
+ \frac1{w-z}
+ =\frac1{w-a}\frac1{1-(z-a)/(w-a)}
+ =\sum_{n=0}^\infty\frac{(z-a)^n}{(w-a)^{n+1}}.
+\]
+この幾何級数は円周上で一様絶対収束するため，
+積分と和を交換できる．従って
+\[
+ f(z)=\sum_{n=0}^\infty
+ \left(\frac1{2\pi i}\int_{|w-a|=\rho}
+       \frac{f(w)}{(w-a)^{n+1}}\,dw\right)(z-a)^n.
+\]
+微分公式によって括弧内は $f^{(n)}(a)/n!$ に等しい．
+任意のコンパクト部分円板に対して
+$\rho$ をその半径より大きく選べるので，
+局所一様収束も得る．
+\end{proof}
+
+\begin{corollary}[Cauchyの評価]\label{cor:estimate}
+$f$ を閉円板 $\overline{D(a,R)}$ の近傍で正則とし，
+$M=\max_{|w-a|=R}|f(w)|$ と置く．
+任意の $n\ge0$ について
+\[
+ |f^{(n)}(a)|\le\frac{n!M}{R^n}.
+\]
+\end{corollary}
+\begin{proof}
+定理\ref{thm:derivative}を $z=a$ に適用し，
+積分路の長さ $2\pi R$ と
+$|(w-a)^{n+1}|=R^{n+1}$ を用いれば
+\[
+ |f^{(n)}(a)|
+ \le\frac{n!}{2\pi}(2\pi R)\frac M{R^{n+1}}
+ =\frac{n!M}{R^n}.
+\]
+\end{proof}
+
+\section{基本的帰結}
+
+\begin{theorem}[Liouvilleの定理]\label{thm:liouville}
+有界な整関数は定数関数である．
+\end{theorem}
+\begin{proof}
+$f$ を整関数とし，
+$|f(z)|\le M$ が全ての $z\in\mathbb C$ で成立するとする．
+任意の $a\in\mathbb C$ と $R>0$ について
+Cauchyの評価から $|f'(a)|\le M/R$ である．
+$R\to\infty$ とすれば $f'(a)=0$ となる．
+$a$ は任意だから $f'\equiv0$ であり，
+連結な $\mathbb C$ 上で $f$ は定数である．
+\end{proof}
+
+\begin{theorem}[代数学の基本定理]\label{thm:fta}
+次数1以上の複素係数多項式は複素数の根を持つ．
+\end{theorem}
+\begin{proof}
+多項式 $p$ が根を持たないと仮定すると
+$g(z)=1/p(z)$ は整関数である．
+$p$ の最高次係数を $a_n\ne0$ とすると
+$p(z)/z^n\to a_n$（$|z|\to\infty$）なので
+$|p(z)|\to\infty$ となる．
+従って $g(z)\to0$（$|z|\to\infty$）であり，
+十分大きい円の外側で $g$ は有界である．
+円の内側では $g$ は連続なのでコンパクト性から有界である．
+ゆえに $g$ は有界整関数となり，
+Liouvilleの定理から定数である．
+しかし $p$ は次数1以上なので $1/p$ は定数ではない．
+これは矛盾する．
+\end{proof}
+
+\begin{theorem}[恒等定理]\label{thm:identity}
+$U\subset\mathbb C$ を連結開集合とし，
+$f,g:U\to\mathbb C$ を正則関数とする．
+$f=g$ が成立する点の集合が $U$ 内に集積点を持つなら，
+$f\equiv g$ が $U$ 上で成立する．
+\end{theorem}
+\begin{proof}
+$h=f-g$ と置く．集積点 $a\in U$ で
+$h$ の零点が集積しているとする．
+Taylor展開から
+$h(z)=\sum_{n=0}^\infty c_n(z-a)^n$ が
+$a$ の近傍で成立する．
+もし最初の非零係数が $c_m$ なら
+$h(z)=(z-a)^m q(z)$ と書けて
+$q(a)=c_m\ne0$ なので，
+$a$ の十分小さい近傍では $a$ 以外の零点がない．
+これは零点の集積性に反する．
+従って全ての $c_n=0$ であり，
+$h$ は $a$ の近傍で恒等的に零となる．
+
+$Z=\{z\in U:h\text{ が }z\text{ の近傍で恒等的に零}\}$
+と置くと，$Z$ は空でない開集合である．
+$Z$ の閉性を示す．$z$ が $Z$ の閉包に属するとき，
+$h$ の零点が $z$ に集積するので，
+同じTaylor展開の議論から $h$ は $z$ の近傍で零となる．
+従って $Z$ は閉でもある．
+$U$ は連結なので $Z=U$ であり，$f=g$ が全域で成立する．
+\end{proof}
+
+\begin{remark}
+Goursatの定理は導関数の連続性を仮定せずに得られ，
+Cauchyの積分公式は正則関数の高階微分可能性と
+Taylor展開を導く．
+この順序により，正則性の強い帰結を
+その強い正則性を前提にせずに証明できる．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{Cauchy積分公式で積分を求める．}
+\begin{proposition}
+$C=\{z:|z|=1\}$ を正向きに回るとき
+\[
+\int_C\frac{e^z}{z^3}\,dz=\pi i
+\]
+である．
+\end{proposition}
+\begin{proof}
+Cauchyの微分公式に $f(z)=e^z$，
+$n=2$ を適用する．
+\[
+\int_C\frac{f(z)}{(z-0)^3}\,dz
+=\frac{2\pi i}{2!}f''(0)
+=\pi i.
+\]
+$f$ は円板を含む全平面で正則だから
+仮定が満たされる．
+\end{proof}
+\begin{proposition}
+同じ円周について
+$\int_C \frac{dz}{z-2}=0$ である．
+\end{proposition}
+\begin{proof}
+$1/(z-2)$ は閉単位円板の近傍で正則なので
+Cauchyの積分定理から零となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\int_C\frac{\sin z}{z^2}\,dz$ を求めよ．
+\par\noindent\textbf{解答．}
+Cauchyの微分公式から
+$2\pi i(\sin z)'_{z=0}=2\pi i$ である．
+\end{document}
