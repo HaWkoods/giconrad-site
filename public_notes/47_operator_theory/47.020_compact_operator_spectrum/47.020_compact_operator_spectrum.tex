@@ -1,0 +1,693 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{コンパクト作用素のスペクトル理論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Hilbert空間，有限階数作用素，スペクトル．
+本稿の具体的な到達課題は，具体的なコンパクト作用素のスペクトルを決定する．
+
+\section{コンパクト作用素}
+
+以下，$\mathbb K$ は $\mathbb R$ または $\mathbb C$ とし，
+$X,Y$ は $\mathbb K$ 上のBanach空間とする．
+スペクトルについて論じる節では $\mathbb K=\mathbb C$ とする．
+
+\begin{definition}
+有界線形作用素 $T:X\to Y$ が\emph{コンパクト}であるとは，
+$X$ の任意の有界集合の像が $Y$ において相対コンパクトであることをいう．
+コンパクト作用素全体を $\mathcal K(X,Y)$ と書く．
+\end{definition}
+
+\begin{lemma}[列による特徴づけ]\label{lem:seq}
+有界線形作用素 $T:X\to Y$ がコンパクトであることと，
+$X$ の任意の有界列 $(x_n)$ に対して
+$(Tx_n)$ が収束部分列を持つことは同値である．
+\end{lemma}
+\begin{proof}
+$T$ がコンパクトなら，有界列の像は
+相対コンパクト集合に含まれる．
+距離空間のコンパクト性と点列コンパクト性の同値性から
+収束部分列が存在する．
+逆に像の閉包がコンパクトでない有界集合があれば，
+完備距離空間におけるコンパクト性と全有界性の同値性から，
+ある $\varepsilon>0$ に対して
+互いの距離が $\varepsilon$ 以上となる像の点列を選べる．
+対応する原像は有界列であるが，
+像にCauchy部分列がなく矛盾する．
+\end{proof}
+
+\begin{proposition}[有限階作用素とノルム極限]\label{prop:compact-basics}
+有限階の有界線形作用素はコンパクトである．
+また $\mathcal K(X,Y)$ は $\mathcal B(X,Y)$ の
+作用素ノルムについて閉線形部分空間である．
+$S\in\mathcal B(Y,Z)$，$R\in\mathcal B(W,X)$ および
+$T\in\mathcal K(X,Y)$ なら $ST$，$TR$ もコンパクトである．
+\end{proposition}
+\begin{proof}
+有限次元ノルム空間の有界集合は相対コンパクトなので，
+有限階作用素の有界集合の像は相対コンパクトである．
+コンパクト作用素の和の像は二つの相対コンパクト集合の和に
+含まれ，コンパクト集合の和は連続写像
+$(y,z)\mapsto y+z$ の像だからコンパクトである．
+スカラー倍についても同様である．
+
+$T_n\to T$ を作用素ノルムで収束するコンパクト作用素列とする．
+$X$ の有界列 $(x_j)$ を取り，
+対角線論法により $(T_nx_j)$ が全ての $n$ について
+収束する共通部分列 $(x_{j_k})$ を選ぶ．
+$\norm{x_{j_k}}\le M$ とすれば，
+任意の $\varepsilon>0$ に対して
+$\norm{T-T_n}<\varepsilon/(3(M+1))$ となる $n$ を固定できる．
+$k,\ell$ が十分大きければ
+\[
+ \norm{Tx_{j_k}-Tx_{j_\ell}}
+ \le 2M\norm{T-T_n}
+   +\norm{T_nx_{j_k}-T_nx_{j_\ell}}<\varepsilon.
+\]
+$Y$ の完備性から $(Tx_{j_k})$ は収束する．
+従って補題\ref{lem:seq}により $T$ はコンパクトである．
+
+$TR$ の場合，$R$ は有界集合を有界集合へ写すから明らかである．
+$ST$ の場合，$T$ の像のコンパクトな閉包は
+$S$ によりコンパクト集合へ写るから結論が従う．
+\end{proof}
+
+\begin{lemma}[Rieszの補題]\label{lem:riesz}
+ノルム空間 $X$ の真の閉線形部分空間 $M$ と
+$0<\alpha<1$ に対し，
+$\norm x=1$ かつ $d(x,M)>\alpha$ となる $x\in X$ が存在する．
+\end{lemma}
+\begin{proof}
+$x_0\notin M$ を取る．$M$ は閉なので
+$d=d(x_0,M)>0$ である．
+$1<\beta<1/\alpha$ を取り，
+$\norm{x_0-m}<\beta d$ となる $m\in M$ を選ぶ．
+$x=(x_0-m)/\norm{x_0-m}$ と置くと $\norm x=1$ である．
+$M$ は線形空間なので
+\[
+ d(x,M)=\frac{d(x_0,M)}{\norm{x_0-m}}
+ >\frac1\beta>\alpha.
+\]
+\end{proof}
+
+\begin{corollary}\label{cor:finite-dim}
+無限次元ノルム空間の閉単位球は相対コンパクトでない．
+\end{corollary}
+\begin{proof}
+線形独立なベクトルを帰納的に選び，
+その有限次元の張る部分空間を $M_n$ とする．
+$M_n$ は閉で真の部分空間だから，
+補題\ref{lem:riesz}によって
+$\norm{x_{n+1}}=1$ かつ
+$d(x_{n+1},M_n)>1/2$ となるものを取れる．
+$m<n$ なら $x_m\in M_{n-1}$ なので
+$\norm{x_n-x_m}>1/2$ となり，収束部分列は存在しない．
+\end{proof}
+
+\section{スペクトルとレゾルベント}
+
+以下，$X$ を複素Banach空間，$T\in\mathcal B(X)$ とする．
+\begin{definition}
+\[
+ \rho(T)=\{\lambda\in\mathbb C:
+  \lambda I-T:X\to X\text{ が有界な逆を持つ}\},
+ \qquad \sigma(T)=\mathbb C\setminus\rho(T)
+\]
+をそれぞれレゾルベント集合，スペクトルという．
+$\lambda I-T$ の逆を $R(\lambda,T)$ と書く．
+\end{definition}
+
+\begin{lemma}[Neumann級数]\label{lem:neumann}
+$\norm A<1$ を満たす $A\in\mathcal B(X)$ に対し
+\[
+ (I-A)^{-1}=\sum_{n=0}^\infty A^n
+\]
+が作用素ノルム収束の意味で成立する．
+\end{lemma}
+\begin{proof}
+$\sum_n\norm{A^n}\le\sum_n\norm A^n<\infty$ なので，
+Banach代数 $\mathcal B(X)$ の完備性から
+$S=\sum_nA^n$ が存在する．
+$(I-A)\sum_{n=0}^NA^n=I-A^{N+1}$ であり，
+右辺は作用素ノルムで $I$ に収束する．
+反対側からの積も同じ計算なので
+$(I-A)S=S(I-A)=I$ となる．
+\end{proof}
+
+\begin{proposition}[スペクトルのコンパクト性]\label{prop:spectrum}
+$X\ne\{0\}$ とする．このとき
+$\sigma(T)$ は空でないコンパクト集合であり，
+$\sigma(T)\subset\{\lambda:|\lambda|\le\norm T\}$ である．
+\end{proposition}
+\begin{proof}
+$|\lambda|>\norm T$ なら
+$\norm{\lambda^{-1}T}<1$ なのでNeumann級数から
+\[
+ (\lambda I-T)^{-1}
+ =\lambda^{-1}\sum_{n=0}^\infty\lambda^{-n}T^n
+\]
+が成立する．よってスペクトルは有界である．
+可逆作用素全体は作用素ノルムで開である：
+$A$ が可逆で $\norm{A^{-1}(B-A)}<1$ なら
+$B=A(I+A^{-1}(B-A))$ もNeumann級数によって可逆である．
+従って $\rho(T)$ は開，$\sigma(T)$ は閉でありコンパクトである．
+
+もし $\sigma(T)=\varnothing$ なら
+$R(\lambda,T)$ は複素平面全体で解析的となる．
+実際 $\lambda_0\in\rho(T)$ の近傍では
+\[
+ R(\lambda,T)
+ =R(\lambda_0,T)
+  \sum_{n=0}^\infty
+  (-1)^n(\lambda-\lambda_0)^nR(\lambda_0,T)^n
+\]
+という作用素ノルム収束級数で表される．
+また $|\lambda|>\norm T$ では
+$\norm{R(\lambda,T)}\le(|\lambda|-\norm T)^{-1}\to0$ である．
+任意の $f\in X^*$，$x\in X$ について
+$\lambda\mapsto f(R(\lambda,T)x)$ は有界整関数なので，
+Liouvilleの定理から定数，しかも無限遠で零になるから
+恒等的に零である．
+Hahn--Banachの定理によって $R(\lambda,T)x=0$
+が全ての $x$ で従い，逆作用素が零になるという矛盾を得る．
+従ってスペクトルは空でない．
+\end{proof}
+
+\section{コンパクト作用素の非零スペクトル}
+
+\begin{lemma}[閉値域補題]\label{lem:bounded-below}
+$K\in\mathcal K(X)$ とし，
+$S=I-K$ が単射であるとする．
+このときある $c>0$ が存在して
+$\norm{Sx}\ge c\norm x$ が全ての $x\in X$ で成り立つ．
+特に $S(X)$ は閉部分空間である．
+\end{lemma}
+\begin{proof}
+もし下からの評価が成り立たなければ，
+$\norm{x_n}=1$ かつ $Sx_n\to0$ となる列を取れる．
+$K$ はコンパクトだから $(Kx_n)$ は収束部分列を持つ．
+$x_n=Kx_n+Sx_n$ より同じ部分列で $x_n\to x$ となり，
+$\norm x=1$，$Sx=0$ を得る．
+これは単射性に矛盾する．
+よって下界が存在する．
+もし $Sx_n\to y$ なら
+$\norm{x_n-x_m}\le c^{-1}\norm{Sx_n-Sx_m}$
+から $(x_n)$ はCauchy列である．
+完備性によって $x_n\to x$ となり
+$y=Sx$ であるから $S(X)$ は閉である．
+\end{proof}
+
+\begin{theorem}[Fredholmの交代定理：単射性と全射性]\label{thm:fredholm}
+$K\in\mathcal K(X)$ とする．
+$I-K$ が単射なら全射であり，
+従って有界逆作用素を持つ．
+ゆえに方程式 $x-Kx=y$ は，
+任意の $y$ に対し唯一解を持つか，
+斉次方程式 $x-Kx=0$ が非零解を持つかの
+いずれかである．
+\end{theorem}
+\begin{proof}
+$S=I-K$ が単射とする．
+補題\ref{lem:bounded-below}により $S(X)$ は閉である．
+各 $n\ge1$ について $S^n$ も単射であり，
+$I-S^n=I-(I-K)^n$ は $K$ の多項式で定数項が零だから
+コンパクトである．
+従って同じ補題を $S^n$ に適用すると
+$S^n(X)$ は閉である．
+
+$S$ が全射でないと仮定する．
+$S^n(X)\supsetneq S^{n+1}(X)$ が全ての $n\ge0$ で
+成り立つことを示す．
+もし $S^n(X)=S^{n+1}(X)$ なら，任意の $x\in X$ について
+$S^nx=S^{n+1}y$ となる $y\in X$ が存在する．
+$S^n$ の単射性から $x=Sy$ となり，
+$S$ は全射になって矛盾する．
+
+Rieszの補題を閉部分空間の列
+$M_n=S^n(X)$ に適用し，
+$x_n\in M_n$，$\norm{x_n}=1$，
+$d(x_n,M_{n+1})>1/2$ とできる．
+$m>n$ なら
+$Sx_n\in M_{n+1}$，$x_m,Sx_m\in M_{n+1}$ なので，
+\[
+ Kx_n-Kx_m
+ =(x_n-Sx_n)-(x_m-Sx_m)
+\]
+において $x_n$ 以外の項は $M_{n+1}$ に属する．
+従って
+$\norm{Kx_n-Kx_m}\ge d(x_n,M_{n+1})>1/2$ となる．
+これは $(x_n)$ が有界であるのに
+$(Kx_n)$ が収束部分列を持たないことを意味し，
+$K$ のコンパクト性に矛盾する．
+よって $S$ は全射である．
+有界逆写像定理から逆作用素は有界である．
+\end{proof}
+
+\begin{theorem}[Riesz--Schauderの非零スペクトル定理]
+\label{thm:riesz-schauder}
+$K\in\mathcal K(X)$ とする．
+零でない $\lambda\in\mathbb C$ が $\sigma(K)$ に属することと，
+$\lambda$ が $K$ の固有値であることは同値である．
+さらに非零固有値の固有空間は有限次元であり，
+非零スペクトルの集積点は存在するとしても $0$ に限られる．
+\end{theorem}
+\begin{proof}
+$\lambda\ne0$ について
+$\lambda I-K=\lambda(I-\lambda^{-1}K)$ であり，
+$\lambda^{-1}K$ はコンパクトである．
+定理\ref{thm:fredholm}から，
+$I-\lambda^{-1}K$ が単射なら全射かつ有界可逆である．
+従って $\lambda I-K$ が可逆でないなら，
+零でない $x$ で $Kx=\lambda x$ となるものが存在する．
+逆向きは固有ベクトルが存在すれば単射でないから明らかである．
+
+$E_\lambda=\ker(\lambda I-K)$ と置く．
+$E_\lambda$ は閉部分空間であり，
+$K$ はその上で $\lambda I$ と一致する．
+もし $E_\lambda$ が無限次元なら，
+その閉単位球は $K$ によって
+$\lambda$ 倍された同じ単位球へ写り，
+$\lambda\ne0$ のため相対コンパクトでない．
+これはコンパクト性に矛盾する．
+従って $E_\lambda$ は有限次元である．
+
+非零固有値の相異なる列 $\lambda_n$ が
+$\lambda_n\to\lambda\ne0$ と収束すると仮定する．
+それぞれの固有ベクトルを選び，
+$M_n$ を最初の $n$ 個の固有空間の和とする．
+相異なる固有値の固有ベクトルは線形独立なので
+$M_{n-1}\subsetneq M_n$ であり，$M_n$ は有限次元で閉である．
+Rieszの補題により
+$x_n\in M_n$，$\norm{x_n}=1$，
+$d(x_n,M_{n-1})>1/2$ と選べる．
+$M_n$ は $K$-不変であり，$x_n$ を
+固有空間 $E_{\lambda_1},\ldots,E_{\lambda_n}$ の元の和に分解すると，
+$Kx_n-\lambda_nx_n\in M_{n-1}$ となる．
+また $m<n$ なら $Kx_m\in M_{n-1}$ なので
+\[
+ \norm{Kx_n-Kx_m}
+ \ge d(Kx_n,M_{n-1})
+ =|\lambda_n|d(x_n,M_{n-1})
+ >|\lambda_n|/2.
+\]
+$\lambda_n\to\lambda\ne0$ だから
+$|\lambda_n|$ は十分大きい $n$ で正の定数より大きい．
+従って $(Kx_n)$ にCauchy部分列はなく，
+$K$ のコンパクト性に矛盾する．
+よって非零の集積点は存在しない．
+\end{proof}
+
+\begin{remark}
+$\sigma(K)$ に $0$ が含まれるかは空間による．
+例えば無限次元Banach空間上のコンパクト作用素は
+可逆ではないので $0\in\sigma(K)$ である．
+実際，可逆であれば $I=K^{-1}K$ がコンパクトとなるが，
+無限次元空間の恒等作用素はコンパクトでない．
+有限次元では $0$ がスペクトルに属さない場合もある．
+\end{remark}
+
+\section{Hilbert空間上の自己共役コンパクト作用素}
+
+ここから $H$ を実または複素Hilbert空間とし，
+内積は第1変数について線形とする．
+$T\in\mathcal B(H)$ が自己共役であるとは
+$T^*=T$ であることをいう．
+
+\begin{lemma}[自己共役作用素の数値半径]\label{lem:numerical}
+$T=T^*\in\mathcal B(H)$ とすると
+\[
+ \norm T=\sup_{\norm x=1}|\langle Tx,x\rangle|.
+\]
+\end{lemma}
+\begin{proof}
+右辺を $M$ と置く．Cauchy--Schwarzの不等式から
+$M\le\norm T$ である．
+$T$ は自己共役なので $\langle Tx,x\rangle$ は実数である．
+任意の $x,y\in H$ に対して，
+自己共役性と内積の規約から
+\[
+ 4\operatorname{Re}\langle Tx,y\rangle
+ =\langle T(x+y),x+y\rangle
+  -\langle T(x-y),x-y\rangle.
+\]
+従って
+\[
+ 4|\operatorname{Re}\langle Tx,y\rangle|
+ \le M(\norm{x+y}^2+\norm{x-y}^2)
+ =2M(\norm x^2+\norm y^2).
+\]
+$\norm x=\norm y=1$ なら
+$|\operatorname{Re}\langle Tx,y\rangle|\le M$ である．
+複素数体では $y$ を適切な絶対値1の複素数倍に置き換えることで
+実部を絶対値にできる．実数体では必要なら $y$ の符号を変える．
+従って $|\langle Tx,y\rangle|\le M$ が単位ベクトルで成り立つ．
+$\norm{Tx}=\sup_{\norm y=1}|\langle Tx,y\rangle|$
+を用いて $\norm T\le M$ を得る．
+\end{proof}
+
+\begin{lemma}[Hilbert空間の有界列の弱部分列]\label{lem:weak-subseq}
+Hilbert空間 $H$ の任意の有界列は弱収束部分列を持つ．
+\end{lemma}
+\begin{proof}
+有界列を $(x_n)$ とし，
+$M=\overline{\operatorname{span}}\{x_n:n\ge1\}$ と置く．
+$M$ は可分Hilbert空間なのでGram--Schmidtの方法で
+高々可算な正規直交基底 $(e_j)$ を持つ．
+各 $j$ について
+$\langle x_n,e_j\rangle$ は有界数列であるから，
+対角線論法によって部分列 $(x_{n_k})$ を取り，
+全ての $j$ について
+$\langle x_{n_k},e_j\rangle\to a_j$ とできる．
+Besselの不等式から
+$\sum_j|a_j|^2\le\sup_n\norm{x_n}^2$ なので，
+$x=\sum_ja_je_j\in M$ が存在する．
+有限線形結合 $y=\sum_{j=1}^Nc_je_j$ については
+$\langle x_{n_k},y\rangle\to\langle x,y\rangle$ である．
+任意の $y\in M$ を有限線形結合で近似すると，
+$(x_{n_k})$ の一様有界性とCauchy--Schwarzの不等式により
+同じ極限が従う．
+$y\in M^\perp$ では両辺の内積は零だから，
+$H=M\oplus M^\perp$ を用いて全ての $y\in H$ について
+$\langle x_{n_k},y\rangle\to\langle x,y\rangle$ となる．
+従って弱収束する．
+\end{proof}
+
+\begin{lemma}[コンパクト作用素は弱収束を強収束に移す]
+\label{lem:compact-weak}
+$T\in\mathcal K(H)$ とする．
+$x_n\rightharpoonup x$ なら
+$\norm{Tx_n-Tx}\to0$ である．
+\end{lemma}
+\begin{proof}
+弱収束列は一様有界性原理によってノルム有界である．
+$T$ はコンパクトだから任意の部分列は
+$Tx_{n_k}\to y$ となる更なる部分列を持つ．
+任意の $z\in H$ について
+\[
+ \langle Tx_{n_k},z\rangle
+ =\langle x_{n_k},T^*z\rangle
+ \longrightarrow\langle x,T^*z\rangle
+ =\langle Tx,z\rangle.
+\]
+一方，左辺のノルム極限は $\langle y,z\rangle$ なので
+$y=Tx$ である．
+従って像の任意の収束部分列の極限は $Tx$ に限られる．
+もし $Tx_n\not\to Tx$ なら
+$\norm{Tx_{n_k}-Tx}\ge\varepsilon$ となる部分列があり，
+コンパクト性でその収束部分列を取ると矛盾する．
+よって強収束する．
+\end{proof}
+
+\begin{theorem}[コンパクト自己共役作用素の固有値]
+\label{thm:norm-eigen}
+$T\in\mathcal K(H)$ が自己共役で $T\ne0$ とする．
+このとき $\norm T$ または $-\norm T$ は $T$ の固有値である．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:numerical}により
+$\norm{x_n}=1$ で
+$|\langle Tx_n,x_n\rangle|\to\norm T$
+となる列を取れる．
+必要なら部分列を取って
+$\langle Tx_n,x_n\rangle\to\lambda$，
+$\lambda\in\{\norm T,-\norm T\}$ とできる．
+補題\ref{lem:weak-subseq}によって
+$x_n\rightharpoonup x$ となる部分列を取り直す．
+補題\ref{lem:compact-weak}により
+$Tx_n\to Tx$ がノルムで成り立つ．
+従って
+$\langle Tx_n,x_n\rangle\to\langle Tx,x\rangle=\lambda$
+となる．
+$\norm x\le1$ であり，
+\[
+ |\lambda|=|\langle Tx,x\rangle|
+ \le\norm T\,\norm x^2\le\norm T
+\]
+だから $\norm x=1$ である．
+
+$\lambda=\norm T$ の場合，
+\[
+ 0=\norm T-\langle Tx,x\rangle
+\]
+であり，
+$A=\norm T I-T$ は自己共役で
+$\langle Ay,y\rangle\ge0$ が全ての $y$ で成立する．
+正半定値なHermite形式
+$(u,v)\mapsto\langle Au,v\rangle$ に対する
+Cauchy--Schwarzの不等式から
+$|\langle Ax,y\rangle|^2\le
+ \langle Ax,x\rangle\langle Ay,y\rangle=0$
+となるため $Ax=0$，すなわち $Tx=\norm T x$ である．
+$\lambda=-\norm T$ の場合も $-T$ に同じ議論を適用すれば
+$Tx=-\norm T x$ となる．
+\end{proof}
+
+\section{コンパクト自己共役作用素のスペクトル定理}
+
+\begin{theorem}[コンパクト自己共役スペクトル定理]
+\label{thm:compact-spectral}
+$H$ を実または複素Hilbert空間，
+$T\in\mathcal K(H)$ を自己共役作用素とする．
+このとき有限または可算個の非零実数固有値
+$\lambda_j$ と，対応する正規直交固有ベクトル $e_j$
+が存在して，
+\[
+ Tx=\sum_j\lambda_j\langle x,e_j\rangle e_j
+ \qquad(x\in H)
+\]
+と表される．ここで級数はノルム収束し，
+無限個の項がある場合は $\lambda_j\to0$ である．
+また $H$ は非零固有空間の直交和の閉包と $\ker T$ の
+直交直和に分解される．
+\end{theorem}
+\begin{proof}
+異なる固有値 $\lambda\ne\mu$ に属する固有ベクトル $u,v$ は
+\[
+ \lambda\langle u,v\rangle
+ =\langle Tu,v\rangle
+ =\langle u,Tv\rangle
+ =\mu\langle u,v\rangle
+\]
+を満たすため直交する．
+非零固有空間は定理\ref{thm:riesz-schauder}により有限次元である．
+非零固有値全体は $0$ 以外に集積点を持たないので，
+非零固有値は高々可算である．
+各固有空間に正規直交基底を取り，
+それら全体を $\{e_j\}$ とする．
+
+$M=\overline{\operatorname{span}}\{e_j\}$ と置く．
+$T$ は各固有空間を保ち，自己共役性から
+$M^\perp$ も不変である．
+実際 $x\in M^\perp$，$e_j\in M$ なら
+$\langle Tx,e_j\rangle
+ =\langle x,Te_j\rangle
+ =\lambda_j\langle x,e_j\rangle=0$
+である．
+$T|_{M^\perp}$ はコンパクト自己共役である．
+もし零でなければ，
+定理\ref{thm:norm-eigen}から $M^\perp$ に
+非零固有値に属する固有ベクトルが存在するが，
+そのベクトルは定義上 $M$ にも属するので矛盾する．
+従って $T|_{M^\perp}=0$，すなわち
+$M^\perp\subset\ker T$ である．
+逆に $u\in\ker T$ なら
+$\lambda_j\langle u,e_j\rangle
+ =\langle u,Te_j\rangle
+ =\langle Tu,e_j\rangle=0$
+だから $u\in M^\perp$ である．
+よって $\ker T=M^\perp$ となる．
+
+Hilbert空間の直交射影定理とParsevalの等式から
+\[
+ x=\sum_j\langle x,e_j\rangle e_j+x_0,
+ \qquad x_0\in\ker T
+\]
+がノルム収束で成立する．
+$T$ は有界なので和と作用を交換し，
+\[
+ Tx=\sum_j\lambda_j\langle x,e_j\rangle e_j
+\]
+を得る．
+無限個の異なる非零固有値があれば
+定理\ref{thm:riesz-schauder}からその絶対値は零へ向かう．
+各固有空間は有限次元なので，
+固有値を重複度込みで列挙しても
+$\lambda_j\to0$ となる．
+\end{proof}
+
+\begin{corollary}[Fredholmの交代定理：自己共役の場合]
+\label{cor:fredholm-sa}
+$T\in\mathcal K(H)$ が自己共役とする．
+方程式 $(I-T)x=y$ が解を持つための必要十分条件は
+\[
+ y\perp\ker(I-T)
+\]
+である．
+解が存在するとき，その全体は一つの解に
+$\ker(I-T)$ の元を加えた集合となる．
+\end{corollary}
+\begin{proof}
+$S=I-T$ は自己共役だから
+$\operatorname{ran}S\subset(\ker S)^\perp$ である．
+スペクトル定理によって $T$ の固有値1に対応する
+固有空間は有限次元であり，
+それ以外の固有値 $\lambda_j$ は $1$ から正の距離を持つ．
+実際，非零固有値は $0$ 以外に集積点を持たないため，
+$1$ に近づく異なる固有値列は存在しない．
+従って $(\ker S)^\perp$ 上で
+$S$ は各固有成分に係数 $1-\lambda_j$ を掛け，
+$\ker T$ 上では恒等写像であり，
+その係数の絶対値は下から正定数で抑えられる．
+よって係数を割り戻すことで
+任意の $y\in(\ker S)^\perp$ に対して $Sx=y$ を満たす
+$x\in H$ が存在する．
+従って
+$\operatorname{ran}S=(\ker S)^\perp$ となり，
+可解性の条件が得られる．
+二つの解の差は $\ker S$ に属するので
+解の全体の記述も従う．
+\end{proof}
+
+\section{積分作用素の例}
+
+\begin{example}[Hilbert--Schmidt型積分作用素]\label{ex:integral}
+$k\in L^2([0,1]^2)$ とし，
+\[
+ (Tf)(x)=\int_0^1k(x,y)f(y)\,dy
+\]
+によって $T:L^2([0,1])\to L^2([0,1])$ を定める．
+このとき $T$ はコンパクトである．
+さらに $k(x,y)=\overline{k(y,x)}$ が
+ほとんど至る所成立するなら $T$ は自己共役である．
+\end{example}
+\begin{proof}
+Cauchy--Schwarzの不等式とFubiniの定理により
+\[
+ \norm{Tf}_2^2
+ \le\int_0^1\left(\int_0^1|k(x,y)|^2dy\right)\norm f_2^2dx
+ =\norm k_{L^2([0,1]^2)}^2\norm f_2^2
+\]
+である．よって $T$ は有界である．
+$L^2([0,1]^2)$ では有限和の形
+$k_n(x,y)=\sum_{j=1}^{N_n}a_{n,j}(x)b_{n,j}(y)$
+となる単純テンソルの線形結合が稠密である．
+これは長方形の指示関数の有限和が
+$L^2$ で稠密であることから従う．
+$k_n$ に対応する積分作用素 $T_n$ の像は
+$a_{n,1},\dots,a_{n,N_n}$ の張る有限次元空間に含まれるので
+有限階である．上の評価を $k-k_n$ に適用すると
+\[
+ \norm{T-T_n}\le\norm{k-k_n}_{L^2([0,1]^2)}\to0
+\]
+となる．有限階作用素はコンパクトであり，
+その作用素ノルム極限もコンパクトなので $T$ はコンパクトである．
+最後にHermite対称性の仮定とFubiniの定理から
+$\langle Tf,g\rangle=\langle f,Tg\rangle$
+となり，自己共役性が従う．
+\end{proof}
+
+\begin{remark}
+一般のBanach空間におけるRiesz--Schauderの定理と，
+Hilbert空間の自己共役性を用いるスペクトル定理は
+異なる性質を持つ．前者は非零スペクトルの離散性を，
+後者は直交固有ベクトルによる分解を与える．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{階数1のコンパクト作用素のスペクトル．}
+\begin{proposition}
+$H=L^2(0,1)$ 上で
+\[
+(Tf)(x)=\int_0^1f(t)\,dt
+\]
+と定める．$T$ は階数1のコンパクト作用素であり，
+$T^2=T$，スペクトルは $\sigma(T)=\{0,1\}$ である．
+\end{proposition}
+\begin{proof}
+Cauchy--Schwarzから
+$|\int_0^1f|\le\|f\|_2$ なので有界である．
+像は定数関数の一次元空間に含まれるから有限階数で，
+特にコンパクトである．
+積分区間の長さは1なので
+$T(Tf)=Tf$．
+定数関数1は固有値1の固有ベクトルである．
+平均零の非零関数は固有値0の固有ベクトルである．
+$\lambda\notin\{0,1\}$ では
+\[
+(\lambda I-T)^{-1}
+=\lambda^{-1}I+\frac1{\lambda(\lambda-1)}T
+\]
+が直接計算により逆作用素となる．
+従ってスペクトルは表示した二点のみである．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\ker T$ を記述せよ．
+\par\noindent\textbf{解答．}
+$\{f\in L^2(0,1):\int_0^1f(t)\,dt=0\}$ である．
+\end{document}

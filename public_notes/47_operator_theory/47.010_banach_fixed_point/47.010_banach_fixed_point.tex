@@ -1,0 +1,509 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Banachの不動点定理とその応用}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，完備距離空間，縮小写像原理，平均値の定理．
+本稿の具体的な到達課題は，具体的な反復法の唯一の不動点と誤差上界を求める．
+
+\section{縮小写像原理}
+
+\begin{definition}[縮小写像]
+距離空間 $(X,d)$ の写像 $T:X\to X$ が\emph{縮小写像}であるとは，
+ある $q\in[0,1)$ が存在して，すべての $x,y\in X$ に対して
+\begin{equation}\label{eq:contraction}
+ d(Tx,Ty)\le q\,d(x,y)
+\end{equation}
+が成り立つことをいう．この $q$ を縮小定数という．
+\end{definition}
+
+単に $x\ne y$ のとき $d(Tx,Ty)<d(x,y)$ が成り立つという条件とは異なり，
+縮小写像の定義は全ての点に共通の定数 $q<1$ を要求する．
+
+\begin{theorem}[Banachの不動点定理]\label{thm:banach}
+$(X,d)$ を空でない完備距離空間，$T:X\to X$ を縮小定数 $q<1$ の縮小写像とする．
+このとき，$T$ はただ一つの不動点 $p\in X$ をもつ．
+さらに，任意の $x_0\in X$ に対して
+\[
+ x_{n+1}=Tx_n\qquad(n\ge0)
+\]
+と定めた数列 $(x_n)$ は $p$ に収束する．
+\end{theorem}
+
+\begin{proof}
+\eqref{eq:contraction} を繰り返し用いれば
+\[
+ d(x_{n+1},x_n)\le q^n d(x_1,x_0)
+\]
+である．したがって，$m>n$ に対し
+\begin{align*}
+ d(x_m,x_n)
+ &\le\sum_{k=n}^{m-1}d(x_{k+1},x_k)\\
+ &\le\sum_{k=n}^{m-1}q^k d(x_1,x_0)\\
+ &\le\frac{q^n}{1-q}d(x_1,x_0).
+\end{align*}
+右辺は $n\to\infty$ で $0$ に収束する．ゆえに $(x_n)$ はCauchy列であり，
+完備性によりある $p\in X$ に収束する．
+
+縮小写像は連続であるから
+\[
+ Tp=T\!\left(\lim_{n\to\infty}x_n\right)
+  =\lim_{n\to\infty}Tx_n
+  =\lim_{n\to\infty}x_{n+1}=p.
+\]
+したがって $p$ は不動点である．他の不動点 $p'$ が存在すれば
+\[
+ d(p,p')=d(Tp,Tp')\le q\,d(p,p')
+\]
+となるが，$q<1$ より $d(p,p')=0$，すなわち $p=p'$ である．
+\end{proof}
+
+\begin{corollary}[反復近似の誤差]\label{cor:error}
+定理~\ref{thm:banach} の仮定のもとで，任意の $n\ge0$ に対し
+\begin{equation}\label{eq:error}
+ d(x_n,p)\le\frac{q^n}{1-q}d(x_1,x_0)
+\end{equation}
+が成り立つ．また $n\ge1$ ならば
+\[
+ d(x_n,p)\le\frac{q}{1-q}d(x_n,x_{n-1})
+\]
+である．
+\end{corollary}
+
+\begin{proof}
+前者は定理の証明中の評価で $m\to\infty$ とすればよい．
+後者は
+\[
+ d(x_n,p)\le \sum_{k=n}^{\infty}d(x_{k+1},x_k)
+  \le \sum_{j=1}^{\infty}q^j d(x_n,x_{n-1})
+\]
+から従う．
+\end{proof}
+
+\begin{remark}
+式~\eqref{eq:error} は初期値の情報による\emph{事前誤差評価}であり，
+もう一方は反復計算中に得られる\emph{事後誤差評価}である．
+存在定理が，同時に近似計算の手段も与えている．
+\end{remark}
+
+\section{積分方程式への応用}
+
+$I=[0,a]$（$a>0$）とし，
+$\Delta=\{(t,s)\in I^2:0\le s\le t\}$ とおく．
+$g\in C(I;\R)$，$K\in C(\Delta;\R)$，$\lambda\in\R$ に対して
+\begin{equation}\label{eq:volterra}
+ u(t)=g(t)+\lambda\int_0^t K(t,s)u(s)\,ds
+ \qquad(t\in I)
+\end{equation}
+を考える．この型の方程式をVolterra型積分方程式という．
+
+自然な候補となる空間は $C(I;\R)$ である．しかし，通常の一様ノルムを用いると，
+積分作用素のLipschitz定数は $\abs{\lambda}a\norm{K}_{\infty}$ 以下としか評価できない．
+この値が $1$ 未満になるとは限らない．そこでノルムを変更する．
+
+\begin{lemma}[重み付き一様ノルム]\label{lem:weight}
+$\alpha>0$ とする．$C(I;\R)$ 上に
+\[
+ \norm{u}_{\alpha}=\sup_{t\in I}e^{-\alpha t}\abs{u(t)}
+\]
+と定めると，これは通常の一様ノルム $\norm{\cdot}_{\infty}$ と同値なノルムである．
+特に $(C(I;\R),\norm{\cdot}_{\alpha})$ はBanach空間である．
+\end{lemma}
+
+\begin{proof}
+$t\in I$ ならば $e^{-\alpha a}\le e^{-\alpha t}\le1$ だから
+\[
+ e^{-\alpha a}\norm{u}_{\infty}\le\norm{u}_{\alpha}
+ \le\norm{u}_{\infty}.
+\]
+よって両ノルムは同値である．
+通常の一様ノルムでの完備性から結論が従う．
+\end{proof}
+
+\begin{proposition}[Volterra型積分方程式の可解性]\label{prop:volterra}
+$g\in C(I;\R)$，$K\in C(\Delta;\R)$，$\lambda\in\R$ を任意に与える．
+積分方程式~\eqref{eq:volterra} は $C(I;\R)$ にただ一つの解をもつ．
+\end{proposition}
+
+\begin{proof}
+$M=\max_{(t,s)\in\Delta}\abs{K(t,s)}$ とし，
+$\alpha>\abs{\lambda}M$ を取る．写像 $T:C(I;\R)\to C(I;\R)$ を
+\[
+ (Tu)(t)=g(t)+\lambda\int_0^t K(t,s)u(s)\,ds
+\]
+によって定める．被積分関数の連続性から，$Tu$ は連続である．
+任意の $u,v\in C(I;\R)$ に対して
+\begin{align*}
+ &e^{-\alpha t}\abs{(Tu)(t)-(Tv)(t)}\\
+ &\quad\le\abs{\lambda}M e^{-\alpha t}
+       \int_0^t\abs{u(s)-v(s)}\,ds\\
+ &\quad\le\abs{\lambda}M\norm{u-v}_{\alpha}
+       e^{-\alpha t}\int_0^t e^{\alpha s}\,ds\\
+ &\quad\le\frac{\abs{\lambda}M}{\alpha}\norm{u-v}_{\alpha}
+\end{align*}
+を得る．したがって
+\[
+ \norm{Tu-Tv}_{\alpha}\le
+ \frac{\abs{\lambda}M}{\alpha}\norm{u-v}_{\alpha}.
+\]
+係数は $1$ 未満であり，$T$ は縮小写像である．
+補題~\ref{lem:weight} と定理~\ref{thm:banach} によって，
+$T$ はただ一つの不動点をもつ．
+これは~\eqref{eq:volterra} の解である．
+\end{proof}
+
+\begin{remark}
+区間 $I$ を短くすることなく，ノルムの選択だけで縮小性を得た．
+この論法では $a$ に関する小ささの条件を要しない．
+\end{remark}
+
+\section{Picard--Lindel\"ofの定理}
+
+$t_0\in\R$，$a,b>0$，$x_0\in\R^d$ とし，
+\[
+ D=[t_0-a,t_0+a]\times\overline{B}(x_0,b)
+\]
+とおく．ただし
+$\overline{B}(x_0,b)=\{x\in\R^d:\norm{x-x_0}\le b\}$ である．
+連続写像 $F:D\to\R^d$ に対し，初期値問題
+\begin{equation}\label{eq:ivp}
+ x'(t)=F(t,x(t)),\qquad x(t_0)=x_0
+\end{equation}
+を考える．
+
+\begin{theorem}[Picard--Lindel\"ofの局所存在・一意性]\label{thm:picard}
+$F:D\to\R^d$ は連続であり，ある $L\ge0$ が存在して
+\[
+ \norm{F(t,x)-F(t,y)}\le L\norm{x-y}
+\]
+が任意の $t\in[t_0-a,t_0+a]$ および
+$x,y\in\overline{B}(x_0,b)$ に対して成り立つとする．
+$M=\max_{(t,x)\in D}\norm{F(t,x)}$ とし，
+\[
+ 0<h\le a,\qquad hM\le b,\qquad hL<1
+\]
+を満たす $h>0$ を取る．
+このとき $J=[t_0-h,t_0+h]$ 上に，
+$x(J)\subset\overline{B}(x_0,b)$ を満たす~\eqref{eq:ivp} の解が存在し，
+この条件を満たす解の中で一意である．
+ここで解は $J$ 上で連続かつ $J$ の内部で連続微分可能な写像をいう．
+\end{theorem}
+
+\begin{proof}
+$E=C(J;\R^d)$ に一様ノルムを入れ，
+\[
+ X=\{u\in E:\norm{u(t)-x_0}\le b\ (t\in J)\}
+\]
+とおく．$X$ は $E$ の空でない閉部分集合であるから完備である．
+$T:X\to E$ を
+\[
+ (Tu)(t)=x_0+\int_{t_0}^{t}F(s,u(s))\,ds
+\]
+で定める．$t<t_0$ の場合も積分は通常の向き付き積分とする．
+各 $u\in X$ と $t\in J$ に対して
+\[
+ \norm{(Tu)(t)-x_0}\le\abs{t-t_0}M\le hM\le b
+\]
+だから，$T(X)\subset X$ である．
+
+$t_0$ と $t$ を両端とする閉区間を $J_t$ と書く．
+$u,v\in X$ に対して
+\begin{align*}
+ \norm{(Tu)(t)-(Tv)(t)}
+ &\le\int_{J_t}\norm{F(s,u(s))-F(s,v(s))}\,ds\\
+ &\le L\abs{t-t_0}\norm{u-v}_{\infty}\\
+ &\le Lh\norm{u-v}_{\infty}.
+\end{align*}
+したがって $\norm{Tu-Tv}_{\infty}\le Lh\norm{u-v}_{\infty}$ である．
+$Lh<1$ より $T:X\to X$ は縮小写像である．
+定理~\ref{thm:banach} により，不動点 $x\in X$ が一意に存在する．
+
+不動点方程式
+\[
+ x(t)=x_0+\int_{t_0}^t F(s,x(s))\,ds
+\]
+の右辺は内部で連続微分可能であり，微積分学の基本定理によって
+$x'(t)=F(t,x(t))$ が従う．
+逆に，初期値問題の解で $x(J)\subset\overline{B}(x_0,b)$ を満たすものは，
+積分形に書き直すと $T$ の不動点となる．ゆえに一意性も従う．
+\end{proof}
+
+\begin{example}
+初期値問題 $x'=x^2$，$x(0)=1$ を考える．
+$a=1$，$b=1/2$ とすれば $x,y\in[1/2,3/2]$ において
+\[
+ \abs{x^2-y^2}\le3\abs{x-y},\qquad \abs{x^2}\le\frac94.
+\]
+したがって $L=3$，$M=9/4$ と取れ，例えば $h=1/6$ は
+$hL<1$ と $hM\le b$ を満たす．
+得られる解は，直接代入によって
+\[
+ x(t)=\frac{1}{1-t}\qquad\bigl(\abs{t}\le1/6\bigr)
+\]
+と確かめられる．
+ただし，定理によって保証された区間は解の最大存在区間と一般には一致しない．
+\end{example}
+
+
+\section{パラメータ付き不動点の安定性}
+
+\begin{proposition}[不動点の連続依存性]\label{prop:parameter}
+$(X,d)$ を完備距離空間，$P$ を位相空間とし，
+$T:P\times X\to X$ を写像とする．
+ある $q\in[0,1)$ が存在して
+\[
+ d(T(p,x),T(p,y))\le q\,d(x,y)
+ \quad(p\in P,\ x,y\in X)
+\]
+を満たすとする．また，各 $x\in X$ に対して
+$p\mapsto T(p,x)$ は連続であると仮定する．
+各 $p\in P$ に対し $T(p,\cdot)$ の一意な不動点を $u(p)$ と置くと，
+$u:P\to X$ は連続である．
+\end{proposition}
+\begin{proof}
+任意の $p,p_0\in P$ に対して
+\begin{align*}
+ d(u(p),u(p_0))
+ &=d(T(p,u(p)),T(p_0,u(p_0)))\\
+ &\le d(T(p,u(p)),T(p,u(p_0)))\\
+ &\quad+d(T(p,u(p_0)),T(p_0,u(p_0)))\\
+ &\le q\,d(u(p),u(p_0))\\
+ &\quad+d(T(p,u(p_0)),T(p_0,u(p_0))).
+\end{align*}
+従って
+\[
+ d(u(p),u(p_0))
+ \le\frac{1}{1-q}
+ d(T(p,u(p_0)),T(p_0,u(p_0))).
+\]
+右辺は $p\to p_0$ で $0$ に収束するため，
+$u$ は $p_0$ で連続である．
+\end{proof}
+
+\begin{lemma}[Neumann級数]\label{lem:neumann}
+$E$ をBanach空間，$A\in\mathcal B(E)$ とし，
+$\norm{I-A}<1$ とする．このとき $A$ は可逆であり，
+$A^{-1}=\sum_{k=0}^{\infty}(I-A)^k$ が作用素ノルムで成立する．
+\end{lemma}
+\begin{proof}
+$B=I-A$ と置く．
+$\sum_{k\ge0}\norm{B^k}\le\sum_{k\ge0}\norm B^k<\infty$
+である．$\mathcal B(E)$ の完備性から級数は
+ある $S\in\mathcal B(E)$ に収束する．
+有限部分和 $S_n=\sum_{k=0}^n B^k$ に対して
+$(I-B)S_n=S_n(I-B)=I-B^{n+1}$ である．
+$\norm{B^{n+1}}\to0$ だから
+$AS=SA=I$ となり $S=A^{-1}$ である．
+\end{proof}
+
+\section{有限次元の逆写像定理}
+
+\begin{theorem}[逆写像定理]\label{thm:inverse}
+$U\subset\R^n$ を開集合，$f:U\to\R^n$ を
+$C^1$ 級写像とし，$a\in U$ で $Df(a)$ が可逆であるとする．
+このとき $a$ の開近傍 $U_0\subset U$ と $f(a)$ の
+開近傍 $V_0$ が存在し，
+$f|_{U_0}:U_0\to V_0$ は $C^1$ 級微分同相となる．
+さらに，$y=f(x)\in V_0$ について
+\[
+ D(f|_{U_0})^{-1}(y)=(Df(x))^{-1}
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$L=Df(a)$ とし，$\R^n$ にEuclidノルムを入れる．
+$Df$ の連続性から $0<q<1$ と $r>0$ を選び，
+$\overline{B}(a,r)\subset U$ かつ
+\[
+ \norm{I-L^{-1}Df(x)}\le q
+ \quad(x\in\overline{B}(a,r))
+ \tag{$*$}
+\]
+とできる．
+各 $y\in\R^n$ に対して
+\[
+ G_y(x)=x+L^{-1}(y-f(x))
+\]
+と置く．$(*)$ と線分に沿う積分表示から，
+$x,z\in\overline{B}(a,r)$ について
+\[
+ \norm{G_y(x)-G_y(z)}
+ \le q\norm{x-z}
+\]
+が成り立つ．ここでは $G_y$ の微分
+$DG_y=I-L^{-1}Df$ を用いた．
+$\eta=(1-q)r/\norm{L^{-1}}>0$ と置くと，
+$\norm{y-f(a)}<\eta$ なら
+\[
+ \norm{G_y(a)-a}=\norm{L^{-1}(y-f(a))}
+ <(1-q)r
+\]
+である．従って $\norm{x-a}\le r$ のとき
+\[
+ \norm{G_y(x)-a}
+ \le q\norm{x-a}+(1-q)r\le r.
+\]
+よって $G_y$ は完備距離空間 $\overline{B}(a,r)$ 上の
+縮小写像である．
+Banachの不動点定理により $G_y$ の不動点 $x(y)$ が一意に存在し，
+不動点条件は $f(x(y))=y$ と同値である．
+しかも不等式を厳密に評価すれば
+$\norm{x(y)-a}<r$ である．
+
+$V_0=B(f(a),\eta)$ とし，
+$U_0=f^{-1}(V_0)\cap B(a,r)$ と置く．
+これは開集合である．上の構成から $f(U_0)=V_0$ であり，
+単射性は $x\in U_0$ が $G_{f(x)}$ の不動点であることと，
+縮小写像の不動点の一意性から従う．
+命題\ref{prop:parameter}により
+逆写像 $x:V_0\to U_0$ は連続である．
+
+次に $x\in U_0$ について
+$(*)$ から
+$\norm{I-L^{-1}Df(x)}<1$ だから，
+補題\ref{lem:neumann}により $Df(x)$ は可逆である．
+また任意の $x,z\in U_0$ について
+\[
+ \norm{x-z}
+ \le q\norm{x-z}+\norm{L^{-1}}\norm{f(x)-f(z)}
+\]
+だから
+\[
+ \norm{x-z}\le\frac{\norm{L^{-1}}}{1-q}
+ \norm{f(x)-f(z)}.
+ \tag{$**$}
+\]
+$y=f(x)$，$y+h=f(z)$ とすると，
+$f$ の微分可能性より
+\[
+ h=Df(x)(z-x)+r_x(z-x),\qquad
+ \frac{\norm{r_x(z-x)}}{\norm{z-x}}\longrightarrow0.
+\]
+$(**)$ により $z-x=O(\norm h)$ だから
+\[
+ z-x=(Df(x))^{-1}h+o(\norm h).
+\]
+従って逆写像は微分可能であり，
+導関数は $(Df(x))^{-1}$ である．
+$Df$ の連続性と行列の逆写像の連続性から
+逆写像の導関数は連続となり，$C^1$ 級である．
+\end{proof}
+
+\begin{remark}
+本節の逆写像定理は局所的な非線形写像を扱う．
+Banach空間間の線形全単射の逆が有界となる
+「有界逆写像定理」とは別の命題である．
+\end{remark}
+
+\section{結び}
+
+どちらの応用でも，未知関数を積分作用素の不動点として特徴づけた．
+違いは縮小性を生み出す方法にある．
+積分方程式では重み付きノルムを導入したのに対し，
+初期値問題では時間区間と値域を制限した．
+このように，Banachの不動点定理を用いる際の中心的な問題は，
+\emph{どの完備距離空間で，どの距離を用いるか}という選択である．
+
+\begin{thebibliography}{9}
+\bibitem{rudin}
+W. Rudin, \textit{Functional Analysis}, 2nd ed., McGraw--Hill, 1991.
+\bibitem{hale}
+J. K. Hale, \textit{Ordinary Differential Equations}, 2nd ed., Krieger, 1980.
+\end{thebibliography}
+
+\section{到達課題の完全解答}
+\noindent\textbf{余弦反復の収束証明．}
+\begin{proposition}
+$T:[0,1]\to[0,1]$ を $T(x)=\cos x$ と定める．
+$T$ は縮小写像であり，唯一の不動点
+$x_*=\cos x_*$ を持つ．任意の $x_0\in[0,1]$ から
+$x_{n+1}=\cos x_n$ とすると
+\[
+|x_n-x_*|\le
+\frac{q^n}{1-q}|x_1-x_0|,
+\qquad q=\sin1<1.
+\]
+\end{proposition}
+\begin{proof}
+$T([0,1])\subset[\cos1,1]\subset[0,1]$ である．
+平均値の定理より
+$|\cos x-\cos y|\le\sin1\,|x-y|$ である．
+$[0,1]$ は完備で，縮小定数 $q=\sin1<1$ だから
+Banachの不動点定理が適用できる．
+誤差評価は
+$|x_{n+j+1}-x_{n+j}|
+\le q^{n+j}|x_1-x_0|$ を
+$j\ge0$ にわたって和を取れば得られる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$T(x)=x/4+1/2$ の不動点を求めよ．
+\par\noindent\textbf{解答．}
+$x=x/4+1/2$ より $x_*=2/3$．
+縮小率は $1/4$ なので反復はこれへ収束する．
+\end{document}

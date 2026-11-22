@@ -1,0 +1,277 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{ベクトル束と線形接続}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，多様体上のベクトル場，接続のLeibniz則，微分形式．
+本稿の具体的な到達課題は，局所接続行列から共変微分と曲率を計算し，ゲージ変換下の表示を検証する．
+
+
+\section{ベクトル束}
+\begin{definition}
+滑らかな多様体 $M$ 上の階数 $r$ の実ベクトル束とは，
+滑らかな写像 $\pi:E\to M$ で，各繊維 $E_p$ が
+$r$ 次元実ベクトル空間となり，
+各 $p$ の近傍 $U$ で繊維ごとに線形な微分同相
+$\pi^{-1}(U)\cong U\times\mathbb R^r$
+が存在するものをいう．
+$\pi\circ s=\mathrm{id}_M$ を満たす滑らかな
+$s:M\to E$ を切断という．
+\end{definition}
+\begin{proposition}[遷移関数と余接条件]
+局所自明化 $\varphi_i$ に対し
+\[
+ \varphi_j\circ\varphi_i^{-1}(x,v)
+ =(x,g_{ji}(x)v)
+\]
+となる滑らかな写像
+$g_{ji}:U_i\cap U_j\to\operatorname{GL}_r(\mathbb R)$ がある．
+さらに
+\[
+ g_{ii}=I,\qquad
+ g_{ik}g_{kj}g_{ji}=I
+\]
+が三重交叉上で成立する（添字の向きに従った積）．
+\end{proposition}
+\begin{proof}
+自明化は各繊維で線形同型なので遷移写像は表示した形となる．
+同じ座標への遷移は恒等であり，
+三つの自明化を経て元へ戻る合成は恒等なので
+積の式を得る．
+\end{proof}
+\begin{proposition}[ベクトル束の引き戻し]
+滑らかな写像 $f:N\to M$ とベクトル束 $E\to M$ に対し，
+\[
+ f^*E=\{(q,e)\in N\times E:f(q)=\pi(e)\}
+\]
+は自然な $N$ 上のベクトル束となる．
+\end{proposition}
+\begin{proof}
+$f(q)$ を含む自明化領域 $U$ に対し，
+$f^{-1}(U)$ 上で $(q,e)\mapsto(q,v)$ と置く．
+これは $f^{-1}(U)\times\mathbb R^r$ への滑らかな自明化で，
+重なり上の遷移は $g_{ji}\circ f$ となる．
+したがってベクトル束の公理を満たす．
+\end{proof}
+\section{接続と共変微分}
+\begin{definition}
+ベクトル束 $E\to M$ の線形接続とは，
+$\mathbb R$-双線形写像
+\[
+ \nabla:\mathfrak X(M)\times\Gamma(E)\to\Gamma(E),
+ \qquad (X,s)\mapsto\nabla_Xs
+\]
+で
+$\nabla_{fX}s=f\nabla_Xs$，
+$\nabla_X(fs)=X(f)s+f\nabla_Xs$ を満たすものをいう．
+\end{definition}
+\begin{lemma}[局所接続行列]\label{lem:matrix}
+局所フレーム $e_1,\dots,e_r$ に対して
+$\nabla e_j=\sum_i\omega^i{}_j\otimes e_i$ と書ける．
+$\omega=(\omega^i{}_j)$ は行列値1形式であり，
+$s=\sum_js^je_j$ なら
+\[
+ \nabla_Xs=\sum_i\left(X(s^i)+
+ \sum_j\omega^i{}_j(X)s^j\right)e_i.
+\]
+\end{lemma}
+\begin{proof}
+$\nabla_Xe_j$ のフレーム係数は $X$ に関して
+$C^\infty(M)$-線形であるため1形式となる．
+切断の表示へLeibniz則を適用すれば公式を得る．
+\end{proof}
+\begin{theorem}[線形接続の存在]\label{thm:exist}
+第二可算滑らかな多様体上の任意のベクトル束は
+線形接続を持つ．
+\end{theorem}
+\begin{proof}
+束を自明化する開被覆 $(U_i)$ に従属する滑らかな
+局所有限単位の分割 $(\rho_i)$ を取る．
+各 $U_i$ のフレームで
+$\nabla^{(i)}_Xs=\sum_jX(s^j)e_j$ と定めると，
+これは $U_i$ 上の接続である．
+\[
+ \nabla_Xs=\sum_i\rho_i\,\nabla^{(i)}_X(s|_{U_i})
+\]
+と置く．各項は $\operatorname{supp}\rho_i\subset U_i$
+のため外側へ零延長でき，局所有限和なので滑らかである．
+\[
+ \nabla_X(fs)=\sum_i\rho_i
+ (X(f)s+f\nabla^{(i)}_Xs)
+ =X(f)s+f\nabla_Xs
+\]
+は $\sum_i\rho_i=1$ による．
+第1変数の $C^\infty$-線形性も各項で成立する．
+従って線形接続である．
+\end{proof}
+\section{曲率}
+\begin{definition}
+接続 $\nabla$ の曲率を
+\[
+ R^\nabla(X,Y)s=
+ \nabla_X\nabla_Ys-\nabla_Y\nabla_Xs-\nabla_{[X,Y]}s
+\]
+で定める．
+\end{definition}
+\begin{proposition}[曲率のテンソル性]\label{prop:tensor}
+$R^\nabla(X,Y)s$ は $X,Y,s$ の三変数について
+$C^\infty(M)$-線形である．
+\end{proposition}
+\begin{proof}
+例えば $X$ を $fX$ に変えると
+$\nabla_{fX}\nabla_Ys=f\nabla_X\nabla_Ys$ であり，
+\[
+ \nabla_Y\nabla_{fX}s=
+ Y(f)\nabla_Xs+f\nabla_Y\nabla_Xs,\quad
+ [fX,Y]=f[X,Y]-Y(f)X
+\]
+なので $Y(f)$ を含む項が相殺する．
+$Y$ についても反対称性から同様である．
+$s$ を $fs$ に変えると積の微分に由来する
+$X(Yf)-Y(Xf)-[X,Y]f$ が零となり，
+$\nabla_Xs$，$\nabla_Ys$ を含む交差項も相殺する．
+従って $R^\nabla(X,Y)(fs)=fR^\nabla(X,Y)s$ である．
+\end{proof}
+\begin{theorem}[曲率の局所表示]\label{thm:curvform}
+補題\ref{lem:matrix}の接続行列 $\omega$ に対し，
+曲率の行列値2形式は
+\[
+ \Omega=d\omega+\omega\wedge\omega
+\]
+となる．
+\end{theorem}
+\begin{proof}
+フレーム $e_j$ に対し
+$\nabla_Xe_j=\sum_i\omega^i{}_j(X)e_i$ を
+曲率の定義へ代入する．
+$X(\omega^i{}_j(Y))-Y(\omega^i{}_j(X))
+-\omega^i{}_j([X,Y])=d\omega^i{}_j(X,Y)$
+となり，二重接続項は
+$\sum_k(\omega^i{}_k(X)\omega^k{}_j(Y)
+-\omega^i{}_k(Y)\omega^k{}_j(X))$ である．
+これは $(\omega\wedge\omega)^i{}_j(X,Y)$ なので結論を得る．
+\end{proof}
+\begin{example}
+自明束 $M\times\mathbb R^r$ の座標ごとの通常微分は
+曲率零の接続である．
+\end{example}
+\begin{proof}
+大域フレームで $\omega=0$ だから
+$\Omega=d0+0\wedge0=0$ である．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{接続の局所表示と曲率の計算．}
+\begin{proposition}[自明な直線束の接続]
+$M=\mathbb R^2$，$E=M\times\mathbb R$ とし，
+$\omega=x\,dy$ と置く．切断を関数 $s$ と同一視し
+\[
+\nabla_Xs=X(s)+\omega(X)s
+\]
+と定めると線形接続となる．その曲率は
+\[
+R^\nabla(X,Y)s=(d\omega)(X,Y)s
+\]
+であり，$R^\nabla(\partial_x,\partial_y)s=s$ となる．
+\end{proposition}
+\begin{proof}
+関数 $f$ に対し
+$\nabla_X(fs)=X(f)s+f\nabla_Xs$ が成り立つ．
+定義から
+\[
+\begin{aligned}
+R^\nabla(X,Y)s
+&=\nabla_X\nabla_Ys-\nabla_Y\nabla_Xs
+-\nabla_{[X,Y]}s\\
+&=(X\omega(Y)-Y\omega(X)-\omega([X,Y]))s.
+\end{aligned}
+\]
+よって括弧内は $d\omega(X,Y)$ である．
+$d\omega=dx\wedge dy$ だから最後の表示を得る．
+\end{proof}
+\begin{proposition}[局所枠の変更]
+直線束の枠を $e'=he$（$h>0$ は滑らか）と変えると，
+接続1形式は
+$\omega'=\omega+h^{-1}dh$ となる．
+従って $d\omega'=d\omega$ である．
+\end{proposition}
+\begin{proof}
+$\nabla e=\omega e$ に対して
+$\nabla(he)=dh\otimes e+h\omega e$ である．
+$e'=he$ の係数を比較すれば第一式となり，
+$d(h^{-1}dh)=0$ は
+$d(h^{-1})\wedge dh= -h^{-2}dh\wedge dh=0$
+による．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\omega=y\,dx$ の場合に曲率を求めよ．
+\par\noindent\textbf{解答．}
+$d\omega=dy\wedge dx=-dx\wedge dy$ なので
+$R^\nabla(\partial_x,\partial_y)=-\mathrm{id}$ である．
+\end{document}

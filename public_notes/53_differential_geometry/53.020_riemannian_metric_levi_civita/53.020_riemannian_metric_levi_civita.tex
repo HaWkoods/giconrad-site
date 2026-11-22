@@ -1,0 +1,249 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Riemann計量とLevi-Civita接続}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，多様体の局所座標とChristoffel記号，Koszul公式．
+本稿の具体的な到達課題は，計量の係数からLevi--Civita接続のChristoffel記号を算出する．
+
+
+\section{Riemann計量}
+\begin{definition}
+滑らかな多様体 $M$ のRiemann計量とは，
+各 $p\in M$ で正定値内積を与える
+滑らかな対称 $(0,2)$ テンソル場 $g$ をいう．
+$g(X,Y)$ を $\langle X,Y\rangle$ とも書く．
+\end{definition}
+\begin{theorem}[計量の存在]\label{thm:exists}
+Hausdorff第二可算滑らかな多様体はRiemann計量を持つ．
+\end{theorem}
+\begin{proof}
+座標近傍 $(U_i,x_i)$ 上で
+$g_i=\sum_jdx_i^j\otimes dx_i^j$ と定め，
+被覆に従属する局所有限な滑らかな単位の分割 $(\rho_i)$ を取る．
+\[
+ g_p=\sum_i\rho_i(p)(g_i)_p
+\]
+と置く．局所有限性から滑らかで対称である．
+零でない $v\in T_pM$ に対し
+少なくとも一つの $\rho_i(p)>0$ があり，
+各 $g_i(v,v)>0$ なので $g_p(v,v)>0$．
+従って計量となる．
+\end{proof}
+\section{接続の捩率と計量保存}
+\begin{definition}
+$TM$ 上の接続 $\nabla$ の捩率を
+\[
+ T(X,Y)=\nabla_XY-\nabla_YX-[X,Y]
+\]
+と定める．
+捩率零の接続を対称接続という．
+$\nabla$ が計量と両立するとは
+\[
+ Xg(Y,Z)=g(\nabla_XY,Z)+g(Y,\nabla_XZ)
+\]
+が全てのベクトル場について成立することをいう．
+\end{definition}
+\begin{lemma}[捩率のテンソル性]
+$T$ は $(1,2)$ 型テンソル場である．
+\end{lemma}
+\begin{proof}
+$T(fX,Y)$ を展開し，
+$\nabla_Y(fX)=Y(f)X+f\nabla_YX$ と
+$[fX,Y]=f[X,Y]-Y(f)X$ を使えば
+$T(fX,Y)=fT(X,Y)$．
+反対称性から第2変数も同様である．
+\end{proof}
+\section{Koszul公式}
+\begin{theorem}[Levi-Civitaの存在と一意性]\label{thm:levi}
+任意のRiemann計量 $g$ に対して，
+捩率零かつ計量と両立する接続 $\nabla$ が
+ただ一つ存在する．これは
+\[
+\begin{aligned}
+2g(\nabla_XY,Z)
+={}&Xg(Y,Z)+Yg(Z,X)-Zg(X,Y)\\
+&-g(X,[Y,Z])+g(Y,[Z,X])+g(Z,[X,Y])
+\end{aligned}
+\tag{K}
+\]
+によって定まる．
+\end{theorem}
+\begin{proof}
+まず存在するなら式 (K) が必要であることを示す．
+計量保存の式を $(X,Y,Z)$，
+$(Y,Z,X)$，$(Z,X,Y)$ の順に書き，
+最初の二式から三番目を引く．
+$\nabla_XY-\nabla_YX=[X,Y]$ を代入して
+残る項を整理すると (K) を得る．
+従って接続は一意である．
+
+逆に (K) の右辺を $2B(X,Y,Z)$ とする．
+$Z$ について滑らかな関数 $f$ を掛けた場合，
+Lie括弧のLeibniz則
+$[Y,fZ]=f[Y,Z]+Y(f)Z$ 等を使うと，
+$f$ の導関数を含む項が相殺し，
+$B(X,Y,fZ)=fB(X,Y,Z)$ を得る．
+よって内積の非退化性から，任意の $X,Y$ に対し
+$g(\nabla_XY,Z)=B(X,Y,Z)$ を満たす
+ただ一つの滑らかなベクトル場 $\nabla_XY$ が存在する．
+同様の展開によって
+$B(fX,Y,Z)=fB(X,Y,Z)$ と
+\[
+ B(X,fY,Z)=X(f)g(Y,Z)+fB(X,Y,Z)
+\]
+を得る．
+したがって $\nabla$ は接続である．
+式 (K) において $X,Y$ を交換して差を取ると
+$2g(\nabla_XY-\nabla_YX,Z)=2g([X,Y],Z)$，
+よって捩率零である．
+また $Y,Z$ を交換して和を取ると
+$g(\nabla_XY,Z)+g(Y,\nabla_XZ)=Xg(Y,Z)$ となるので
+計量を保存する．
+\end{proof}
+\section{局所座標による表示}
+\begin{proposition}[Christoffel記号]\label{prop:christoffel}
+座標 $x^i$ において
+$\nabla_{\partial_i}\partial_j
+=\sum_k\Gamma^k_{ij}\partial_k$ と書き
+$g_{ij}=g(\partial_i,\partial_j)$ とすると，
+\[
+ \Gamma^k_{ij}=
+ \frac12\sum_\ell g^{k\ell}
+ (\partial_i g_{j\ell}+\partial_jg_{i\ell}-\partial_\ell g_{ij})
+\]
+が成立する．
+\end{proposition}
+\begin{proof}
+座標ベクトル場のLie括弧は零なのでKoszul公式から
+$2\sum_kg_{k\ell}\Gamma^k_{ij}
+=\partial_i g_{j\ell}+\partial_jg_{i\ell}
+-\partial_\ell g_{ij}$．
+逆行列 $(g^{k\ell})=(g_{ij})^{-1}$ を掛けて解けばよい．
+\end{proof}
+\begin{proposition}[計量に沿った長さの保存]
+$\gamma$ に沿って $\nabla_{\dot\gamma}V=0$，
+$\nabla_{\dot\gamma}W=0$ を満たすベクトル場 $V,W$ に対し
+$g(V,W)$ は $\gamma$ 上一定である．
+\end{proposition}
+\begin{proof}
+計量保存性を曲線に沿って適用すると
+$\frac d{dt}g(V,W)=
+g(\nabla_{\dot\gamma}V,W)+g(V,\nabla_{\dot\gamma}W)=0$ である．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{極座標の計量から接続を復元する．}
+\begin{proposition}[Euclid平面の極座標]
+$\mathbb R^2\setminus\{0\}$ の極座標 $(r,\theta)$
+におけるEuclid計量は
+$g=dr^2+r^2d\theta^2$ である．
+非零のChristoffel記号は
+\[
+\Gamma^r_{\theta\theta}=-r,\qquad
+\Gamma^\theta_{r\theta}
+=\Gamma^\theta_{\theta r}=\frac1r
+\]
+のみである．
+\end{proposition}
+\begin{proof}
+一般公式
+\[
+\Gamma^k_{ij}
+=\frac12\sum_\ell g^{k\ell}
+(\partial_i g_{j\ell}+\partial_j g_{i\ell}
+-\partial_\ell g_{ij})
+\]
+を用いる．この場合
+$(g_{ij})=\operatorname{diag}(1,r^2)$，
+$(g^{ij})=\operatorname{diag}(1,r^{-2})$ であり，
+非零の計量係数の導関数は
+$\partial_r g_{\theta\theta}=2r$ のみである．
+代入すると表示式となる．
+\end{proof}
+\begin{corollary}[極座標での測地線方程式]
+測地線は
+\[
+\ddot r-r\dot\theta^2=0,\qquad
+\ddot\theta+\frac2r\dot r\dot\theta=0
+\]
+を満たす．第二式は
+$(r^2\dot\theta)'=0$ と同値である．
+\end{corollary}
+\begin{proof}
+測地線方程式に上のChristoffel記号を代入する．
+第二式に $r^2$ を掛けて積の微分を取れば
+$(r^2\dot\theta)'=0$ が得られる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\theta$ が一定のとき，測地線方程式を解け．
+\par\noindent\textbf{解答．}
+$\dot\theta=0$ なので $\ddot r=0$ であり，
+$r(t)=at+b>0$ となる定義区間で径方向の直線を表す．
+\end{document}
