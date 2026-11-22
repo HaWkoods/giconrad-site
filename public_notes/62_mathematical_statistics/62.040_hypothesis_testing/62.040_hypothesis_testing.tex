@@ -1,0 +1,335 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{統計的仮説検定}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+有意水準を先に指定し，
+尤度比の大小から最強力検定の棄却域を構成して，
+第一種過誤と検出力を正確に計算できるようになる．
+離散標本空間では必要に応じた無作為化検定も扱う．
+前提は条件付き確率，Bernoulli分布，Neyman--Pearsonの補題である．
+
+\section{検定と第一種の過誤}
+可測空間 $(\mathcal X,\mathcal A)$ 上の確率分布 $P_0,P_1$ を考える．
+\begin{definition}
+検定関数とは可測な $\varphi:\mathcal X\to[0,1]$ のことである．
+$\mathbb E_0\varphi$ を第一種の過誤の確率，
+$\mathbb E_1\varphi$ を検出力とする．
+\end{definition}
+\section{Neyman--Pearsonの補題}
+$P_0,P_1$ は同一の $\sigma$-有限測度に関し密度 $p_0,p_1$ を持つとする．
+\begin{theorem}[Neyman--Pearson]
+$c\ge0$，$0\le\gamma\le1$ とし
+\[
+ \varphi_*(x)=\begin{cases}1&p_1(x)>cp_0(x),\\
+ \gamma&p_1(x)=cp_0(x),\\0&p_1(x)<cp_0(x)
+ \end{cases}
+\]
+と置く．$\mathbb E_0\varphi_*=\alpha$ なら，
+$\mathbb E_0\varphi\le\alpha$ を満たす任意の検定関数について
+$\mathbb E_1\varphi\le\mathbb E_1\varphi_*$．
+\end{theorem}
+\begin{proof}
+点ごとに
+$(\varphi_*-\varphi)(p_1-cp_0)\ge0$ である．
+積分して
+$\mathbb E_1\varphi_*-\mathbb E_1\varphi
+\ge c(\mathbb E_0\varphi_*-\mathbb E_0\varphi)\ge0$ を得る．
+\end{proof}
+\section{正規平均の例}
+\begin{example}
+$X_1,\ldots,X_n$ が独立に $N(\mu,\sigma^2)$ に従い
+$\sigma>0$ が既知とする．$H_0:\mu=\mu_0$ 対
+$H_1:\mu=\mu_1>\mu_0$ を考える．
+対数尤度比は
+\[
+ \log\frac{p_{\mu_1}}{p_{\mu_0}}
+ =\frac{n(\mu_1-\mu_0)}{\sigma^2}
+  \left(\bar X-\frac{\mu_0+\mu_1}{2}\right)
+\]
+となる．従って有意水準 $\alpha\in(0,1)$ の最強力検定は
+$\bar X>\mu_0+\sigma z_{1-\alpha}/\sqrt n$ で棄却する検定である．
+ここで $z_{1-\alpha}$ は標準正規分布の $1-\alpha$ 分位点である．
+\end{example}
+\begin{proposition}
+上記の検定の検出力は
+\[
+ 1-\Phi\!\left(z_{1-\alpha}-\frac{\sqrt n(\mu_1-\mu_0)}{\sigma}\right)
+\]
+である．
+\end{proposition}
+\begin{proof}
+$H_1$ の下で $\sqrt n(\bar X-\mu_1)/\sigma\sim N(0,1)$ だから，
+棄却事象の確率を標準化すれば式を得る．
+\end{proof}
+\begin{remark}
+この最強力性は単純対単純仮説に対する主張であり，
+一般の複合仮説に対してそのまま成立するわけではない．
+\end{remark}
+
+
+\section{複合片側仮説に対する最強力検定}
+\begin{theorem}[正規平均の一様最強力検定]
+$X_1,\ldots,X_n$ は独立な $N(\mu,\sigma^2)$，
+$\sigma>0$ は既知とする．有意水準 $\alpha\in(0,1)$ に対し
+\[
+ \varphi=\mathbf1_{\{\bar X>\mu_0+\sigma z_{1-\alpha}/\sqrt n\}}
+\]
+は $H_0:\mu\le\mu_0$ 対 $H_1:\mu>\mu_0$ の
+一様最強力検定である．
+\end{theorem}
+\begin{proof}
+$\mu>\mu_0$ を任意に固定する．
+$P_\mu/P_{\mu_0}$ は $\bar X$ の狭義増加関数なので，
+Neyman--Pearsonの補題により $P_{\mu_0}$ の下で
+大きさ $\alpha$ の最強力検定は表示した棄却域を持つ．
+棄却域の閾値は $P_{\mu_0}$ による正規化で決まり，
+固定した対立仮説の $\mu$ に依存しない．
+さらに $\mu\le\mu_0$ のもとでは棄却確率が $\mu$ に関して
+単調増加するので最大は $\mu_0$ で $\alpha$ となる．
+従って任意の対立点で最強力となり，帰無仮説全体で水準を保つ．
+\end{proof}
+\begin{proposition}[正規モデルの尤度比の帰無分布]
+同じ設定で $H_0:\mu=\mu_0$ 対 $H_1:\mu\in\mathbb R$ を考え，
+最尤尤度比を $\Lambda=L(\mu_0)/\sup_\mu L(\mu)$ とする．このとき
+\[
+ -2\log\Lambda=\frac{n(\bar X-\mu_0)^2}{\sigma^2}
+\]
+であり，$H_0$ の下で正確に $\chi^2_1$ 分布に従う．
+\end{proposition}
+\begin{proof}
+二次平方和の恒等式
+$\sum_i(X_i-\mu)^2=\sum_i(X_i-\bar X)^2+n(\bar X-\mu)^2$ より
+最尤点は $\bar X$ であり尤度比の対数は表示式になる．
+$H_0$ の下では $\sqrt n(\bar X-\mu_0)/\sigma$ は標準正規分布である．
+その二乗は定義より $\chi^2_1$ に従う．
+\end{proof}
+
+\section{正則モデルにおける尤度比の漸近分布}
+\begin{theorem}[Wilksの定理：線形制約の場合]
+$\Theta\subset\mathbb R^d$ を開集合，真値を
+$\theta_0=(0,\lambda_0)$ とする．$1\le q\le d$ とし，
+帰無仮説 $H_0:\theta_1=\cdots=\theta_q=0$ を考える．
+$Z_n=n^{-1/2}\nabla\ell_n(\theta_0)\xrightarrow{\mathcal D}N_d(0,I)$，
+$I$ は正定値とする．また任意の固定 $C>0$ について
+\[
+ \sup_{\norm h\le C}\left|\ell_n(\theta_0+h/\sqrt n)-
+ \ell_n(\theta_0)-h^TZ_n+\frac12h^TIh\right|\xrightarrow{P}0
+\]
+と仮定する．非制約・制約最尤推定量 $\widehat\theta_n,
+\widetilde\theta_n$ はともに存在し，
+$\sqrt n(\widehat\theta_n-\theta_0)$ および
+$\sqrt n(\widetilde\theta_n-\theta_0)$ が確率的に有界であるとする．
+このとき $\Lambda_n=L_n(\widetilde\theta_n)/L_n(\widehat\theta_n)$
+について
+\[
+ -2\log\Lambda_n\xrightarrow{\mathcal D}\chi_q^2
+\]
+となる．
+\end{theorem}
+\begin{proof}
+$T=\{h\in\mathbb R^d:h_1=\cdots=h_q=0\}$ と置く．
+仮定の局所展開の二次式を $Q_n(h)=h^TZ_n-h^TIh/2$ と書く．
+$Q_n$ は狭義凹であり，その全空間上の最大化点は
+$h_n^*=I^{-1}Z_n$，制約 $T$ 上の最大化点は
+$I$ による直交射影で定まる．
+$Z_n$ は確率的に有界であるから両最大化点も確率的に有界となる．
+仮定した二種類の最尤推定量の確率的有界性と局所一様展開により，
+二つの対数尤度最大値と $Q_n$ の対応する最大値との誤差は
+$o_P(1)$ である．実際，任意の大きい球上では展開誤差が
+一様に小さく，球外へ最大化点が出る確率を任意に小さくできる．
+よって
+\[
+ -2\log\Lambda_n
+ =2\bigl(\sup_{h\in\mathbb R^d}Q_n(h)-
+ \sup_{h\in T}Q_n(h)\bigr)+o_P(1).
+\]
+$Y_n=I^{-1/2}Z_n$ とし，$I^{1/2}T$ へのEuclid直交射影を
+$\Pi$ とする．平方完成により右辺の二次式の差は
+$\norm{(1-\Pi)Y_n}^2$ である．
+$Y_n\xrightarrow{\mathcal D}N_d(0,1)$ で，
+$1-\Pi$ は階数 $q$ の直交射影だから，そのノルム二乗は
+$\chi_q^2$ 分布に収束する．
+\end{proof}
+\begin{remark}
+正則モデルでの一般的な滑らかな制約には局所座標変換を施す．
+また，局所一様二次展開と最尤推定量の $\sqrt n$-有界性は
+証明すべき別の仮定であり，特異モデルに自動的には成り立たない．
+\end{remark}
+
+\section{境界仮説における尤度比統計量}
+Wilksの定理で帰無仮説がパラメータ空間の内点にあるという仮定は
+重要である．以下ではその仮定が破れる場合を正確に計算する．
+\begin{theorem}[正規平均の境界検定]
+$X_1,\ldots,X_n$ を独立な $N(\theta,\sigma^2)$ 標本とし，
+$\sigma^2>0$ は既知，$\theta\ge0$ とする．
+$H_0:\theta=0$ と $H_1:\theta>0$ の尤度比統計量を
+\[
+ W_n=2\left\{\sup_{\theta\ge0}\ell_n(\theta)-\ell_n(0)\right\}
+\]
+と定める．帰無仮説の下で，$n$ の値にかかわらず
+$W_n$ の分布は
+\[
+ \frac12\delta_0+\frac12\chi^2_1
+\]
+である．特に通常の $\chi^2_1$ 分布には従わない．
+\end{theorem}
+\begin{proof}
+正規密度の対数尤度は定数を除いて
+\[
+ \ell_n(\theta)=-\frac1{2\sigma^2}
+ \sum_{i=1}^n(X_i-\theta)^2
+ =-\frac{n}{2\sigma^2}(\theta-\bar X)^2+C
+\]
+と書ける．制約 $\theta\ge0$ の下での最大化点は
+$\widehat\theta=\max(0,\bar X)$ である．従って
+\[
+ W_n=\frac n{\sigma^2}\bigl(\max(0,\bar X)\bigr)^2.
+\]
+帰無仮説の下では $Z=\sqrt n\bar X/\sigma\sim N(0,1)$ なので
+$W_n=\max(0,Z)^2$ である．$Z\le0$ の確率は $1/2$．
+また正規分布の対称性から，$Z>0$ の条件付きでの $Z^2$ の分布は
+無条件の $Z^2\sim\chi^2_1$ と等しい．
+従って表示した混合分布を得る．
+\end{proof}
+\begin{remark}
+この計算は帰無仮説が境界点にある場合の一例である．
+一般の錐制約や非識別パラメータを含む検定では，
+別の極限分布・局所漸近理論が必要となる．
+\end{remark}
+
+
+\section{小標本で最強力検定を構成する}
+\begin{example}[二回のBernoulli試行]
+独立な $X_1,X_2\sim\mathrm{Bernoulli}(p)$ に対し
+$H_0:p=1/2$ と $H_1:p=3/4$ を検定する．
+$K=X_1+X_2$ とおくと，帰無仮説と対立仮説の下で
+\[
+ P_0(K=k)=\binom2k2^{-2},\quad
+ P_1(K=k)=\binom2k(3/4)^k(1/4)^{2-k}.
+\]
+各標本の尤度比 $p_1/p_0$ は
+$k=0,1,2$ に対しそれぞれ
+$1/4,3/4,9/4$ となる．
+従ってNeyman--Pearsonの補題から，
+有意水準 $\alpha=1/4$ の最強力検定は
+$K=2$ のときだけ棄却するものである．
+このとき
+\[
+ E_0\varphi=P_0(K=2)=\frac14,\qquad
+ E_1\varphi=P_1(K=2)=\frac9{16}.
+\]
+検出力は $9/16$ と具体的に計算できる．
+\end{example}
+\begin{proposition}[離散型での無作為化]\label{prop:np-random}
+同じ仮説で有意水準 $\alpha=1/8$ を要求すると，
+$K=2$ で確率 $1/2$ だけ棄却し，
+それ以外は棄却しない検定は最強力である．
+その検出力は $9/32$ である．
+\end{proposition}
+\begin{proof}
+$\varphi(x_1,x_2)=\frac12\mathbf1_{\{K=2\}}$ とする．
+第一種過誤の確率は
+\[
+ E_0\varphi=\frac12P_0(K=2)=\frac18.
+\]
+尤度比の最も大きい点 $K=2$ だけを無作為化するので，
+Neyman--Pearsonの補題の閾値における無作為化の形を満たす．
+従って水準 $1/8$ で最強力である．
+検出力は
+$E_1\varphi=\frac12P_1(K=2)=9/32$．
+\end{proof}
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題．}
+同じ仮説で，有意水準 $\alpha=1/2$ の
+最強力検定を構成し，検出力を求めよ．
+
+\medskip\noindent\textbf{解答．}
+尤度比の最大点は $K=2$ なのでそこでは必ず棄却し，
+次に大きい $K=1$ で無作為化する．
+帰無仮説で
+$P_0(K=2)=1/4$，$P_0(K=1)=1/2$ だから，
+残りの水準 $1/4$ を満たすには
+$K=1$ で確率 $1/2$ だけ棄却する．
+従って
+\[
+ \varphi=\mathbf1_{\{K=2\}}+
+         \frac12\mathbf1_{\{K=1\}}.
+\]
+対立仮説では $P_1(K=1)=2(3/4)(1/4)=3/8$ なので
+検出力は
+\[
+ E_1\varphi=\frac9{16}+\frac12\cdot\frac38
+ =\frac{12}{16}=\frac34.
+\]
+尤度比の順序に従って棄却域を選んだことが
+最強力性の証明となる．
+
+\end{document}

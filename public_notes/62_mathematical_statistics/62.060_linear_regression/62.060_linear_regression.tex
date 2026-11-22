@@ -1,0 +1,375 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{線形回帰の数学}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+本稿を読んだ後には，観測データから設計行列を作り，
+最小二乗推定量を手計算で求め，残差の直交性と
+推定誤差の分散を確認できるようになることを目標とする．
+さらに設計行列の階数が不足する場合にはRidge推定量を
+構成し，正則化によって一意性を回復する理由を説明する．
+前提は線形代数の直交射影，確率変数の期待値と分散である．
+正規誤差の検定は発展事項として区別する．
+
+\section{線形回帰モデル}
+$X\in\mathbb R^{n\times p}$ は列フルランクの既知行列とし，
+$Y=X\beta+\varepsilon$，$\mathbb E\varepsilon=0$，
+$\operatorname{Cov}(\varepsilon)=\sigma^2I_n$（$\sigma^2>0$）とする．
+\begin{theorem}[最小二乗解]
+$\norm{Y-Xb}^2$ を最小にする $b$ は一意で，
+\[
+ \widehat\beta=(X^TX)^{-1}X^TY
+\]
+である．予測値 $X\widehat\beta$ は $Y$ の $\operatorname{Ran}X$ への直交射影である．
+\end{theorem}
+\begin{proof}
+$X^TX$ は正定値なので可逆である．
+$P=X(X^TX)^{-1}X^T$ は $P^T=P$，$P^2=P$ を満たし，
+像は $\operatorname{Ran}X$ に等しい．従って $PY$ は直交射影であり，
+$Y-Xb=(I-P)Y+(PY-Xb)$ は直交和である．
+ノルムの平方を足すと $Xb=PY$ のときに一意に最小になる．
+\end{proof}
+\section{Gauss--Markovの定理}
+\begin{theorem}[Gauss--Markov]
+$CY$（$C\in\mathbb R^{p\times n}$）が $\beta$ の線形不偏推定量なら，
+\[
+ \operatorname{Cov}(CY)-\operatorname{Cov}(\widehat\beta)
+\]
+は半正定値である．
+\end{theorem}
+\begin{proof}
+線形不偏性は $CX=I_p$ と同値である．
+$C_0=(X^TX)^{-1}X^T$，$D=C-C_0$ と置くと
+$DX=0$ である．
+従って $DC_0^T=DX(X^TX)^{-1}=0$ かつ $C_0D^T=0$．
+よって
+\[
+ \operatorname{Cov}(CY)=\sigma^2CC^T
+ =\sigma^2C_0C_0^T+\sigma^2DD^T.
+\]
+任意の $v\in\mathbb R^p$ に対し
+$v^TDD^Tv=\norm{D^Tv}^2\ge0$ である．
+\end{proof}
+\section{残差の性質}
+\begin{proposition}
+$\widehat\varepsilon=Y-X\widehat\beta$ とすると
+$X^T\widehat\varepsilon=0$ である．
+また $\mathbb E\norm{\widehat\varepsilon}^2=(n-p)\sigma^2$．
+\end{proposition}
+\begin{proof}
+$\widehat\varepsilon=(I-P)\varepsilon$ であり $X^T(I-P)=0$．
+さらに
+$\mathbb E\norm{(I-P)\varepsilon}^2
+=\operatorname{tr}((I-P)\sigma^2I_n)=\sigma^2(n-p)$．
+\end{proof}
+\begin{remark}
+正規誤差はGauss--Markovの最良性には不要である．
+分散推定と$t$検定の正確な分布には追加仮定が必要である．
+\end{remark}
+
+
+\section{正規線形モデルの検定分布}
+\begin{theorem}[残差平方和とStudentの$t$分布]
+従来の線形回帰モデルで $n>p$ とし，
+さらに $\varepsilon\sim N_n(0,\sigma^2 I_n)$ と仮定する．
+$\widehat\sigma^2=\norm{Y-X\widehat\beta}^2/(n-p)$ と置くと
+\[
+ \frac{(n-p)\widehat\sigma^2}{\sigma^2}\sim\chi^2_{n-p}
+\]
+であり，$\widehat\beta$ と $\widehat\sigma^2$ は独立である．
+任意の $c\in\mathbb R^p\setminus\{0\}$ に対し
+\[
+ \frac{c^T(\widehat\beta-\beta)}
+ {\widehat\sigma\sqrt{c^T(X^TX)^{-1}c}}
+ \sim t_{n-p}.
+\]
+\end{theorem}
+\begin{proof}
+$P=X(X^TX)^{-1}X^T$ は階数 $p$ の直交射影である．
+$\varepsilon$ の正規直交基底を
+$\operatorname{Ran}P$ と $\ker P$ に沿って選ぶと，
+直交変換後の座標は独立な $N(0,\sigma^2)$ 変数である．
+$\widehat\beta-\beta=(X^TX)^{-1}X^T\varepsilon$ は
+$P\varepsilon$ の関数であり，
+残差平方和は $\norm{(I-P)\varepsilon}^2$ に等しい．
+従って両者は独立で，残差平方和を $\sigma^2$ で割ったものは
+独立な $n-p$ 個の標準正規変数の二乗和である．
+また分子は平均零・分散
+$\sigma^2c^T(X^TX)^{-1}c$ の正規変数である．
+独立な $N(0,1)$ と $\chi^2_{n-p}$ の比としてStudentの分布を得る．
+\end{proof}
+\begin{corollary}[入れ子の線形モデルの$F$検定]
+列空間 $V_0\subset V_1\subset\mathbb R^n$ の次元を
+$p_0<p_1<n$ とし，真の平均が $V_0$ に属するとする．
+それぞれへの直交射影に基づく残差平方和を $\mathrm{RSS}_0,\mathrm{RSS}_1$ とすると
+\[
+ \frac{(\mathrm{RSS}_0-\mathrm{RSS}_1)/(p_1-p_0)}
+ {\mathrm{RSS}_1/(n-p_1)}\sim F_{p_1-p_0,n-p_1}.
+\]
+\end{corollary}
+\begin{proof}
+直交射影を $P_0,P_1$ とすると $P_1-P_0$ と $I-P_1$ は
+互いに直交する射影で，階数はそれぞれ $p_1-p_0$，$n-p_1$ である．
+帰無仮説では両平方和はこれらの射影による正規誤差の二乗ノルムである．
+前定理の直交基底の議論により，これらを $\sigma^2$ で割ると
+独立な対応する自由度の $\chi^2$ 変数となる．定義より結果を得る．
+\end{proof}
+
+\section{高次元の場合にも定義できる正則化回帰}
+\begin{theorem}[Ridge推定量]
+$X\in\mathbb R^{n\times p}$，$y\in\mathbb R^n$ とし，
+列フルランクは仮定しない．$\lambda>0$ に対し
+\[
+ Q_\lambda(\beta)=\norm{y-X\beta}_2^2+
+                    \lambda\norm\beta_2^2
+\]
+は唯一の最小化点を持ち，それは
+\[
+ \widehat\beta_\lambda
+ =(X^TX+\lambda I_p)^{-1}X^Ty
+\]
+で与えられる．$p>n$ で最小二乗解が一意でない場合でも成立する．
+\end{theorem}
+\begin{proof}
+任意の $v\ne0$ に対し
+$v^T(X^TX+\lambda I_p)v=\norm{Xv}_2^2+\lambda\norm v_2^2>0$
+なので $X^TX+\lambda I_p$ は正定値で可逆である．
+上式で定まる $\widehat\beta_\lambda$ は
+$(X^TX+\lambda I_p)\widehat\beta_\lambda=X^Ty$
+を満たす．$\beta=\widehat\beta_\lambda+v$ と書いて展開すると
+\[
+ Q_\lambda(\beta)-Q_\lambda(\widehat\beta_\lambda)
+ =v^T(X^TX+\lambda I_p)v\ge0
+\]
+であり，等号は $v=0$ のときに限る．従って唯一の最小化点である．
+\end{proof}
+\begin{proposition}[特異値による縮小の表示]
+$X=U\Sigma V^T$ を特異値分解とし，
+非零特異値を $\sigma_1,\ldots,\sigma_r$，
+左右の対応する特異ベクトルを $u_i,v_i$ とする．
+このとき
+\[
+ \widehat\beta_\lambda
+ =\sum_{i=1}^r\frac{\sigma_i}{\sigma_i^2+\lambda}
+             (u_i^Ty)v_i
+\]
+であり，$\lambda\downarrow0$ の極限は
+$X\beta$ を $y$ に最小二乗近似する解のうち
+Euclidノルムが最小のものである．
+\end{proposition}
+\begin{proof}
+$X^TX$ は $v_i$ 上では固有値 $\sigma_i^2$ を持ち，
+$X^Ty=\sum_{i=1}^r\sigma_i(u_i^Ty)v_i$ なので前式を得る．
+$\lambda\downarrow0$ とすると係数は
+$(u_i^Ty)/\sigma_i$ に収束する．
+このとき $X\beta$ は $\operatorname{Ran}X$ 上の $y$ の直交射影であり，
+全ての最小二乗解はその解に $\ker X$ のベクトルを加えたものだから，
+$\operatorname{Ran}X^T\perp\ker X$ より上の解が唯一の最小ノルム解となる．
+\end{proof}
+\begin{remark}
+ここでは任意の $n,p$ で正則化回帰を定義する完全な線形代数的議論を与えた．
+高次元確率モデルの推定誤差限界・モデル選択の一致性は別の問題である．
+\end{remark}
+
+
+\section{設計行列から回帰係数を実際に求める}
+\begin{example}[三つのデータを直線で近似する]\label{ex:regression-data}
+説明変数と観測値が
+\[
+ (x_1,y_1)=(0,1),\quad
+ (x_2,y_2)=(1,2),\quad
+ (x_3,y_3)=(2,2)
+\]
+で与えられるとする．
+切片と傾きを未知とする回帰直線
+$y=\beta_0+\beta_1x$ を考え，
+\[
+ X=\begin{pmatrix}1&0\\1&1\\1&2\end{pmatrix},
+ \quad Y=\begin{pmatrix}1\\2\\2\end{pmatrix},
+ \quad
+ X^TX=\begin{pmatrix}3&3\\3&5\end{pmatrix},
+ \quad X^TY=\begin{pmatrix}5\\6\end{pmatrix}
+\]
+と置く．$\det(X^TX)=6>0$ なので
+列フルランクであり，
+\[
+ (X^TX)^{-1}=\frac16
+ \begin{pmatrix}5&-3\\-3&3\end{pmatrix}.
+\]
+従って最小二乗推定量は
+\[
+ \widehat\beta=
+ (X^TX)^{-1}X^TY
+ =\begin{pmatrix}7/6\\1/2\end{pmatrix}.
+\]
+予測値と残差は
+\[
+ X\widehat\beta=
+ \begin{pmatrix}7/6\\5/3\\13/6\end{pmatrix},
+ \qquad
+ r=Y-X\widehat\beta=
+ \begin{pmatrix}-1/6\\1/3\\-1/6\end{pmatrix}.
+\]
+$X^Tr=(0,0)^T$ を直接確認でき，
+残差平方和は
+\[
+ \mathrm{RSS}=\|r\|_2^2
+ =\frac1{36}+\frac19+\frac1{36}
+ =\frac16.
+\]
+$n-p=1$ なので
+$\widehat\sigma^2=\mathrm{RSS}/(n-p)=1/6$ である．
+ただしこれを確率的な分散推定量と解釈するには，
+最初に述べた誤差モデルを仮定する必要がある．
+\end{example}
+\begin{proposition}[直交射影が与える最小値の保証]
+列フルランクな任意の $X$ に対し
+$r=Y-X\widehat\beta$ が $X^Tr=0$ を満たすなら，
+任意の $b\in\mathbb R^p$ について
+\[
+ \|Y-Xb\|_2^2
+ =\|r\|_2^2+\|X(\widehat\beta-b)\|_2^2
+\]
+となる．従って $\widehat\beta$ は一意の最小二乗解である．
+\end{proposition}
+\begin{proof}
+$Y-Xb=r+X(\widehat\beta-b)$ であり，
+$X^Tr=0$ より二つのベクトルは直交する．
+Pythagorasの等式から結論が従う．
+等号の成立には $X(\widehat\beta-b)=0$ が必要で，
+列フルランクだから $b=\widehat\beta$ となる．
+\end{proof}
+
+\section{階数が不足する場合の正則化を計算する}
+\begin{example}[二列が同一の場合]\label{ex:ridge-dup}
+\[
+ X=\begin{pmatrix}1&1\\1&1\end{pmatrix},\qquad
+ Y=\begin{pmatrix}1\\1\end{pmatrix}
+\]
+では通常の最小二乗解は
+$b_1+b_2=1$ を満たす任意のベクトルとなり，
+一意でない．$\lambda=2$ のRidge目的関数
+$\|Y-Xb\|_2^2+2\|b\|_2^2$ を考える．
+\[
+ X^TX+2I=
+ \begin{pmatrix}4&2\\2&4\end{pmatrix},
+ \qquad X^TY=\begin{pmatrix}2\\2\end{pmatrix}
+\]
+なので，正規方程式を解けば
+$\widehat b=(1/3,1/3)^T$ となる．
+予測値は $(2/3,2/3)^T$ で，
+残差平方和は $2/9$，正則化項は $4/9$ だから
+目的関数値は $2/3$ である．
+この解は残差を零にする解ではないが，
+残差と係数ノルムの両方を考慮した最小点である．
+\end{example}
+\begin{remark}
+Ridgeの解の一意性は最小二乗の幾何だけで説明できる．
+しかし，どの $\lambda$ が予測性能を最も良くするかは
+データ生成モデルや損失の選択に依存し，
+この最小化の代数的解だけでは決定しない．
+\end{remark}
+
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題．}
+設計点 $x=0,1,2$ と観測値 $y=1,1,3$ から，
+切片付き最小二乗直線を求めよ．
+予測値，残差，残差平方和も求め，
+残差の直交性を検算せよ．
+
+\medskip\noindent\textbf{解答．}
+設計行列 $X$ は例\ref{ex:regression-data}と同じである．
+新しい観測値について
+\[
+ X^TY=\begin{pmatrix}5\\7\end{pmatrix}
+\]
+だから
+\[
+ \widehat\beta=
+ \frac16\begin{pmatrix}5&-3\\-3&3\end{pmatrix}
+       \begin{pmatrix}5\\7\end{pmatrix}
+ =\begin{pmatrix}2/3\\1\end{pmatrix}.
+\]
+従って推定直線は $y=2/3+x$ であり，
+\[
+ X\widehat\beta=
+ \begin{pmatrix}2/3\\5/3\\8/3\end{pmatrix},
+ \qquad
+ r=\begin{pmatrix}1/3\\-2/3\\1/3\end{pmatrix}.
+\]
+実際 $X^Tr=(0,0)^T$ となる．
+残差平方和は
+\[
+ \mathrm{RSS}
+ =\frac19+\frac49+\frac19=\frac23.
+\]
+従って推定した直線が唯一の最小二乗解である．
+
+\end{document}

@@ -1,0 +1,516 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{数値計算の誤差と安定性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+数値式の数学的な条件数と計算法の丸め誤差を区別し，
+桁落ちが起こる式を自分で安定な形へ変形できるようになる．
+前提は微分法と浮動小数点の四則演算の基礎である．
+
+\section{数値計算に現れる三種類の誤差}
+近似計算では，入力データの誤差，算法による丸め誤差，
+数学的問題の摂動に対する感度を区別しなければならない．
+\begin{definition}
+真の値 $x\in\mathbb R$ と近似値 $\widehat x$ の
+絶対誤差を $|\widehat x-x|$，
+$x\ne0$ のとき相対誤差を
+$|\widehat x-x|/|x|$ と定める．
+\end{definition}
+\begin{proposition}[相対誤差と零点]
+$x$ が零に近いとき，小さい絶対誤差から
+小さい相対誤差は一般には従わない．
+\end{proposition}
+\begin{proof}
+$x=\varepsilon^2$，$\widehat x=\varepsilon^2+\varepsilon$
+と置く．$\varepsilon>0$ を零へ近付けると
+絶対誤差は $\varepsilon\to0$ である一方，
+相対誤差は $1/\varepsilon\to\infty$ となる．
+\end{proof}
+\section{浮動小数点演算の数学的モデル}
+以下では基数 $\beta\ge2$，有効桁数 $t\ge1$ の
+正規化浮動小数点を考え，指数の範囲は十分広いとする．
+オーバーフロー，アンダーフローは明記しない限り生じないと仮定する．
+\begin{definition}
+正規化した非零浮動小数点数は
+\[
+ \pm(d_0+d_1\beta^{-1}+\cdots+d_{t-1}\beta^{-(t-1)})
+   \beta^e
+\]
+の形で表される．ここで $1\le d_0\le\beta-1$，
+$0\le d_j\le\beta-1$，$e\in\mathbb Z$ とする．
+実数 $x$ を最も近い浮動小数点数へ丸める操作を
+$\operatorname{fl}(x)$ と書く．
+\end{definition}
+\begin{theorem}[基本丸めモデル]\label{thm:rounding}
+丸める実数 $x$ が正規化範囲にあり，
+最も近い数への正しい丸めが行われるとする．
+このときある $\delta$ が存在して
+\[
+ \operatorname{fl}(x)=x(1+\delta),\qquad
+ |\delta|\le u:=\frac12\beta^{1-t}
+\]
+が成立する．$x=0$ では $\delta=0$ と取れる．
+\end{theorem}
+\begin{proof}
+$x>0$ としてよい．
+$\beta^e\le x<\beta^{e+1}$ の区間で隣接する
+浮動小数点数の間隔は $\beta^{e-t+1}$ である．
+最も近い点への丸め誤差の絶対値は
+その半分以下なので
+\[
+ |\operatorname{fl}(x)-x|
+ \le\frac12\beta^{e-t+1}
+ \le\frac12\beta^{1-t}x=ux.
+\]
+端点で隣の指数区間に丸める場合も隣接点間隔は
+この上界以下であり同じ評価となる．
+負の $x$ については対称性から従う．
+\end{proof}
+\begin{remark}
+実際の計算機では指数の上限・下限，非正規化数，
+NaN，無限大の取扱いがある．
+定理\ref{thm:rounding}はそれらを除いた演算モデルであり，
+全入力に対する無条件な保証ではない．
+\end{remark}
+
+\section{丸め誤差の蓄積}
+本節では基本演算 $\circ\in\{+,-,\times,/\}$ の結果について
+\[
+ \operatorname{fl}(a\circ b)=(a\circ b)(1+\delta),
+ \qquad |\delta|\le u
+\]
+が成立するものとし，零除算と指数範囲外を除外する．
+\begin{lemma}[有限個の丸め因子]\label{lem:gamma}
+$nu<1$ とし，$|\delta_j|\le u$（$1\le j\le n$）とする．
+$\theta_n=\prod_{j=1}^n(1+\delta_j)-1$ と置けば
+\[
+ |\theta_n|\le\gamma_n:={nu\over1-nu}.
+\]
+\end{lemma}
+\begin{proof}
+全ての因子は正であるから
+$(1-u)^n\le1+\theta_n\le(1+u)^n$．
+Bernoulliの不等式により $(1-u)^n\ge1-nu$．
+また $\log(1+u)\le u$ なので
+$(1+u)^n\le e^{nu}$ である．
+$0\le z<1$ では
+$e^z\le(1-z)^{-1}$ が
+$-\log(1-z)\ge z$ から従う．
+従って
+\[
+ 1-nu\le1+\theta_n\le(1-nu)^{-1}.
+\]
+負側の誤差は $nu$ 以下，
+正側は $nu/(1-nu)$ 以下であり，
+後者が前者以上なので結論を得る．
+\end{proof}
+\begin{theorem}[逐次加算の絶対誤差]\label{thm:sum}
+実数 $x_1,\dots,x_n$（$n\ge2$）を
+左から順に浮動小数点加算した値を $\widehat s$ とする．
+各入力が正確に与えられ，途中の演算が基本丸めモデルに従い，
+$(n-1)u<1$ なら
+\[
+ \left|\widehat s-\sum_{j=1}^nx_j\right|
+ \le\gamma_{n-1}\sum_{j=1}^n|x_j|.
+ \tag{1}
+\]
+\end{theorem}
+\begin{proof}
+最初の加算から順に丸め因子を
+$(1+\delta_2),\dots,(1+\delta_n)$ とすると，
+逐次加算の定義を展開して
+\[
+ \widehat s=
+ x_1\prod_{k=2}^n(1+\delta_k)+
+ \sum_{j=2}^n x_j\prod_{k=j}^n(1+\delta_k)
+\]
+を得る．
+各係数の因子数は高々 $n-1$ である．
+補題\ref{lem:gamma}を各積へ適用し，
+三角不等式で誤差を抑えると式 (1) が従う．
+\end{proof}
+\begin{corollary}[加算の相対誤差]
+$s=\sum_jx_j\ne0$ なら
+\[
+ {|\widehat s-s|\over|s|}
+ \le\gamma_{n-1}{\sum_j|x_j|\over|\sum_jx_j|}.
+\]
+\end{corollary}
+\begin{proof}
+式 (1) の両辺を $|s|$ で割る．
+\end{proof}
+\begin{remark}
+正負の大きい数が相殺すると
+$\sum_j|x_j|/|\sum_jx_j|$ は非常に大きくなる．
+これは丸め誤差の大きさだけでなく，
+和という数学的問題の摂動感度が大きいことを示す．
+\end{remark}
+\begin{theorem}[二分木による和]\label{thm:pairwise}
+$n=2^m$ 個の入力を二つずつ加え，
+得た値をさらに二つずつ加える操作を $m$ 段階繰り返す．
+その結果を $\widehat s_{\mathrm{pair}}$ とする．
+$mu<1$ なら
+\[
+ \left|\widehat s_{\mathrm{pair}}-\sum_{j=1}^nx_j\right|
+ \le\gamma_m\sum_{j=1}^n|x_j|.
+\]
+\end{theorem}
+\begin{proof}
+各入力 $x_j$ はただ一つの枝を通って最終和へ届き，
+その枝では各段階ごとにちょうど一回の浮動小数点加算を受ける．
+再帰的に展開した最終和では，
+$x_j$ の係数は $m$ 個の丸め因子の積となる．
+補題\ref{lem:gamma}をその積へ適用し，
+全ての項の誤差を加えればよい．
+\end{proof}
+\begin{proposition}[内積の誤差]
+入力の積を一回ずつ丸め，それらを左から順に加算した
+$\widehat d$ を考える．$n\ge2$ かつ $nu<1$ なら
+\[
+ \left|\widehat d-\sum_{j=1}^n x_jy_j\right|
+ \le\gamma_n\sum_{j=1}^n|x_jy_j|.
+\]
+\end{proposition}
+\begin{proof}
+各 $x_jy_j$ には積の丸め因子が一つ付き，
+その後に高々 $n-1$ 個の加算の丸め因子が付く．
+従って各項の係数は高々 $n$ 個の因子
+$(1+\delta)$ の積である．
+補題\ref{lem:gamma}と三角不等式から結論を得る．
+\end{proof}
+
+\section{問題の条件数}
+\begin{definition}
+開集合 $U\subset\mathbb R^m$ の写像
+$F:U\to\mathbb R^n$ に対し，$x\in U$ で
+$F$ が微分可能かつ $F(x)\ne0$ なら，
+Euclidノルムについての相対条件数を
+\[
+ \kappa_F(x)={\|DF(x)\|\,\|x\|\over\|F(x)\|}
+\]
+と定める．
+\end{definition}
+\begin{proposition}[条件数の一次評価]
+$x\ne0$，$F(x)\ne0$ とする．$h\to0$ のとき
+\[
+ {\|F(x+h)-F(x)\|\over\|F(x)\|}
+ \le\kappa_F(x){\|h\|\over\|x\|}
+ +o(\|h\|)
+\]
+が成立する．
+\end{proposition}
+\begin{proof}
+微分可能性から
+$F(x+h)-F(x)=DF(x)h+r(h)$，
+$\|r(h)\|/\|h\|\to0$ である．
+従って
+\[
+ \|F(x+h)-F(x)\|
+ \le\|DF(x)\|\|h\|+o(\|h\|).
+\]
+両辺を $\|F(x)\|$ で割って定義を用いればよい．
+\end{proof}
+\begin{definition}
+可逆な行列 $A\in\mathbb R^{n\times n}$ と
+作用素ノルム $\|\cdot\|$ について
+$\kappa(A)=\|A\|\|A^{-1}\|$ と定める．
+\end{definition}
+\begin{lemma}[逆行列の摂動]\label{lem:inverse}
+$A$ が可逆で $\|A^{-1}E\|<1$ なら
+$A+E$ は可逆であり，
+\[
+ \|(A+E)^{-1}\|
+ \le{\|A^{-1}\|\over1-\|A^{-1}E\|}.
+\]
+\end{lemma}
+\begin{proof}
+$A+E=A(I+A^{-1}E)$ と書く．
+$\|A^{-1}E\|<1$ なのでNeumann級数
+$\sum_{k=0}^{\infty}(-A^{-1}E)^k$
+は作用素ノルムで絶対収束する．
+部分和へ $(I+A^{-1}E)$ を掛けると
+$I-(-A^{-1}E)^{N+1}$ となり極限で $I$ を得るため，
+これは $(I+A^{-1}E)^{-1}$ である．
+ノルムを取ると幾何級数から
+$\|(I+A^{-1}E)^{-1}\|\le
+ 1/(1-\|A^{-1}E\|)$ となる．
+$(A+E)^{-1}=(I+A^{-1}E)^{-1}A^{-1}$ を使えばよい．
+\end{proof}
+\begin{theorem}[線形方程式の相対摂動評価]\label{thm:perturb}
+$Ax=b$ とし，$A$ は可逆，$b\ne0$ とする．
+$(A+E)(x+\Delta x)=b+\Delta b$ で，
+\[
+ \varepsilon_A={\|E\|\over\|A\|},\qquad
+ \varepsilon_b={\|\Delta b\|\over\|b\|},\qquad
+ \kappa(A)\varepsilon_A<1
+\]
+を仮定する．このとき
+\[
+ {\|\Delta x\|\over\|x\|}
+ \le{\kappa(A)\over1-\kappa(A)\varepsilon_A}
+ (\varepsilon_A+\varepsilon_b).
+\]
+\end{theorem}
+\begin{proof}
+差を取ると
+$(A+E)\Delta x=\Delta b-Ex$ である．
+補題\ref{lem:inverse}から
+\[
+ \|\Delta x\|
+ \le{\|A^{-1}\|\over1-\|A^{-1}\|\|E\|}
+ (\|\Delta b\|+\|E\|\|x\|).
+\]
+$Ax=b$ だから
+$\|b\|\le\|A\|\|x\|$．
+従って
+$\|\Delta b\|/\|x\|\le
+\varepsilon_b\|A\|$．
+両辺を $\|x\|$ で割り，
+$\|A^{-1}\|\|E\|=\kappa(A)\varepsilon_A$
+を上から評価して結論を得る．
+\end{proof}
+\begin{example}[悪条件の線形方程式]
+$A_\varepsilon=\operatorname{diag}(1,\varepsilon)$，
+$0<\varepsilon\le1$ とする．
+Euclid作用素ノルムについて
+$\kappa(A_\varepsilon)=1/\varepsilon$ である．
+\end{example}
+\begin{proof}
+$\|A_\varepsilon\|=1$，
+$\|A_\varepsilon^{-1}\|=1/\varepsilon$ だからである．
+$b=(1,\varepsilon)^T$ の解は $x=(1,1)^T$ だが，
+右辺を $(1,\varepsilon+\delta)^T$ に変えると
+解は $(1,1+\delta/\varepsilon)^T$ となる．
+従って右辺の小さな誤差が
+$1/\varepsilon$ 倍に増幅され得る．
+\end{proof}
+
+\section{前進安定性と後退安定性}
+\begin{definition}
+数学的問題を $F(x)$ とし，算法の出力を $\widehat y$ とする．
+$\|\widehat y-F(x)\|$ を前進誤差という．
+$\widehat y=F(x+\Delta x)$ となる摂動 $\Delta x$ の大きさを
+後退誤差といい，そのような摂動を小さく取れる算法を
+後退安定と呼ぶ．ここで「小さい」は問題の尺度と
+単位丸め誤差 $u$ に相対的に定量化しなければならない．
+\end{definition}
+\begin{proposition}[後退誤差から前進誤差へ]
+$F$ が $x$ で微分可能，$x,F(x)\ne0$ とする．
+算法の出力が $\widehat y=F(x+\Delta x)$ を満たし
+$\Delta x\to0$ なら
+\[
+ {\|\widehat y-F(x)\|\over\|F(x)\|}
+ \le\kappa_F(x){\|\Delta x\|\over\|x\|}
+ +o(\|\Delta x\|).
+\]
+\end{proposition}
+\begin{proof}
+条件数の一次評価を $\Delta x$ に適用する．
+\end{proof}
+\begin{remark}
+後退安定な算法であっても条件数が大きい問題では
+前進誤差は大きくなり得る．
+例えば近い二数の減算は，丸めた差自体が非常に正確でも，
+入力をわずかに変えた際の差の相対変化は大きくなり得る．
+\end{remark}
+\section{Horner法の誤差解析}
+\begin{definition}
+多項式 $p(x)=a_0+a_1x+\cdots+a_nx^n$ に対し
+\[
+ b_n=a_n,\qquad b_k=a_k+xb_{k+1}
+ \quad(k=n-1,\ldots,0)
+\]
+によって $p(x)=b_0$ を求める算法をHorner法という．
+\end{definition}
+\begin{lemma}[Horner法の正しさ]
+正確な実数演算でHorner法を行えば
+\[
+ b_k=\sum_{j=k}^n a_jx^{j-k}
+\]
+となり，特に $b_0=p(x)$ である．
+\end{lemma}
+\begin{proof}
+$k=n$ では $b_n=a_n$ なので式は成立する．
+$k+1$ で式が成り立つとすると
+\[
+ b_k=a_k+x\sum_{j=k+1}^n a_jx^{j-k-1}
+ =\sum_{j=k}^na_jx^{j-k}.
+\]
+下向き帰納法により全ての $k$ で成り立つ．
+\end{proof}
+\begin{theorem}[Horner法の係数ごとの後退誤差]\label{thm:horner}
+$x$ と全ての係数 $a_k$ が正確に与えられ，
+Horner法の乗算と加算を別々に丸めるとする．
+$2nu<1$，オーバーフロー・アンダーフローなしと仮定すると，
+計算結果 $\widehat p$ に対し
+\[
+ \widehat p(x)=\sum_{k=0}^na_k(1+\theta_k)x^k,
+ \qquad |\theta_k|\le\gamma_{2n}
+\]
+となる $\theta_k$ が存在する．従って
+\[
+ |\widehat p(x)-p(x)|
+ \le\gamma_{2n}\sum_{k=0}^n|a_k||x|^k.
+\]
+\end{theorem}
+\begin{proof}
+実際の計算では
+\[
+ \widehat b_k=
+ \bigl(a_k+x\widehat b_{k+1}(1+\delta_{k,1})\bigr)
+ (1+\delta_{k,2}),\qquad
+ |\delta_{k,j}|\le u
+\]
+であり，$\widehat b_n=a_n$ とする．
+この再帰式を展開すれば，$a_kx^k$ の係数は
+各段階の乗算・加算から生じる $1+\delta$ の積となる．
+最上位係数から定数項に至るまで高々 $n$ 回の乗算と
+$n$ 回の加算があるので，各係数に付く因子は高々 $2n$ 個である．
+補題\ref{lem:gamma}よりその積は
+$1+\theta_k$，$|\theta_k|\le\gamma_{2n}$ と書ける．
+和全体から正確な多項式値を引いて三角不等式を適用すると
+第二式を得る．
+\end{proof}
+\begin{remark}
+Horner法の結論は，値 $\widehat p(x)$ が
+各係数 $a_k$ を高々 $\gamma_{2n}$ の相対量だけ摂動させた
+別の多項式の正確な値であることを示す．
+ただし $p(x)$ が零に近い場合，値の相対前進誤差の
+上界は大きくなることがある．
+\end{remark}
+
+\section{桁落ちを診断して安定な式へ変える}
+\begin{example}[同じ関数の二つの計算法]
+$x>0$ に対し
+\[
+ f(x)=\sqrt{1+x}-1
+\]
+を計算する．この式をそのまま計算すると，
+$x$ が零に近いとき，近接する二数の差を求めるため
+有効桁が失われる可能性がある．
+分母を有理化すれば厳密に
+\[
+ f(x)=\frac{x}{\sqrt{1+x}+1}
+\]
+である．後者では近い二数の引算を避けられる．
+なぜ元の問題自体が悪条件なのではないかを確認する．
+$f'(x)=1/(2\sqrt{1+x})$ だから，
+正の入力・出力に関する相対条件数は
+\[
+ \kappa_f(x)=\left|\frac{xf'(x)}{f(x)}\right|
+ =\frac{\sqrt{1+x}+1}{2\sqrt{1+x}}.
+\]
+従って $1/2<\kappa_f(x)<1$（$x>0$）であり，
+$x\downarrow0$ でも条件数は1に収束する．
+問題が良条件でも計算式が不安定になり得る例である．
+\end{example}
+\begin{proposition}[引算による誤差増幅]
+$x>0$ とし，正確な値 $\sqrt{1+x}$ に対して，
+平方根を計算した近似値が
+$\widehat s=\sqrt{1+x}+\varepsilon$ だったとする．
+引算が正確に行われると仮定すると，
+直接式で計算した値 $\widehat f=\widehat s-1$ の
+相対誤差は厳密に
+\[
+ \frac{|\widehat f-f(x)|}{f(x)}
+ =\frac{|\varepsilon|(\sqrt{1+x}+1)}{x}
+\]
+となる．
+\end{proposition}
+\begin{proof}
+差 $\widehat f-f(x)$ は $\varepsilon$ に等しい．
+一方，前例の有理化公式より
+$f(x)=x/(\sqrt{1+x}+1)>0$ なので
+両辺を $f(x)$ で割れば表示式が従う．
+\end{proof}
+\begin{remark}
+平方根が丸められた後の引算にさらに丸めが発生すれば，
+誤差は追加され得る．ここでは桁落ちの原因を切り出すため，
+引算自体は正確であるとした．
+有理化した式を浮動小数点で評価する場合にも，
+除算や平方根の丸めの仮定を別途確認する必要がある．
+\end{remark}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+$x>0$ のとき
+$g(x)=1/(\sqrt{1+x}+1)$ を用いて
+$f(x)=xg(x)$ と計算すると，
+$x\downarrow0$ で $g(x)$ は何に収束するか．
+また $x>0$ に対して
+$0<f(x)<x/2$ を証明せよ．
+
+\medskip\noindent\textbf{解答．}
+$g(x)\to1/2$ である．
+分母は $2$ より大きいから
+$0<f(x)=x/(\sqrt{1+x}+1)<x/2$．
+この評価から $f(x)$ が $x/2$ と同程度の
+小さな値になることも分かる．
+
+\end{document}

@@ -1,0 +1,299 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Bayesian統計の数学}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{本稿でできるようになること}
+標本と事前分布から事後分布を計算し，
+その結果を点推定と将来の予測の両方に用いることを目標とする．
+事後確率の一致性の節は，観測数を増やすことの数学的意味を扱う．
+前提は条件付き確率，確率密度と期待値である．
+
+\section{Bayesの公式}
+パラメータ空間 $\Theta$ に事前確率測度 $\pi$ を置き，
+$\theta$ の下で観測 $X$ が密度 $p_\theta(x)$ を持つとする．
+\begin{definition}
+$0<\int_\Theta p_\theta(x)\pi(d\theta)<\infty$ のとき，
+事後確率は
+\[
+ \pi(d\theta\mid x)=
+ \frac{p_\theta(x)\pi(d\theta)}{\int_\Theta p_t(x)\pi(dt)}
+\]
+である．
+\end{definition}
+\section{共役事前分布}
+\begin{theorem}[Beta--Bernoulli共役]
+$X_1,\ldots,X_n$ が条件付き独立Bernoulli$(p)$ に従い，
+事前分布を $p\sim\operatorname{Beta}(a,b)$ とする．
+ただし $a,b>0$ とする．$S=\sum_iX_i$ と置けば，
+事後分布は $\operatorname{Beta}(a+S,b+n-S)$ となる．
+\end{theorem}
+\begin{proof}
+標本尤度は $p^S(1-p)^{n-S}$ であり，
+事前密度は $B(a,b)^{-1}p^{a-1}(1-p)^{b-1}$．
+積は $p^{a+S-1}(1-p)^{b+n-S-1}$ に比例する．
+Beta関数の正規化積分を用いれば主張を得る．
+\end{proof}
+\section{損失関数とBayes推定}
+\begin{theorem}[二乗損失のBayes推定]
+事後分布の下で $\mathbb E(\theta^2\mid X)<\infty$ と仮定する．
+二乗損失 $L(\theta,a)=(\theta-a)^2$ の事後期待損失を最小にする
+推定値は $a=\mathbb E(\theta\mid X)$ である．
+\end{theorem}
+\begin{proof}
+$m=\mathbb E(\theta\mid X)$ と置くと
+\[
+ \mathbb E[(\theta-a)^2\mid X]
+ =\mathbb E[(\theta-m)^2\mid X]+(a-m)^2
+\]
+である．第二項が零になることが必要十分である．
+\end{proof}
+\begin{corollary}
+Beta--Bernoulliモデルの二乗損失Bayes推定量は
+$\widehat p=(a+S)/(a+b+n)$ である．
+\end{corollary}
+\begin{proof}
+Beta分布の平均は $a'/(a'+b')$ であるから，
+事後のパラメータ $a'=a+S,b'=b+n-S$ を代入する．
+\end{proof}
+\begin{remark}[前節までの範囲]
+事前分布の選択は推定結果に影響を与える．
+この稿では有限次元パラメータの基本形を扱い，
+一般の事後一致性や非共役事前分布の計算法は扱わない．
+\end{remark}
+
+
+\section{事後分布の一致性}
+\begin{theorem}[Beta--Bernoulli事後一致性]
+真の成功確率が $p_0\in(0,1)$ である独立Bernoulli標本に対し，
+事前分布を $\operatorname{Beta}(a,b)$（$a,b>0$）とする．
+このとき任意の $\varepsilon>0$ について
+\[
+ \pi\bigl(|p-p_0|>\varepsilon\mid X_1,\ldots,X_n\bigr)
+ \longrightarrow0
+\]
+は $P_{p_0}$-ほとんど確実に成立する．
+\end{theorem}
+\begin{proof}
+事後平均 $m_n=(a+S_n)/(a+b+n)$ は，
+強大数の法則 $S_n/n\to p_0$ によって $m_n\to p_0$ となる．
+事後分散は
+\[
+ v_n=\frac{(a+S_n)(b+n-S_n)}
+ {(a+b+n)^2(a+b+n+1)}
+ \le\frac1{4(a+b+n+1)}.
+\]
+十分大きい $n$ で $|m_n-p_0|<\varepsilon/2$ となるから，
+事後Chebyshevの不等式より
+$\pi(|p-p_0|>\varepsilon\mid X)
+\le4v_n/\varepsilon^2\to0$ である．
+\end{proof}
+\begin{theorem}[有限パラメータ空間での事後一致性]
+$\Theta$ を有限集合，$\theta_0\in\Theta$ を真のパラメータとする．
+各 $\theta$ の標本密度 $p_\theta$ が共通の有限標本空間上で正で，
+異なるパラメータは異なる確率分布を与えると仮定する．
+各点に正の事前確率を与えると，独立同分布標本に関する
+事後確率は $\pi(\theta_0\mid X_1,\ldots,X_n)\to1$ ほとんど確実に成立する．
+\end{theorem}
+\begin{proof}
+任意の $\theta\ne\theta_0$ に対し事後オッズは
+\[
+ \frac{\pi(\theta\mid X_{1:n})}{\pi(\theta_0\mid X_{1:n})}
+ =\frac{\pi(\theta)}{\pi(\theta_0)}
+ \prod_{i=1}^n\frac{p_\theta(X_i)}{p_{\theta_0}(X_i)}.
+\]
+対数を取り $n$ で割ったものは，強大数の法則から
+$-D(P_{\theta_0}\Vert P_\theta)<0$ に収束する．
+ここでKL距離の正値性は対数不等式と分布の相違による．
+従って各オッズは指数的に零に収束する．
+$\Theta$ は有限なのでこれを和し，事後確率の総和が1であることから
+$\pi(\theta_0\mid X_{1:n})\to1$ を得る．
+\end{proof}
+
+\section{可算なパラメータ空間での事後一致性}
+\begin{theorem}[可算な識別可能モデル]
+$\Theta$ を可算集合とし，各 $\theta\in\Theta$ に正の事前確率
+$\pi(\theta)>0$ を与え，$\sum_\theta\pi(\theta)=1$ とする．
+標本は有限集合 $\mathcal X$ 上で，$\theta$ を与えたとき
+独立同分布 $P_\theta$ に従うとする．
+写像 $\theta\mapsto P_\theta$ は単射であると仮定する．
+このとき真のパラメータが $\theta_0$ なら
+\[
+ \pi(\theta_0\mid X_1,\ldots,X_n)\longrightarrow1
+ \qquad P_{\theta_0}\text{-ほとんど確実}
+\]
+である．
+\end{theorem}
+\begin{proof}
+事前確率に従う確率変数 $\Theta$ を取り，
+$\Theta=\theta$ の条件下で独立同分布標本を生成する結合確率空間を考える．
+$\mathcal F_n=\sigma(X_1,\ldots,X_n)$ とし，
+$Z_n(\theta)=\mathbb P(\Theta=\theta\mid\mathcal F_n)$ と置く．
+$0\le Z_n(\theta)\le1$ であり，これは有界なマルチンゲールである．
+条件付き期待値の増大列への収束定理（別ノート60.010）により
+\[
+ Z_n(\theta)\longrightarrow
+ \mathbb P(\Theta=\theta\mid\mathcal F_\infty)
+ \quad\text{a.s.},\qquad
+ \mathcal F_\infty=\sigma(X_1,X_2,\ldots)
+\]
+となる．
+
+各 $x\in\mathcal X$ について強大数の法則から
+\[
+ \frac1n\sum_{i=1}^n\mathbf1_{\{X_i=x\}}
+ \longrightarrow P_\Theta(\{x\})\quad\text{a.s.}
+\]
+である．$\mathcal X$ が有限，$\Theta$ が可算なので，
+これらは結合確率の下で同時に成立する．
+$\theta\mapsto P_\theta$ は単射だから，
+全ての経験頻度の極限から $\Theta$ の値を一意に復元できる．
+従って $\Theta$ は $\mathcal F_\infty$-可測（零集合の変更を許す）であり
+\[
+ \mathbb P(\Theta=\theta\mid\mathcal F_\infty)
+ =\mathbf1_{\{\Theta=\theta\}}\quad\text{a.s.}
+\]
+である．特に $\Theta=\theta_0$ の事象上では
+$Z_n(\theta_0)\to1$．この事象の事前確率は正であるから，
+$P_{\theta_0}$-ほとんど確実な一致性が従う．
+\end{proof}
+\begin{remark}
+ここでは有限標本空間・可算パラメータ族での完全な一致性を示した．
+無限次元分布族の一般的なSchwartz型一致性定理は，
+KL近傍への事前質量と検定の構成など，さらに別の議論を要する．
+\end{remark}
+
+
+\section{共役事前分布による推定と予測を実行する}
+\begin{example}[10回の観測に基づく更新]
+未知の成功確率 $p$ の事前分布を
+$\mathrm{Beta}(2,3)$ とする．独立なBernoulli試行を
+10回観測し成功が7回，失敗が3回だったとする．
+事後密度は
+\[
+ \frac{p^8(1-p)^5}{B(9,6)}\qquad(0<p<1)
+\]
+であり，すなわち事後分布は $\mathrm{Beta}(9,6)$ である．
+二乗損失に対するBayes推定値は
+\[
+ \widehat p_{\mathrm B}=\frac9{15}=\frac35
+\]
+となる．観測のみに基づく最尤推定値 $7/10$ や
+事前平均 $2/5$ とは異なる．
+事後分散は
+\[
+ \operatorname{Var}(p\mid X)
+ =\frac{9\cdot6}{15^2\cdot16}=\frac3{200}.
+\]
+このため，任意の推定値 $a$ に対する
+事後二乗リスクは平方完成によって
+\[
+ E[(p-a)^2\mid X]=\frac3{200}
+                    +\left(a-\frac35\right)^2
+\]
+と計算できる．
+\end{example}
+\begin{proposition}[事後予測の二試行間の依存性]
+上の観測の後に，将来の二つのBernoulli試行
+$Y_1,Y_2$ を行う．$p$ を条件とすればこれらは
+独立であるとする．観測済みデータに関する
+事後予測確率は
+\[
+ P(Y_1=1\mid X)=\frac35,\qquad
+ P(Y_1=Y_2=1\mid X)=\frac38
+\]
+であり，さらに
+$\operatorname{Cov}(Y_1,Y_2\mid X)=3/200>0$ となる．
+\end{proposition}
+\begin{proof}
+条件付き期待値の反復律から
+$P(Y_1=1\mid X)=E[p\mid X]=9/15$ である．
+また条件付き独立性を使えば
+\[
+ P(Y_1=Y_2=1\mid X)
+   =E[p^2\mid X]
+   =\frac{9\cdot10}{15\cdot16}=\frac38.
+\]
+従って共分散は $3/8-(3/5)^2=3/200$ となる．
+未知パラメータ $p$ を共有するため，
+予測分布では二つの試行が独立でなくなる．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+事前分布を一様分布 $\mathrm{Beta}(1,1)$ とし，
+4回中1回成功したとする．事後平均と次の試行の
+成功確率を求めよ．
+
+\medskip\noindent\textbf{解答．}
+事後分布は $\mathrm{Beta}(2,4)$ である．
+従って事後平均は $2/(2+4)=1/3$．
+事後予測成功確率は
+$E[p\mid X]=1/3$ である．
+
+\end{document}
