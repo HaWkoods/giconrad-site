@@ -1,0 +1,909 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Krull次元とHilbert多項式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Hilbert級数，次数付き環，Hilbert多項式．
+本稿の具体的な到達課題は，具体的な次数付き商環のHilbert関数と次元を求める．
+
+\section{素イデアル鎖と次元}
+可換環は単位元を持つものとする．
+\begin{definition}
+可換環 $A$ の素イデアルの真の鎖
+$\mathfrak p_0\subsetneq\cdots\subsetneq\mathfrak p_r$ の長さを $r$ とする．
+その長さの上限を $\dim A$（Krull次元）と定める．
+\end{definition}
+\begin{proposition}
+体 $k$ に対して $\dim k=0$，$\dim k[x]=1$ である．
+\end{proposition}
+\begin{proof}
+体の唯一の素イデアルは $(0)$ である．
+$k[x]$ は主イデアル整域であり，$0$ でない素イデアル $(f)$ は
+既約多項式 $f$ で生成される．$k[x]/(f)$ は体だから $(f)$ は極大である．
+よって $(0)\subsetneq(f)$ は長さ1の鎖であり，それより長い鎖はない．
+\end{proof}
+\begin{remark}
+$k[x_1,\ldots,x_n]$ の次元が $n$ であることには
+一般の素イデアルについての次元不等式が必要になる．
+以下では次元論そのものとは区別して，次数付き加群のHilbert関数を証明する．
+\end{remark}
+
+\section{次数付き加群とHilbert級数}
+$S=k[x_1,\ldots,x_n]$ に $\deg x_i=1$ の次数を入れる．
+有限生成次数付き $S$-加群 $M=\bigoplus_{d\in\mathbb Z}M_d$ に対し，
+各斉次成分が有限次元で，$M_d=0$（$d\ll0$）と仮定する．
+\begin{definition}
+$H_M(d)=\dim_k M_d$ をHilbert関数，
+$\operatorname{Hilb}_M(t)=\sum_d H_M(d)t^d$ をHilbert級数とする．
+\end{definition}
+\begin{lemma}
+斉次写像からなる短完全列
+$0\to L\to M\to N\to0$ があれば
+$\operatorname{Hilb}_M=\operatorname{Hilb}_L+\operatorname{Hilb}_N$ である．
+\end{lemma}
+\begin{proof}
+次数 $d$ の部分をとる操作は完全である．
+よって $0\to L_d\to M_d\to N_d\to0$ は有限次元ベクトル空間の
+短完全列であり，次元公式を各 $d$ に適用する．
+\end{proof}
+\begin{theorem}[Hilbert--Serre]\label{thm:HS}
+$M$ を上記の有限生成次数付き $S$-加群とする．
+このときあるLaurent多項式 $P(t)\in\mathbb Z[t,t^{-1}]$ が存在して
+\[
+ \operatorname{Hilb}_M(t)=\frac{P(t)}{(1-t)^n}
+\]
+が形式的Laurent級数として成り立つ．
+\end{theorem}
+\begin{proof}
+変数の個数 $n$ に関する帰納法による．$n=0$ のとき
+$S=k$ であり，$M$ は有限次元次数付き空間なので主張は明らかである．
+$n\ge1$ として $x_n$ の乗法を用いる．
+$K=(0:_M x_n)$，$C=M/x_nM$ と置くと，次数を保つ完全列
+\[
+ 0\longrightarrow K(-1)\longrightarrow M(-1)
+ \xrightarrow{x_n} M\longrightarrow C\longrightarrow0
+\]
+を得る．ここで $M(-1)_d=M_{d-1}$ とする．
+$K,C$ はNoether性によって有限生成であり，$x_n$ が零作用するので
+$k[x_1,\ldots,x_{n-1}]$ の有限生成次数付き加群となる．
+加法性から
+$ (1-t)\operatorname{Hilb}_M(t)
+   =\operatorname{Hilb}_C(t)-t\operatorname{Hilb}_K(t)$．
+帰納法の仮定を右辺へ用いて分母 $(1-t)^{n-1}$ にまとめれば結論を得る．
+\end{proof}
+\begin{corollary}[Hilbert多項式]
+$n\ge1$ のとき，ある $Q_M(z)\in\mathbb Q[z]$ が存在して
+$H_M(d)=Q_M(d)$（すべての十分大きい整数 $d$）となる．
+さらに $\deg Q_M\le n-1$（$Q_M=0$ を許す）である．
+\end{corollary}
+\begin{proof}
+定理\ref{thm:HS}の $P(t)=\sum_{j=a}^b c_jt^j$ に対して
+\[
+ H_M(d)=\sum_{j=a}^b c_j{d-j+n-1\choose n-1}
+\]
+が $d\ge b$ で成立する．これは
+$(1-t)^{-n}=\sum_{d\ge0}{d+n-1\choose n-1}t^d$ の係数比較であり，
+右辺は $d$ に関する次数高々 $n-1$ の有理係数多項式である．
+\end{proof}
+\section{例と残された次元論}
+\begin{example}
+$M=S$ の場合，単項式基底を数えると
+$H_S(d)={d+n-1\choose n-1}$（$d\ge0$）である．
+さらに $S/(x_n)$ のHilbert級数は $(1-t)^{-(n-1)}$ である．
+\end{example}
+\begin{remark}
+ここまでではHilbert--Serreの定理から多項式性を示した．
+後続の節でNoether正規化，多項式環のKrull次元および
+Hilbert多項式の増大次数と次元の対応を証明する．
+\end{remark}
+
+
+\section{Noether正規化と多項式環の次元}
+\begin{lemma}[Noether正規化の初等形]\label{lem:nn}
+$B$ を体 $k$ 上有限生成の整域とする．このときある代数的独立な
+$y_1,\ldots,y_d\in B$ が存在し，$B$ は $k[y_1,\ldots,y_d]$ 上有限生成加群となる．
+さらに $d=\operatorname{trdeg}_k\operatorname{Frac}(B)$ である．
+\end{lemma}
+\begin{proof}
+$B=k[z_1,\ldots,z_m]$ と書き，$m$ に関する帰納法を用いる．
+$z_1,\ldots,z_m$ が代数的独立なら主張は明らかである．
+そうでなければ，零でない多項式 $F\in k[T_1,\ldots,T_m]$ で
+$F(z_1,\ldots,z_m)=0$ となるものを取る．
+$F$ に現れる各単項式の指数がすべて $D$ 以下となる $D$ を選び，
+$N_i=(D+1)^i$（$1\le i<m$）と置く．
+$y_i=z_i-z_m^{N_i}$ とすれば，形式的多項式
+\[
+ F(Y_1+T^{N_1},\ldots,Y_{m-1}+T^{N_{m-1}},T)
+\]
+の $T$ に関する最高次項の係数は $k$ の非零元である．
+実際，$F$ の相異なる単項式に対応する
+$T$ の最高指数 $\alpha_m+\sum_{i<m}N_i\alpha_i$ は，
+$D+1$ 進表示の一意性によって相異なる．
+従って $z_m$ は $k[y_1,\ldots,y_{m-1}]$ 上整であり，
+$B$ は $k[y_1,\ldots,y_{m-1}]$ 上有限加群となる．
+$k[y_1,\ldots,y_{m-1}]$ は高々 $m-1$ 個の元で生成される整域だから，
+帰納法により $k[u_1,\ldots,u_d]$ 上有限である．
+有限加群拡大の推移性から $B$ も有限となる．
+整拡大は分数体の代数拡大を与えるため，
+$\operatorname{trdeg}_k\operatorname{Frac}(B)=d$ である．
+\end{proof}
+\begin{lemma}[素イデアルによる超越次数の減少]\label{lem:trdrop}
+$B$ を有限生成の $k$-整域，$0\ne\mathfrak q$ をその素イデアルとする．
+このとき
+\[
+ \operatorname{trdeg}_k\operatorname{Frac}(B/\mathfrak q)
+ <\operatorname{trdeg}_k\operatorname{Frac}(B).
+\]
+\end{lemma}
+\begin{proof}
+前補題の正規化 $A=k[y_1,\ldots,y_d]\subset B$ を取る．
+$0\ne b\in\mathfrak q$ を選ぶ．$b$ の $A$ 上のモニック整方程式のうち
+次数最小のものを $b^r+a_{r-1}b^{r-1}+\cdots+a_0=0$ とする．
+$B$ は整域で $b\ne0$ だから $a_0\ne0$ である
+（$a_0=0$ なら $b$ を約してより低次のモニック整方程式を得る）．
+他方 $a_0=-b(b^{r-1}+\cdots+a_1)\in\mathfrak q\cap A$．
+従って $\mathfrak q\cap A\ne0$ であり，
+$A/(\mathfrak q\cap A)$ では $y_1,\ldots,y_d$ の間に
+零でない多項式関係がある．これよりその超越次数は $d$ 未満である．
+$B/\mathfrak q$ は $A/(\mathfrak q\cap A)$ 上整なので，
+両者の分数体の超越次数は等しい．
+\end{proof}
+\begin{theorem}[多項式環のKrull次元]\label{thm:poly_dim}
+任意の体 $k$ と整数 $n\ge0$ に対し
+$\dim k[x_1,\ldots,x_n]=n$ である．
+\end{theorem}
+\begin{proof}
+$S=k[x_1,\ldots,x_n]$ の素イデアル鎖
+$\mathfrak p_0\subsetneq\cdots\subsetneq\mathfrak p_r$ を取る．
+各商 $S/\mathfrak p_i$ は有限生成整域であり，
+$\mathfrak p_{i+1}/\mathfrak p_i$ は非零素イデアルだから，
+補題\ref{lem:trdrop}より各段階で超越次数が少なくとも1減る．
+初項の超越次数は高々 $n$，最終項のそれは非負なので $r\le n$．
+逆に
+\[
+ (0)\subsetneq(x_1)\subsetneq(x_1,x_2)
+ \subsetneq\cdots\subsetneq(x_1,\ldots,x_n)
+\]
+は長さ $n$ の素イデアル鎖である．
+各商が多項式環または体であり整域だからである．
+\end{proof}
+\begin{remark}
+Hilbert多項式の次数と射影的次元の一般的対応には，
+斉次加群の次元論をさらに要する．ここではそれを
+Noether正規化の証明と混同しない．
+\end{remark}
+\section{正則列によるHilbert多項式の計算}
+\begin{theorem}[斉次正則列の場合]
+$S=k[x_1,\ldots,x_n]$，$f_1,\ldots,f_r$ を正次数 $d_i$ の斉次正則列とし，
+$0\le r<n$ とする．$A=S/(f_1,\ldots,f_r)$ のHilbert級数は
+\[
+ \operatorname{Hilb}_A(t)
+ =\frac{\prod_{i=1}^r(1-t^{d_i})}{(1-t)^n}
+\]
+であり，そのHilbert多項式の次数はちょうど $n-r-1$，
+最高次係数は $\prod_i d_i/(n-r-1)!$ である．
+\end{theorem}
+\begin{proof}
+$A_i=S/(f_1,\ldots,f_i)$ と置く．
+正則列の定義から $f_i$ は $A_{i-1}$ 上零因子でないので
+\[
+ 0\to A_{i-1}(-d_i)\xrightarrow{\cdot f_i}A_{i-1}
+ \to A_i\to0
+\]
+が次数を保つ短完全列になる．
+Hilbert級数の加法性とシフトの公式から
+$\operatorname{Hilb}_{A_i}(t)=(1-t^{d_i})
+\operatorname{Hilb}_{A_{i-1}}(t)$．
+$\operatorname{Hilb}_S=(1-t)^{-n}$ から積公式を得る．
+$1-t^{d_i}=(1-t)(1+t+\cdots+t^{d_i-1})$ を用いると
+$\operatorname{Hilb}_A(t)=Q(t)/(1-t)^{n-r}$，
+$Q(1)=\prod_i d_i>0$ である．
+$Q(t)=\sum_j q_jt^j$ と書いて係数を比較すると，十分大きい整数 $m$ で
+$H_A(m)=\sum_j q_j{m-j+n-r-1\choose n-r-1}$ となる．
+その最高次係数は $Q(1)/(n-r-1)!$ で正である．
+よって次数も正確に $n-r-1$ となる．
+\end{proof}
+
+\section{Hilbert関数とKrull次元の対応}
+以下では標準次数付き環 $S=k[x_1,\ldots,x_n]$ と，
+非零の有限生成次数付き $S$-加群 $M$ を扱う．
+$M$ の有限次元斉次成分の累積次元を
+$H_M^{\le}(p)=\sum_{j\le p}\dim_kM_j$ と書く．
+\begin{lemma}[斉次Noether正規化]
+$k$ を無限体，$B=S/\mathfrak p$ を斉次素イデアルによる
+標準次数付き整域とする．ある一次斉次元
+$y_1,\ldots,y_d\in B$ が存在して，それらは代数的独立であり，
+$B$ は $k[y_1,\ldots,y_d]$ 上有限加群となる．
+\end{lemma}
+\begin{proof}
+$B=k[z_1,\ldots,z_m]$ を一次斉次元で生成された整域として，
+$m$ に関する帰納法を用いる．$z_i$ が代数的独立なら明らかである．
+そうでなければ，$z_i$ の斉次多項式関係
+$0\ne F(z_1,\ldots,z_m)=0$ を取る．これは一般の関係の
+斉次成分のうち零でないものを取れば得られる．
+$F$ の次数を $D$ とする．無限体上の非零多項式
+$F(T_1,\ldots,T_{m-1},1)$ はある
+$(a_1,\ldots,a_{m-1})\in k^{m-1}$ で非零となる．
+$y_i=z_i-a_i z_m$ と置くと
+$F(y_1+a_1z_m,\ldots,y_{m-1}+a_{m-1}z_m,z_m)=0$
+は $z_m$ の最高次係数が
+$F(a_1,\ldots,a_{m-1},1)\in k^*$ の整方程式である．
+従って $z_m$ は $k[y_1,\ldots,y_{m-1}]$ 上整で，
+$B$ はこの部分環上有限加群である．
+一次元 $y_i$ で生成される部分環に帰納法を用いれば，
+$B$ は最終的に代数的独立な一次斉次元からなる
+多項式環上有限加群となる．
+\end{proof}
+\begin{lemma}[整拡大による次元の保存]
+$A\subset B$ を単位元を保つ整拡大とする．このとき
+$\dim A=\dim B$ である．
+\end{lemma}
+\begin{proof}
+まず $\mathfrak q\subset A$ に対して，$B_{A\setminus\mathfrak q}$ は
+$A_{\mathfrak q}$ 上整である．その極大イデアルの縮約は
+$A_{\mathfrak q}$ の極大イデアルとなる．実際，整拡大された
+整域 $R\subset K$ で $K$ が体なら $R$ も体である：
+$0\ne r\in R$ の逆元 $r^{-1}\in K$ の整方程式に
+$r^{m-1}$ を掛けて変形すれば $r^{-1}\in R$ となる．
+従って $B$ には $\mathfrak q$ の上の素イデアルが存在する（lying-over）．
+$\mathfrak p_0\subsetneq\cdots\subsetneq\mathfrak p_r$ を
+$A$ の素イデアル鎖とし，$B$ の $\mathfrak p_0$ 上の素イデアル
+$\mathfrak P_0$ を取る．$B/\mathfrak P_0$ は
+$A/\mathfrak p_0$ 上整だから，上の存在論法を
+$\mathfrak p_1/\mathfrak p_0$ に適用すると
+$\mathfrak P_1\supset\mathfrak P_0$ を取れる．
+同様に続けて，長さ $r$ の素イデアル鎖を $B$ に持ち上げる
+（going-up）．従って $\dim B\ge\dim A$．
+逆向きには，整拡大で包含する二つの相異なる素イデアルの
+縮約は相異なること（incomparability）を用いる．
+実際，$\mathfrak P\subset\mathfrak Q$ が同じ
+$\mathfrak p$ に縮約すると仮定し，$A\setminus\mathfrak p$ で局所化し，
+さらに $\mathfrak P$ で割る．すると体
+$\operatorname{Frac}(A/\mathfrak p)$ 上整な整域の中に，
+零イデアルより真に大きな素イデアルが残ることになる．
+しかし体上整な整域は体であるから，これは不可能である．
+従って素イデアル鎖を縮約しても長さは短くならず，
+$\dim B\le\dim A$．
+\end{proof}
+\begin{theorem}[累積Hilbert多項式の次数と次元]
+$M\ne0$ を有限生成次数付き $S$-加群とする．
+$H_M^{\le}(p)$ は十分大きい整数 $p$ で有理係数多項式と一致し，
+その次数は $\dim\operatorname{Supp}_S(M)$ に等しい．
+\end{theorem}
+\begin{proof}
+前半はHilbert--Serreの定理を次数について累積すれば従う．
+後半はまず $k$ が無限体の場合を考える．
+有限生成次数付き加群 $M$ には，斉次部分加群の有限列
+$0=M_0\subsetneq\cdots\subsetneq M_r=M$ で，
+各商がある斉次素イデアル $\mathfrak p_i$ による
+$S/\mathfrak p_i$ の次数シフトと同型となるものが存在する．
+その構成を述べる．非零斉次元 $v$ の消滅イデアルのうち
+包含極大なものを選ぶと，それは素イデアルである．
+実際，斉次元 $a,b$ に対し $abv=0$，$av\ne0$ なら
+$\operatorname{Ann}(av)\supsetneq\operatorname{Ann}(v)$ と矛盾する．
+一般元への素性は斉次分解で従う．
+従って巡回斉次部分加群 $Sv$ は素イデアル商のシフトである．
+これを商加群に繰り返すと，Noether性によって有限回で停止する．
+
+よって短完全列に関する累積次元の加法性から，
+$H_M^{\le}$ の多項式の次数は
+$S/\mathfrak p_i$ の累積次元多項式の次数の最大値に等しい．
+最高次係数は非零加群に対して正なので，異なる商の和に
+最高次項の相殺は生じない．
+そこで $B=S/\mathfrak p$ を考える．
+斉次Noether正規化により
+$A=k[y_1,\ldots,y_d]\subset B$ は一次斉次元からなる
+多項式環で，$B$ は $A$ 上有限加群である．
+$B$ の有限個の斉次 $A$-生成元の次数を $c_j$ とすれば
+\[
+ \dim_k A_{\le p}\le\dim_kB_{\le p}
+ \le\sum_j\dim_k A_{\le p-c_j}.
+\]
+$\dim_kA_{\le p}={p+d\choose d}$ は $p$ の $d$ 次多項式なので，
+$B$ の累積Hilbert多項式の次数はちょうど $d$ である．
+整拡大による次元保存から $d=\dim B$ が従う．
+また素イデアルによる有限フィルトレーションから
+$\dim\operatorname{Supp}_S(M)=\max_i\dim(S/\mathfrak p_i)$
+が従うので結論を得る．
+
+$k$ が有限体の場合は無限拡大体 $K=k(t)$ に基礎体を延長する．
+各斉次成分の次元は変わらない．また $B=S/\mathfrak p$ を整域とすると，
+$K\otimes_kB$ は $B[t]$ を $k[t]\setminus\{0\}$ で局所化した整域である．
+その分数体は $\operatorname{Frac}(B)(t)$ であり，
+$\operatorname{trdeg}_{k(t)}\operatorname{Frac}(B)(t)
+=\operatorname{trdeg}_k\operatorname{Frac}(B)$ が成り立つ．
+前に証明したNoether正規化と整拡大による次元保存から，
+有限生成整域のKrull次元はこの超越次数に等しい．
+従って $\dim(K\otimes_kB)=\dim B$ である．
+この等式を上の素イデアル商のフィルトレーションに適用して，
+$K$ 上で示したHilbert関数の次数と台の次元の等式を $k$ に戻す．
+\end{proof}
+
+\section{射影超曲面のHilbert多項式と次数}
+\begin{theorem}[一つの斉次方程式で定まる超曲面]
+$S=k[x_0,\ldots,x_n]$ を標準次数付き多項式環とし，
+$0\ne f\in S$ を次数 $d\ge1$ の斉次多項式とする．
+$R=S/(f)$ のHilbert級数は
+\[
+ H_R(t)=\frac{1-t^d}{(1-t)^{n+1}}
+\]
+である．$n\ge2$ の場合，十分大きい整数 $m$ について
+\[
+ \dim_k R_m={m+n\choose n}-{m-d+n\choose n}
+\]
+となる．右辺は $m$ の次数 $n-1$ の多項式で，
+最高次係数は $d/(n-1)!$ である．
+従って射影空間 $\mathbb P^n$ 内の超曲面
+$\operatorname{Proj}R$ の次元は $n-1$，次数は $d$ となる．
+\end{theorem}
+\begin{proof}
+$S$ は整域なので，$f$ の乗法は単射である．
+次数をそろえた次数付き加群の完全列
+\[
+ 0\longrightarrow S(-d)
+ \xrightarrow{\ \cdot f\ }S\longrightarrow R\longrightarrow0
+\]
+を得る．各次数の次元を加減すると
+$H_R(t)=H_S(t)-t^dH_S(t)$ となる．
+$S_m$ の単項式基底を数えると
+$\dim_k S_m={m+n\choose n}$，従って
+$H_S(t)=(1-t)^{-(n+1)}$ だから表示式を得る．
+$m\ge d$ では
+$\dim_k R_m=\dim_k S_m-\dim_k S_{m-d}$ により二項係数の式を得る．
+ここで $\binom{m+n}{n}$ は最高次係数 $1/n!$ の
+次数 $n$ の多項式で，その $d$ だけ平行移動した差は
+最高次係数 $d/(n-1)!$ の次数 $n-1$ の多項式となる．
+射影スキームの次元がHilbert多項式の次数，
+次数がその最高次係数の $(n-1)!$ 倍で定義されるという
+標準的定義に従えば結論を得る．
+\end{proof}
+\begin{remark}
+これは斉次イデアルが一つの非零方程式で生成される場合の厳密な公式である．
+任意の射影多様体の次数の交点理論的な意味には別の証明が必要となる．
+\end{remark}
+
+
+\section{Hilbert--Samuel函数とその最終多項式性}
+本稿はNoether局所環のHilbert--Samuel函数が，十分大きい整数上で
+多項式になることを証明する．出発点は次数付き加群の
+Hilbert--Serre型の有理型表示である．
+
+用いる既習事項は，Noether環上の有限生成加群の部分加群も
+有限生成であること，Hilbertの基底定理，有限長加群の
+Jordan--H\"older長の加法性である．
+これらから先の生成函数計算と多項式性は本稿で証明する．
+
+\begin{definition}[次数付き加群]
+$R$を可換Artin環とし，
+$S=R[T_1,\ldots,T_r]$に$\deg T_i=1$を入れる．
+$S$上の\emph{非負次数付き加群}とは
+$N=\bigoplus_{n\ge0}N_n$で，
+$S_iN_j\subset N_{i+j}$を満たすものをいう．
+各$N_n$の$R$-加群としての長さを$\ell_R(N_n)$とする．
+\end{definition}
+
+\begin{lemma}[各次数の有限長性]\label{hsam:lem:length}
+$N$が$S$上有限生成の非負次数付き加群なら，
+各$N_n$は有限長$R$-加群である．
+\end{lemma}
+\begin{proof}
+$N$の有限個の斉次生成元$v_1,\ldots,v_m$を取れる．
+実際，任意の有限生成元を斉次成分の有限和に分解し，
+それらの全斉次成分を生成元に選べばよい．
+$n$を固定すると，$N_n$は各$v_i$に乗じる
+次数$n-\deg v_i$の単項式の像で$R$上生成される．
+該当する単項式は有限個であるから$N_n$は
+有限生成$R$-加群である．$R$はArtin環なので
+有限生成$R$-加群は有限長となる．
+\end{proof}
+
+\begin{definition}[Hilbert級数]
+上の$N$のHilbert級数を形式的冪級数
+\[
+ H_N(z)=\sum_{n\ge0}\ell_R(N_n)z^n\in\mathbb Z[[z]]
+\]
+で定める．
+\end{definition}
+
+\section{Hilbert--Serre型の有理型表示}
+\begin{lemma}[長さの完全列公式]\label{hsam:lem:exact}
+各次数が有限長の次数付き加群について，斉次写像による
+次数0の完全列
+\[
+ 0\longrightarrow A\longrightarrow B\longrightarrow C
+ \longrightarrow0
+\]
+があれば$H_B(z)=H_A(z)+H_C(z)$である．
+また$N(-1)_n=N_{n-1}$（$n\ge1$），$N(-1)_0=0$
+と置けば$H_{N(-1)}(z)=zH_N(z)$である．
+\end{lemma}
+\begin{proof}
+完全列の各次数$n$の部分は
+$0\to A_n\to B_n\to C_n\to0$であり，
+長さの加法性から$\ell(B_n)=\ell(A_n)+\ell(C_n)$を得る．
+これを全$n$について足し合わせれば級数の等式となる．
+次数ずらしの公式は添字の置き換えによる．
+\end{proof}
+
+\begin{theorem}[Hilbert--Serreの有理型定理]\label{hsam:thm:HS}
+$R$を可換Artin環，$S=R[T_1,\ldots,T_r]$とし，
+$N$を有限生成の非負次数付き$S$-加群とする．
+このときHilbert級数は有理型であり，ある整数係数多項式
+$P(z)\in\mathbb Z[z]$を用いて
+\[
+ H_N(z)=\frac{P(z)}{(1-z)^r}
+\]
+が形式的冪級数として成立する．$r=0$では$H_N$は多項式である．
+\end{theorem}
+\begin{proof}
+$r$について帰納法を行う．$r=0$なら$S=R$は
+次数0の環で，有限個の斉次生成元の次数より大きい$n$では
+$N_n=0$となる．従って$H_N$は多項式である．
+
+$r\ge1$とし，$T_r$の乗法による次数0の写像
+$N(-1)\xrightarrow{T_r}N$を考える．
+$K=\{x\in N:T_rx=0\}$，$Q=N/T_rN$と置くと
+\[
+ 0\longrightarrow K(-1)\longrightarrow N(-1)
+ \xrightarrow{T_r}N\longrightarrow Q\longrightarrow0
+\]
+は完全である．
+$S$はNoether環なので$K$と$Q$は有限生成次数付き加群である．
+しかも$T_rK=T_rQ=0$だから，
+両者は$R[T_1,\ldots,T_{r-1}]$上の有限生成次数付き加群となる．
+帰納法の仮定から
+\[
+ H_K(z)=\frac{P_K(z)}{(1-z)^{r-1}},\qquad
+ H_Q(z)=\frac{P_Q(z)}{(1-z)^{r-1}}
+\]
+なる整数係数多項式が存在する．
+補題\ref{hsam:lem:exact}と上の完全列から
+\[
+ (1-z)H_N(z)=H_Q(z)-zH_K(z)
+\]
+となるため，
+\[
+ H_N(z)=\frac{P_Q(z)-zP_K(z)}{(1-z)^r}
+\]
+を得る．これで帰納法が完了する．
+\end{proof}
+
+\begin{corollary}[Hilbert函数の最終多項式性]\label{hsam:cor:eventual}
+定理\ref{hsam:thm:HS}の仮定のもとで，
+$r\ge1$なら整数$n$についての有理係数多項式
+$p_N(n)\in\mathbb Q[n]$が存在し，十分大きい$n$に対して
+$\ell_R(N_n)=p_N(n)$が成立する．
+その次数は高々$r-1$である（零多項式も許す）．
+$r=0$なら$N_n=0$が十分大きい$n$で成立する．
+\end{corollary}
+\begin{proof}
+$P(z)=\sum_{j=0}^m a_jz^j$と書き，
+\[
+ \frac1{(1-z)^r}
+ =\sum_{n\ge0}\binom{n+r-1}{r-1}z^n
+\]
+という形式的冪級数の二項展開を使う．
+$n\ge m$では係数比較により
+\[
+ \ell_R(N_n)=\sum_{j=0}^m
+ a_j\binom{n-j+r-1}{r-1}
+\]
+であり，右辺は$n$の有理係数多項式で次数高々$r-1$である．
+$r=0$は定理\ref{hsam:thm:HS}の最初の場合に従う．
+\end{proof}
+
+\section{Noether局所環と随伴次数環}
+$A$を可換Noether局所環，$\mathfrak m$をその極大イデアルとする．
+$M$を有限生成$A$-加群，$I\subset A$を$\mathfrak m$-一次イデアル
+（$\sqrt I=\mathfrak m$）とする．
+
+\begin{lemma}[Artin商と有限長性]\label{hsam:lem:artin}
+ある$N\ge1$について$\mathfrak m^N\subset I$となる．
+$A/I$はArtin環であり，任意の有限生成$A/I$-加群は
+$A$-加群として有限長である．
+\end{lemma}
+\begin{proof}
+$\mathfrak m=(x_1,\ldots,x_q)$と有限生成できる．
+$\sqrt I=\mathfrak m$だから各$j$について
+$x_j^{e_j}\in I$となる自然数$e_j$が存在する．
+$N=1+\sum_j(e_j-1)$と置くと，次数$N$の任意の
+生成単項式$x_1^{a_1}\cdots x_q^{a_q}$では
+ある$j$について$a_j\ge e_j$である．よって
+$\mathfrak m^N\subset I$を得る．
+
+$A/\mathfrak m^N$は
+\[
+ A/\mathfrak m^N\supset\mathfrak m/\mathfrak m^N
+ \supset\cdots\supset\mathfrak m^{N-1}/\mathfrak m^N
+ \supset0
+\]
+という有限濾過を持ち，各商
+$\mathfrak m^j/\mathfrak m^{j+1}$は
+剰余体$k=A/\mathfrak m$上有限次元である．
+実際，$\mathfrak m^j$は有限生成で，商は$\mathfrak m$に
+消されるからである．従って$A/\mathfrak m^N$は
+有限長であり，その商$A/I$も有限長である．
+有限長環はArtin環である．その上の有限生成加群は
+有限個の有限長環の直和の商なので有限長となる．
+\end{proof}
+
+\begin{definition}[随伴次数環と加群]
+\[
+ \operatorname{gr}_I(A)=\bigoplus_{n\ge0}I^n/I^{n+1},
+ \qquad
+ \operatorname{gr}_I(M)=\bigoplus_{n\ge0}I^nM/I^{n+1}M
+\]
+と定める．乗法および加群作用は代表元の積で定める．
+各次数$n$の部分は$I$に消されるため$A/I$上の加群である．
+\end{definition}
+
+\begin{lemma}[随伴次数加群の有限生成性]\label{hsam:lem:gr}
+$I=(a_1,\ldots,a_r)$とすると，
+$\operatorname{gr}_I(M)$は
+$(A/I)[T_1,\ldots,T_r]$上の有限生成次数付き加群である．
+ただし$T_i$は$a_i\bmod I^2$の作用に対応する．
+\end{lemma}
+\begin{proof}
+$\operatorname{gr}_I(A)$は$A/I$と
+$a_1+I^2,\ldots,a_r+I^2$によって次数付き環として生成される．
+これは$I^n$が長さ$n$の$a_i$の積の$A$-線形結合で
+生成されることから従う．従って次数付き全射
+\[
+ (A/I)[T_1,\ldots,T_r]\longrightarrow
+ \operatorname{gr}_I(A)
+\]
+がある．$M$の有限生成元$m_1,\ldots,m_q$を選べば，
+$\operatorname{gr}_I(M)$はその次数0の像によって
+$\operatorname{gr}_I(A)$上生成される．
+よって上の多項式環上でも有限生成である．
+\end{proof}
+
+\section{Hilbert--Samuel多項式の存在}
+\begin{theorem}[Hilbert--Samuel多項式]\label{hsam:thm:HSamuel}
+$A$をNoether局所環，$M$を有限生成$A$-加群，
+$I=(a_1,\ldots,a_r)$を$\mathfrak m$-一次イデアルとする．
+このときある有理係数多項式$Q_{I,M}(n)$が存在して，
+十分大きい$n$に対して
+\[
+ \ell_A(M/I^{n+1}M)=Q_{I,M}(n)
+\]
+となる．その次数は高々$r$である．
+\end{theorem}
+\begin{proof}
+補題\ref{hsam:lem:artin}と補題\ref{hsam:lem:gr}により，
+$G=\operatorname{gr}_I(M)$はArtin環$R=A/I$上の
+$r$変数多項式環の有限生成次数付き加群である．
+各$G_n=I^nM/I^{n+1}M$は有限長であり，
+$A$-加群としての長さと$R$-加群としての長さは一致する．
+定理\ref{hsam:thm:HS}を適用すると
+\[
+ \sum_{n\ge0}\ell_A(I^nM/I^{n+1}M)z^n
+ =\frac{P(z)}{(1-z)^r}
+\]
+なる$P(z)\in\mathbb Z[z]$が存在する．
+
+短完全列と長さの加法性を繰り返すことで
+\[
+ \ell_A(M/I^{n+1}M)
+  =\sum_{j=0}^n\ell_A(I^jM/I^{j+1}M)
+\]
+を得る．したがって形式的冪級数として
+\[
+ \sum_{n\ge0}\ell_A(M/I^{n+1}M)z^n
+ =\frac{1}{1-z}\frac{P(z)}{(1-z)^r}
+ =\frac{P(z)}{(1-z)^{r+1}}.
+\]
+$r\ge1$なら系\ref{hsam:cor:eventual}を
+$r+1$変数の場合の係数展開として用いれば，
+係数は十分大きい$n$で次数高々$r$の多項式となる．
+$r=0$なら$I=0$であり，$\sqrt I=\mathfrak m$ゆえ
+$A$はArtin局所環で，$\ell_A(M)<\infty$である．
+そのとき左辺は定数$\ell_A(M)$であるから結論は成立する．
+\end{proof}
+
+\begin{example}[正則局所環の最も基本的な場合]
+$A=k[[x_1,\ldots,x_r]]$，$\mathfrak m=(x_1,\ldots,x_r)$，
+$M=A$とする．次数が$n$以下の単項式の個数を数えると
+\[
+ \ell_A(A/\mathfrak m^{n+1})
+   =\binom{n+r}{r}.
+\]
+特にこの場合のHilbert--Samuel多項式の次数は$r$に等しい．
+この等式は形式的冪級数の単項式基底から従い，
+一般の局所環におけるKrull次元との一致を証明するものではない．
+\end{example}
+
+\section{本稿の到達範囲}
+\begin{remark}
+本稿はHilbert--Samuel函数の最終多項式性と
+次数の生成元数による上界を証明した．
+さらに強い主張
+\[
+ \deg Q_{I,M}=\dim_A M
+\]
+（適切な非零加群と次元の規約の下で成立する）には，
+局所環の次元論やHilbert--Samuel重複度の理論が必要である．
+この同一性を本稿の結論として暗黙に使用しない．
+\end{remark}
+
+
+
+\section{Artin--Rees補題とKrullの交叉定理（証明補遺）}
+可換Noether環$A$，イデアル$I\subset A$，有限生成$A$-加群$M$，
+部分加群$N\subset M$を考える．本稿の目標は
+$N\cap I^nM$と$I^nN$を比較するArtin--Rees補題を証明し，
+Krullの交叉定理を導くことである．
+使用する既習事項は，Hilbertの基底定理，Noether加群の
+部分加群の有限生成性，有限生成加群の線形代数である．
+
+\begin{definition}[Rees環とRees加群]
+不定元$t$に対し
+\[
+ \mathcal R_I(A)=\bigoplus_{n\ge0}I^nt^n\subset A[t],
+ \qquad
+ \mathcal R_I(M)=\bigoplus_{n\ge0}I^nMt^n
+\]
+と定める．$I^0=A$とし，$\mathcal R_I(M)$には
+$\mathcal R_I(A)$から自然な次数付き加群構造を入れる．
+\end{definition}
+
+\begin{lemma}[Rees環のNoether性]\label{ar:lem:rees}
+$A$をNoether環，$I=(a_1,\ldots,a_r)$とすると
+\[
+ \mathcal R_I(A)=A[a_1t,\ldots,a_rt]
+\]
+であり，特に$\mathcal R_I(A)$はNoether環である．
+$M$が有限生成なら$\mathcal R_I(M)$は
+$\mathcal R_I(A)$上有限生成加群となる．
+\end{lemma}
+\begin{proof}
+$I^n$は$a_{i_1}\cdots a_{i_n}$で$A$上生成される．
+従って$\mathcal R_I(A)$の次数$n$部分は
+$A[a_1t,\ldots,a_rt]$の次数$n$部分に一致し，
+環として等しい．これはNoether環$A$上の多項式環
+$A[X_1,\ldots,X_r]$の商であるからHilbertの基底定理により
+Noether環である．
+$M=(m_1,\ldots,m_q)$なら任意の$I^nM$の元は
+$\sum_j b_jm_j$（$b_j\in I^n$）と書けるので，
+$\mathcal R_I(M)$は次数0の$m_1,\ldots,m_q$で生成される．
+\end{proof}
+
+\section{Artin--Rees補題}
+\begin{theorem}[Artin--Rees補題]\label{ar:thm:AR}
+$A$を可換Noether環，$M$を有限生成$A$-加群，
+$N\subset M$を部分加群，$I\subset A$をイデアルとする．
+ある非負整数$k$が存在して，任意の$n\ge k$に対し
+\[
+ I^nM\cap N=I^{n-k}(I^kM\cap N)
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+Rees加群の次数付き部分加群
+\[
+ \mathcal N=\bigoplus_{n\ge0}(I^nM\cap N)t^n
+ \subset\mathcal R_I(M)
+\]
+を考える．$a\in I^p$，$v\in I^nM\cap N$なら
+$av\in I^{n+p}M\cap N$であるから，
+確かに$\mathcal N$は$\mathcal R_I(A)$上の部分加群である．
+補題\ref{ar:lem:rees}とNoether性により
+$\mathcal N$は有限生成である．
+生成元を各斉次成分に分解すれば，有限個の斉次生成元
+$g_jt^{d_j}$（$g_j\in I^{d_j}M\cap N$）を取れる．
+$k=\max_jd_j$とする（$\mathcal N=0$なら$k=0$でよい）．
+
+$n\ge k$とし，$v\in I^nM\cap N$を取る．
+$\mathcal N$が斉次生成元で生成されるので
+\[
+ v=\sum_j c_jg_j,\qquad c_j\in I^{n-d_j}
+\]
+と表される．各係数を
+$c_j\in I^{n-k}I^{k-d_j}$と見れば
+\[
+ c_jg_j\in I^{n-k}\bigl(I^{k-d_j}g_j\bigr),\qquad
+ I^{k-d_j}g_j\subset I^kM\cap N.
+\]
+従って
+$ I^nM\cap N\subset I^{n-k}(I^kM\cap N)$
+を得る．逆向きは
+$ I^{n-k}I^kM\subset I^nM$と
+$ I^{n-k}N\subset N$から明らかである．
+\end{proof}
+
+\begin{corollary}[誘導位相と$I$進位相の同値]\label{ar:cor:topology}
+定理\ref{ar:thm:AR}の仮定のもとで，$N$上の二つのフィルトレーション
+$\{I^nN\}$および$\{I^nM\cap N\}$は互いに共終である．
+具体的に
+\[
+ I^nN\subset I^nM\cap N
+\]
+が全$n$について成立し，ある$k$について全$n\ge k$で
+\[
+ I^nM\cap N\subset I^{n-k}N
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+最初の包含は自明である．後者は
+定理\ref{ar:thm:AR}の等式と
+$I^kM\cap N\subset N$から従う．
+これにより，任意の$n$に対して十分大きい$m$を取れば
+$I^mM\cap N\subset I^nN$となり，二つの位相は一致する．
+\end{proof}
+
+\section{Nakayamaの補題とKrullの交叉定理}
+$J(A)$を$A$のJacobson根基（全極大イデアルの共通部分）とする．
+
+\begin{lemma}[Nakayamaの補題]\label{ar:lem:nakayama}
+$A$を単位的可換環，$I\subset J(A)$をイデアル，
+$N$を有限生成$A$-加群とする．
+$N=IN$なら$N=0$である．
+\end{lemma}
+\begin{proof}
+$N$の生成元$x_1,\ldots,x_q$を取る．
+$N=IN$より
+$x_i=\sum_{j=1}^q a_{ij}x_j$（$a_{ij}\in I$）と書ける．
+列ベクトル$x=(x_1,\ldots,x_q)^T$を用いれば
+$(I_q-B)x=0$で，$B=(a_{ij})$である．
+余因子行列を左から掛けると
+$\det(I_q-B)x=0$となる．
+$\det(I_q-B)\equiv1\pmod I$だから
+$\det(I_q-B)\in1+I$である．
+$I\subset J(A)$なら任意の$1+a$（$a\in I$）は単元である．
+実際，非単元ならそれを含む極大イデアルが存在し，
+その極大イデアルは$a$も含むので$1$を含む矛盾となる．
+従って$\det(I_q-B)$は単元であり，$x_i=0$が全$i$で従う．
+\end{proof}
+
+\begin{theorem}[Krullの交叉定理]\label{ar:thm:krull}
+$A$を可換Noether環，$I\subset J(A)$をイデアル，
+$M$を有限生成$A$-加群とする．このとき
+\[
+ \bigcap_{n\ge0}I^nM=\{0\}.
+\]
+特に$(A,\mathfrak m)$をNoether局所環とすると
+任意の有限生成$A$-加群$M$に対して
+$\bigcap_{n\ge0}\mathfrak m^nM=0$が成り立つ．
+\end{theorem}
+\begin{proof}
+$x\in\bigcap_{n\ge0}I^nM$を取り，
+$N=Ax\subset M$と置く．$N$は一元生成である．
+定理\ref{ar:thm:AR}によってある$k$が存在し，
+\[
+ I^{k+1}M\cap N=I(I^kM\cap N)\subset IN
+\]
+となる．一方$x\in I^{k+1}M\cap N$だから$x\in IN$である．
+$N=Ax$なので$N=IN$が従う．
+補題\ref{ar:lem:nakayama}を適用すれば$N=0$，特に$x=0$となる．
+\end{proof}
+
+\begin{corollary}[$I$進完備化への単射]\label{ar:cor:injective}
+定理\ref{ar:thm:krull}の仮定のもとで
+\[
+ M\longrightarrow\varprojlim_n M/I^nM,\qquad
+ x\longmapsto(x\bmod I^nM)_n
+\]
+は単射である．
+\end{corollary}
+\begin{proof}
+この準同型の核は$\bigcap_{n\ge0}I^nM$に等しい．
+定理\ref{ar:thm:krull}によって零である．
+\end{proof}
+
+\section{適用範囲の注意}
+\begin{remark}
+$A$がNoether環であることと，
+$I\subset J(A)$であることは異なる仮定である．
+Artin--Rees補題そのものは$I\subset J(A)$を要求しない．
+一方，Krullの交叉定理における後者の仮定を除くと
+$\bigcap_n I^nM=0$は一般に偽となる．
+例えば$A=k\times k$，$I=k\times0$，$M=A$なら
+$I^n=I$（$n\ge1$）で，その共通部分は$I\ne0$である．
+\end{remark}
+
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{商環のHilbert級数を計算する．}
+\begin{proposition}
+$S=k[x,y]$ を標準次数付けし
+$A=S/(x^2)$ とすると
+\[
+H_A(t)=\sum_{n\ge0}\dim_kA_nt^n
+=\frac{1+t}{1-t}
+\]
+である．したがって
+$\dim_kA_0=1$，$\dim_kA_n=2$（$n\ge1$）であり，
+Hilbert多項式は定数2である．
+\end{proposition}
+\begin{proof}
+商環の標準単項式は $x$ の指数が高々1の
+$x^ay^b$（$a\in\{0,1\}$，$b\ge0$）である．
+次数0には1個，次数 $n\ge1$ には
+$y^n,xy^{n-1}$ の2個が存在する．
+従って
+$H_A(t)=1+\sum_{n\ge1}2t^n
+=1+2t/(1-t)=(1+t)/(1-t)$．
+\end{proof}
+\begin{corollary}
+$A$ のKrull次元は1である．
+\end{corollary}
+\begin{proof}
+$A$ の素イデアルは全て冪零元 $x$ を含むから
+$\operatorname{Spec}A$ は
+$\operatorname{Spec}A/(x)\cong\operatorname{Spec}k[y]$
+と同相で，素イデアル鎖の長さは1である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$k[x,y]/(x,y)^2$ の $k$-次元を求めよ．
+\par\noindent\textbf{解答．}
+標準単項式は $1,x,y$ なので次元3である．
+\end{document}

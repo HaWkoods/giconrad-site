@@ -1,0 +1,418 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Gröbner基底}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+本稿の中心課題は，連立多項式方程式の生成イデアルから
+Gr\"obner基底を実際に構成し，解集合と商環の構造を
+求めることである．単項式順序，多項式除法，
+Buchbergerの判定条件を証明した後，
+S多項式の計算，先頭項による簡約，標準単項式の抽出を
+一つの例で最初から最後まで実行する．
+前提は体上の多項式環，イデアル，初等線形代数である．
+
+\section{単項式順序と先頭項}
+$k$ を体とし $S=k[x_1,\ldots,x_n]$ とする．
+単項式全体の全順序 $\prec$ が単項式順序であるとは，
+$1\preceq x^\alpha$，$x^\alpha\prec x^\beta$ なら
+$x^{\alpha+\gamma}\prec x^{\beta+\gamma}$ を満たし，整列順序であることをいう．
+\begin{definition}
+$0\ne f\in S$ の先頭単項式を $\operatorname{LM}(f)$，先頭項を
+$\operatorname{LT}(f)$ とする．イデアル $I$ に対し
+$\operatorname{LT}(I)$ は $\{\operatorname{LT}(f):f\in I\setminus0\}$ で生成されるイデアルである．
+有限集合 $G\subset I$ がGr\"obner基底であるとは
+$\operatorname{LT}(I)=(\operatorname{LT}(g):g\in G)$ を満たすことをいう．
+\end{definition}
+\begin{lemma}[多項式除法]
+$G=(g_1,\ldots,g_s)$ を非零多項式の列とする．
+任意の $f\in S$ は
+\[ f=\sum_{i=1}^s q_i g_i+r \]
+と書ける．ここで $r$ のどの非零項もどの $\operatorname{LM}(g_i)$ でも割り切れず，
+$\operatorname{LT}(q_i g_i)\preceq\operatorname{LT}(f)$（$q_i\ne0$）である．
+\end{lemma}
+\begin{proof}
+$h=f,r=0,q_i=0$ として始める．
+$\operatorname{LM}(h)$ がある $\operatorname{LM}(g_i)$ で割り切れれば，
+先頭項を消す単項式倍の $g_i$ を引き，対応する $q_i$ に加える．
+そうでなければ $h$ の先頭項を $r$ に移し，$h$ から取り除く．
+各段階で非零な $h$ の先頭単項式は真に減少する．
+単項式順序は整列順序なので無限の真の降下列はなく，手続きは停止する．
+操作の各段階で等式が保たれ，結論を得る．
+\end{proof}
+\begin{definition}
+$f,g\ne0$ に対し $m=\operatorname{lcm}(\operatorname{LM}(f),\operatorname{LM}(g))$ と置き
+\[
+ S(f,g)=\frac{m}{\operatorname{LT}(f)}f-
+        \frac{m}{\operatorname{LT}(g)}g
+\]
+を $S$-多項式と呼ぶ．係数込みの商は単項式と定数からなる．
+\end{definition}
+\section{Buchbergerの判定条件}
+\begin{theorem}[Buchberger判定]
+有限集合 $G=\{g_1,\ldots,g_s\}\subset S\setminus\{0\}$ に対し，
+$G$ が $(G)$ のGr\"obner基底であることと，すべての $i<j$ に対する
+$S(g_i,g_j)$ が $G$ による除法で余り $0$ となることは同値である．
+\end{theorem}
+\begin{proof}
+$G$ が基底なら $(G)$ の任意の元の先頭単項式は $G$ の先頭単項式で割り切れ，
+除法の非零余りは再び $(G)$ に属してこの性質に反する．従って余りは零となる．
+逆にすべての $S$-多項式が零に簡約されると仮定する．
+$f\in(G)\setminus\{0\}$ を $f=\sum_i h_i g_i$ と表し，
+$\max_i\operatorname{LM}(h_i g_i)$ を最小化した表示を選ぶ．
+最小値を $m$ とする．もし $\operatorname{LM}(f)\prec m$ なら，
+先頭単項式が $m$ の項の先頭係数の和は零である．
+この先頭項の線形関係は，それらの差
+$h_i g_i$ の先頭単項式倍を組み合わせることで
+$S(g_i,g_j)$ の単項式倍の和に分解できる．
+仮定により各 $S$-多項式は $G$ の元の和で，その各項の先頭単項式は
+対応する $\operatorname{lcm}$ より真に小さい．
+従ってこれらを代入すると最大単項式が $m$ より小さい表示を得て，
+$m$ の最小性に矛盾する．ゆえに $\operatorname{LM}(f)=m$ であり，
+いずれかの $\operatorname{LM}(g_i)$ がそれを割る．これが定義である．
+\end{proof}
+\begin{theorem}[Buchberger算法の停止]
+有限生成イデアル $I=(f_1,\ldots,f_s)$ について，
+非零の $S$-多項式の余りを繰り返し付け加える算法は停止し，
+$I$ の有限Gr\"obner基底を出力する．
+\end{theorem}
+\begin{proof}
+新しい非零余り $r$ の先頭単項式は既存の全先頭単項式のいずれでも割り切れない．
+よって更新する単項式イデアルは真に増大する．
+多項式環のイデアルは昇鎖条件を満たすので，この更新は有限回しか起こらない．
+停止時には全 $S$-多項式の余りが零である．前定理を用いる．
+\end{proof}
+\section{標準単項式}
+\begin{proposition}
+$G$ をイデアル $I$ のGr\"obner基底とする．
+$\operatorname{LT}(I)$ に属さない単項式の剰余類は $S/I$ の $k$-基底である．
+\end{proposition}
+\begin{proof}
+除法によって任意の元の剰余類は標準単項式の線形結合で表される．
+そのような非零線形結合が $I$ に属すれば，その先頭単項式は
+$\operatorname{LT}(I)$ に属するはずであるが，定義に反する．従って一次独立である．
+\end{proof}
+\begin{example}
+$k[x,y]$ の辞書式順序 $x\succ y$ を使う．
+$I=(x-y^2,\,y^3-1)$ は，表示した二元が互いに素な先頭単項式
+$x,y^3$ をもつのでGr\"obner基底である．
+標準単項式は $1,y,y^2$ であり $\dim_k S/I=3$ となる．
+\end{example}
+
+
+\section{正規形と被約Gr"obner基底}
+\begin{theorem}[剰余の一意性]
+$G$ をイデアル $I$ のGr"obner基底とする．
+$G$ による多項式除法の余りは，除法の選択順序によらず一意である．
+\end{theorem}
+\begin{proof}
+$f=\sum q_i g_i+r=\sum q_i'g_i+r'$ を二つの除法表示とする．
+$r-r'\in I$ である．もし $r-r'\ne0$ なら，
+その先頭単項式は $\operatorname{LT}(I)$ に属する．
+他方 $r,r'$ に現れる単項式はいずれも
+$\operatorname{LM}(g_i)$ で割り切れない．
+従ってその差の先頭単項式もいずれの先頭単項式でも割り切れず，矛盾する．
+\end{proof}
+\begin{definition}
+Gr"obner基底 $G$ が被約であるとは，各 $g\in G$ がモニックで，
+互いに異なる $g,h\in G$ に対し $g$ の非零項のいずれも
+$\operatorname{LM}(h)$ で割り切れず，かつ $g$ の先頭項以外の項も
+$\operatorname{LM}(g)$ で割り切れないことをいう．
+\end{definition}
+\begin{theorem}[被約基底の存在と一意性]
+体上の多項式環の任意の非零イデアルは，固定した単項式順序に関して
+ただ一つの有限被約Gr"obner基底を持つ．
+\end{theorem}
+\begin{proof}
+Buchberger算法で有限Gr"obner基底を作る．
+先頭単項式が別の先頭単項式で割り切れる元を除き，
+残る各元をモニックにする．さらに各元の非先頭項を
+他の元で除法して余りに置き換える．
+この操作は先頭単項式を変えず，非先頭項を他の先頭単項式で
+割り切れないものにするため，被約基底を得る．
+一意性を示す．被約基底 $G,H$ の先頭単項式集合は，
+単項式イデアル $\operatorname{LT}(I)$ の包含極小な
+単項式生成集合であり，これは整除関係の最小元全体として一意である．
+同じ先頭単項式を持つ $g\in G,h\in H$ を取ると，
+$g-h\in I$ であり，その各単項式は
+$\operatorname{LT}(I)$ に属さない（両基底の被約性による）．
+ゆえに $g-h=0$．これをすべての先頭単項式に適用する．
+\end{proof}
+\begin{proposition}[互いに素な先頭単項式]
+モニック多項式 $g,h$ の先頭単項式が互いに素なら，
+$S(g,h)$ は $\{g,h\}$ によって零に簡約される．
+\end{proposition}
+\begin{proof}
+$m_g=\operatorname{LM}(g)$，$m_h=\operatorname{LM}(h)$ とし
+$g=m_g+g_1$，$h=m_h+h_1$ と書く．
+$\gcd(m_g,m_h)=1$ だから
+\[
+ S(g,h)=m_hg-m_gh=g_1h-h_1g.
+\]
+右辺の各積の先頭単項式は $m_gm_h$ より小さい．
+先頭項が相殺する場合には，同じ操作で一層小さい項の
+表示へ移れる．単項式順序の整列性によりこの処理は停止し，
+$S(g,h)$ を $g,h$ による先頭項の逐次消去で零にする．
+\end{proof}
+
+\section{Macaulay行列を用いた同時簡約}
+Buchberger算法の一つの実装方法は，複数のS多項式を同時に
+係数行列へ並べ，線形代数で簡約することである．
+\begin{lemma}[次数を制限した多項式の行列表現]
+固定した単項式順序と次数上界 $D$ に対し，
+全次数 $\le D$ の多項式空間を単項式基底で座標化する．
+有限個の多項式 $h_1,\ldots,h_r$ の係数行列に行基本変形を施すと，
+得られる行が表す多項式は
+$\operatorname{span}_k\{h_1,\ldots,h_r\}$ に属し，
+全体の $k$-線形包は保存される．
+また $M={n+D\choose n}$ 個の単項式を用いる稠密係数行列の
+Gauss消去は $O(rM\min(r,M))$ 個程度の体演算で実施できる．
+\end{lemma}
+\begin{proof}
+行に対応する係数ベクトルの線形結合は，
+多項式の同じ係数での線形結合に一致する．
+基本変形は可逆な左からの行列乗法であり，行空間を保存する．
+行列の列は次数 $\le D$ の単項式に一対一に対応し，その個数は
+重複組合せの公式から $M$ である．
+通常のGauss消去において，消去するピボットの個数は
+$\min(r,M)$ 以下で，各ピボットでは高々 $rM$ 個の
+係数更新を行えば足りるから表示した上界を得る．
+\end{proof}
+\begin{theorem}[S多項式の有限バッチ処理]
+単項式順序を固定した $k[x_1,\ldots,x_n]$ の有限生成イデアル $I$ に対し，
+次のバッチ版Buchberger算法は停止し，$I$ のGr\"obner基底を得る．
+初期生成系を $G$ とする．未処理のS多項式から有限個のバッチを選び，
+各S多項式を現時点の $G$ で除算して剰余を求める．
+非零剰余は，追加済みの剰余を含む現在の $G$ に対して改めて除算し，
+零でなければその最終剰余を $G$ に加える．
+新たな多項式が加わるたびに新しい対を未処理リストへ追加する．
+これを未処理の対が無くなるまで繰り返す．
+同一バッチのS多項式の係数行列に行基本変形を適用し，
+同時に線形代数の計算を行っても，
+各元の剰余零判定を省略しない限り，この正当性は失われない．
+\end{theorem}
+\begin{proof}
+除算の各段階で $S=q_1g_1+\cdots+q_rg_r+r$ と書けるため，
+新たに追加される剰余は常に $I$ に属する．
+非零で最終的に追加する剰余 $r$ は現在の $G$ で簡約不能なので，
+その先頭単項式は現在の先頭単項式イデアルに属さない．
+従って新多項式を加えるたびに先頭単項式イデアルは真に増大する．
+多項式環はNoether環なので，このような真の増大は有限回しか起きない．
+S多項式の対は，ある有限個の $G$ の追加後は有限個に限られるため，
+未処理リストも最終的には空になる．
+
+各対の処理で非零剰余が残ればこれを追加するため，
+全ての対を処理し終わった時点では各S多項式の標準簡約形は零である．
+実際，各段階で零へ簡約されたS多項式は
+その標準表示を保持し，新しい基底元を追加しても
+元の表示は有効である．Buchbergerの判定定理を
+標準表示の形に適用すれば最終集合がGr\"obner基底となる．
+係数行列への行基本変形はバッチ内の線形包を保存するだけなので，
+S多項式の有効性を判定する際に上記の剰余確認を省略しなければ
+これらの論理を変更しない．
+\end{proof}
+\begin{remark}
+この定理は，複数のS多項式を同時に行列簡約する実装を正当化する．
+実際のF4算法では必要な単項式倍を事前に追加する
+symbolic preprocessingを行う．F5の署名による冗長性除去や
+両算法の実行時間を本定理だけから保証することはできない．
+\end{remark}
+
+
+\section{Buchberger算法を実行して方程式を解く}
+この節では $k=\mathbb C$ とし，
+$k[x,y]$ の単項式順序を辞書式順序 $x\succ y$ とする．
+\begin{example}[S多項式から三つの解を得る]\label{ex:gb-full}
+\[
+ f_1=x^2-y,\qquad f_2=xy-1,\qquad I=(f_1,f_2)
+\]
+を考える．初期生成系 $\{f_1,f_2\}$ の先頭単項式は
+$x^2,xy$ なので，最小公倍単項式は $x^2y$ である．
+対応するS多項式は
+\[
+ S(f_1,f_2)=yf_1-xf_2=x-y^2=:h.
+\]
+$h$ の先頭単項式は $x$ であり，
+$x^2$ でも $xy$ でも割り切れない．
+従って $h$ を基底へ追加する必要がある．
+次に
+\[
+ S(f_2,h)=f_2-yh=y^3-1=:r
+\]
+となり，その先頭単項式 $y^3$ も新しいものである．
+ここで $G=\{h,r\}$ の先頭単項式は $x,y^3$ であり，
+互いに素なので本稿のBuchberger判定から
+$G$ は $(h,r)$ のGr\"obner基底である．
+
+元のイデアルとの一致を省略せず示す．
+上の表示から $h,r\in I$ だから $(h,r)\subset I$．
+逆に
+\[
+ f_2=yh+r,\qquad
+ f_1=(x+y^2)h+yr
+\]
+が直接計算により成り立つので $I\subset(h,r)$．
+従って $I=(h,r)$ である．
+$h=x-y^2$ と $r=y^3-1$ はモニックで，
+他方の先頭単項式で割り切れる非先頭項を持たないため
+被約Gr\"obner基底にもなっている．
+
+連立方程式 $f_1=f_2=0$ は
+\[
+ x=y^2,\qquad y^3=1
+\]
+に同値だから，$\omega=e^{2\pi i/3}$ と置けば
+解は $(1,1)$，$(\omega^2,\omega)$，
+$(\omega,\omega^2)$ の三点である．
+\end{example}
+
+\begin{proposition}[標準形による商環の構成]\label{prop:gb-quotient}
+例\ref{ex:gb-full}のイデアルに対し
+\[
+ \mathbb C[x,y]/I
+ \cong\mathbb C[y]/(y^3-1)
+\]
+が自然な $\mathbb C$-代数同型として成立し，
+商環の $\mathbb C$-次元は3である．
+また，任意の $F\in\mathbb C[x,y]$ が $I$ に属する
+必要十分条件は，$G=\{x-y^2,y^3-1\}$ による
+除法の余りが零になることである．
+\end{proposition}
+\begin{proof}
+環準同型
+\[
+ \varphi:\mathbb C[x,y]\longrightarrow
+         \mathbb C[y]/(y^3-1),
+ \qquad F(x,y)\longmapsto[F(y^2,y)]
+\]
+は $y$ の像が $[y]$ なので全射である．
+$h,r$ は核に属する．逆に
+$F(y^2,y)\equiv0\pmod{y^3-1}$ なら，
+多項式除法を $x-y^2$ で行えば
+$F(x,y)=(x-y^2)Q(x,y)+F(y^2,y)$ と書けるので，
+最後の項は $y^3-1$ の倍数になる．
+従って $\ker\varphi=(h,r)=I$ である．
+環の準同型定理から同型が従う．
+
+標準単項式は $x$ と $y^3$ で割り切れない
+$1,y,y^2$ の三つなので，次元も3である．
+$G$ はGr\"obner基底だから，任意の多項式の
+除法の余りは $I$ の剰余類の一意な標準表示である．
+従ってその剰余類が零であることと余りが零であることは同値である．
+\end{proof}
+\begin{example}[イデアル所属判定]
+$F=x^2-y$ を $G$ で割ると，
+\[
+ F=(x+y^2)(x-y^2)+y(y^3-1)
+\]
+となるから余りは零であり $F\in I$．
+一方 $F=y^2+1$ はどの項も $x,y^3$ で
+割り切れないので余りは $y^2+1\ne0$ となり，
+$I$ に属さない．
+\end{example}
+\begin{remark}
+連立方程式の解集合が有限個である場合でも，
+一般には商環の次元が解の個数と一致するとは限らない．
+重複度を持つ例では商環の次元に重複が反映される．
+ここでの $y^3-1$ は標数零で重根を持たないため，
+三つの異なる解が現れている．
+\end{remark}
+
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題．}
+$\mathbb C[x,y]$ の辞書式順序 $x\succ y$ と
+$I=(x+y-1,xy-2)$ を考える．
+被約Gr\"obner基底を構成し，
+連立方程式の複素解をすべて求めよ．
+また商環の次元を求めよ．
+
+\medskip\noindent\textbf{解答．}
+$h=x+y-1$ と置く．二つの生成元のS多項式を取ると
+\[
+ S(h,xy-2)=y(x+y-1)-(xy-2)=y^2-y+2=:r.
+\]
+$h,r\in I$ である．また
+\[
+ xy-2=yh-r
+\]
+だから $I=(h,r)$ が従う．
+$h$ と $r$ の先頭単項式は $x,y^2$ で互いに素だから
+$G=\{x+y-1,y^2-y+2\}$ はGr\"obner基底である．
+両元はモニックで互いの非先頭項は相手の
+先頭単項式で割り切れないので被約である．
+$h=0$ から $x=1-y$，
+$r=0$ から
+\[
+ y=\frac{1\pm i\sqrt7}{2},\qquad
+ x=\frac{1\mp i\sqrt7}{2}
+\]
+を得る．標準単項式は $1,y$ なので
+$\dim_{\mathbb C}\mathbb C[x,y]/I=2$ である．
+
+\end{document}

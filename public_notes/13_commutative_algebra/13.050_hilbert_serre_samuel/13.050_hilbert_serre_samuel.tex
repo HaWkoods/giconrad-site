@@ -1,0 +1,381 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Hilbert–SerreとHilbert–Samuel多項式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Artin環，Hilbert級数，局所環と極大イデアル．
+本稿の具体的な到達課題は，Hilbert--Samuel関数を具体的な局所環で計算する．
+
+\section{次数付き加群と長さ}
+本稿はNoether局所環のHilbert--Samuel函数が，十分大きい整数上で
+多項式になることを証明する．出発点は次数付き加群の
+Hilbert--Serre型の有理型表示である．
+
+用いる既習事項は，Noether環上の有限生成加群の部分加群も
+有限生成であること，Hilbertの基底定理，有限長加群の
+Jordan--H\"older長の加法性である．
+これらから先の生成函数計算と多項式性は本稿で証明する．
+
+\begin{definition}[次数付き加群]
+$R$を可換Artin環とし，
+$S=R[T_1,\ldots,T_r]$に$\deg T_i=1$を入れる．
+$S$上の\emph{非負次数付き加群}とは
+$N=\bigoplus_{n\ge0}N_n$で，
+$S_iN_j\subset N_{i+j}$を満たすものをいう．
+各$N_n$の$R$-加群としての長さを$\ell_R(N_n)$とする．
+\end{definition}
+
+\begin{lemma}[各次数の有限長性]\label{lem:length}
+$N$が$S$上有限生成の非負次数付き加群なら，
+各$N_n$は有限長$R$-加群である．
+\end{lemma}
+\begin{proof}
+$N$の有限個の斉次生成元$v_1,\ldots,v_m$を取れる．
+実際，任意の有限生成元を斉次成分の有限和に分解し，
+それらの全斉次成分を生成元に選べばよい．
+$n$を固定すると，$N_n$は各$v_i$に乗じる
+次数$n-\deg v_i$の単項式の像で$R$上生成される．
+該当する単項式は有限個であるから$N_n$は
+有限生成$R$-加群である．$R$はArtin環なので
+有限生成$R$-加群は有限長となる．
+\end{proof}
+
+\begin{definition}[Hilbert級数]
+上の$N$のHilbert級数を形式的冪級数
+\[
+ H_N(z)=\sum_{n\ge0}\ell_R(N_n)z^n\in\mathbb Z[[z]]
+\]
+で定める．
+\end{definition}
+
+\section{Hilbert--Serre型の有理型表示}
+\begin{lemma}[長さの完全列公式]\label{lem:exact}
+各次数が有限長の次数付き加群について，斉次写像による
+次数0の完全列
+\[
+ 0\longrightarrow A\longrightarrow B\longrightarrow C
+ \longrightarrow0
+\]
+があれば$H_B(z)=H_A(z)+H_C(z)$である．
+また$N(-1)_n=N_{n-1}$（$n\ge1$），$N(-1)_0=0$
+と置けば$H_{N(-1)}(z)=zH_N(z)$である．
+\end{lemma}
+\begin{proof}
+完全列の各次数$n$の部分は
+$0\to A_n\to B_n\to C_n\to0$であり，
+長さの加法性から$\ell(B_n)=\ell(A_n)+\ell(C_n)$を得る．
+これを全$n$について足し合わせれば級数の等式となる．
+次数ずらしの公式は添字の置き換えによる．
+\end{proof}
+
+\begin{theorem}[Hilbert--Serreの有理型定理]\label{thm:HS}
+$R$を可換Artin環，$S=R[T_1,\ldots,T_r]$とし，
+$N$を有限生成の非負次数付き$S$-加群とする．
+このときHilbert級数は有理型であり，ある整数係数多項式
+$P(z)\in\mathbb Z[z]$を用いて
+\[
+ H_N(z)=\frac{P(z)}{(1-z)^r}
+\]
+が形式的冪級数として成立する．$r=0$では$H_N$は多項式である．
+\end{theorem}
+\begin{proof}
+$r$について帰納法を行う．$r=0$なら$S=R$は
+次数0の環で，有限個の斉次生成元の次数より大きい$n$では
+$N_n=0$となる．従って$H_N$は多項式である．
+
+$r\ge1$とし，$T_r$の乗法による次数0の写像
+$N(-1)\xrightarrow{T_r}N$を考える．
+$K=\{x\in N:T_rx=0\}$，$Q=N/T_rN$と置くと
+\[
+ 0\longrightarrow K(-1)\longrightarrow N(-1)
+ \xrightarrow{T_r}N\longrightarrow Q\longrightarrow0
+\]
+は完全である．
+$S$はNoether環なので$K$と$Q$は有限生成次数付き加群である．
+しかも$T_rK=T_rQ=0$だから，
+両者は$R[T_1,\ldots,T_{r-1}]$上の有限生成次数付き加群となる．
+帰納法の仮定から
+\[
+ H_K(z)=\frac{P_K(z)}{(1-z)^{r-1}},\qquad
+ H_Q(z)=\frac{P_Q(z)}{(1-z)^{r-1}}
+\]
+なる整数係数多項式が存在する．
+補題\ref{lem:exact}と上の完全列から
+\[
+ (1-z)H_N(z)=H_Q(z)-zH_K(z)
+\]
+となるため，
+\[
+ H_N(z)=\frac{P_Q(z)-zP_K(z)}{(1-z)^r}
+\]
+を得る．これで帰納法が完了する．
+\end{proof}
+
+\begin{corollary}[Hilbert函数の最終多項式性]\label{cor:eventual}
+定理\ref{thm:HS}の仮定のもとで，
+$r\ge1$なら整数$n$についての有理係数多項式
+$p_N(n)\in\mathbb Q[n]$が存在し，十分大きい$n$に対して
+$\ell_R(N_n)=p_N(n)$が成立する．
+その次数は高々$r-1$である（零多項式も許す）．
+$r=0$なら$N_n=0$が十分大きい$n$で成立する．
+\end{corollary}
+\begin{proof}
+$P(z)=\sum_{j=0}^m a_jz^j$と書き，
+\[
+ \frac1{(1-z)^r}
+ =\sum_{n\ge0}\binom{n+r-1}{r-1}z^n
+\]
+という形式的冪級数の二項展開を使う．
+$n\ge m$では係数比較により
+\[
+ \ell_R(N_n)=\sum_{j=0}^m
+ a_j\binom{n-j+r-1}{r-1}
+\]
+であり，右辺は$n$の有理係数多項式で次数高々$r-1$である．
+$r=0$は定理\ref{thm:HS}の最初の場合に従う．
+\end{proof}
+
+\section{Noether局所環と随伴次数環}
+$A$を可換Noether局所環，$\mathfrak m$をその極大イデアルとする．
+$M$を有限生成$A$-加群，$I\subset A$を$\mathfrak m$-一次イデアル
+（$\sqrt I=\mathfrak m$）とする．
+
+\begin{lemma}[Artin商と有限長性]\label{lem:artin}
+ある$N\ge1$について$\mathfrak m^N\subset I$となる．
+$A/I$はArtin環であり，任意の有限生成$A/I$-加群は
+$A$-加群として有限長である．
+\end{lemma}
+\begin{proof}
+$\mathfrak m=(x_1,\ldots,x_q)$と有限生成できる．
+$\sqrt I=\mathfrak m$だから各$j$について
+$x_j^{e_j}\in I$となる自然数$e_j$が存在する．
+$N=1+\sum_j(e_j-1)$と置くと，次数$N$の任意の
+生成単項式$x_1^{a_1}\cdots x_q^{a_q}$では
+ある$j$について$a_j\ge e_j$である．よって
+$\mathfrak m^N\subset I$を得る．
+
+$A/\mathfrak m^N$は
+\[
+ A/\mathfrak m^N\supset\mathfrak m/\mathfrak m^N
+ \supset\cdots\supset\mathfrak m^{N-1}/\mathfrak m^N
+ \supset0
+\]
+という有限濾過を持ち，各商
+$\mathfrak m^j/\mathfrak m^{j+1}$は
+剰余体$k=A/\mathfrak m$上有限次元である．
+実際，$\mathfrak m^j$は有限生成で，商は$\mathfrak m$に
+消されるからである．従って$A/\mathfrak m^N$は
+有限長であり，その商$A/I$も有限長である．
+有限長環はArtin環である．その上の有限生成加群は
+有限個の有限長環の直和の商なので有限長となる．
+\end{proof}
+
+\begin{definition}[随伴次数環と加群]
+\[
+ \operatorname{gr}_I(A)=\bigoplus_{n\ge0}I^n/I^{n+1},
+ \qquad
+ \operatorname{gr}_I(M)=\bigoplus_{n\ge0}I^nM/I^{n+1}M
+\]
+と定める．乗法および加群作用は代表元の積で定める．
+各次数$n$の部分は$I$に消されるため$A/I$上の加群である．
+\end{definition}
+
+\begin{lemma}[随伴次数加群の有限生成性]\label{lem:gr}
+$I=(a_1,\ldots,a_r)$とすると，
+$\operatorname{gr}_I(M)$は
+$(A/I)[T_1,\ldots,T_r]$上の有限生成次数付き加群である．
+ただし$T_i$は$a_i\bmod I^2$の作用に対応する．
+\end{lemma}
+\begin{proof}
+$\operatorname{gr}_I(A)$は$A/I$と
+$a_1+I^2,\ldots,a_r+I^2$によって次数付き環として生成される．
+これは$I^n$が長さ$n$の$a_i$の積の$A$-線形結合で
+生成されることから従う．従って次数付き全射
+\[
+ (A/I)[T_1,\ldots,T_r]\longrightarrow
+ \operatorname{gr}_I(A)
+\]
+がある．$M$の有限生成元$m_1,\ldots,m_q$を選べば，
+$\operatorname{gr}_I(M)$はその次数0の像によって
+$\operatorname{gr}_I(A)$上生成される．
+よって上の多項式環上でも有限生成である．
+\end{proof}
+
+\section{Hilbert--Samuel多項式の存在}
+\begin{theorem}[Hilbert--Samuel多項式]\label{thm:HSamuel}
+$A$をNoether局所環，$M$を有限生成$A$-加群，
+$I=(a_1,\ldots,a_r)$を$\mathfrak m$-一次イデアルとする．
+このときある有理係数多項式$Q_{I,M}(n)$が存在して，
+十分大きい$n$に対して
+\[
+ \ell_A(M/I^{n+1}M)=Q_{I,M}(n)
+\]
+となる．その次数は高々$r$である．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:artin}と補題\ref{lem:gr}により，
+$G=\operatorname{gr}_I(M)$はArtin環$R=A/I$上の
+$r$変数多項式環の有限生成次数付き加群である．
+各$G_n=I^nM/I^{n+1}M$は有限長であり，
+$A$-加群としての長さと$R$-加群としての長さは一致する．
+定理\ref{thm:HS}を適用すると
+\[
+ \sum_{n\ge0}\ell_A(I^nM/I^{n+1}M)z^n
+ =\frac{P(z)}{(1-z)^r}
+\]
+なる$P(z)\in\mathbb Z[z]$が存在する．
+
+短完全列と長さの加法性を繰り返すことで
+\[
+ \ell_A(M/I^{n+1}M)
+  =\sum_{j=0}^n\ell_A(I^jM/I^{j+1}M)
+\]
+を得る．したがって形式的冪級数として
+\[
+ \sum_{n\ge0}\ell_A(M/I^{n+1}M)z^n
+ =\frac{1}{1-z}\frac{P(z)}{(1-z)^r}
+ =\frac{P(z)}{(1-z)^{r+1}}.
+\]
+$r\ge1$なら系\ref{cor:eventual}を
+$r+1$変数の場合の係数展開として用いれば，
+係数は十分大きい$n$で次数高々$r$の多項式となる．
+$r=0$なら$I=0$であり，$\sqrt I=\mathfrak m$ゆえ
+$A$はArtin局所環で，$\ell_A(M)<\infty$である．
+そのとき左辺は定数$\ell_A(M)$であるから結論は成立する．
+\end{proof}
+
+\begin{example}[正則局所環の最も基本的な場合]
+$A=k[[x_1,\ldots,x_r]]$，$\mathfrak m=(x_1,\ldots,x_r)$，
+$M=A$とする．次数が$n$以下の単項式の個数を数えると
+\[
+ \ell_A(A/\mathfrak m^{n+1})
+   =\binom{n+r}{r}.
+\]
+特にこの場合のHilbert--Samuel多項式の次数は$r$に等しい．
+この等式は形式的冪級数の単項式基底から従い，
+一般の局所環におけるKrull次元との一致を証明するものではない．
+\end{example}
+
+\section{本稿の到達範囲}
+\begin{remark}
+本稿はHilbert--Samuel函数の最終多項式性と
+次数の生成元数による上界を証明した．
+さらに強い主張
+\[
+ \deg Q_{I,M}=\dim_A M
+\]
+（適切な非零加群と次元の規約の下で成立する）には，
+局所環の次元論やHilbert--Samuel重複度の理論が必要である．
+この同一性を本稿の結論として暗黙に使用しない．
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{atiyah} M. F. Atiyah and I. G. Macdonald,
+ \emph{Introduction to Commutative Algebra}, Addison-Wesley, 1969.
+\bibitem{matsumura} H. Matsumura,
+ \emph{Commutative Ring Theory}, Cambridge University Press, 1986.
+\end{thebibliography}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Hilbert--Samuel関数の完全な計算．}
+\begin{proposition}
+$R=k[[x,y]]$，$\mathfrak m=(x,y)$ とすると，
+全ての $n\ge0$ に対し
+\[
+\operatorname{length}_R(R/\mathfrak m^{n+1})
+=\binom{n+2}{2}
+\]
+である．
+\end{proposition}
+\begin{proof}
+$\mathfrak m^{n+1}$ は全次数 $n+1$ 以上の
+単項式を含むため，商の $k$-基底は
+$x^ay^b$（$a,b\ge0$，$a+b\le n$）の剰余類である．
+固定された全次数 $j$ の単項式は $j+1$ 個だから
+基底数は
+$\sum_{j=0}^n(j+1)=(n+1)(n+2)/2$．
+この商は剰余体 $k$ を組成因子とする有限長加群であり，
+その長さは $k$-次元に等しい．
+\end{proof}
+\begin{corollary}
+$R$ のHilbert--Samuel多項式は
+$(n+1)(n+2)/2$ であり，重複度は1である．
+\end{corollary}
+\begin{proof}
+上の式は全ての $n\ge0$ で成立する二次多項式である．
+最高次項は $n^2/2$ だから，
+次元2の局所環の重複度の定義より $e(R)=1$．
+\end{proof}
+\noindent\textbf{到達確認．}
+$k[[x]]$ で $\operatorname{length}(R/(x^{n+1}))$
+を求めよ．
+\par\noindent\textbf{解答．}
+$1,x,\dots,x^n$ の剰余類が基底なので $n+1$ である．
+\end{document}

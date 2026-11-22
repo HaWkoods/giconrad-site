@@ -1,0 +1,391 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{消去理論と終結式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+本稿では，二変数の連立多項式方程式から一つの変数を消去し，
+消去多項式の根から元の方程式の解を復元できるようになることを
+目標とする．辞書式Gr\"obner基底と終結式を二つの方法として比較し，
+必要に応じて零点の集合と射影像のZariski閉包を区別する．
+前提知識は体上の多項式の除法，行列式，イデアル，
+Gr\"obner基底の定義と簡単な計算である．
+
+\section{辞書式順序と消去}
+$k$ を体，$I\subset k[x_1,\ldots,x_n]$ をイデアルとする．
+辞書式順序 $x_1\succ\cdots\succ x_n$ を用いる．
+\begin{theorem}[消去定理]
+$G$ が $I$ の辞書式Gr\"obner基底なら，
+$G\cap k[x_{r+1},\ldots,x_n]$ は
+$I\cap k[x_{r+1},\ldots,x_n]$ のGr\"obner基底である．
+\end{theorem}
+\begin{proof}
+$f\in I\cap k[x_{r+1},\ldots,x_n]$ を非零とする．
+Gr\"obner基底の定義により $\operatorname{LM}(g)$ が
+$\operatorname{LM}(f)$ を割るような $g\in G$ がある．
+$\operatorname{LM}(f)$ は $x_1,\ldots,x_r$ を含まないので
+$\operatorname{LM}(g)$ もこれらを含まない．
+辞書式順序では $g$ の他の項に $x_1,\ldots,x_r$ を含む単項式があれば
+先頭項より大きくなる．ゆえに $g\in k[x_{r+1},\ldots,x_n]$．
+これで消去イデアルの先頭項が所要の先頭項で割り切れる．
+\end{proof}
+\section{Sylvester行列}
+$f(x)=a_mx^m+\cdots+a_0$，$g(x)=b_nx^n+\cdots+b_0$ を
+体 $k$ 上の次数 $m,n\ge1$ の多項式とする．
+\begin{definition}
+線形写像
+\[
+ \Phi:k[x]_{<n}\oplus k[x]_{<m}\longrightarrow k[x]_{<m+n},
+ \quad (u,v)\longmapsto uf+vg
+\]
+の単項式基底（昇次数順）に関する行列式に
+$(-1)^{mn}$ を掛けたものを $\operatorname{Res}_x(f,g)$ とする．
+この符号の約束により根による積の公式が成立する．
+\end{definition}
+\begin{theorem}[終結式の零判定]
+$\operatorname{Res}_x(f,g)=0$ と
+$\gcd(f,g)$ が非定数であることは同値である．
+またこれは代数閉包 $\bar k$ で $f,g$ が共通零点を持つこととも同値である．
+\end{theorem}
+\begin{proof}
+$\operatorname{Res}_x(f,g)=0$ なら $\Phi$ は単射でない．
+従って $uf+vg=0$ を満たす非零対 $(u,v)$ が
+$\deg u<n,\deg v<m$ の範囲に存在する．
+もし $\gcd(f,g)=1$ なら $f\mid v$ が従い，
+$\deg v<m=\deg f$ より $v=0$，さらに $u=0$ となって矛盾する．
+逆に $f=dh$，$g=de$ で $\deg d\ge1$ なら
+$(u,v)=(e,-h)$ は非零の核に属する（指定された次数制限も満たす）．
+最後は代数閉包内の一次因子への分解による．
+\end{proof}
+\begin{proposition}[根による表示]
+$f=a_m\prod_{i=1}^m(x-\alpha_i)$（代数閉包で重複を許す）なら
+\[
+ \operatorname{Res}_x(f,g)=a_m^n\prod_{i=1}^m g(\alpha_i)
+\]
+である．
+\end{proposition}
+\begin{proof}
+まず $f$ がモニックの場合を扱う．$V=k[x]/(f)$ は次元 $m$ の
+$k$-ベクトル空間であり，$g$ の乗法を $T_g:V\to V$ と書く．
+$k[x]_{<m+n}$ の基底を
+$1,x,\ldots,x^{m-1},f,xf,\ldots,x^{n-1}f$ と取る．
+$f$ がモニックだから，単項式基底からの基底変換行列式は $1$ である．
+この基底で $\Phi(u,v)=uf+vg$ を表すと，最初の $m$ 行・後の
+$n$ 行に分けて，$u$ の列は $\binom 0I$，
+$v$ の列は上段に $T_g$ の行列を持つ．
+従って $\det\Phi=(-1)^{mn}\det T_g$ であり，
+定義より $\operatorname{Res}_x(f,g)=\det T_g$ である．
+代数閉包に係数を拡大すると，$V$ 上の $x$ の乗法の
+特性多項式は $f$ である（単項式基底での行列は伴随行列）．
+よってその固有値は重複を含め $\alpha_1,\ldots,\alpha_m$ である．
+上三角化すれば，$g$ の乗法の行列式は
+$\prod_i g(\alpha_i)$ に等しい．
+一般の場合には $f=a_m f_0$（$f_0$ はモニック）と書く．
+$\Phi$ の最初の $n$ 列は $a_m$ 倍されるため
+$\operatorname{Res}_x(f,g)=a_m^n\operatorname{Res}_x(f_0,g)$ となり，
+求める公式を得る．
+\end{proof}
+\section{消去計算の例}
+\begin{example}
+$f(x)=x^2-a$，$g(x)=x-b$ なら
+$\operatorname{Res}_x(f,g)=b^2-a$ である．
+従って連立方程式 $x^2=a$，$x=b$ の解の存在条件は $b^2=a$．
+\end{example}
+\begin{remark}
+終結式が零であることは，係数を特殊化したとき最高次係数が消える場合には
+共通有限零点の判定と一致しないことがある．本節の零判定は
+次数 $m,n$ が固定された体上の二つの多項式について述べたものである．
+\end{remark}
+
+
+\section{Hilbertの零点定理の証明}
+本節では $k$ を代数閉体とする．前節で射影像の閉包を論じる際に
+用いる零点定理を，体論の基本事項と多項式環の可換代数から導く．
+\begin{lemma}[有限整拡大の体への降下]
+$A\subset B$ を整域の拡大とし，$B$ が $A$ 上整であるとする．
+$B$ が体なら $A$ も体である．
+\end{lemma}
+\begin{proof}
+$0\ne a\in A$ とする．$a^{-1}\in B$ が整なので，ある $m\ge1$ と
+$c_0,\ldots,c_{m-1}\in A$ により
+\[
+ a^{-m}+c_{m-1}a^{-(m-1)}+\cdots+c_0=0
+\]
+となる．$a^{m-1}$ を掛けて
+$a^{-1}=-c_{m-1}-c_{m-2}a-\cdots-c_0a^{m-1}\in A$ を得る．
+従って $A$ の非零元はすべて可逆である．
+\end{proof}
+\begin{lemma}[Zariskiの補題]
+$K$ を $k$ 上有限生成な代数であり，かつ体であるものとする．
+このとき $K=k$ である．
+\end{lemma}
+\begin{proof}
+$K=k[a_1,\ldots,a_m]$ と書く．生成元の中から
+$k$ 上代数的独立な極大部分族
+$a_1,\ldots,a_r$ を選び直す．残りの $a_{r+1},\ldots,a_m$ は
+$F=k(a_1,\ldots,a_r)$ 上代数的である．
+各 $a_j$ の $F$ 上のモニックな整関係式の分母を払うため，
+零でない $f\in k[a_1,\ldots,a_r]$ を一つ選べば，
+すべての $a_j$ は
+$A=k[a_1,\ldots,a_r,f^{-1}]$ 上整となる．
+$K=A[a_{r+1},\ldots,a_m]$ は $A$ 上整である．
+前補題より $A$ は体でなければならない．
+
+$r\ge1$ と仮定する．$k$ は無限体で，$f$ は非零多項式だから，
+ある $c\in k$ に対して
+$f(c,a_2,\ldots,a_r)\ne0$ となる（$r=1$ の場合も同様）．
+従って $a_1-c$ は $A$ の単元ではない．実際，もし
+$(a_1-c)g/f^N=1$（$g\in k[a_1,\ldots,a_r]$）なら
+$f^N=(a_1-c)g$ となり，$a_1=c$ を代入すれば矛盾する．
+よって $r=0$ である．このとき $K$ は $k$ 上有限次の
+代数拡大であり，$k$ の代数閉性から $K=k$ である．
+\end{proof}
+\begin{theorem}[弱零点定理]
+$J\subsetneqq k[x_1,\ldots,x_n]$ は真のイデアルとする．
+このとき $J$ の全ての元が消える点 $a\in k^n$ が存在する．
+\end{theorem}
+\begin{proof}
+$J$ を含む極大イデアル $\mathfrak m$ を取る．
+商体 $K=k[x_1,\ldots,x_n]/\mathfrak m$ は
+$k$ 上有限生成な代数であり，Zariskiの補題により $K=k$ である．
+各 $x_i$ の剰余類に対応する $a_i\in k$ を取ると，
+標準射影 $k[x_1,\ldots,x_n]\to K=k$ は評価写像
+$F\mapsto F(a_1,\ldots,a_n)$ だから，$J$ の全元は $a$ で零になる．
+\end{proof}
+\begin{theorem}[Hilbertの零点定理]
+任意のイデアル $J\subset k[x_1,\ldots,x_n]$ に対し
+\[
+ I(V(J))=\sqrt J
+\]
+が成り立つ．ここで $V(J)$ は $J$ の共通零点集合で，
+$I(S)=\{g:g|_S=0\}$ とする．
+\end{theorem}
+\begin{proof}
+$g^N\in J$ なら $g$ は $V(J)$ で零だから
+$\sqrt J\subset I(V(J))$ である．
+逆に $g\in I(V(J))$ とする．$g=0$ は明らかなので
+$g\ne0$ と仮定する．新しい変数 $t$ を導入して
+\[
+ H=(J,1-tg)\subset k[x_1,\ldots,x_n,t]
+\]
+を考える．$H$ の共通零点があれば，$J$ の零点で $g=0$ と
+$tg=1$ が同時に成立するため矛盾する．
+弱零点定理の対偶から $H$ は単位イデアルである．
+従って有限個の $f_i\in J$ と多項式 $u_i,v$ により
+\[
+ 1=\sum_i u_i(x,t)f_i(x)+v(x,t)(1-tg(x))
+\]
+と書ける．局所化 $k[x_1,\ldots,x_n,g^{-1}]$ の中で
+$t=g^{-1}$ と置くと $1\in Jk[x,g^{-1}]$ となる．
+よって分母を払うと，ある $N\ge0$ で $g^N\in J$ となる．
+$N=0$ なら $1\in J$ なので，やはり $g\in\sqrt J$ である．
+以上で逆包含を得た．
+\end{proof}
+\begin{remark}
+この証明は零点定理の存在だけを示すもので，
+零点集合からイデアルを計算する算法や指数 $N$ の有効上界までは与えない．
+\end{remark}
+
+\section{消去イデアルと射影像の閉包}
+\begin{theorem}[射影像のZariski閉包]
+$k$ を代数閉体とする．
+$I\subset k[x_1,\ldots,x_r,y_1,\ldots,y_s]$ をイデアルとし，
+$\pi:k^{r+s}\to k^s$ を $y$ 座標への射影とする．
+このとき
+\[
+ \overline{\pi(V(I))}^{\,\mathrm{Zar}}
+ =V(I\cap k[y_1,\ldots,y_s]).
+\]
+直前に証明したHilbertの零点定理を用いる．
+\end{theorem}
+\begin{proof}
+$J=I\cap k[y]$ と置く．$f\in J$ は $V(I)$ 上で零だから，
+$\pi(V(I))\subset V(J)$ であり，左辺は右辺に含まれる．
+逆の包含を示すため，$\pi(V(I))$ 上で零になる任意の
+$g\in k[y]$ を取る．$g$ を $x$ に依存しない多項式と見れば
+$V(I)$ 上で零だから，零点定理より $g^N\in I$ となる $N\ge1$ がある．
+$g^N\in k[y]$ なので $g^N\in J$，すなわち $g\in\sqrt J$．
+従って $\pi(V(I))$ の消滅イデアルは $\sqrt J$ と等しい．
+任意の集合のZariski閉包はその消滅イデアルの零点集合だから結論を得る．
+\end{proof}
+\begin{example}[射影像が閉集合でない例]
+$I=(xy-1)\subset k[x,y]$ とし，$y$ 座標へ射影する．
+$\pi(V(I))=k\setminus\{0\}$ であり，そのZariski閉包は $k$ 全体である．
+一方 $(xy-1)\cap k[y]=(0)$ である．
+実際 $g(y)=(xy-1)h(x,y)$ とすれば $g(y)$ はすべての
+$y\ne0$ で零となり，無限体上の多項式だから $g=0$．
+上の定理と整合する．
+\end{example}
+\begin{proposition}[単項終結式の特殊化に関する注意]
+$f=x^2-a$，$g=x-b$（$a,b$ は独立変数）について
+$\operatorname{Res}_x(f,g)=b^2-a$ である．
+これを任意の体 $K$ 上の $a_0,b_0\in K$ に特殊化すると，
+次数は変わらないので終結式の零判定は
+$\bar K$ での共通根の存在と同値のままである．
+\end{proposition}
+\begin{proof}
+$f(b)=b^2-a$ であり，$g$ はモニック一次式である．
+その唯一の根 $b$ を用いる終結式の積公式で表示式を得る．
+$f$ は常に次数2，$g$ は常に次数1なので，特殊化後も
+零判定定理の仮定が保たれる．
+\end{proof}
+
+
+
+\section{二つの消去法を比較する}
+\begin{example}[円と直線の交点]\label{ex:resultant-circle}
+$k=\mathbb C$ とし，
+\[
+ f(x,y)=x^2+y^2-1,\qquad g(x,y)=x-y
+\]
+の共通零点を求める．
+まず $g=0$ から $x=y$ であり，$f$ に代入すると
+$2y^2-1=0$ となる．従って
+\[
+ (x,y)=\left(\frac1{\sqrt2},\frac1{\sqrt2}\right),
+ \quad\left(-\frac1{\sqrt2},-\frac1{\sqrt2}\right)
+\]
+の二点を得る．
+次に消去イデアルを計算する．
+\[
+ f-(x+y)g=2y^2-1.
+\]
+逆に $f=(x+y)g+(2y^2-1)$ なので
+\[
+ (f,g)=(x-y,2y^2-1).
+\]
+辞書式順序 $x\succ y$ における
+被約Gr\"obner基底は
+\[
+ G=\left\{x-y,\ y^2-\frac12\right\}
+\]
+である．実際，先頭単項式 $x,y^2$ が互いに素で，
+両多項式はモニックかつ被約である．
+これにより
+$(f,g)\cap\mathbb C[y]=(y^2-1/2)$ を得る．
+
+終結式でも同じ結果を求められる．
+$x$ を変数とし $y$ を係数として扱うと，
+$g=x-y$ はモニックな一次式だから
+\[
+ \operatorname{Res}_x(f,g)=f(y,y)=2y^2-1.
+\]
+終結式の零点が，上で計算した消去多項式の零点に
+一致することを確かめた．
+\end{example}
+\begin{proposition}[一次式との終結式による解の復元]
+$k$ を体，$h(y)\in k[y]$ とし，
+$f(x,y)\in k[x,y]$ の $x$ に関する次数を $m$ とする．
+$g(x,y)=x-h(y)$ のとき，
+\[
+ \operatorname{Res}_x(f,g)=(-1)^m f(h(y),y)
+\]
+が成り立つ．さらに代数閉包 $\bar k$ において
+$(f,g)$ の共通零点と $f(h(y),y)$ の根との間には
+$y\longmapsto(h(y),y)$ による全単射がある．
+\end{proposition}
+\begin{proof}
+$f$ と $g=x-h(y)$ を $x$ の多項式として考え，
+$g$ の根は $h(y)$ ただ一つである．
+終結式の根による積公式と対称性により
+$\operatorname{Res}_x(f,g)=(-1)^m\operatorname{Res}_x(g,f)$
+である．$g$ の唯一の根は $h(y)$ だから
+$\operatorname{Res}_x(g,f)=f(h(y),y)$．
+これらの恒等式は，係数体 $k(y)$ で証明した後，
+$k[y]$ の多項式恒等式としても成立する．
+最後の全単射は $g=0$ と $x=h(y)$ が同値であることに
+他ならない．
+\end{proof}
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題．}
+$\mathbb C[x,y]$ において
+$f=x^2-y$，$g=x+y-2$ の共通零点を全て求めよ．
+その際 $x$ を消去した多項式を明示し，
+終結式でも検算せよ．
+
+\medskip\noindent\textbf{解答．}
+$g=0$ から $x=2-y$．従って
+\[
+ f(2-y,y)=(2-y)^2-y
+ =y^2-5y+4=(y-1)(y-4).
+\]
+よって $y=1$ または4であり，$x=2-y$ から
+共通零点は $(1,1)$ と $(-2,4)$ の二点である．
+また
+\[
+ f-(x-y+2)g=y^2-5y+4
+\]
+と恒等的に書けるため，この多項式は消去イデアルに属する．
+$g$ はモニック一次式なので
+\[
+ \operatorname{Res}_x(f,g)=f(2-y,y)=y^2-5y+4.
+\]
+この結果は直接消去と一致する．
+
+\end{document}
