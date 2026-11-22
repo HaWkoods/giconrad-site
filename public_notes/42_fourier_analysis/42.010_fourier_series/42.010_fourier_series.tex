@@ -1,0 +1,537 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Fourier級数の理論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，三角関数の直交性，Fourier係数と収束定理．
+本稿の具体的な到達課題は，一つの関数のFourier係数を計算して級数を構成する．
+
+\section{周期関数とFourier係数}
+
+本稿では $2\pi$-周期関数を考え，
+$[-\pi,\pi]$ 上の積分を用いる．
+$L^p(\mathbb T)$ は $2\pi$-周期関数の
+Lebesgue可積分同値類の空間を意味する．
+
+\begin{definition}
+$f\in L^1(\mathbb T)$ に対して，
+整数 $n\in\mathbb Z$ のFourier係数を
+\[
+ \widehat f(n)=\frac1{2\pi}
+ \int_{-\pi}^\pi f(t)e^{-int}\,dt
+\]
+と定める．
+第 $N$ 部分和を
+\[
+ S_Nf(x)=\sum_{n=-N}^N\widehat f(n)e^{inx}
+\]
+と定義する．
+\end{definition}
+
+\begin{lemma}[複素指数関数系の直交性]\label{lem:orthogonal}
+整数 $m,n$ について
+\[
+ \frac1{2\pi}\int_{-\pi}^\pi e^{imt}\overline{e^{int}}\,dt
+ =\delta_{mn}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$m=n$ なら被積分関数は1だから積分は1である．
+$m\ne n$ のとき
+$\int_{-\pi}^\pi e^{i(m-n)t}dt
+ =(e^{i(m-n)\pi}-e^{-i(m-n)\pi})/(i(m-n))=0$
+である．
+\end{proof}
+
+\begin{proposition}[Besselの不等式]\label{prop:bessel}
+$f\in L^2(\mathbb T)$ に対し
+\[
+ \sum_{n\in\mathbb Z}|\widehat f(n)|^2
+ \le\frac1{2\pi}\int_{-\pi}^\pi|f(t)|^2\,dt
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+$e_n(t)=e^{int}$ と置くと
+$\{e_n\}_{n\in\mathbb Z}$ は
+内積 $\langle f,g\rangle
+ =(2\pi)^{-1}\int f\bar g$ に関して正規直交系である．
+有限部分系に対する直交射影のPythagorasの恒等式から
+\[
+ \sum_{n=-N}^N|\widehat f(n)|^2
+ =\norm{S_Nf}_2^2\le\norm f_2^2
+\]
+である．$N\to\infty$ として結論を得る．
+\end{proof}
+
+\section{Riemann--Lebesgueの補題}
+
+\begin{theorem}[Riemann--Lebesgueの補題]\label{thm:rl}
+$f\in L^1(\mathbb T)$ なら
+\[
+ \widehat f(n)\longrightarrow0
+ \qquad(|n|\to\infty).
+\]
+\end{theorem}
+\begin{proof}
+まず $f=1_{[a,b]}$（$-\pi\le a<b\le\pi$）とすると
+$n\ne0$ について
+\[
+ \widehat f(n)
+ =\frac1{2\pi}\frac{e^{-ina}-e^{-inb}}{in}
+\]
+なので $|\widehat f(n)|\le1/(\pi|n|)\to0$ である．
+有限個の区間の指示関数の線形結合についても
+線形性から成立する．
+一般の $f\in L^1(\mathbb T)$ は，
+そのような階段関数 $g$ で
+$\norm{f-g}_{L^1}<\varepsilon$ と近似できる．
+実際，Lebesgue可測集合を有限個の区間の和で
+測度について近似し，単純関数近似と組み合わせればよい．
+任意の整数 $n$ に対して
+\[
+ |\widehat f(n)-\widehat g(n)|
+ \le\frac1{2\pi}\int_{-\pi}^\pi|f-g|
+ <\frac{\varepsilon}{2\pi}.
+\]
+$|n|\to\infty$ では $\widehat g(n)\to0$ なので
+$\limsup|\widehat f(n)|\le\varepsilon/(2\pi)$ となる．
+$\varepsilon>0$ は任意だから結論を得る．
+\end{proof}
+
+\section{Dirichlet核と部分和}
+
+\begin{definition}
+Dirichlet核を
+\[
+ D_N(t)=\sum_{n=-N}^Ne^{int}
+\]
+と定める．
+\end{definition}
+
+\begin{lemma}\label{lem:dirichlet-kernel}
+$N\ge0$ とすると
+\[
+ D_N(t)=\frac{\sin((N+\tfrac12)t)}{\sin(t/2)}
+ \qquad(t\notin2\pi\mathbb Z)
+\]
+であり，
+\[
+ S_Nf(x)=\frac1{2\pi}\int_{-\pi}^\pi f(x-t)D_N(t)\,dt
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$e^{it}\ne1$ のとき有限等比級数の和を計算すると
+\[
+ \sum_{n=-N}^Ne^{int}
+ =e^{-iNt}\frac{1-e^{i(2N+1)t}}{1-e^{it}}
+ =\frac{\sin((N+\frac12)t)}{\sin(t/2)}
+\]
+となる．
+次に
+\begin{align*}
+ S_Nf(x)
+ &=\sum_{n=-N}^N
+   \left(\frac1{2\pi}\int_{-\pi}^\pi
+   f(s)e^{-ins}\,ds\right)e^{inx}\\
+ &=\frac1{2\pi}\int_{-\pi}^\pi
+   f(s)\sum_{n=-N}^Ne^{in(x-s)}\,ds.
+\end{align*}
+変数変換 $t=x-s$ と周期性から表示式を得る．
+\end{proof}
+
+\section{Fej\'er核}
+
+\begin{definition}
+Fej\'er核とCes\`aro平均をそれぞれ
+\[
+ F_N(t)=\frac1{N+1}\sum_{k=0}^ND_k(t),\qquad
+ \sigma_Nf=\frac1{N+1}\sum_{k=0}^NS_kf
+\]
+と定める．
+\end{definition}
+
+\begin{lemma}[Fej\'er核の基本性質]\label{lem:fejer}
+任意の $N\ge0$ と $t\notin2\pi\mathbb Z$ について
+\[
+ F_N(t)=\frac1{N+1}
+ \left(\frac{\sin((N+1)t/2)}{\sin(t/2)}\right)^2.
+\]
+さらに
+\[
+ F_N(t)\ge0,\qquad
+ \frac1{2\pi}\int_{-\pi}^\pi F_N(t)\,dt=1,
+\]
+かつ任意の $\delta\in(0,\pi)$ について
+\[
+ \int_{\delta\le|t|\le\pi}F_N(t)\,dt\longrightarrow0.
+\]
+\end{lemma}
+\begin{proof}
+有限幾何級数を用いると
+\[
+ \frac1{N+1}\left|\sum_{k=0}^Ne^{ikt}\right|^2
+ =\sum_{j=-N}^N
+   \left(1-\frac{|j|}{N+1}\right)e^{ijt}.
+\]
+右辺は
+$\frac1{N+1}\sum_{k=0}^ND_k(t)=F_N(t)$ に等しい．
+左辺の絶対値平方から非負性と三角関数表示を得る．
+各 $D_k$ の定数Fourier係数は1なので，
+$\int F_N/(2\pi)=1$ である．
+$|t|\ge\delta$ の範囲では
+$|\sin(t/2)|\ge\sin(\delta/2)>0$ だから
+\[
+ 0\le F_N(t)\le
+ \frac1{(N+1)\sin^2(\delta/2)}.
+\]
+長さ $2\pi$ 以下の範囲で積分すると
+$O((N+1)^{-1})\to0$ を得る．
+\end{proof}
+
+\section{Fej\'erの定理と近似}
+
+\begin{theorem}[Fej\'erの定理]\label{thm:fejer}
+$f$ が連続な $2\pi$-周期関数なら，
+\[
+ \norm{\sigma_Nf-f}_\infty\longrightarrow0
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+核の積分表示から
+\[
+ \sigma_Nf(x)-f(x)
+ =\frac1{2\pi}\int_{-\pi}^\pi
+   (f(x-t)-f(x))F_N(t)\,dt
+\]
+である．
+$f$ はコンパクトな円周上で一様連続だから，
+任意の $\varepsilon>0$ に対し
+$\delta\in(0,\pi)$ が存在して
+$|t|<\delta$ なら
+$|f(x-t)-f(x)|<\varepsilon$ が全ての $x$ で成り立つ．
+従って
+\begin{align*}
+ |\sigma_Nf(x)-f(x)|
+ &\le\frac{\varepsilon}{2\pi}
+      \int_{|t|<\delta}F_N(t)\,dt\\
+ &\quad+\frac{2\norm f_\infty}{2\pi}
+      \int_{\delta\le|t|\le\pi}F_N(t)\,dt\\
+ &\le\varepsilon+
+ \frac{\norm f_\infty}{\pi}
+      \int_{\delta\le|t|\le\pi}F_N(t)\,dt.
+\end{align*}
+補題\ref{lem:fejer}によって第2項は $N\to\infty$ で零へ向かう．
+$x$ に関して一様な評価なので
+$\limsup_N\norm{\sigma_Nf-f}_\infty\le\varepsilon$ を得る．
+$\varepsilon$ は任意だから結論が従う．
+\end{proof}
+
+\begin{corollary}[三角多項式の稠密性]\label{cor:trig-dense}
+連続な $2\pi$-周期関数全体の空間
+$C(\mathbb T)$ において，
+三角多項式全体は一様ノルムで稠密である．
+\end{corollary}
+\begin{proof}
+$\sigma_Nf$ は次数高々 $N$ の三角多項式であり，
+定理\ref{thm:fejer}から $\sigma_Nf\to f$ は一様収束する．
+\end{proof}
+
+\section{$L^2$ 完全性とParsevalの等式}
+
+\begin{lemma}\label{lem:continuous-l2}
+連続な周期関数全体 $C(\mathbb T)$ は
+$L^2(\mathbb T)$ に稠密である．
+\end{lemma}
+\begin{proof}
+まず単純関数は $L^2$ に稠密である．
+任意の可測集合は，Lebesgue測度の正則性によって
+測度に関して有限個の区間の和で近似できる．
+各区間の指示関数は，その端点の小近傍で
+値0から1へ線形に移行する連続周期関数によって，
+任意に小さい $L^2$ 誤差で近似できる．
+従って単純関数の有限線形結合も連続周期関数で
+$L^2$ 近似できる．
+三角不等式によって任意の $L^2$ 関数を近似できる．
+\end{proof}
+
+\begin{theorem}[Fourier級数の $L^2$ 完全性]\label{thm:l2}
+任意の $f\in L^2(\mathbb T)$ について
+\[
+ \norm{S_Nf-f}_2\longrightarrow0,
+\]
+ただし $\norm f_2^2=(2\pi)^{-1}\int_{-\pi}^\pi|f|^2$
+とする．さらに
+\[
+ \norm f_2^2=\sum_{n\in\mathbb Z}|\widehat f(n)|^2
+\]
+が成り立つ（Parsevalの等式）．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:continuous-l2}と
+系\ref{cor:trig-dense}から，
+三角多項式は $L^2(\mathbb T)$ に稠密である．
+$S_Nf$ は正規直交系
+$\{e^{int}:-N\le n\le N\}$ の張る部分空間への
+直交射影である．
+従って任意の次数高々 $N$ の三角多項式 $P$ に対して
+\[
+ \norm{f-S_Nf}_2\le\norm{f-P}_2
+\]
+が成り立つ．
+任意の $\varepsilon>0$ に対して
+三角多項式 $P$ で $\norm{f-P}_2<\varepsilon$ となるものを取る．
+$N$ が $P$ の次数以上なら上の不等式から
+$\norm{f-S_Nf}_2<\varepsilon$ となるので
+$S_Nf\to f$ が $L^2$ で成立する．
+
+直交性によるPythagorasの恒等式から
+\[
+ \norm f_2^2=\norm{S_Nf}_2^2+\norm{f-S_Nf}_2^2,
+ \qquad
+ \norm{S_Nf}_2^2=\sum_{n=-N}^N|\widehat f(n)|^2.
+\]
+$N\to\infty$ としてParsevalの等式を得る．
+\end{proof}
+
+\begin{corollary}[Fourier係数の一意性]\label{cor:fourier-unique}
+$f,g\in L^2(\mathbb T)$ が
+$\widehat f(n)=\widehat g(n)$ を全ての $n\in\mathbb Z$
+について満たすなら，$f=g$ がほとんど至る所成立する．
+\end{corollary}
+\begin{proof}
+$h=f-g$ と置くと全てのFourier係数は零である．
+Parsevalの等式から
+$\norm h_2^2=\sum_n|\widehat h(n)|^2=0$ なので
+$h=0$ がほとんど至る所成立する．
+\end{proof}
+
+\section{各点収束}
+
+\begin{theorem}[Dirichlet型収束定理]\label{thm:dirichlet}
+$f$ を $2\pi$-周期の区分的 $C^1$ 関数とする．
+各点 $x$ の左右極限を $f(x-),f(x+)$ と書くと
+\[
+ S_Nf(x)\longrightarrow\frac{f(x-)+f(x+)}2.
+\]
+\end{theorem}
+\begin{proof}
+Dirichlet核の積分表示から
+\[
+ S_Nf(x)=\frac1{2\pi}\int_{-\pi}^\pi
+ f(x-t)\frac{\sin((N+\frac12)t)}{\sin(t/2)}\,dt.
+\]
+$t>0$ では $c_-=f(x-)$，
+$t<0$ では $c_+=f(x+)$ と置き，
+$c(t)=c_-$（$t>0$），$c_+$（$t<0$）と定義する．
+$D_N$ は偶関数で
+$(2\pi)^{-1}\int_{-\pi}^\pi D_N(t)\,dt=1$ なので
+\[
+ \frac1{2\pi}\int_{-\pi}^\pi c(t)D_N(t)\,dt
+ =\frac{c_-+c_+}2.
+\]
+従って
+\[
+ S_Nf(x)-\frac{c_-+c_+}2
+ =\frac1{2\pi}\int_{-\pi}^\pi
+ \frac{f(x-t)-c(t)}{\sin(t/2)}
+ \sin((N+\tfrac12)t)\,dt.
+\]
+$f$ が $x$ の両側で $C^1$ 級であることから，
+$t\to0^\pm$ で
+$f(x-t)-c(t)=O(|t|)$ となる．
+従って
+$g(t)=(f(x-t)-c(t))/\sin(t/2)$ は
+$t=0$ の近傍で有界であり，
+その外側でも区分的に連続だから
+$g\in L^1([-\pi,\pi])$ である．
+Riemann--Lebesgueの補題を
+$g(t)e^{it/2}$ に適用すれば，
+上の振動積分は $N\to\infty$ で零へ収束する．
+よって結論が従う．
+\end{proof}
+
+\begin{corollary}[十分滑らかな場合の一様収束]\label{cor:uniform}
+$f$ が $C^2$ 級の $2\pi$-周期関数なら，
+Fourier級数は絶対かつ一様収束して $f$ に等しい．
+\end{corollary}
+\begin{proof}
+$n\ne0$ に対して部分積分を二回行い，
+周期性から端点の境界項が打ち消し合うので
+\[
+ \widehat f(n)=\frac1{(in)^2}\widehat{f''}(n).
+\]
+従って
+$|\widehat f(n)|\le\norm{f''}_{L^1}/(2\pi n^2)$ である．
+$\sum_{n\ne0}n^{-2}<\infty$ だから
+WeierstrassのM判定法によりFourier級数は
+絶対かつ一様収束する．
+その和を $g$ とすると $g$ は連続であり，
+項別積分から $\widehat g(n)=\widehat f(n)$ となる．
+系\ref{cor:fourier-unique}と連続性から
+$f=g$ が全ての点で成立する．
+\end{proof}
+
+\section{一様収束しない例と発散}
+
+\begin{theorem}[連続関数のFourier部分和の発散]\label{thm:divergence}
+ある連続な $2\pi$-周期関数 $f$ が存在して，
+$S_Nf(0)$ が $N\to\infty$ で有界でない．
+\end{theorem}
+\begin{proof}
+Banach空間 $C(\mathbb T)$ 上の連続線形汎関数
+$T_Nf=S_Nf(0)$ を考える．
+Dirichlet核の積分表示から
+\[
+ T_Nf=\frac1{2\pi}\int_{-\pi}^\pi f(-t)D_N(t)\,dt
+\]
+なので
+\[
+ \norm{T_N}\le\frac1{2\pi}\int_{-\pi}^\pi|D_N(t)|\,dt.
+\]
+逆向きの不等式を示す．
+$\varepsilon>0$ に対して
+$h_\varepsilon(t)=D_N(t)/(|D_N(t)|+\varepsilon)$ と置けば，
+$h_\varepsilon$ は連続な実数値周期関数で
+$\norm{h_\varepsilon}_\infty\le1$ である．
+$f_\varepsilon(x)=h_\varepsilon(-x)$ と定めると
+\[
+ T_Nf_\varepsilon
+ =\frac1{2\pi}\int_{-\pi}^\pi
+   \frac{|D_N(t)|^2}{|D_N(t)|+\varepsilon}\,dt
+ \longrightarrow\frac1{2\pi}\int|D_N(t)|\,dt
+\]
+が有界収束定理から従う．
+従って
+$\norm{T_N}=(2\pi)^{-1}\int|D_N|$ である．
+
+$0<t\le\pi$ では
+$|\sin(t/2)|\le t/2$ なので，
+$A=N+\frac12$ と置けば
+\begin{align*}
+ \int_0^\pi|D_N(t)|\,dt
+ &\ge2\int_0^\pi\frac{|\sin(At)|}{t}\,dt\\
+ &=2\int_0^{A\pi}\frac{|\sin u|}{u}\,du\\
+ &\ge2\sum_{k=1}^{N-1}
+     \frac1{(k+1)\pi}\int_{k\pi}^{(k+1)\pi}|\sin u|\,du\\
+ &=\frac4\pi\sum_{k=1}^{N-1}\frac1{k+1}
+ \longrightarrow\infty.
+\end{align*}
+従って $\sup_N\norm{T_N}=\infty$ である．
+一様有界性原理の対偶から，
+ある $f\in C(\mathbb T)$ に対して
+$\sup_N|T_Nf|=\infty$ となる．
+すなわち $S_Nf(0)$ は有界でない．
+\end{proof}
+
+\begin{remark}
+Fej\'erの定理は連続周期関数に対する
+Ces\`aro平均の一様収束を保証するが，
+通常のFourier部分和の各点収束を
+すべての連続関数に対して保証するものではない．
+一様有界性原理を用いることで，
+この二つの収束現象の違いを明確に示せる．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{鋸歯状関数のFourier級数．}
+\begin{proposition}
+$(-\pi,\pi)$ 上で $f(x)=x$ と定め，
+$2\pi$ 周期拡張する．Fourier級数は
+\[
+f(x)\sim2\sum_{n=1}^\infty
+\frac{(-1)^{n+1}}n\sin(nx)
+\]
+である．
+\end{proposition}
+\begin{proof}
+$f$ は奇関数なので余弦係数は零である．
+正弦係数は
+\[
+b_n=\frac2\pi\int_0^\pi x\sin(nx)\,dx
+=\frac2\pi\left[
+-\frac{x\cos(nx)}n+\frac{\sin(nx)}{n^2}
+\right]_0^\pi
+=\frac{2(-1)^{n+1}}n.
+\]
+従って表示された級数を得る．
+区分的滑らかな周期関数のFourier収束定理から
+$-\pi<x<\pi$ では $x$ に収束し，
+不連続点では左右極限の平均0に収束する．
+\end{proof}
+\noindent\textbf{到達確認．}
+$x=\pi/2$ を代入して交代奇数級数を求めよ．
+\par\noindent\textbf{解答．}
+$\pi/2=2(1-1/3+1/5-\cdots)$ なので
+$1-1/3+1/5-\cdots=\pi/4$ である．
+\end{document}

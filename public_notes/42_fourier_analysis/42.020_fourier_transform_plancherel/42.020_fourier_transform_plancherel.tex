@@ -1,0 +1,604 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Fourier変換とPlancherelの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Fourier変換，Plancherelの定理，Gaussian積分．
+本稿の具体的な到達課題は，具体的な関数のFourier変換を積分から求める．
+
+\section{$L^1$ 上のFourier変換}
+
+本稿では $\mathbb R^d$ 上のLebesgue積分を用いる．
+Fourier変換の正規化を
+\[
+ \widehat f(\xi)=\mathcal Ff(\xi)
+ =(2\pi)^{-d/2}\int_{\mathbb R^d}
+ f(x)e^{-ix\cdot\xi}\,dx
+\]
+と定める．
+
+\begin{proposition}[基本的な有界性]\label{prop:l1-bounded}
+$f\in L^1(\mathbb R^d)$ なら
+$\widehat f$ は有界連続関数であり，
+\[
+ \norm{\widehat f}_\infty
+ \le(2\pi)^{-d/2}\norm f_1.
+\]
+\end{proposition}
+\begin{proof}
+三角不等式から
+\[
+ |\widehat f(\xi)|
+ \le(2\pi)^{-d/2}\int_{\mathbb R^d}|f(x)|\,dx
+\]
+を得る．
+$\xi_n\to\xi$ なら
+$f(x)e^{-ix\cdot\xi_n}\to f(x)e^{-ix\cdot\xi}$
+が各 $x$ で成立し，
+その絶対値は $|f(x)|$ で抑えられる．
+Lebesgueの収束定理によって
+$\widehat f(\xi_n)\to\widehat f(\xi)$ となり連続である．
+\end{proof}
+
+\begin{proposition}[変換公式]\label{prop:basic-transforms}
+$f\in L^1(\mathbb R^d)$，
+$a,b\in\mathbb R^d$，$\lambda\in\mathbb R\setminus\{0\}$
+とする．このとき
+\begin{align*}
+ \mathcal F(f(\cdot-a))(\xi)&=e^{-ia\cdot\xi}\widehat f(\xi),\\
+ \mathcal F(e^{ib\cdot x}f(x))(\xi)&=\widehat f(\xi-b),\\
+ \mathcal F(f(\lambda\cdot))(\xi)
+ &=|\lambda|^{-d}\widehat f(\xi/\lambda).
+\end{align*}
+\end{proposition}
+\begin{proof}
+第一式は変数変換 $y=x-a$ により
+\[
+ \int f(x-a)e^{-ix\cdot\xi}\,dx
+ =e^{-ia\cdot\xi}\int f(y)e^{-iy\cdot\xi}\,dy
+\]
+となることから従う．
+第二式は指数関数をまとめて
+$e^{ib\cdot x}e^{-ix\cdot\xi}=e^{-ix\cdot(\xi-b)}$
+とすればよい．
+第三式は $y=\lambda x$ と置く変数変換で，
+Jacobianの絶対値が $|\lambda|^{-d}$ であることによる．
+\end{proof}
+
+\section{Schwartz空間}
+
+\begin{definition}
+$\mathcal S(\mathbb R^d)$ を，無限回微分可能で，
+任意の多重指数 $\alpha,\beta$ について
+\[
+ \sup_{x\in\mathbb R^d}
+ |x^\alpha\partial^\beta f(x)|<\infty
+\]
+を満たす関数全体とする．
+これをSchwartz空間という．
+\end{definition}
+
+\begin{lemma}\label{lem:schwartz-l1}
+任意の $f\in\mathcal S(\mathbb R^d)$ と
+多重指数 $\alpha,\beta$ に対して
+$x^\alpha\partial^\beta f\in L^1(\mathbb R^d)$ である．
+\end{lemma}
+\begin{proof}
+$N>d$ を取る．
+Schwartz空間の定義から
+\[
+ (1+|x|)^N|x^\alpha\partial^\beta f(x)|
+ \le C
+\]
+となる定数 $C$ が存在する．
+従って
+$|x^\alpha\partial^\beta f(x)|
+ \le C(1+|x|)^{-N}$ である．
+$N>d$ なので右辺は $\mathbb R^d$ で可積分であり，
+結論を得る．
+\end{proof}
+
+\begin{theorem}[Schwartz空間のFourier不変性]\label{thm:schwartz}
+$f\in\mathcal S(\mathbb R^d)$ なら
+$\widehat f\in\mathcal S(\mathbb R^d)$ である．
+さらに
+\[
+ \mathcal F(\partial_jf)(\xi)=i\xi_j\widehat f(\xi),
+ \qquad
+ \partial_{\xi_j}\widehat f(\xi)
+ =-i\mathcal F(x_jf)(\xi).
+\]
+\end{theorem}
+\begin{proof}
+$f$ と $x_jf$ は可積分なので，
+積分と $\xi_j$ に関する微分を交換して
+\[
+ \partial_{\xi_j}\widehat f(\xi)
+ =(2\pi)^{-d/2}\int_{\mathbb R^d}
+ (-ix_j)f(x)e^{-ix\cdot\xi}\,dx
+ =-i\mathcal F(x_jf)(\xi)
+\]
+を得る．
+一方，$f$ は急減少するので
+$|x|\to\infty$ の境界項は零となる．
+$x_j$ に関して部分積分すると
+\[
+ \mathcal F(\partial_jf)(\xi)
+ =(2\pi)^{-d/2}\int
+ \partial_jf(x)e^{-ix\cdot\xi}\,dx
+ =i\xi_j\widehat f(\xi)
+\]
+となる．
+これらを繰り返すと
+$\xi^\alpha\partial_\xi^\beta\widehat f(\xi)$ は
+Schwartz関数の有限個の多項式倍・微分の
+Fourier変換の定数倍として表せる．
+補題\ref{lem:schwartz-l1}と
+命題\ref{prop:l1-bounded}によって
+それらは一様有界である．
+従って $\widehat f\in\mathcal S$ となる．
+\end{proof}
+
+\section{Gaussian関数のFourier変換}
+
+\begin{lemma}[Gaussian積分]\label{lem:gaussian-integral}
+\[
+ \int_{\mathbb R}e^{-x^2/2}\,dx=\sqrt{2\pi}.
+\]
+\end{lemma}
+\begin{proof}
+$I=\int_{\mathbb R}e^{-x^2/2}\,dx$ と置く．
+Tonelliの定理によって
+\[
+ I^2=\int_{\mathbb R^2}e^{-(x^2+y^2)/2}\,dx\,dy.
+\]
+極座標変換を適用すると
+\[
+ I^2=\int_0^{2\pi}\int_0^\infty
+ e^{-r^2/2}r\,dr\,d\theta
+ =2\pi.
+\]
+$I>0$ なので $I=\sqrt{2\pi}$ である．
+\end{proof}
+
+\begin{theorem}[Gaussianの自己Fourier性]\label{thm:gaussian}
+$G(x)=e^{-|x|^2/2}$ と置く．このとき
+\[
+ \widehat G(\xi)=e^{-|\xi|^2/2}.
+\]
+\end{theorem}
+\begin{proof}
+まず $d=1$ とする．$G'(x)=-xG(x)$ なので
+定理\ref{thm:schwartz}から
+\[
+ \widehat G'(\xi)
+ =-i\mathcal F(xG)(\xi)
+ =i\mathcal F(G')(\xi)
+ =i(i\xi)\widehat G(\xi)
+ =-\xi\widehat G(\xi).
+\]
+初期値は補題\ref{lem:gaussian-integral}によって
+$\widehat G(0)=1$ である．
+常微分方程式 $h'=-\xi h$ の一意な解は
+$h(\xi)=e^{-\xi^2/2}$ なので結論を得る．
+一般の $d$ については
+$G(x)=\prod_{j=1}^de^{-x_j^2/2}$ であり，
+Fubiniの定理で各座標の積分に分解すれば
+$\widehat G(\xi)=\prod_j e^{-\xi_j^2/2}
+=e^{-|\xi|^2/2}$ となる．
+\end{proof}
+
+\section{Fourier反転公式}
+
+\begin{lemma}[Gaussian近似恒等作用素]\label{lem:gaussian-approx}
+$f\in\mathcal S(\mathbb R^d)$ に対し
+\[
+ \rho_\varepsilon(x)
+ =(2\pi\varepsilon)^{-d/2}e^{-|x|^2/(2\varepsilon)}
+ \qquad(\varepsilon>0)
+\]
+と置く．このとき
+\[
+ (\rho_\varepsilon*f)(x)\to f(x)
+ \qquad(\varepsilon\downarrow0)
+\]
+が各 $x\in\mathbb R^d$ で成り立つ．
+\end{lemma}
+\begin{proof}
+Gaussian積分と変数変換により
+$\int\rho_\varepsilon=1$ である．
+\[
+ (\rho_\varepsilon*f)(x)-f(x)
+ =\int_{\mathbb R^d}
+ \rho_\varepsilon(y)(f(x-y)-f(x))\,dy.
+\]
+任意の $\delta>0$ に対して積分領域を
+$|y|<\delta$ と $|y|\ge\delta$ に分ける．
+$f$ は連続なので，前者では $\delta$ を十分小さく取れば
+$|f(x-y)-f(x)|<\eta$ となる．
+後者では
+$|f(x-y)-f(x)|\le2\norm f_\infty$ であり，
+Gaussian変数変換 $y=\sqrt\varepsilon z$ によって
+$\int_{|y|\ge\delta}\rho_\varepsilon(y)dy
+ \to0$ となる．
+従って極限は零である．
+\end{proof}
+
+\begin{theorem}[Fourier反転公式]\label{thm:inversion}
+$f\in\mathcal S(\mathbb R^d)$ に対して
+\[
+ f(x)=(2\pi)^{-d/2}
+ \int_{\mathbb R^d}\widehat f(\xi)e^{ix\cdot\xi}\,d\xi
+\]
+が全ての $x$ で成り立つ．
+特に
+\[
+ \mathcal F^2f(x)=f(-x).
+\]
+\end{theorem}
+\begin{proof}
+$\varepsilon>0$ とし，
+\[
+ I_\varepsilon(x)
+ =(2\pi)^{-d/2}\int_{\mathbb R^d}
+ \widehat f(\xi)e^{ix\cdot\xi}
+ e^{-\varepsilon|\xi|^2/2}\,d\xi
+\]
+と置く．$\widehat f$ はSchwartz関数なので
+積分は絶対収束する．
+$\widehat f$ の定義を代入すると
+\begin{align*}
+ I_\varepsilon(x)
+ &=(2\pi)^{-d}\int_{\mathbb R^d}\int_{\mathbb R^d}
+ f(y)e^{i(x-y)\cdot\xi}
+ e^{-\varepsilon|\xi|^2/2}\,dy\,d\xi.
+\end{align*}
+$f\in L^1$ でGaussian核も $L^1$ なので
+Fubiniの定理が適用できる．
+定理\ref{thm:gaussian}と拡大縮小の公式から
+\[
+ (2\pi)^{-d}\int_{\mathbb R^d}
+ e^{i(x-y)\cdot\xi}e^{-\varepsilon|\xi|^2/2}\,d\xi
+ =\rho_\varepsilon(x-y)
+\]
+である．従って $I_\varepsilon(x)=(\rho_\varepsilon*f)(x)$
+となり，補題\ref{lem:gaussian-approx}から
+$I_\varepsilon(x)\to f(x)$ を得る．
+一方 $\widehat f\in L^1$ なので，
+Lebesgueの収束定理によって
+\[
+ I_\varepsilon(x)\to
+ (2\pi)^{-d/2}\int\widehat f(\xi)e^{ix\cdot\xi}\,d\xi.
+\]
+両極限を比較して反転公式を得る．
+最後の式は反転公式の右辺が
+$\mathcal F(\widehat f)(-x)$ に等しいことによる．
+\end{proof}
+
+\section{Parsevalの等式とPlancherelの定理}
+
+\begin{proposition}[Parsevalの恒等式]\label{prop:parseval}
+$f,g\in\mathcal S(\mathbb R^d)$ に対し
+\[
+ \int_{\mathbb R^d}f(x)\overline{g(x)}\,dx
+ =\int_{\mathbb R^d}
+   \widehat f(\xi)\overline{\widehat g(\xi)}\,d\xi
+\]
+が成り立つ．特に $\norm{\widehat f}_2=\norm f_2$ である．
+\end{proposition}
+\begin{proof}
+反転公式から
+\[
+ \overline{g(x)}
+ =(2\pi)^{-d/2}
+ \int_{\mathbb R^d}
+ \overline{\widehat g(\xi)}e^{-ix\cdot\xi}\,d\xi
+\]
+である．これを左辺の積分に代入する．
+$f,\widehat g$ はともにSchwartz関数で $L^1$ に属するから
+Fubiniの定理が適用でき，
+\begin{align*}
+ \int f(x)\overline{g(x)}\,dx
+ &=(2\pi)^{-d/2}\int\int
+ f(x)e^{-ix\cdot\xi}
+ \overline{\widehat g(\xi)}\,dx\,d\xi\\
+ &=\int\widehat f(\xi)\overline{\widehat g(\xi)}\,d\xi.
+\end{align*}
+$f=g$ と置いてノルムの一致を得る．
+\end{proof}
+
+\begin{lemma}[Schwartz関数の稠密性]\label{lem:schwartz-dense}
+$\mathcal S(\mathbb R^d)$ は $L^2(\mathbb R^d)$ で稠密である．
+\end{lemma}
+\begin{proof}
+Lebesgueの収束定理による切断
+$f1_{\{|x|\le R,\ |f|\le R\}}$ により，
+任意の $L^2$ 関数は有界なコンパクト台関数で近似できる．
+Lebesgue測度の正則性を用いて，
+そのような関数はコンパクト台連続関数で
+$L^2$ 近似できる．
+さらにコンパクト台連続関数を
+滑らかなコンパクト台の近似恒等作用素と畳み込むと，
+$C_c^\infty$ 関数で一様近似できる．
+$C_c^\infty\subset\mathcal S$ なので
+$\mathcal S$ は $L^2$ で稠密である．
+\end{proof}
+
+\begin{theorem}[Plancherelの定理]\label{thm:plancherel}
+Fourier変換
+$\mathcal F:\mathcal S(\mathbb R^d)\to\mathcal S(\mathbb R^d)$
+は，一意な線形等距離全単射
+\[
+ \mathcal F:L^2(\mathbb R^d)\to L^2(\mathbb R^d)
+\]
+に拡張される．
+この拡張はユニタリ作用素であり，
+\[
+ \norm{\mathcal Ff}_2=\norm f_2,\qquad
+ \mathcal F^{-1}f(x)=\mathcal Ff(-x)
+\]
+が $L^2$ の意味で成り立つ．
+\end{theorem}
+\begin{proof}
+$f\in L^2$ に対し，
+補題\ref{lem:schwartz-dense}によって
+$\norm{f_n-f}_2\to0$ となる
+$f_n\in\mathcal S$ を取る．
+Parsevalの恒等式により
+\[
+ \norm{\widehat f_n-\widehat f_m}_2
+ =\norm{f_n-f_m}_2
+\]
+なので $(\widehat f_n)$ は $L^2$ のCauchy列である．
+$L^2$ は完備だから極限が存在する．
+この極限を $\mathcal Ff$ と定める．
+別の近似列を取っても差の $L^2$ ノルムが零へ向かうので
+定義は近似列によらない．
+また線形性とノルムの等式は極限を取ることで保たれる．
+従って $\mathcal F$ は等距離線形写像であり，
+その像は閉である．
+一方，反転公式によって
+$\mathcal F(\mathcal S)=\mathcal S$ であり，
+$\mathcal S$ は $L^2$ に稠密なので，
+$\mathcal F$ の像は稠密でもある．
+閉かつ稠密な像は $L^2$ 全体であるから
+$\mathcal F$ は全射となる．
+Parsevalの恒等式も極限へ移せるので内積を保存し，
+従ってユニタリである．
+最後に
+$\mathcal F^2f(x)=f(-x)$ はSchwartz関数で成立し，
+$L^2$ での近似と鏡映の等距離性によって
+一般の $L^2$ 関数へ拡張できる．
+\end{proof}
+
+\section{畳み込みとFourier変換}
+
+\begin{definition}
+$f,g\in L^1(\mathbb R^d)$ に対して
+\[
+ (f*g)(x)=\int_{\mathbb R^d}f(y)g(x-y)\,dy
+\]
+を畳み込みという．
+\end{definition}
+
+\begin{proposition}[畳み込み定理]\label{prop:convolution}
+$f,g\in L^1(\mathbb R^d)$ なら
+$f*g\in L^1$ であり，
+\[
+ \widehat{f*g}(\xi)
+ =(2\pi)^{d/2}\widehat f(\xi)\widehat g(\xi)
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+Tonelliの定理によって
+\[
+ \int|f*g(x)|\,dx
+ \le\int\int|f(y)||g(x-y)|\,dy\,dx
+ =\norm f_1\norm g_1
+\]
+である．従って $f*g\in L^1$ となる．
+Fourier変換の定義に代入して
+Fubiniの定理を適用すると
+\begin{align*}
+ \widehat{f*g}(\xi)
+ &=(2\pi)^{-d/2}\int\int
+ f(y)g(x-y)e^{-ix\cdot\xi}\,dy\,dx\\
+ &=(2\pi)^{-d/2}
+ \left(\int f(y)e^{-iy\cdot\xi}dy\right)
+ \left(\int g(z)e^{-iz\cdot\xi}dz\right)\\
+ &=(2\pi)^{d/2}\widehat f(\xi)\widehat g(\xi).
+\end{align*}
+\end{proof}
+
+\section{熱方程式への応用}
+
+\begin{theorem}[熱方程式のFourier解]\label{thm:heat}
+$f\in\mathcal S(\mathbb R^d)$ とし，
+\[
+ u(t,x)=(4\pi t)^{-d/2}
+ \int_{\mathbb R^d}
+ e^{-|x-y|^2/(4t)}f(y)\,dy,\qquad t>0
+\]
+と置く．このとき $u$ は $t>0$ で滑らかであり，
+\[
+ \partial_tu=\Delta u,\qquad
+ u(t,\cdot)\to f
+\]
+が $t\downarrow0$ で $L^2$ の意味で成り立つ．
+また
+\[
+ \widehat{u(t,\cdot)}(\xi)
+ =e^{-t|\xi|^2}\widehat f(\xi)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$k_t(x)=(4\pi t)^{-d/2}e^{-|x|^2/(4t)}$ と置くと
+$u(t,\cdot)=k_t*f$ である．
+Gaussian変換の公式から
+\[
+ \widehat{k_t}(\xi)
+ =(2\pi)^{-d/2}e^{-t|\xi|^2}.
+\]
+従って畳み込み定理によって
+$\widehat u=e^{-t|\xi|^2}\widehat f$ を得る．
+両辺を $t$ で微分すると
+$\partial_t\widehat u=-|\xi|^2\widehat u$ である．
+一方，Schwartz関数上の微分公式により
+$\widehat{\Delta u}=-|\xi|^2\widehat u$ なので，
+Fourier反転公式から $\partial_tu=\Delta u$ となる．
+また $t\downarrow0$ では
+$e^{-t|\xi|^2}\widehat f(\xi)\to\widehat f(\xi)$ であり，
+絶対値が $|\widehat f(\xi)|$ 以下なので，
+$L^2$ のLebesgue収束定理から
+\[
+ \norm{(e^{-t|\xi|^2}-1)\widehat f}_2\to0.
+\]
+Plancherelの定理によって
+$\norm{u(t,\cdot)-f}_2\to0$ となる．
+\end{proof}
+
+\section{不確定性不等式}
+
+\begin{theorem}[Heisenbergの不確定性不等式]\label{thm:heisenberg}
+任意の $f\in\mathcal S(\mathbb R^d)$ に対して
+\[
+ \left(\int_{\mathbb R^d}|x|^2|f(x)|^2\,dx\right)
+ \left(\int_{\mathbb R^d}|\xi|^2|\widehat f(\xi)|^2\,d\xi\right)
+ \ge\frac{d^2}{4}\norm f_2^4.
+\]
+\end{theorem}
+\begin{proof}
+$f$ は急減少するので
+$\int_{\mathbb R^d}\operatorname{div}(x|f(x)|^2)\,dx=0$
+である．
+発散を展開すると
+\[
+ 0=d\norm f_2^2
+ +2\operatorname{Re}\int_{\mathbb R^d}
+ (x\cdot\nabla f(x))\overline{f(x)}\,dx.
+\]
+従ってCauchy--Schwarzの不等式から
+\[
+ d\norm f_2^2
+ \le2\left(\int|x|^2|f|^2\right)^{1/2}
+       \left(\int|\nabla f|^2\right)^{1/2}.
+\]
+Fourier変換の微分公式とPlancherelの定理によって
+\[
+ \int|\nabla f(x)|^2dx
+ =\int|\xi|^2|\widehat f(\xi)|^2d\xi
+\]
+となる．これを前の不等式に代入して両辺を二乗すれば
+結論を得る．
+\end{proof}
+
+\begin{remark}
+Fourier変換は空間の平行移動や微分を，
+周波数空間の乗法へ変換する．
+Plancherelの定理はこの対応を
+$L^2$ 空間上のユニタリ同型として厳密に保証する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Gaussian関数のFourier変換．}
+\begin{proposition}
+Fourier変換を
+\[
+\widehat f(\xi)=\int_{\mathbb R}f(x)e^{-2\pi ix\xi}\,dx
+\]
+と定めると，
+$f(x)=e^{-\pi x^2}$ に対して
+$\widehat f(\xi)=e^{-\pi\xi^2}$ である．
+\end{proposition}
+\begin{proof}
+$F(\xi)=\int_{\mathbb R}
+e^{-\pi x^2}e^{-2\pi ix\xi}\,dx$ と置く．
+積分と微分を交換し，部分積分すると
+\[
+\begin{aligned}
+F'(\xi)
+&=-2\pi i\int_{\mathbb R}
+xe^{-\pi x^2}e^{-2\pi ix\xi}\,dx\\
+&=i\int_{\mathbb R}
+\frac d{dx}(e^{-\pi x^2})
+e^{-2\pi ix\xi}\,dx
+=-2\pi\xi F(\xi).
+\end{aligned}
+\]
+従って $F(\xi)=Ce^{-\pi\xi^2}$．
+Gaussian積分から $F(0)=1$ なので $C=1$．
+\end{proof}
+\noindent\textbf{到達確認．}
+$f(x)=e^{-\pi ax^2}$（$a>0$）のFourier変換を求めよ．
+\par\noindent\textbf{解答．}
+変数変換 $y=\sqrt a\,x$ より
+$\widehat f(\xi)=a^{-1/2}e^{-\pi\xi^2/a}$ となる．
+\end{document}

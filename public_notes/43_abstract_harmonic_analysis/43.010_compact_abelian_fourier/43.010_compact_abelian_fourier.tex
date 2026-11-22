@@ -1,0 +1,589 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{コンパクトAbel群上のFourier解析}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Haar測度，コンパクトAbel群の指標．
+本稿の具体的な到達課題は，円周群の指標の直交性をHaar積分で確認する．
+
+\section{コンパクトAbel群と指標}
+
+本稿では $G$ をコンパクトHausdorffなAbel位相群とし，
+$\mu$ を全測度1に正規化したHaar測度とする．
+$\mu$ の存在・一意性，
+$L^2(G,\mu)$ のHilbert空間構造，
+コンパクト作用素のスペクトル定理を前提とする．
+
+\begin{definition}
+連続群準同型
+$\chi:G\to S^1=\{z\in\mathbb C:|z|=1\}$
+を $G$ の\emph{指標}という．
+指標全体を $\widehat G$ と書く．
+指標の積を
+$(\chi\psi)(x)=\chi(x)\psi(x)$ とすると，
+$\widehat G$ はAbel群となる．
+\end{definition}
+
+\begin{lemma}[指標の積と逆元]\label{lem:character-group}
+$\chi,\psi\in\widehat G$ なら
+$\chi\psi$ および $\overline\chi$ も指標である．
+単位元は定数関数 $1$ である．
+\end{lemma}
+\begin{proof}
+積について
+\[
+ (\chi\psi)(xy)
+ =\chi(x)\chi(y)\psi(x)\psi(y)
+ =(\chi\psi)(x)(\chi\psi)(y)
+\]
+が成り立ち，連続性は連続関数の積から従う．
+$\chi$ の値は絶対値1なので
+$\overline\chi=\chi^{-1}$ であり，
+$\overline\chi(xy)=\overline\chi(x)\overline\chi(y)$ となる．
+定数1は連続群準同型であり，積の単位元となる．
+\end{proof}
+
+\section{Haar測度と指標の直交性}
+
+\begin{lemma}[非自明指標の積分]\label{lem:char-integral}
+$\chi\in\widehat G$ が非自明なら
+\[
+ \int_G\chi(x)\,d\mu(x)=0.
+\]
+\end{lemma}
+\begin{proof}
+$\chi$ が非自明なので
+$\chi(a)\ne1$ となる $a\in G$ が存在する．
+Haar測度の左移動不変性から
+\[
+ \int_G\chi(x)\,d\mu(x)
+ =\int_G\chi(ax)\,d\mu(x)
+ =\chi(a)\int_G\chi(x)\,d\mu(x).
+\]
+従って $(1-\chi(a))\int_G\chi\,d\mu=0$ となり，
+$\chi(a)\ne1$ だから積分は零である．
+\end{proof}
+
+\begin{theorem}[指標の正規直交性]\label{thm:orthogonal}
+任意の $\chi,\psi\in\widehat G$ に対して
+\[
+ \int_G\chi(x)\overline{\psi(x)}\,d\mu(x)
+ =\begin{cases}1&(\chi=\psi),\\0&(\chi\ne\psi).\end{cases}
+\]
+従って $\widehat G$ は $L^2(G)$ の正規直交系である．
+\end{theorem}
+\begin{proof}
+$\chi\overline\psi$ は指標である．
+$\chi=\psi$ なら恒等的に1なので，
+$\mu(G)=1$ から積分は1である．
+$\chi\ne\psi$ なら非自明指標となるので，
+補題\ref{lem:char-integral}から積分は零である．
+\end{proof}
+
+\section{畳み込みとFourier係数}
+
+\begin{definition}
+$f,g\in L^1(G)$ に対して
+\[
+ (f*g)(x)=\int_Gf(y)g(y^{-1}x)\,d\mu(y)
+\]
+を畳み込みと定める．
+$f\in L^1(G)$ と $\chi\in\widehat G$ に対して
+\[
+ \widehat f(\chi)=
+ \int_Gf(x)\overline{\chi(x)}\,d\mu(x)
+\]
+をFourier係数という．
+\end{definition}
+
+\begin{proposition}[畳み込み定理]\label{prop:conv}
+$f,g\in L^1(G)$ なら $f*g\in L^1(G)$ であり，
+\[
+ \widehat{f*g}(\chi)
+ =\widehat f(\chi)\widehat g(\chi).
+\]
+また $\norm{f*g}_1\le\norm f_1\norm g_1$ である．
+\end{proposition}
+\begin{proof}
+Tonelliの定理とHaar測度の不変性を用いると
+\begin{align*}
+ \int_G|f*g(x)|\,d\mu(x)
+ &\le\int_G\int_G
+ |f(y)||g(y^{-1}x)|\,d\mu(y)d\mu(x)\\
+ &=\int_G|f(y)|\left(\int_G|g(z)|\,d\mu(z)\right)d\mu(y)\\
+ &=\norm f_1\norm g_1.
+\end{align*}
+従って畳み込みは可積分である．
+Fourier係数を計算すると，
+Fubiniの定理と $x=yz$ の変数変換によって
+\begin{align*}
+ \widehat{f*g}(\chi)
+ &=\int_G\int_G
+ f(y)g(y^{-1}x)\overline{\chi(x)}\,d\mu(y)d\mu(x)\\
+ &=\int_G\int_G
+ f(y)g(z)\overline{\chi(yz)}\,d\mu(y)d\mu(z)\\
+ &=\left(\int_Gf(y)\overline{\chi(y)}\,d\mu(y)\right)
+ \left(\int_Gg(z)\overline{\chi(z)}\,d\mu(z)\right).
+\end{align*}
+これが求める等式である．
+\end{proof}
+
+\section{近似恒等作用素とコンパクト畳み込み作用素}
+
+\begin{lemma}[コンパクト群上の近似恒等作用素]
+\label{lem:approx-id}
+単位元 $e$ の任意の開近傍 $U$ に対して，
+$\rho_U\in C(G)$ で $\rho_U\ge0$，
+$\operatorname{supp}\rho_U\subset U$，
+$\int_G\rho_U\,d\mu=1$ となるものが存在する．
+近傍を縮小する方向で考えると
+\[
+ \norm{\rho_U*f-f}_\infty\to0
+ \quad(f\in C(G)),
+\]
+および
+\[
+ \norm{\rho_U*f-f}_2\to0
+ \quad(f\in L^2(G)).
+\]
+\end{lemma}
+\begin{proof}
+コンパクトHausdorff空間 $G$ は正規空間である．
+Urysohnの補題により，
+$e$ を含む十分小さい閉近傍 $V$ が $U$ に含まれるように取り，
+$V$ 上で正，$U$ の外で零となる
+非負連続関数 $\rho$ を選べる．
+Haar測度の正則性と非空開集合の正測度性により
+$\int\rho>0$ である．
+$\rho_U=\rho/\int\rho$ と置けばよい．
+
+$f\in C(G)$ はコンパクト群上で一様連続なので，
+任意の $\varepsilon>0$ に対し
+単位元の近傍 $U_0$ が存在して
+$y\in U_0$ なら
+$|f(y^{-1}x)-f(x)|<\varepsilon$ が全ての $x$ で成り立つ．
+$U\subset U_0$ なら
+\[
+ |(\rho_U*f)(x)-f(x)|
+ \le\int_G\rho_U(y)|f(y^{-1}x)-f(x)|\,d\mu(y)
+ <\varepsilon
+\]
+なので一様収束する．
+一般の $L^2$ 関数 $f$ に対しては
+$C(G)$ が $L^2(G)$ に稠密であることを用いる．
+$\rho_U*f$ は $L^2$ への作用素ノルムが1以下である：
+Minkowskiの積分不等式とHaar測度の不変性から
+\[
+ \norm{\rho_U*f}_2
+ \le\int\rho_U(y)\norm{f(y^{-1}\cdot)}_2\,d\mu(y)
+ =\norm f_2.
+\]
+$f$ を連続関数 $h$ で $L^2$ 近似すると
+\[
+ \norm{\rho_U*f-f}_2
+ \le2\norm{f-h}_2+\norm{\rho_U*h-h}_2
+\]
+であり，最後の項は一様収束から零に向かう．
+従って $L^2$ 収束も成立する．
+\end{proof}
+
+\begin{lemma}[連続核によるコンパクト作用素]
+\label{lem:convolution-compact}
+$h\in C(G)$ とすると
+\[
+ T_h:L^2(G)\to L^2(G),\qquad T_hf=h*f
+\]
+はコンパクト作用素であり，
+$T_hf$ は連続な代表元を持つ．
+また全ての左移動
+$L_af(x)=f(a^{-1}x)$ と可換である．
+\end{lemma}
+\begin{proof}
+畳み込みを
+\[
+ T_hf(x)=\int_Gh(xy^{-1})f(y)\,d\mu(y)
+\]
+と書く．$G$ はAbel群なので
+$h(xy^{-1})$ は $G\times G$ 上の連続関数である．
+Stone--Weierstrassの定理により，
+連続核 $K(x,y)=h(xy^{-1})$ は
+有限個の分離変数関数の和
+\[
+ K_n(x,y)=\sum_{j=1}^{r_n}a_j(x)b_j(y)
+\]
+で一様近似できる．
+$K_n$ に対応する積分作用素の像は
+$a_1,\dots,a_{r_n}$ の張る有限次元空間に入るので
+有限階である．
+Cauchy--Schwarzの不等式と $\mu(G)=1$ から
+\[
+ \norm{T_h-T_{K_n}}\le\norm{K-K_n}_\infty\to0
+\]
+であり，有限階作用素のノルム極限はコンパクトである．
+従って $T_h$ はコンパクトである．
+
+任意の $x,x'$ について
+\[
+ |T_hf(x)-T_hf(x')|
+ \le\norm{K(x,\cdot)-K(x',\cdot)}_2\norm f_2,
+\]
+$K$ はコンパクト空間上で一様連続なので
+右辺は $x'\to x$ で零へ向かう．
+従って $T_hf$ は連続な代表元を持つ．
+最後に $G$ がAbelでHaar測度が不変であることを用い，
+\[
+ L_a(h*f)=h*(L_af)
+\]
+を変数変換によって直接確認できる．
+従って $T_hL_a=L_aT_h$ である．
+\end{proof}
+
+\section{指標の完全性}
+
+\begin{theorem}[指標の $L^2$ 完全性]\label{thm:characters-complete}
+$\widehat G$ の線形包の閉包は $L^2(G)$ 全体に等しい．
+従って $\widehat G$ は $L^2(G)$ の正規直交基底をなす．
+\end{theorem}
+\begin{proof}
+$V$ を指標の線形包の $L^2$ 閉包とする．
+$V$ は全ての左移動 $L_a$ に関して不変である：
+$L_a\chi(x)=\chi(a)^{-1}\chi(x)$ だからである．
+各 $L_a$ はユニタリなので
+$V^\perp$ も全ての左移動に関して不変である．
+$V^\perp\ne\{0\}$ と仮定し，
+$f\in V^\perp$，$f\ne0$ を取る．
+補題\ref{lem:approx-id}により
+$\rho_U*f\to f$ が $L^2$ で成立するから，
+十分小さい $U$ について
+$T_{\rho_U}f\ne0$ である．
+$T_{\rho_U}$ は左移動の平均であり，
+$V^\perp$ は各左移動で不変なので
+$T_{\rho_U}$ は $V^\perp$ を保つ．
+この主張を随伴にも適用するため，
+$\widetilde h(x)=\overline{h(x^{-1})}$ と定める．
+Haar測度の不変性とFubiniの定理から，
+$f,g\in L^2(G)$ に対して
+\[
+ \langle T_hf,g\rangle=\langle f,T_{\widetilde h}g\rangle
+\]
+である．従って $T_h^*=T_{\widetilde h}$ となり，
+$T_h$ と $T_h^*$ はともに左移動の積分として
+$V^\perp$ を保つ．
+$\rho_U$ を $h$ と書き，
+$A=T_h^*T_h$ を $V^\perp$ に制限する．
+$T_h$ はコンパクトなので $A$ はコンパクト自己共役であり，
+\[
+ \langle Af,f\rangle=\norm{T_hf}_2^2>0
+\]
+だから $A\ne0$ である．
+また $T_h$ が全ての $L_a$ と可換で，
+各 $L_a$ がユニタリであるため $T_h^*$ も可換であり，
+$A$ は全ての $L_a$ と可換である．
+
+コンパクト自己共役作用素のスペクトル定理から
+$A$ は正の固有値 $\lambda>0$ と
+非零有限次元固有空間
+\[
+ E_\lambda=\ker(A-\lambda I)\subset V^\perp
+\]
+を持つ．
+$A$ と全ての $L_a$ が可換なので
+$E_\lambda$ は各 $L_a$ に不変である．
+従って $\{L_a|_{E_\lambda}:a\in G\}$ は
+有限次元複素内積空間上の可換なユニタリ行列族である．
+可換な正規行列族は同時対角化可能である：
+一つの非スカラー行列の固有空間へ分解し，
+他の全行列がそれらを保つことを用いて
+次元に関する帰納法を行えばよい．
+従って非零 $v\in E_\lambda$ で，
+全ての $a\in G$ に対して
+\[
+ L_av=\chi(a)v
+\]
+となるものが存在する．
+合成 $L_aL_b=L_{ab}$ から
+$\chi(ab)=\chi(a)\chi(b)$，またユニタリ性から
+$|\chi(a)|=1$ となる．
+$L_a$ の $L^2$ 強連続性によって
+$a\mapsto\chi(a)$ は連続である．
+
+さらに $v=\lambda^{-1}Av$ であり，
+$A$ は連続核によるコンパクト畳み込み作用素の合成なので
+補題\ref{lem:convolution-compact}から $v$ は
+連続な代表元を持つ．
+二つの連続関数が $L^2$ で一致すれば
+Haar測度の全ての非空開集合が正測度であることから
+全ての点で一致する．
+従って
+$v(a^{-1}x)=\chi(a)v(x)$ は全ての $a,x$ で成立する．
+$x=e$ と置くと
+$v(a^{-1})=\chi(a)v(e)$ である．
+$v(e)=0$ なら $v$ は恒等的に零となって矛盾するため
+$v(e)\ne0$ である．
+従って
+$v(x)=v(e)\chi(x^{-1})$ となり，
+$v$ は指標の定数倍である．
+しかし $v\in V^\perp$ なので非零指標に直交することになり，
+矛盾する．
+よって $V^\perp=\{0\}$ であり，
+$V=L^2(G)$ を得る．
+\end{proof}
+
+\section{一様近似とFourier級数}
+
+\begin{theorem}[指標の一様稠密性]\label{thm:uniform-density}
+有限個の指標の線形結合全体は $C(G)$ に
+一様ノルムで稠密である．
+\end{theorem}
+\begin{proof}
+$f\in C(G)$ と $\varepsilon>0$ を取る．
+補題\ref{lem:approx-id}によって
+$\norm{\rho_U*f-f}_\infty<\varepsilon/2$
+となる近傍 $U$ と連続関数 $\rho_U$ を選ぶ．
+定理\ref{thm:characters-complete}から
+$\rho_U$ を有限個の指標の線形結合 $p$ で
+$\norm{\rho_U-p}_2<\varepsilon/(2\norm f_2+1)$
+となるように近似できる．
+Cauchy--Schwarzの不等式から
+\[
+ \norm{(\rho_U-p)*f}_\infty
+ \le\norm{\rho_U-p}_2\norm f_2<\varepsilon/2.
+\]
+一方 $p*f$ は有限個の指標の線形結合である．
+実際 $p=\sum_jc_j\chi_j$ なら
+\[
+ \begin{aligned}
+ (\chi_j*f)(x)
+ &=\int_G\chi_j(y)f(y^{-1}x)\,d\mu(y)\\
+ &=\chi_j(x)\int_Gf(z)\overline{\chi_j(z)}\,d\mu(z)\\
+ &=\widehat f(\chi_j)\chi_j(x).
+ \end{aligned}
+\]
+従って $p*f$ は指標の有限線形結合となる．
+三角不等式から
+$\norm{f-p*f}_\infty<\varepsilon$ を得る．
+\end{proof}
+
+\begin{corollary}[指標は点を分離する]\label{cor:separate}
+$x\ne y$ なら，ある $\chi\in\widehat G$ が存在して
+$\chi(x)\ne\chi(y)$ となる．
+\end{corollary}
+\begin{proof}
+コンパクトHausdorff空間は正規であり，
+Urysohnの補題によって
+$f\in C(G)$ で $f(x)\ne f(y)$ となるものが存在する．
+もし全ての指標について $\chi(x)=\chi(y)$ なら，
+指標の有限線形結合も二点で同じ値を取る．
+定理\ref{thm:uniform-density}により
+そのような線形結合は $f$ を一様近似できるので，
+極限で $f(x)=f(y)$ となり矛盾する．
+\end{proof}
+
+\section{Parsevalの等式とPlancherel}
+
+\begin{theorem}[コンパクトAbel群のPlancherelの定理]
+\label{thm:plancherel}
+$f\in L^2(G)$ に対して
+\[
+ \norm f_2^2=\sum_{\chi\in\widehat G}
+ |\widehat f(\chi)|^2
+\]
+が成り立つ．ここで右辺の和は有限部分集合についての
+和の上限と解釈する．
+また
+\[
+ f=\sum_{\chi\in\widehat G}
+ \widehat f(\chi)\chi
+\]
+が $L^2(G)$ の意味で成立する．
+\end{theorem}
+\begin{proof}
+定理\ref{thm:orthogonal}から $\widehat G$ は正規直交系であり，
+定理\ref{thm:characters-complete}からその線形包は稠密である．
+従ってHilbert空間の完全正規直交系の一般論によって
+Fourier部分和は $L^2$ で $f$ に収束し，
+Pythagorasの恒等式を有限部分和に適用して
+その極限を取ればParsevalの等式を得る．
+有限部分集合の包含順序によって部分和を有向化すると，
+無限個の指標があっても同じ議論が成立する．
+\end{proof}
+
+\section{双対群の離散性}
+
+\begin{proposition}[コンパクト群の双対群は離散]
+\label{prop:dual-discrete}
+$\widehat G$ にコンパクト開位相を入れると，
+$\widehat G$ は離散位相群となる．
+\end{proposition}
+\begin{proof}
+$G$ はコンパクトなので，
+$\widehat G\subset C(G,S^1)$ のコンパクト開位相は
+一様収束の位相に一致する．
+相異なる指標 $\chi,\psi$ について
+定理\ref{thm:orthogonal}から
+\[
+ \norm{\chi-\psi}_2^2
+ =\norm\chi_2^2+\norm\psi_2^2
+ -2\operatorname{Re}\langle\chi,\psi\rangle
+ =2.
+\]
+$\mu(G)=1$ なので
+$\norm{\chi-\psi}_\infty\ge\norm{\chi-\psi}_2=\sqrt2$
+である．
+従って一様ノルムで半径1の開球は
+その中心の指標だけを含む．
+各一点集合が開なので双対群は離散である．
+\end{proof}
+
+\section{有限Abel群上のFourier変換}
+
+\begin{theorem}[有限群上のFourier変換]
+\label{thm:finite-fourier}
+$G$ を位数 $N$ の有限Abel群とし，
+Haar測度を正規化された計数測度とする．
+このとき $|\widehat G|=N$ であり，
+任意の関数 $f:G\to\mathbb C$ に対して
+\[
+ \widehat f(\chi)=\frac1N\sum_{x\in G}
+ f(x)\overline{\chi(x)},\qquad
+ f(x)=\sum_{\chi\in\widehat G}\widehat f(\chi)\chi(x),
+\]
+\[
+ \frac1N\sum_{x\in G}|f(x)|^2
+ =\sum_{\chi\in\widehat G}|\widehat f(\chi)|^2
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$L^2(G)$ は次元 $N$ の複素Hilbert空間である．
+指標は完全な正規直交系なので，
+その個数は次元 $N$ に等しい．
+Fourier係数の定義へ正規化計数測度を代入すると
+第一式を得る．
+正規直交基底展開によって第二式を得る．
+最後の式はParsevalの等式を有限群へ適用したものである．
+\end{proof}
+
+\begin{example}[巡回群の離散Fourier変換]
+$G=\mathbb Z/N\mathbb Z$ の指標は
+\[
+ \chi_k([j])=e^{2\pi ikj/N},
+ \qquad k=0,\dots,N-1
+\]
+であり，
+\[
+ \widehat f(k)=\frac1N\sum_{j=0}^{N-1}
+ f(j)e^{-2\pi ikj/N}
+\]
+となる．
+\end{example}
+\begin{proof}
+表示した $\chi_k$ は群準同型であり，
+$N$ 個の異なる指標を与える．
+定理\ref{thm:finite-fourier}によって指標の総数は
+$N$ に等しいため，これらが全ての指標である．
+Fourier係数の定義へ代入すれば公式が得られる．
+\end{proof}
+
+\begin{remark}
+コンパクトAbel群のFourier解析では，
+指標が $L^2$ を完全に張ることが基本定理である．
+これは非可換コンパクト群の場合には
+既約ユニタリ表現の行列係数を用いる
+Peter--Weylの定理へ一般化される．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{円周上の指標の直交性．}
+\begin{proposition}
+$S^1$ 上の規格化Haar測度を $\mu$ とし，
+$\chi_n(z)=z^n$（$n\in\mathbb Z$）とすると
+\[
+\int_{S^1}\chi_n(z)\overline{\chi_m(z)}\,d\mu(z)
+=\begin{cases}1&n=m,\\0&n\ne m.\end{cases}
+\]
+\end{proposition}
+\begin{proof}
+$z=e^{it}$ と置き，Haar測度の角度表示を使えば
+\[
+\frac1{2\pi}\int_0^{2\pi}e^{i(n-m)t}\,dt
+\]
+となる．$n=m$ では積分は1，
+$n\ne m$ では指数関数の原始関数によって零となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$f(z)=1+2z+3z^{-1}$ のFourier係数を求めよ．
+\par\noindent\textbf{解答．}
+$\widehat f(\chi_n)=\int f(z)\overline{z^n}d\mu$ とすると，
+直交性から
+$\widehat f(\chi_0)=1$，
+$\widehat f(\chi_1)=2$，
+$\widehat f(\chi_{-1})=3$，
+その他は零である．
+\end{document}

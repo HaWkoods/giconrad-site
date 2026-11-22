@@ -1,0 +1,430 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Stone--Weierstrassの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，一様収束，連続関数，Stone--Weierstrassの定理．
+本稿の具体的な到達課題は，具体的な連続関数に近づく多項式列を構成し，誤差を計算する．
+
+\section{連続関数の代数と一様近似}
+
+$K$ を空でないコンパクトHausdorff空間とする．
+$C(K,\mathbb F)$ は $K$ 上の $\mathbb F$ 値連続関数全体であり，
+一様ノルム $\norm f_\infty=\max_{x\in K}|f(x)|$ を入れる．
+ここで $\mathbb F=\mathbb R$ または $\mathbb C$ とする．
+
+\begin{definition}
+$\mathcal A\subset C(K,\mathbb F)$ が\emph{部分代数}であるとは，
+$\mathcal A$ が $\mathbb F$ 線形部分空間であり，
+$f,g\in\mathcal A$ なら $fg\in\mathcal A$ であることをいう．
+\emph{定数を含む}とは定数関数 $1$ が $\mathcal A$ に属することをいう．
+$\mathcal A$ が\emph{点を分離する}とは，
+$x\ne y$ に対して $f(x)\ne f(y)$ となる
+$f\in\mathcal A$ が存在することをいう．
+\end{definition}
+
+\begin{lemma}\label{lem:closed-algebra}
+$\mathcal A\subset C(K,\mathbb F)$ が部分代数なら，
+その一様閉包 $\overline{\mathcal A}$ も部分代数である．
+定数を含む性質と点を分離する性質は閉包に移っても保たれる．
+\end{lemma}
+\begin{proof}
+$f_n\to f$，$g_n\to g$ が一様収束するとき，
+$f_n+g_n\to f+g$ と $af_n\to af$ は一様収束する．
+また $(f_n)$ は一様有界なので
+\[
+ \norm{f_ng_n-fg}_\infty
+ \le\norm{f_n}_\infty\norm{g_n-g}_\infty
+     +\norm{f_n-f}_\infty\norm g_\infty\to0.
+\]
+従って閉包は部分代数となる．
+定数関数が属することは明らかであり，
+点を分離する元はもともと $\mathcal A$ に属するから
+閉包においても存在する．
+\end{proof}
+
+\section{Bernstein多項式による近似}
+
+\begin{definition}
+$f\in C([0,1],\mathbb R)$ と $n\ge1$ に対し，
+Bernstein多項式を
+\[
+ B_nf(x)=\sum_{k=0}^nf(k/n){n\choose k}x^k(1-x)^{n-k}
+\]
+と定義する．
+\end{definition}
+
+\begin{lemma}[二項係数による恒等式]\label{lem:binomial}
+$0\le x\le1$ とし，
+$w_{n,k}(x)={n\choose k}x^k(1-x)^{n-k}$ と置く．
+このとき
+\begin{align*}
+ \sum_{k=0}^n w_{n,k}(x)&=1,\\
+ \sum_{k=0}^n\frac kn w_{n,k}(x)&=x,\\
+ \sum_{k=0}^n\left(\frac kn-x\right)^2w_{n,k}(x)
+ &=\frac{x(1-x)}n\le\frac1{4n}.
+\end{align*}
+\end{lemma}
+\begin{proof}
+最初の等式は二項定理による．
+$k{n\choose k}=n{n-1\choose k-1}$ を用いれば
+\[
+ \sum_{k=0}^nk\,w_{n,k}(x)
+ =nx\sum_{j=0}^{n-1}{n-1\choose j}x^j(1-x)^{n-1-j}
+ =nx
+\]
+である．同様に
+$k(k-1){n\choose k}=n(n-1){n-2\choose k-2}$ から
+$\sum_k k(k-1)w_{n,k}=n(n-1)x^2$ を得る．
+$k^2=k(k-1)+k$ を使って二次の式を展開すれば
+$\sum_k(k-nx)^2w_{n,k}=nx(1-x)$ となる．
+$n=1$ のときも直接計算で同じ式が成立する．
+\end{proof}
+
+\begin{theorem}[Weierstrassの近似定理]\label{thm:weierstrass}
+任意の $f\in C([0,1],\mathbb R)$ に対して
+$B_nf\to f$ は $[0,1]$ 上で一様収束する．
+従って任意の有界閉区間上の連続実数値関数は，
+実係数多項式によって一様近似できる．
+\end{theorem}
+\begin{proof}
+$f$ は一様連続だから，
+任意の $\varepsilon>0$ に対して
+$|u-v|<\delta$ なら
+$|f(u)-f(v)|<\varepsilon/2$ となる $\delta>0$ を取る．
+$M=\norm f_\infty$ と置けば，
+補題\ref{lem:binomial}から
+\begin{align*}
+ |B_nf(x)-f(x)|
+ &\le\sum_{|k/n-x|<\delta}
+  |f(k/n)-f(x)|w_{n,k}(x)\\
+ &\quad+2M\sum_{|k/n-x|\ge\delta}w_{n,k}(x)\\
+ &\le\frac{\varepsilon}{2}
+ +\frac{2M}{\delta^2}
+   \sum_{k=0}^n(k/n-x)^2w_{n,k}(x)\\
+ &\le\frac{\varepsilon}{2}+\frac{M}{2n\delta^2}.
+\end{align*}
+最後の項は $n$ を十分大きくすれば
+$\varepsilon/2$ 未満となる．
+この評価は $x\in[0,1]$ に依存しないため，一様収束を得る．
+一般の閉区間 $[a,b]$ については
+$x=a+(b-a)t$ と変数変換すればよい．
+$a=b$ は定数多項式で自明である．
+\end{proof}
+
+\begin{corollary}\label{cor:absolute}
+任意の $M>0$ と $\varepsilon>0$ に対し，
+実係数多項式 $p$ で
+\[
+ \sup_{|t|\le M}\bigl|p(t)-|t|\bigr|<\varepsilon
+\]
+を満たすものが存在する．
+\end{corollary}
+\begin{proof}
+$[-M,M]$ 上の連続関数 $t\mapsto|t|$ に
+定理\ref{thm:weierstrass}を適用する．
+\end{proof}
+
+\section{格子作用素の構成}
+
+\begin{lemma}\label{lem:lattice}
+$\mathcal A\subset C(K,\mathbb R)$ を
+定数を含む部分代数とし，
+$B=\overline{\mathcal A}$ とする．
+このとき任意の $f,g\in B$ に対して
+$|f|$，$\max\{f,g\}$，$\min\{f,g\}$ は $B$ に属する．
+\end{lemma}
+\begin{proof}
+$B$ は補題\ref{lem:closed-algebra}により閉部分代数である．
+$M=\norm f_\infty+1$ と置く．
+系\ref{cor:absolute}により，
+$[-M,M]$ 上で $|t|$ に一様収束する実係数多項式列
+$(p_n)$ が存在する．
+$B$ は定数を含む代数なので $p_n(f)\in B$ である．
+\[
+ \norm{p_n(f)-|f|}_\infty
+ \le\sup_{|t|\le M}|p_n(t)-|t||\to0
+\]
+だから $|f|\in B$ である．
+次に
+\[
+ \max\{f,g\}=\frac{f+g+|f-g|}{2},\qquad
+ \min\{f,g\}=\frac{f+g-|f-g|}{2}
+\]
+より両者は $B$ に属する．
+\end{proof}
+
+\begin{lemma}[二点補間]\label{lem:interpolation}
+$\mathcal A\subset C(K,\mathbb R)$ が
+定数を含み点を分離するとする．
+任意の $h\in C(K,\mathbb R)$ と $x,y\in K$ に対し，
+$g\in\mathcal A$ で
+$g(x)=h(x)$，$g(y)=h(y)$ を満たすものが存在する．
+\end{lemma}
+\begin{proof}
+$x=y$ なら $g$ を定数関数 $h(x)$ とすればよい．
+$x\ne y$ なら点分離性により
+$a\in\mathcal A$ で $a(x)\ne a(y)$ を取れる．
+\[
+ g(z)=h(x)+\frac{h(y)-h(x)}{a(y)-a(x)}
+        (a(z)-a(x))
+\]
+とすれば $g\in\mathcal A$ であり，
+必要な二点での等式を満たす．
+\end{proof}
+
+\section{実Stone--Weierstrassの定理}
+
+\begin{theorem}[実Stone--Weierstrass]\label{thm:real-sw}
+$K$ をコンパクトHausdorff空間とする．
+$\mathcal A\subset C(K,\mathbb R)$ が
+定数関数を含む部分代数であって点を分離するなら，
+$\mathcal A$ は $C(K,\mathbb R)$ に一様稠密である．
+\end{theorem}
+\begin{proof}
+$B=\overline{\mathcal A}$ と置く．
+補題\ref{lem:lattice}より $B$ は最大・最小について閉じている．
+任意の $h\in C(K,\mathbb R)$ と $\varepsilon>0$ を固定する．
+
+まず $x\in K$ を固定する．
+各 $y\in K$ に対して補題\ref{lem:interpolation}から
+$g_{x,y}\in\mathcal A$ で
+$g_{x,y}(x)=h(x)$，
+$g_{x,y}(y)=h(y)$ となるものを取る．
+連続性により
+\[
+ U_{x,y}=\{z\in K:g_{x,y}(z)<h(z)+\varepsilon\}
+\]
+は $y$ を含む開集合である．
+$(U_{x,y})_{y\in K}$ は $K$ の開被覆なので，
+ある $y_1,\dots,y_m$ について
+$K=\bigcup_{j=1}^mU_{x,y_j}$ となる．
+\[
+ g_x=\min_{1\le j\le m}g_{x,y_j}\in B
+\]
+と置くと，任意の $z\in K$ について
+$g_x(z)<h(z)+\varepsilon$ であり，
+$g_x(x)=h(x)$ である．
+従って
+$V_x=\{z\in K:g_x(z)>h(z)-\varepsilon\}$
+は $x$ を含む開集合である．
+
+$(V_x)_{x\in K}$ は $K$ を被覆するから，
+ある $x_1,\dots,x_N$ について
+$K=\bigcup_{i=1}^NV_{x_i}$ とできる．
+\[
+ g=\max_{1\le i\le N}g_{x_i}\in B
+\]
+と置けば，
+任意の $z\in K$ で少なくとも一つの $i$ が
+$z\in V_{x_i}$ を満たすため
+$g(z)>h(z)-\varepsilon$ となる．
+一方，全ての $i$ で
+$g_{x_i}(z)<h(z)+\varepsilon$ であるから
+$g(z)<h(z)+\varepsilon$ となる．
+従って $\norm{g-h}_\infty\le\varepsilon$ である．
+$\varepsilon>0$ は任意なので $h\in B$ となり，
+$B=C(K,\mathbb R)$ を得る．
+\end{proof}
+
+\section{複素Stone--Weierstrassの定理}
+
+\begin{definition}
+部分代数 $\mathcal A\subset C(K,\mathbb C)$ が
+\emph{自己共役}であるとは，
+$f\in\mathcal A$ に対して
+$\overline f\in\mathcal A$ が成り立つことをいう．
+ここで $\overline f(x)=\overline{f(x)}$ とする．
+\end{definition}
+
+\begin{theorem}[複素Stone--Weierstrass]\label{thm:complex-sw}
+$K$ をコンパクトHausdorff空間とする．
+$\mathcal A\subset C(K,\mathbb C)$ が，
+定数を含み，点を分離し，自己共役な部分代数なら，
+$\mathcal A$ は $C(K,\mathbb C)$ に一様稠密である．
+\end{theorem}
+\begin{proof}
+$\mathcal A_\mathbb R=\{f\in\mathcal A:
+ f(K)\subset\mathbb R\}$ と置く．
+これは定数を含む $C(K,\mathbb R)$ の実部分代数である．
+$x\ne y$ のとき，$\mathcal A$ の点分離性により
+$g(x)\ne g(y)$ となる $g\in\mathcal A$ が存在する．
+実部または虚部の少なくとも一方は $x,y$ で異なる．
+自己共役性により
+\[
+ \operatorname{Re}g=\frac{g+\overline g}{2},\qquad
+ \operatorname{Im}g=\frac{g-\overline g}{2i}
+\]
+はいずれも $\mathcal A_\mathbb R$ に属する．
+従って $\mathcal A_\mathbb R$ は点を分離する．
+定理\ref{thm:real-sw}より
+$\mathcal A_\mathbb R$ は $C(K,\mathbb R)$ に稠密である．
+
+任意の $h\in C(K,\mathbb C)$ に対し，
+$\operatorname{Re}h$ と $\operatorname{Im}h$ をそれぞれ
+$\mathcal A_\mathbb R$ の元 $u_n,v_n$ で一様近似すれば，
+$u_n+iv_n\in\mathcal A$ かつ
+$\norm{u_n+iv_n-h}_\infty\to0$ を得る．
+\end{proof}
+
+\begin{example}[自己共役条件が必要な例]
+$K=\{z\in\mathbb C:|z|=1\}$ とし，
+$\mathcal A$ を複素多項式 $p(z)$ の $K$ への制限全体とする．
+$\mathcal A$ は定数を含み点を分離する部分代数であるが，
+$C(K,\mathbb C)$ に一様稠密でない．
+\end{example}
+\begin{proof}
+$h(z)=\overline z=1/z$（$z\in K$）を考える．
+$\mathcal A$ の元 $p$ には原始関数があるから
+\[
+ \int_{|z|=1}p(z)\,dz=0
+\]
+である．しかし，正向きの単位円周について
+\[
+ \int_{|z|=1}\overline z\,dz
+ =\int_{|z|=1}\frac{dz}{z}=2\pi i.
+\]
+もし $p_n\to h$ が $K$ 上で一様収束するなら，
+曲線の長さによる積分評価により
+$\int p_n\,dz\to\int h\,dz$ となって矛盾する．
+\end{proof}
+
+\section{具体的な近似定理への応用}
+
+\begin{corollary}[多変数多項式の稠密性]
+$K\subset\mathbb R^d$ を空でないコンパクト集合とする．
+$\mathbb R^d$ 上の実係数多項式の $K$ への制限は
+$C(K,\mathbb R)$ に一様稠密である．
+\end{corollary}
+\begin{proof}
+多項式の制限全体は定数を含む部分代数である．
+異なる $x,y\in K$ に対してある座標 $j$ が
+$x_j\ne y_j$ を満たすため，
+座標関数 $z\mapsto z_j$ により点を分離する．
+定理\ref{thm:real-sw}を適用する．
+\end{proof}
+
+\begin{corollary}[三角多項式の稠密性]
+連続な $2\pi$ 周期複素数値関数 $f$ に対し，
+三角多項式
+\[
+ P(t)=\sum_{k=-N}^Nc_ke^{ikt}
+\]
+で $f$ を一様近似できる．
+\end{corollary}
+\begin{proof}
+円周 $K=\{z:|z|=1\}$ 上の関数
+$z\mapsto z^k$（$k\in\mathbb Z$）の有限線形結合は
+定数を含む部分代数であり，
+$z\mapsto z$ が点を分離する．
+$\overline{z^k}=z^{-k}$ が成り立つので自己共役である．
+定理\ref{thm:complex-sw}を適用し，
+$z=e^{it}$ と置けば結論を得る．
+\end{proof}
+
+\begin{remark}
+Stone--Weierstrassの定理は，近似する函数の具体的な係数を
+与える定理ではない．一方，Bernstein多項式は
+一変数の場合に明示的な近似列を与える．
+両者は一様近似の存在と構成という異なる役割を持つ．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Bernstein多項式で一様近似する．}
+\begin{proposition}
+$[0,1]$ 上の $f(x)=x^2$ に対するBernstein多項式
+\[
+B_nf(x)=\sum_{k=0}^n
+\left(\frac kn\right)^2\binom nkx^k(1-x)^{n-k}
+\]
+は
+\[
+B_nf(x)=x^2+\frac{x(1-x)}n
+\]
+である．従って
+$\|B_nf-f\|_\infty=1/(4n)$ である．
+\end{proposition}
+\begin{proof}
+$K\sim\operatorname{Bin}(n,x)$ とすると
+$B_nf(x)=E[(K/n)^2]$ である．
+二項分布の平均と分散を使うと
+\[
+E[(K/n)^2]
+=\frac{\operatorname{Var}(K)+(EK)^2}{n^2}
+=x^2+\frac{x(1-x)}n.
+\]
+$[0,1]$ 上の $x(1-x)$ の最大値は
+$x=1/2$ での $1/4$ なので誤差が従う．
+\end{proof}
+\noindent\textbf{到達確認．}
+$f(x)=x$ に対する $B_nf$ を求めよ．
+\par\noindent\textbf{解答．}
+$B_nf(x)=E[K/n]=x$ であり，
+一次関数はどの次数でも正確に再現される．
+\end{document}
