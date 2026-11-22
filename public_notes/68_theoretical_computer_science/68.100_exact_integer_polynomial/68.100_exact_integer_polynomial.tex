@@ -1,0 +1,246 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{整数と多項式の厳密計算}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標}
+Euclid算法と反復二乗法を実行して，最大公約数，B\'ezout係数，
+剰余逆元，多項式の最大公約数を実際に求めることを目標とする．
+前提は整数の除法と体上の多項式の基本演算である．
+
+\section{整数のEuclid算法}
+\begin{theorem}[Euclid算法]
+整数 $a,b$（$b\ne0$）に対して
+$a=q_0b+r_0$，$b=q_1r_0+r_1$，$\ldots$ と
+非負剰余を取って反復すると，有限回で停止し，最後の非零剰余は
+$\gcd(a,b)$ に等しい（符号は正に取る）．
+\end{theorem}
+\begin{proof}
+$\gcd(a,b)=\gcd(b,r_0)$ は
+$a=q_0b+r_0$ から両辺の共通約数の一致により従う．
+剰余は $0\le r_{i+1}<r_i$ の真に減少する非負整数列だから有限で停止する．
+最後の非零剰余は，零剰余に達した時点のもう一方の数の約数全体を代表する．
+\end{proof}
+\begin{corollary}[B\'ezout等式]
+$\gcd(a,b)=ua+vb$ を満たす整数 $u,v$ が存在し，
+拡張Euclid算法で計算できる．
+\end{corollary}
+\begin{proof}
+初期値 $a=1\cdot a+0\cdot b$，$b=0\cdot a+1\cdot b$ から始める．
+除算による各剰余の線形表示を代入して更新すれば，
+最後の非零剰余も $a,b$ の整数係数線形結合となる．
+\end{proof}
+\section{Euclid算法の反復回数}
+\begin{proposition}
+$0<b\le a$ の場合，Euclid算法の除算回数は $O(\log(b+1))$ である．
+\end{proposition}
+\begin{proof}
+続けて現れる剰余を $r_{i-1}>r_i>r_{i+1}\ge0$ とする．
+割り算の商が2以上なら $r_{i+1}<r_{i-1}/2$．
+商が1なら $r_{i+1}=r_{i-1}-r_i<r_{i-1}/2$，または
+$r_i\le r_{i-1}/2$ のいずれかが成立する．
+従って高々二回の除算ごとに現在の非零の数は少なくとも半分以下になる．
+$1$ までに必要な回数は高々 $2\lceil\log_2 b\rceil+O(1)$．
+\end{proof}
+\section{多項式の厳密除算}
+\begin{theorem}
+体 $k$ 上の多項式 $f,g\in k[x]$（$g\ne0$）に対して
+$f=qg+r$，$r=0$ または $\deg r<\deg g$ を満たす $q,r$ が一意に存在する．
+\end{theorem}
+\begin{proof}
+$\deg f\ge\deg g$ の間，$f$ の先頭項を消すよう
+$\operatorname{LT}(f)/\operatorname{LT}(g)$ 倍の $g$ を引く．
+次数が真に下がるため有限で停止し，存在が従う．
+二組の商と余りの差は $(q-q')g=r'-r$ となる．
+$q\ne q'$ なら左辺の次数が $\deg g$ 以上，右辺はそれ未満で矛盾する．
+\end{proof}
+\begin{remark}
+整数のビット演算量と体上の算術演算回数は異なる尺度である．
+この稿ではEuclid算法の除算回数のみ評価した．
+\end{remark}
+
+
+\section{ビット演算量の評価}
+\begin{theorem}[素朴なEuclid算法のビット計算量]
+$0<b\le a<2^L$ とする．通常の筆算型整数除算を用いれば，
+Euclid算法による $\gcd(a,b)$ は $O(L^3)$ ビット演算で計算できる．
+\end{theorem}
+\begin{proof}
+前節で除算回数が $O(\log b)=O(L)$ であることを示した．
+各段階の被除数と除数は $2^L$ 未満だから，高々 $L$ ビットで表される．
+二進筆算では商の各ビットを決める際に高々 $O(L)$ 回の
+ビット加減算・比較を行い，商の長さは高々 $L$ であるから，
+一回の除算は素朴な実装でも $O(L^2)$ ビット演算でできる．
+従って全体は $O(L)\cdot O(L^2)=O(L^3)$ である．
+\end{proof}
+\begin{theorem}[反復二乗法による剰余冪]
+整数 $M\ge2$，$a\in\mathbb Z$，$e\ge0$ とし，
+$L=\lceil\log_2M\rceil$ と置く．
+$a^e\bmod M$ は $O(\log(e+1))$ 回の剰余付き乗算で計算できる．
+学校式の乗算と除算を用いればビット演算量は
+$O(L^2\log(e+1))$ である（初めに $a$ を $M$ で剰余化する費用は別とする）．
+\end{theorem}
+\begin{proof}
+$e=\sum_{j=0}^r e_j2^j$（$e_j\in\{0,1\}$）と二進表示する．
+$b_0=a\bmod M$，$b_{j+1}=b_j^2\bmod M$ を順に求め，
+$e_j=1$ のときだけ積に $b_j$ を掛けて剰余を取る．
+帰納法で $b_j\equiv a^{2^j}\pmod M$ だから，
+最後の積は $a^e$ と合同である．
+二乗と積は各 $r+1=O(\log(e+1))$ 回で足りる．
+途中の因子は $M$ 未満の $L$ ビット整数であり，
+乗算と $2L$ ビット整数の剰余計算は筆算法で各 $O(L^2)$ ビット演算である．
+\end{proof}
+
+\section{Karatsubaの高速整数乗算}
+\begin{theorem}[三回の半サイズ乗算]
+非負整数 $x,y<2^n$ の積を計算する再帰算法が存在し，
+そのビット演算量は
+\[
+ O\bigl(n^{\log_2 3}\bigr)
+\]
+である．
+\end{theorem}
+\begin{proof}
+$n\ge2$ のとき $m=\lceil n/2\rceil$，$B=2^m$ と置き
+\[
+ x=x_1B+x_0,\qquad y=y_1B+y_0,
+ \quad0\le x_0,y_0<B
+\]
+と分ける．三つの積
+\[
+ z_0=x_0y_0,\qquad z_2=x_1y_1,\qquad
+ z=(x_0+x_1)(y_0+y_1)
+\]
+を再帰的に計算し，$z_1=z-z_0-z_2$ とする．
+直接展開すれば
+\[
+ xy=z_2B^2+z_1B+z_0
+\]
+である．通常の筆算では四つ必要な半サイズの積が三つに減った．
+和 $x_0+x_1$ などは高々 $m+1$ ビットなので，
+乗算に必要な時間 $T(n)$ は，十分大きい $n$ について
+\[
+ T(n)\le3T(\lceil n/2\rceil+1)+Cn
+\]
+を満たす．初期の十分小さいサイズでは通常の筆算で計算する．
+$m+1$ の端数の影響は $n$ を定数だけ増やしてから二分する
+再帰の深さの定数差として吸収できる．
+再帰木の深さは $\log_2n+O(1)$ であり，
+第 $j$ 層の節点数は高々 $3^j$，各節点の処理費用は
+$O(n/2^j+1)$ である．従って総費用は
+\[
+ O\!\left(\sum_{j\le\log_2n}3^j(n2^{-j}+1)\right)
+ =O\bigl(n^{\log_2 3}\bigr)
+\]
+となる．
+\end{proof}
+\begin{remark}
+上のビット計算量は学校式の $O(n^2)$ を改善するが，
+準線形時間の整数乗算そのものを証明するものではない．
+\end{remark}
+
+
+\section{計算を最後まで実行する}
+\begin{example}[整数のEuclid算法]
+$252=198+54$，$198=3\cdot54+36$，
+$54=36+18$，$36=2\cdot18$ から最大公約数は18である．
+逆に代入すると
+\[
+18=54-36=4\cdot54-198=4\cdot252-5\cdot198.
+\]
+従ってB\'ezout係数も $(4,-5)$ と構成できた．
+また $43=2\cdot17+9$，$17=9+8$，$9=8+1$ から
+\[
+1=2\cdot43-5\cdot17.
+\]
+ゆえに $17x\equiv1\pmod{43}$ の全解は
+$x\equiv38\pmod{43}$ である．
+\end{example}
+\begin{example}[多項式版]
+$\mathbb Q[x]$ で $f=x^3-1$，$g=x^2-1$ とする．
+\[
+ f=xg+(x-1),\qquad g=(x+1)(x-1)
+\]
+であるから $\gcd(f,g)=x-1$（モニック化）．
+加えて $x-1=f-xg$ は多項式版B\'ezout等式である．
+\end{example}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+反復二乗法で $7^{13}\bmod55$ を求めよ．
+
+\medskip\noindent\textbf{解答．}
+$13=8+4+1$ と分解する．
+$7^2\equiv49$，$7^4\equiv36$，$7^8\equiv31$
+（いずれも法55）だから
+\[
+ 7^{13}\equiv31\cdot36\cdot7\equiv2\pmod{55}.
+\]
+これは指数の二進表示から必要な因子だけを掛ける計算である．
+
+\end{document}

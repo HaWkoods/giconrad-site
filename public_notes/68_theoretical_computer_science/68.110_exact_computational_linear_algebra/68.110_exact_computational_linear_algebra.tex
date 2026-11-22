@@ -1,0 +1,270 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{計算線形代数}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標}
+整数行列を可逆な整数基本操作でSmith標準形に直し，
+整数線形方程式の可解性と商加群を計算できるようになる．
+前提は整数のEuclid算法と行列の基本操作である．
+
+\section{整数行列の分数なし消去}
+$A\in\mathbb Z^{n\times n}$ を考える．
+分数の発生を避けるためBareissの更新を使う．
+\begin{definition}
+$A^{(0)}=A$，$d_{-1}=1$ と置く．
+行と列の交換を適宜許し，$k$ 段目の非零pivotを
+$d_k=a^{(k)}_{kk}$ としたとき，$i,j>k$ に対して
+\[
+ a^{(k+1)}_{ij}=
+ \frac{d_k a^{(k)}_{ij}-a^{(k)}_{ik}a^{(k)}_{kj}}{d_{k-1}}
+\]
+と更新する．
+\end{definition}
+\begin{theorem}[Bareiss更新の整除性]
+先頭の主小行列式が各段階で零でないとする．
+このとき更新式の分子は $d_{k-1}$ で割り切れ，
+途中の成分は整数である．最後のpivotは，実施した行・列の交換総数を $s$ とすると $(-1)^s\det A$ に等しい．
+\end{theorem}
+\begin{proof}
+$k$ 段階での行列要素は，もとの行列の先頭 $k$ 行・列と
+行 $i$，列 $j$ の交差小行列式と同一視できることを帰納的に示す．
+$k=0$ では元の成分である．
+次の段階の $2\times2$ 型の行列式恒等式
+\[
+ \det(B)\det(B_{\widehat{i},\widehat{j}})
+ =\det(B_{\widehat i,\widehat i})
+  \det(B_{\widehat j,\widehat j})
+ -\det(B_{\widehat i,\widehat j})
+  \det(B_{\widehat j,\widehat i})
+\]
+（Desnanot--Jacobi恒等式）を適用すると，
+更新式の分子が前段階pivotと次の交差小行列式の積になる．
+この恒等式は可逆な左上ブロックについてSchur補行列の
+$2\times2$ 行列式を計算して得られ，多項式恒等式だから一般にも成り立つ．
+よって整除性と不変量が帰納的に従う．行・列の交換がなければ最後は全行列式に等しい．
+交換総数を $s$ とした場合，行列式の符号は $(-1)^s$ 倍になる．
+\end{proof}
+\section{Smith標準形の基本不変量}
+\begin{proposition}
+整数行列 $A\in\mathbb Z^{m\times n}$ が
+可逆な整数行列 $P,Q$ を用いて
+\[
+ PAQ=\operatorname{diag}(d_1,\ldots,d_r,0,\ldots)
+\]
+と変形され，$d_i>0$，$d_i\mid d_{i+1}$ とする．
+$\Delta_k$ を $A$ の全 $k$ 次小行列式の最大公約数とすると
+\[\Delta_k=d_1\cdots d_k\quad(1\le k\le r).\]
+\end{proposition}
+\begin{proof}
+Cauchy--Binet公式によって $PAQ$ の各 $k$ 次小行列式は
+$A$ の $k$ 次小行列式の整数係数線形結合である．
+逆変換にも同じ議論を適用できるため，小行列式の生成する整数イデアルは不変である．
+対角形では全 $k$ 次小行列式が $d_1\cdots d_k$ の倍数であり，
+先頭 $k$ 次小行列式がその値そのものなので最大公約数は表示式に等しい．
+\end{proof}
+\begin{remark}
+一般のSmith標準形の存在算法は既存の15.010で扱われている．
+ここでは不変因子の計算法と厳密な行列式計算を主題とした．
+\end{remark}
+
+
+\section{Smith標準形の構成算法}
+\begin{theorem}[Euclid整域上のSmith算法]
+$R$ をEuclid整域とする．任意の $A\in R^{m\times n}$ に対し
+可逆行列 $P\in\mathrm{GL}_m(R)$，$Q\in\mathrm{GL}_n(R)$ が存在して
+\[
+ PAQ=\operatorname{diag}(d_1,\ldots,d_r,0,\ldots),
+ \qquad d_i\mid d_{i+1}
+\]
+となる．しかもEuclid除法・行列の基本行列操作を用いて
+有限回でこれを構成できる．
+\end{theorem}
+\begin{proof}
+零行列の場合は明らかである．非零成分を行列の左上に置き，
+その値を $a\ne0$ とする．
+第一列に $a$ で割り切れない成分 $b$ があれば，
+その行の $b$ を $a$ で割って $b=qa+r$，$0\ne r$ と書き，
+行から $q$ 倍の第一行を引き，次に行交換して $r$ をpivotにする．
+Euclid関数は厳密に減少する．第一行についても列操作で同様に行う．
+これを繰り返すと左上 $a$ は第一行と第一列のすべての成分を割る．
+行と列の基本操作でそれらを零にできる．
+もし右下部分行列に $a$ で割り切れない成分 $b$ があれば，
+その行を第一行に加えて第一行に $b$ を現し，
+先ほどと同じ除算操作によって，左上pivotをより小さいEuclid関数の
+非零元へ取り替えられる．
+Euclid関数は非負整数値なので，この減少は有限回で停止する．
+停止時の左上pivot $a$ は右下部分行列の全成分を割る．
+右下部分行列について帰納的に同じ手続きを施すと，
+その対角成分も $a$ の倍数のまま保たれる．
+従って対角化と $d_i\mid d_{i+1}$ が得られる．
+全操作は基本行・列操作であり，それぞれ可逆であるから
+対応する $P,Q$ が存在する．
+\end{proof}
+\begin{corollary}[整数行列の不変因子の復元]
+整数行列 $A$ の階数を $r$ とし，$\Delta_k$ を
+$k$ 次小行列式全体の最大公約数，$\Delta_0=1$ とする．
+このときSmith対角成分は符号を除いて
+$ d_k=\Delta_k/\Delta_{k-1}$（$1\le k\le r$）で一意に定まる．
+\end{corollary}
+\begin{proof}
+前定理で $R=\mathbb Z$ と取ればSmith形が存在する．
+先に証明した小行列式イデアルの不変性より
+$\Delta_k=|d_1\cdots d_k|$ が成り立つ．
+隣り合う式の商を取れば表示式になり，
+従って不変因子の絶対値は一意に定まる．
+\end{proof}
+
+\section{Smith不変因子のビット長の上界}
+\begin{theorem}[最大小行列式による上界]
+$A\in\mathbb Z^{m\times n}$ の階数を $r\ge1$ とし，
+全成分の絶対値が $B\ge1$ 以下であるとする．
+Smith標準形の非零不変因子を正整数
+$d_1\mid\cdots\mid d_r$ とすると
+\[
+ d_1\cdots d_r\le r^{r/2}B^r,
+ \qquad \log_2d_i\le
+ r\log_2 B+\frac r2\log_2r
+\]
+が全 $i$ について成り立つ．従って全不変因子のビット長は
+$O(r(\log B+\log r))$ 以下である．
+\end{theorem}
+\begin{proof}
+$r\times r$ 小行列式全体の最大公約数を $\Delta_r$ とする．
+左から整数の単模行列を掛けると，Cauchy--Binetの公式により
+変換後の各 $r$ 次小行列式は変換前の小行列式の整数係数線形結合となる．
+右からの単模行列についても同じであり，
+逆変換も整数単模なので $\Delta_r$ は不変である．
+Smith標準形では，階数 $r$ の非零小行列式は
+$d_1\cdots d_r$ の一つだけだから $\Delta_r=d_1\cdots d_r$ である．
+
+元の $A$ の任意の $r$ 次小行列 $C$ の各行のEuclidノルムは
+$\sqrt r B$ 以下だからHadamardの不等式から
+$|\det C|\le(\sqrt r B)^r$ である．
+階数 $r$ だから非零の $r$ 次小行列式があり，
+正の整数 $\Delta_r$ はその絶対値以下である．
+よって $d_1\cdots d_r\le r^{r/2}B^r$．
+各 $d_i$ は正整数なので $d_i\le d_1\cdots d_r$ となり，
+対数を取れば表示式を得る．
+\end{proof}
+\begin{remark}
+この評価は求める不変因子自身のビット長についての上界である．
+中間計算で大きな係数を作らないSmith標準形算法の計算量まで
+保証するものではない．
+\end{remark}
+
+
+\section{Smith標準形を使った完全な整数計算}
+\begin{example}[行と列の可逆基本変形]
+\[
+ A=\begin{pmatrix}2&4\\6&8\end{pmatrix}
+ \longrightarrow\begin{pmatrix}2&4\\0&-4\end{pmatrix}
+ \longrightarrow\begin{pmatrix}2&0\\0&-4\end{pmatrix}
+ \longrightarrow\begin{pmatrix}2&0\\0&4\end{pmatrix}.
+\]
+順に第二行から第一行の3倍を引き，
+第二列から第一列の2倍を引き，
+第二行の符号を変更した．従って
+\[
+ P=\begin{pmatrix}1&0\\3&-1\end{pmatrix},
+ \quad Q=\begin{pmatrix}1&-2\\0&1\end{pmatrix},
+ \quad PAQ=\operatorname{diag}(2,4).
+\]
+$\det P=-1$，$\det Q=1$ より両者は
+$\mathrm{GL}_2(\mathbb Z)$ の元である．
+しかも $2\mid4$ なのでSmith標準形である．
+小行列式による検算では
+$\Delta_1=\gcd(2,4,6,8)=2$，
+$\Delta_2=|\det A|=8$ となり，
+不変因子が $2,4$ と確かめられる．
+\end{example}
+\begin{proposition}[整数解の整除条件]
+上の $A$ と $b=(b_1,b_2)^T$ に対し
+$Ax=b$ が整数解を持つための必要十分条件は
+$2\mid b_1$ かつ $4\mid(3b_1-b_2)$ である．
+このとき $\mathbb Z^2/A\mathbb Z^2
+\cong\mathbb Z/2\mathbb Z\oplus\mathbb Z/4\mathbb Z$ である．
+\end{proposition}
+\begin{proof}
+$y=Q^{-1}x$ とすれば，$Ax=b$ は
+$\operatorname{diag}(2,4)y=Pb$ に同値である．
+$Pb=(b_1,3b_1-b_2)^T$ だから各対角成分での
+整除性が必要十分である．$P,Q$ は整数格子の自己同型なので，
+商加群の表示も対角行列の場合へ帰着する．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+$Ax=(2,2)^T$ の整数解を全て求めよ．
+
+\medskip\noindent\textbf{解答．}
+$Pb=(2,4)^T$ なので $y=(1,1)^T$，
+$x=Qy=(-1,1)^T$．$\det A=-8\ne0$ より解は一意である．
+実際 $A(-1,1)^T=(2,2)^T$ となる．
+
+\end{document}

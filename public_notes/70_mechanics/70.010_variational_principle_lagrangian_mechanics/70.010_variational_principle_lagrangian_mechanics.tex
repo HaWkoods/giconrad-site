@@ -1,0 +1,513 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{変分原理とLagrange力学}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+作用汎関数からEuler--Lagrange方程式を導き，
+具体的な境界条件を満たす停留曲線を構成できることを
+主目標とする．保存則は得られた運動を検算する手段となる．
+前提は微積分・常微分方程式・線形代数の初歩である．
+
+\section{作用汎関数}
+本稿の出発点は，配置変数 $q(t)\in\mathbb R^d$ と
+Lagrange関数
+$L:\mathbb R^d\times\mathbb R^d\times[a,b]\to\mathbb R$
+である．物理的なLagrange関数の選択そのものはモデルの仮定であり，
+その後の微分方程式は数学的な帰結として導く．
+\begin{definition}
+$L$ を $C^2$ 級とし，$q\in C^2([a,b];\mathbb R^d)$ に対して
+作用汎関数を
+\[
+ \mathcal S[q]=\int_a^bL(q(t),\dot q(t),t)\,dt
+\]
+と定める．固定端点を持つ変分とは
+$q_\varepsilon=q+\varepsilon\eta$ で
+$\eta\in C^2([a,b];\mathbb R^d)$，
+$\eta(a)=\eta(b)=0$ としたものをいう．
+\end{definition}
+\begin{definition}
+$q$ が作用の停留曲線であるとは，
+任意の固定端点変分に対し
+$\left.\frac d{d\varepsilon}\right|_{\varepsilon=0}
+ \mathcal S[q_\varepsilon]=0$ となることをいう．
+\end{definition}
+\begin{lemma}[滑らかな試験関数の存在]
+任意の非空開区間 $J\subset(a,b)$ に対し，
+$\eta\in C_c^\infty(J)$ で $\eta\ge0$ かつ
+$\eta\not\equiv0$ となるものが存在する．
+\end{lemma}
+\begin{proof}
+$\rho(t)=e^{-1/t}$（$t>0$），$\rho(t)=0$（$t\le0$）
+と定める．$t>0$ での任意階導関数は
+$1/t$ の多項式と $e^{-1/t}$ の積なので
+$t\downarrow0$ で零に収束する．
+従って $\rho$ は $\mathbb R$ 上の滑らかな非負関数である．
+$[u,v]\subset J$ となる $u<v$ を取り，
+$\eta(t)=\rho(t-u)\rho(v-t)$ と置けば，
+$\eta$ は $[u,v]$ に台を持つ滑らかな非負関数であり，
+$u<t<v$ では正である．
+\end{proof}
+\begin{lemma}[変分法の基本補題]\label{lem:fundamental}
+$f\in C([a,b])$ が
+$\int_a^bf(t)\eta(t)\,dt=0$ を
+任意の $\eta\in C_c^\infty((a,b))$ について満たすなら，
+$f(t)=0$ が全ての $a<t<b$ で成立する．
+\end{lemma}
+\begin{proof}
+$f(t_0)>0$ となる $t_0\in(a,b)$ があると仮定する．
+連続性から $t_0$ を含む小開区間 $J$ 上で
+$f(t)\ge c>0$ とできる．
+前補題の非負で零でない試験関数 $\eta$ を取ると
+$\int f\eta\ge c\int\eta>0$ となり矛盾する．
+$f(t_0)<0$ の場合にも $-f$ へ同じ議論を適用する．
+従って全ての内部点で $f=0$ である．
+\end{proof}
+
+\section{Euler--Lagrange方程式}
+\begin{theorem}[Euler--Lagrange方程式]\label{thm:el}
+$L\in C^2$，$q\in C^2([a,b];\mathbb R^d)$ とする．
+$q$ が固定端点変分に関して停留曲線であることと，
+各 $i=1,\ldots,d$ に対して
+\[
+ {d\over dt}{\partial L\over\partial v_i}
+ (q(t),\dot q(t),t)
+ -{\partial L\over\partial q_i}
+ (q(t),\dot q(t),t)=0
+ \tag{EL}
+\]
+が $a<t<b$ で成立することは同値である．
+\end{theorem}
+\begin{proof}
+$\eta\in C^2([a,b];\mathbb R^d)$，
+$\eta(a)=\eta(b)=0$ を取る．
+$L$ は $C^2$ なので，コンパクト区間上の連鎖律と
+微分積分交換によって
+\[
+ \left.{d\over d\varepsilon}\right|_0\mathcal S[q+\varepsilon\eta]
+ =\int_a^b
+ \sum_{i=1}^d
+ \left(
+ {\partial L\over\partial q_i}\eta_i+
+ {\partial L\over\partial v_i}\dot\eta_i
+ \right)dt
+\]
+を得る．偏導関数は曲線 $(q,\dot q,t)$ 上で評価する．
+$\eta_i(a)=\eta_i(b)=0$ なので，部分積分により
+\[
+ \left.{d\over d\varepsilon}\right|_0\mathcal S[q+\varepsilon\eta]
+ =\int_a^b\sum_{i=1}^d
+ \left({\partial L\over\partial q_i}
+ -{d\over dt}{\partial L\over\partial v_i}\right)\eta_i\,dt.
+ \tag{1}
+\]
+$q$ が停留曲線なら左辺は任意の $\eta$ に対して零である．
+一つの成分 $\eta_i$ だけを任意の内部コンパクト台の試験関数とし，
+残る成分を零と置けるから，
+基本補題\ref{lem:fundamental}によって括弧内は零となる．
+逆に (EL) が成立すれば (1) の右辺は零だから
+$q$ は停留曲線である．
+\end{proof}
+\begin{remark}
+停留曲線という条件は最小値を取ることを意味しない．
+Euler--Lagrange方程式は固定端点問題の一階変分が
+消えるための必要十分条件であり，
+極小性には二階変分等の追加条件が必要である．
+\end{remark}
+\begin{example}[停留性と極小性の違い]\label{ex:nonminimum}
+$T>\pi$ とし，$q(0)=q(T)=0$ を課した
+\[
+ \mathcal S[q]={1\over2}\int_0^T(\dot q^2-q^2)\,dt
+\]
+を考える．$q\equiv0$ は停留曲線であるが局所最小ではない．
+\end{example}
+\begin{proof}
+$L=(v^2-q^2)/2$ のEuler--Lagrange方程式は
+$\ddot q+q=0$ であり，$q\equiv0$ は解である．
+$h(t)=\sin(\pi t/T)$ と置くと端点で零であり，
+直接積分して
+\[
+ \mathcal S[\varepsilon h]
+ ={\varepsilon^2T\over4}
+ \left((\pi/T)^2-1\right)<0=\mathcal S[0]
+\]
+を得る．任意に小さい $\varepsilon\ne0$ で作用が小さくなるため
+局所最小ではない．
+\end{proof}
+\section{運動方程式と具体例}
+\begin{theorem}[Newton方程式の変分原理]
+正定値対称行列 $M\in\mathbb R^{d\times d}$ と
+$V\in C^2(\mathbb R^d)$ に対し
+\[
+ L(q,v)={1\over2}v^TMv-V(q)
+\]
+と置く．そのEuler--Lagrange方程式は
+\[
+ M\ddot q=-\nabla V(q)
+\]
+である．
+\end{theorem}
+\begin{proof}
+$\partial L/\partial v=Mv$，
+$\partial L/\partial q=-\nabla V(q)$ である．
+$M$ は定数なので
+$d(M\dot q)/dt=M\ddot q$．
+これらを (EL) に代入すれば結論を得る．
+\end{proof}
+\begin{example}[調和振動子]
+$L(q,v)=\tfrac12mv^2-\tfrac12kq^2$，
+$m,k>0$ とすると，
+全ての運動解は
+\[
+ q(t)=A\cos(\omega t)+B\sin(\omega t),\qquad
+ \omega=\sqrt{k/m}
+\]
+の形である．
+\end{example}
+\begin{proof}
+Euler--Lagrange方程式は
+$m\ddot q+kq=0$ である．
+表示した関数はこの方程式を満たす．
+任意の初期位置と初期速度は
+$A=q(0)$，$B=\dot q(0)/\omega$ を選べば実現される．
+線形常微分方程式の初期値解は一意なので，
+これらが全ての解である．
+\end{proof}
+
+\section{保存量とNoetherの定理}
+\begin{definition}
+一般化運動量とエネルギー関数を
+\[
+ p_i={\partial L\over\partial v_i},\qquad
+ E(q,v,t)=\sum_{i=1}^dp_iv_i-L(q,v,t)
+\]
+によって定める．
+\end{definition}
+\begin{theorem}[時間並進不変性とエネルギー保存]\label{thm:energy}
+$q$ がEuler--Lagrange方程式の解なら
+\[
+ {d\over dt}E(q(t),\dot q(t),t)
+ =-{\partial L\over\partial t}(q(t),\dot q(t),t)
+\]
+が成立する．特に $L$ が $t$ に陽に依存しなければ
+$E$ は運動に沿って一定である．
+\end{theorem}
+\begin{proof}
+連鎖律を用いて
+\[
+ \begin{aligned}
+ {dE\over dt}
+ &=\sum_i(\dot p_i\dot q_i+p_i\ddot q_i)
+ -\sum_i\left(
+ {\partial L\over\partial q_i}\dot q_i+
+ {\partial L\over\partial v_i}\ddot q_i
+ \right)-{\partial L\over\partial t}\\
+ &=\sum_i
+ \left(\dot p_i-{\partial L\over\partial q_i}\right)\dot q_i
+ -{\partial L\over\partial t}.
+ \end{aligned}
+\]
+Euler--Lagrange方程式から括弧内は零なので，
+表示した等式を得る．
+\end{proof}
+\begin{definition}
+配置空間の局所一パラメータ変換群
+$\Phi_s:\mathbb R^d\to\mathbb R^d$ を考える．
+$\Phi_0=\mathrm{id}$，
+$\Phi_{s+t}=\Phi_s\circ\Phi_t$ とし，
+\[
+ L(\Phi_s(q),D\Phi_s(q)v,t)=L(q,v,t)
+\]
+が成立するとき，$L$ は $\Phi_s$ に関して不変という．
+その無限小生成ベクトル場を
+$\xi(q)=\left.\partial_s\Phi_s(q)\right|_{s=0}$ とする．
+\end{definition}
+\begin{theorem}[Noetherの第一定理：点変換の場合]\label{thm:noether}
+$L$ が上の一パラメータ変換群に関して不変とする．
+Euler--Lagrange方程式の任意の解 $q(t)$ に沿って
+\[
+ J(t)=\sum_{i=1}^d
+ {\partial L\over\partial v_i}(q,\dot q,t)\,
+ \xi^i(q(t))
+\]
+は一定である．
+\end{theorem}
+\begin{proof}
+不変性の式を $s=0$ で微分すると
+\[
+ \sum_i{\partial L\over\partial q_i}\xi^i(q)
+ +\sum_{i,j}{\partial L\over\partial v_i}
+ {\partial\xi^i\over\partial q_j}(q)v_j=0
+ \tag{2}
+\]
+を得る．
+一方解 $q(t)$ に沿って
+\[
+ {dJ\over dt}
+ =\sum_i\dot p_i\xi^i(q)
+ +\sum_{i,j}p_i{\partial\xi^i\over\partial q_j}(q)\dot q_j.
+\]
+Euler--Lagrange方程式は
+$\dot p_i=\partial L/\partial q_i$ なので，
+右辺は (2) の $v=\dot q$ に等しく，零となる．
+従って $J$ は保存される．
+\end{proof}
+\begin{corollary}[空間並進対称性]
+$L$ が固定ベクトル $a\in\mathbb R^d$ に沿う並進
+$q\mapsto q+sa$ に関して不変なら，
+運動量 $p\cdot a$ は保存される．
+\end{corollary}
+\begin{proof}
+並進の無限小生成ベクトル場は定数場 $\xi(q)=a$ なので，
+定理\ref{thm:noether}の保存量は $p\cdot a$ である．
+\end{proof}
+\begin{corollary}[回転対称性と角運動量]
+$d=3$ とし，$L$ が固定した軸 $a$ の周りの
+一パラメータ回転に関して不変なら，
+$a\cdot(q\times p)$ は保存される．
+\end{corollary}
+\begin{proof}
+回転の無限小生成ベクトル場は
+$\xi(q)=a\times q$ である．
+従ってNoetherの保存量は
+$p\cdot(a\times q)=a\cdot(q\times p)$ となる．
+\end{proof}
+
+\section{Legendre変換とHamilton方程式}
+\begin{definition}
+$L$ が正則であるとは，速度変数に関するHessian
+\[
+ W(q,v,t)=\left(
+ {\partial^2L\over\partial v_i\partial v_j}(q,v,t)
+ \right)_{i,j}
+\]
+が可逆であることをいう．
+\end{definition}
+\begin{theorem}[局所Legendre変換]\label{thm:legendre}
+$L\in C^2$ とし，ある $(q_0,v_0,t_0)$ で
+$\det W(q_0,v_0,t_0)\ne0$ とする．
+$p=\partial L/\partial v$ の関係を
+$(q_0,v_0,t_0)$ の近傍で
+$v=v(q,p,t)$ と一意に解ける．
+このとき
+\[
+ H(q,p,t)=p\cdot v(q,p,t)-L(q,v(q,p,t),t)
+\]
+と置けば
+\[
+ {\partial H\over\partial p_i}=v_i,\qquad
+ {\partial H\over\partial q_i}
+ =-{\partial L\over\partial q_i},\qquad
+ {\partial H\over\partial t}=-{\partial L\over\partial t}
+ \tag{3}
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+$F(q,v,t,p)=\partial L/\partial v(q,v,t)-p$ と置く．
+$v$ に関する微分は $W$ なので，陰関数定理から
+$v=v(q,p,t)$ を近傍で一意に解ける．
+$H$ を $p_i$ で微分すると
+\[
+ {\partial H\over\partial p_i}
+ =v_i+\sum_jp_j{\partial v_j\over\partial p_i}
+ -\sum_j{\partial L\over\partial v_j}
+  {\partial v_j\over\partial p_i}=v_i
+\]
+である．最後の等号は $p_j=\partial L/\partial v_j$ による．
+$q_i,t$ についても連鎖律による速度微分項が相殺するため，
+残りの二式を得る．
+\end{proof}
+\begin{corollary}[Hamiltonの正準方程式]
+正則な $L$ のEuler--Lagrange解について
+$p_i=\partial L/\partial v_i$ と置く．
+その運動は局所的に
+\[
+ \dot q^i={\partial H\over\partial p_i},\qquad
+ \dot p_i=-{\partial H\over\partial q^i}
+\]
+で記述される．
+\end{corollary}
+\begin{proof}
+第1式は定理\ref{thm:legendre}の
+$H_{p_i}=v_i$ と $v_i=\dot q^i$ による．
+第2式はEuler--Lagrange方程式
+$\dot p_i=L_{q^i}$ と $H_{q^i}=-L_{q^i}$ から従う．
+\end{proof}
+\section{Riemann幾何学への接続}
+\begin{theorem}[測地線の変分原理]
+Riemann多様体 $(M,g)$ の局所座標において
+\[
+ L(x,v)={1\over2}\sum_{i,j}g_{ij}(x)v^iv^j
+\]
+と置く．そのEuler--Lagrange方程式は
+\[
+ \ddot x^\ell+\sum_{i,j}\Gamma^\ell_{ij}(x)
+ \dot x^i\dot x^j=0
+\]
+であり，Levi-Civita接続に関する測地線方程式に一致する．
+\end{theorem}
+\begin{proof}
+$g_{ij}=g_{ji}$ なので
+\[
+ {\partial L\over\partial v^k}=\sum_jg_{kj}v^j,\qquad
+ {\partial L\over\partial x^k}
+ =\tfrac12\sum_{i,j}\partial_k g_{ij}v^iv^j.
+\]
+Euler--Lagrange方程式へ代入すると
+\[
+ \sum_jg_{kj}\ddot x^j+
+ \sum_{i,j}\left(
+ \tfrac12\partial_i g_{kj}
+ +\tfrac12\partial_jg_{ki}
+ -\tfrac12\partial_kg_{ij}\right)
+ \dot x^i\dot x^j=0.
+\]
+両辺に逆行列 $g^{\ell k}$ を掛ければ
+\[
+ \ddot x^\ell+\tfrac12\sum_{i,j,k}g^{\ell k}
+ (\partial_i g_{kj}+\partial_jg_{ki}-\partial_kg_{ij})
+ \dot x^i\dot x^j=0
+\]
+を得る．括弧の係数はChristoffel記号
+$\Gamma^\ell_{ij}$ なので結論が従う．
+\end{proof}
+\begin{remark}
+この変分原理は座標に依存しない運動方程式を
+接続の言葉で記述できることを示す．
+大域的な極小測地線の存在には，
+Euler--Lagrange方程式だけでなく
+完備性などの条件が必要である．
+\end{remark}
+
+\section{端点が与えられた振動子を実際に解く}
+\begin{proposition}[調和振動子の固定端点問題]
+$m,k>0$，$\omega=\sqrt{k/m}$ として
+\[
+ L(q,\dot q)=\frac m2\dot q^2-\frac k2q^2
+\]
+を考える．$q(0)=a$，$q(T)=b$ を満たす
+作用の停留曲線について，$\sin(\omega T)\ne0$ なら
+ただ一つ存在し，
+\[
+ q(t)=
+ \frac{a\sin(\omega(T-t))+b\sin(\omega t)}
+      {\sin(\omega T)}
+\]
+で与えられる．一方 $T=\pi/\omega$ の場合，
+$b=-a$ なら無限個存在し，$b\ne-a$ なら存在しない．
+\end{proposition}
+\begin{proof}
+Euler--Lagrange方程式は
+$m\ddot q+kq=0$ すなわち
+$\ddot q+\omega^2q=0$ である．その一般解は
+$q(t)=A\cos(\omega t)+B\sin(\omega t)$ である．
+初期条件から $A=a$，
+終端条件から
+\[
+ b=a\cos(\omega T)+B\sin(\omega T).
+\]
+$\sin(\omega T)\ne0$ なら $B$ が一意に定まり，
+三角関数の加法公式で書き直すと表示式となる．
+$T=\pi/\omega$ なら
+$\cos(\omega T)=-1$，$\sin(\omega T)=0$
+だから終端条件は $b=-a$ に限られ，
+成立するとき $B$ は任意である．
+これらの曲線が停留曲線となることは
+Euler--Lagrange方程式の必要十分性から従う．
+\end{proof}
+\begin{example}[停留曲線とエネルギー]
+$m=k=1$，$T=\pi/2$，$a=0$，$b=1$
+とすると $q(t)=\sin t$ となる．
+エネルギー
+\[
+ E(t)=\frac12\dot q(t)^2+\frac12q(t)^2
+     =\frac12\cos^2t+\frac12\sin^2t
+     =\frac12
+\]
+は一定である．一般の解についても
+$E'(t)=\dot q(t)(m\ddot q(t)+kq(t))=0$
+である．このように保存量は境界値解を検算できる．
+\end{example}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+$m=k=1$，$T=\pi/2$，$a=1$，$b=0$
+の停留曲線を求め，エネルギーを計算せよ．
+
+\medskip\noindent\textbf{解答．}
+前命題から $q(t)=\cos t$．
+$\dot q=-\sin t$ なのでエネルギーは
+$E(t)=\frac12(\sin^2t+\cos^2t)=1/2$ である．
+\section*{限界}
+停留曲線であることは作用を最小化することを
+無条件には意味しない．特に $\sin(\omega T)=0$ の
+境界値問題では解の存在と一意性さえ変化するため，
+変分問題では時間区間と境界条件が本質的である．
+
+\end{document}
