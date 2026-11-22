@@ -1,0 +1,724 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{ガロア理論と方程式の可解性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Galois対応，有限群の可解性．
+本稿の具体的な到達課題は，具体的な多項式のGalois群を決め，根号可解性を判定する．
+
+\section{根号による可解性}
+
+本稿では全ての体は標数 $0$ とする．
+有限次Galois拡大，分解体，Galois対応および
+有限群の正規部分群の基本理論を前提とする．
+
+\begin{definition}
+体 $K$ 上の多項式 $f(X)\in K[X]$ が
+\emph{根号によって可解}であるとは，
+ある体拡大の塔
+\[
+ K=K_0\subset K_1\subset\cdots\subset K_r
+\]
+が存在し，各 $i$ について
+\[
+ K_i=K_{i-1}(\alpha_i),\qquad
+ \alpha_i^{n_i}\in K_{i-1}
+ \quad(n_i\ge2)
+\]
+を満たし，$f$ の全ての根が $K_r$ に属することをいう．
+このような塔を\emph{根号拡大の塔}という．
+\end{definition}
+
+\begin{remark}
+必要なら $1$ の冪根を付け加える操作も
+$\zeta_n^n=1$ による根号拡大である．
+従って定義では，四則演算と有限回の根号抽出，
+および根号を取る際の異なる値の選択を許している．
+\end{remark}
+
+\begin{definition}
+有限群 $G$ の導来列を
+\[
+ G^{(0)}=G,\qquad
+ G^{(i+1)}=[G^{(i)},G^{(i)}]
+\]
+と定める．
+ある $r$ について $G^{(r)}=\{1\}$ となるとき，
+$G$ を\emph{可解群}という．
+\end{definition}
+
+\begin{lemma}[可解群の基本性質]\label{lem:solvable}
+可解群の部分群および商群は可解である．
+また $N\triangleleft G$ について
+$N$ と $G/N$ がともに可解なら $G$ も可解である．
+有限個の可解群の直積も可解である．
+\end{lemma}
+\begin{proof}
+$H\le G$ なら
+$H^{(i)}\subset G^{(i)}$ が帰納的に従うので，
+$G$ が可解なら $H$ も可解である．
+全射準同型 $\pi:G\to Q$ に対して
+$\pi(G^{(i)})=Q^{(i)}$ だから，
+$G$ が可解なら $Q$ も可解である．
+
+$N\triangleleft G$ とし，$G/N$ が可解なら
+ある $r$ で $(G/N)^{(r)}=1$ となる．
+従って $G^{(r)}\subset N$ である．
+さらに $N$ が可解で $N^{(s)}=1$ なら，
+$G^{(r+s)}=(G^{(r)})^{(s)}
+ \subset N^{(s)}=1$ となる．
+最後に直積について
+$(G_1\times\cdots\times G_m)^{(i)}
+ =G_1^{(i)}\times\cdots\times G_m^{(i)}$
+を用いればよい．
+\end{proof}
+
+\begin{lemma}[可解群と巡回素数位数の正規列]\label{lem:composition}
+有限群 $G$ が可解であることと，
+部分群の列
+\[
+ G=G_0\triangleright G_1\triangleright\cdots
+ \triangleright G_r=\{1\}
+\]
+で各 $G_i/G_{i+1}$ が素数位数の巡回群であるものが
+存在することは同値である．
+ここで $G_{i+1}$ は $G_i$ の正規部分群であればよく，
+$G$ 全体の正規部分群である必要はない．
+\end{lemma}
+\begin{proof}
+列が存在すれば，各商群はAbel群なので可解である．
+補題\ref{lem:solvable}の拡大に関する性質を
+帰納的に適用すれば $G$ は可解となる．
+逆に $G$ を有限可解群とする．
+有限群には組成列が存在する．
+その各組成因子は $G$ の部分群の商群であるから，
+補題\ref{lem:solvable}によって可解である．
+一方，単純な非自明可解群 $S$ について
+$[S,S]$ は $S$ の正規部分群なので
+$\{1\}$ または $S$ に等しい．
+後者なら導来列は零にならず可解性に反するため
+$[S,S]=1$ であり，$S$ はAbel群である．
+有限単純Abel群は素数位数の巡回群だから，
+各組成因子は巡回素数位数である．
+従って組成列が所望の列となる．
+\end{proof}
+
+\section{1の冪根を含む巡回拡大}
+
+\begin{lemma}[根号拡大のGalois群]\label{lem:kummer-abelian}
+体 $F$ が全ての $n$ 乗根の1を含むとする．
+$a_1,\dots,a_s\in F^\times$ に対して
+\[
+ E=F(\alpha_1,\dots,\alpha_s),\qquad
+ \alpha_j^n=a_j
+\]
+と置く．このとき $E/F$ は有限Galois拡大であり，
+$\operatorname{Gal}(E/F)$ はAbel群である．
+\end{lemma}
+\begin{proof}
+各多項式 $X^n-a_j$ は標数 $0$ なので分離的である．
+その根は $\alpha_j\zeta$（$\zeta^n=1$）であり，
+仮定から全て $E$ に属する．
+従って $E$ はこれらの多項式の分解体なので
+有限Galois拡大である．
+任意の $\sigma\in\operatorname{Gal}(E/F)$ に対して
+$\sigma(\alpha_j)^n=\sigma(a_j)=a_j$ なので
+$\sigma(\alpha_j)=\zeta_{\sigma,j}\alpha_j$
+となる $n$ 乗根 $\zeta_{\sigma,j}\in F$ が存在する．
+写像
+\[
+ \operatorname{Gal}(E/F)\to(\mu_n)^s,\qquad
+ \sigma\mapsto(\zeta_{\sigma,1},\dots,\zeta_{\sigma,s})
+\]
+は準同型である．
+実際 $\zeta_{\tau,j}\in F$ なので
+$(\sigma\tau)(\alpha_j)
+ =\sigma(\zeta_{\tau,j}\alpha_j)
+ =\zeta_{\tau,j}\zeta_{\sigma,j}\alpha_j$
+となる．
+全ての $\alpha_j$ が固定されれば $\sigma$ は
+$E$ 全体を固定するのでこの写像は単射である．
+右辺はAbel群だから左辺もAbel群である．
+\end{proof}
+
+\begin{lemma}[巡回素数次拡大は根号拡大]\label{lem:cyclic-radical}
+$E/F$ を素数 $\ell$ 次の巡回Galois拡大とし，
+$F$ が原始 $\ell$ 乗根 $\zeta_\ell$ を含むとする．
+このときある $\alpha\in E$ が存在して
+\[
+ E=F(\alpha),\qquad \alpha^\ell\in F.
+\]
+\end{lemma}
+\begin{proof}
+$\sigma$ を $\operatorname{Gal}(E/F)$ の生成元とする．
+$E$ は $F$ 上の有限次元線形空間であり，
+$\sigma$ は $F$ 線形写像で $\sigma^\ell=I$ を満たす．
+$X^\ell-1$ は標数0で重根を持たず，
+その根は全て $F$ に属するので
+$\sigma$ は $F$ 上対角化可能である．
+$\sigma\ne I$ だから，固有値1以外の固有値
+$\zeta_\ell^j$ を持つ非零固有ベクトル
+$\alpha\in E$ が存在する．
+$\ell$ は素数だから $j\not\equiv0\pmod\ell$ であり，
+$\zeta_\ell^j$ は原始 $\ell$ 乗根である．
+\[
+ \sigma(\alpha^\ell)
+ =(\zeta_\ell^j)^\ell\alpha^\ell=\alpha^\ell
+\]
+なので $\alpha^\ell\in F$ となる．
+また $\alpha\notin F$ であり，
+$[E:F]=\ell$ は素数なので
+$F(\alpha)=E$ である．
+\end{proof}
+
+\begin{lemma}[1の冪根の添加]\label{lem:cyclotomic}
+任意の正整数 $N$ について，
+$K(\mu_N)/K$ は有限Abel型Galois拡大である．
+\end{lemma}
+\begin{proof}
+$X^N-1$ は標数0で分離的であり，
+$K(\mu_N)$ はその分解体なので有限Galois拡大である．
+任意の自己同型は原始 $N$ 乗根 $\zeta_N$ を
+別の原始 $N$ 乗根へ写すので，
+\[
+ \operatorname{Gal}(K(\mu_N)/K)
+ \hookrightarrow(\mathbb Z/N\mathbb Z)^\times
+\]
+という単射準同型が得られる．
+右辺はAbel群なので左辺もAbel群である．
+\end{proof}
+
+\section{根号可解性からGalois群の可解性へ}
+
+\begin{theorem}[必要性]\label{thm:necessary}
+$K$ を標数0の体，$f\in K[X]$ を分離的多項式とし，
+その分解体を $L$ とする．
+$f$ が根号によって可解なら，
+$\operatorname{Gal}(L/K)$ は可解群である．
+\end{theorem}
+\begin{proof}
+根号拡大の塔
+\[
+ K=E_0\subset E_1\subset\cdots\subset E_r,\qquad
+ E_i=E_{i-1}(\alpha_i),\quad \alpha_i^{n_i}\in E_{i-1}
+\]
+で $L\subset E_r$ となるものを取る．
+$\alpha_i=0$ の段階は $E_i=E_{i-1}$ であって
+拡大を生じないので，そのような段階を除いてよい．
+従って以下では全ての $\alpha_i$ と
+$a_i=\alpha_i^{n_i}$ は非零と仮定する．
+$N$ を全ての $n_i$ の公倍数とし，
+$M_0=K(\mu_N)$ と置く．
+補題\ref{lem:cyclotomic}によって
+$M_0/K$ は有限GaloisでGalois群は可解である．
+
+帰納的に，$M_{i-1}/K$ は有限Galoisで可解な
+Galois群を持ち，$E_{i-1}\subset M_{i-1}$ を満たすように
+$M_{i-1}$ を構成できたとする．
+$a_i=\alpha_i^{n_i}\in E_{i-1}$ と置く．
+有限集合
+\[
+ A_i=\{\sigma(a_i):\sigma\in\operatorname{Gal}(M_{i-1}/K)\}
+\]
+を考える．$M_i$ を $M_{i-1}$ 上の多項式
+\[
+ P_i(X)=\prod_{a\in A_i}(X^{n_i}-a)
+\]
+の分解体とする．
+$M_{i-1}$ は $\mu_{n_i}$ を含むので，
+補題\ref{lem:kummer-abelian}から
+$\operatorname{Gal}(M_i/M_{i-1})$ はAbel群である．
+また $\operatorname{Gal}(M_{i-1}/K)$ は
+$A_i$ を置換するため，
+$P_i(X)$ の係数は $K$ に固定される．
+従って $M_i$ は $K$ 上の有限個の分離的多項式を
+全て分解する体であり，$M_i/K$ は有限Galoisである．
+Galois群の完全列
+\[
+ 1\to\operatorname{Gal}(M_i/M_{i-1})
+ \to\operatorname{Gal}(M_i/K)
+ \to\operatorname{Gal}(M_{i-1}/K)\to1
+\]
+と補題\ref{lem:solvable}によって，
+$\operatorname{Gal}(M_i/K)$ は可解である．
+$a_i\in A_i$ なので $M_i$ は $\alpha_i$ を含み，
+$E_i\subset M_i$ となる．
+これで帰納法が成立する．
+
+最後に $L\subset E_r\subset M_r$ であり，
+$L/K$ はGaloisだから，
+制限写像
+$\operatorname{Gal}(M_r/K)\to\operatorname{Gal}(L/K)$
+は全射である．
+可解群の商群は可解なので
+$\operatorname{Gal}(L/K)$ は可解である．
+\end{proof}
+
+\begin{remark}
+証明では，根号拡大の塔そのものが
+Galois拡大の塔であるとは仮定していない．
+各段階で共役な根号を全て付け加えて
+$K$ 上正規な拡大に作り直すことが重要である．
+\end{remark}
+
+\section{Galois群の可解性から根号可解性へ}
+
+\begin{theorem}[十分性]\label{thm:sufficient}
+$K$ を標数0の体，$f\in K[X]$ を分離的多項式とし，
+その分解体を $L$ とする．
+$\operatorname{Gal}(L/K)$ が可解群なら，
+$f$ は根号によって可解である．
+\end{theorem}
+\begin{proof}
+$G=\operatorname{Gal}(L/K)$ とし，
+$N=|G|$ と置く．$N=1$ の場合は $L=K$ なので明らかである．
+$M=K(\mu_N)$ とすると
+$M/K$ はAbel型Galois拡大であり，
+$M$ は $1$ の $\ell$ 乗根を
+全て含む（$\ell$ が $N$ の素因数である場合）．
+$LM/M$ はGaloisであり，
+$\operatorname{Gal}(LM/M)$ は
+$G$ の部分群に同型なので可解である．
+補題\ref{lem:composition}によって
+\[
+ G_0\triangleright G_1\triangleright\cdots
+ \triangleright G_s=1,\qquad
+ G_i/G_{i+1}\cong\mathbb Z/\ell_i\mathbb Z
+\]
+という正規列が得られる．
+ここで各 $\ell_i$ は $N$ の素因数である．
+Galois対応によって
+\[
+ M=F_0\subset F_1\subset\cdots\subset F_s=LM
+\]
+という体の塔が得られ，
+各 $F_{i+1}/F_i$ は素数 $\ell_i$ 次の巡回Galois拡大である．
+全ての $F_i$ は $\mu_{\ell_i}$ を含むので，
+補題\ref{lem:cyclic-radical}から
+\[
+ F_{i+1}=F_i(\alpha_i),\qquad
+ \alpha_i^{\ell_i}\in F_i
+\]
+となる．
+従って $LM/M$ は根号拡大の塔である．
+また $M=K(\mu_N)$ 自身も
+$K$ に $N$ 乗根 $\zeta_N$（$\zeta_N^N=1$）
+を付け加える根号拡大である．
+よって $K$ から $LM$ への塔全体は根号拡大の塔となる．
+$L\subset LM$ だから，$f$ の全ての根はこの塔に属し，
+$f$ は根号によって可解である．
+\end{proof}
+
+\begin{theorem}[根号可解性のGalois理論的判定]\label{thm:iff}
+標数0の体 $K$ 上の分離的多項式 $f$ の分解体を $L$ とする．
+このとき次の条件は同値である．
+\begin{enumerate}
+\item $f$ は根号によって可解である．
+\item $\operatorname{Gal}(L/K)$ は可解群である．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) から (2) は定理\ref{thm:necessary}，
+(2) から (1) は定理\ref{thm:sufficient}による．
+\end{proof}
+
+\section{対称群と交代群}
+
+\begin{lemma}[交代群の基本性質]\label{lem:alternating}
+$n\ge2$ のとき
+$A_n=\ker(\operatorname{sgn}:S_n\to\{\pm1\})$
+は $S_n$ の指数2の正規部分群である．
+また $A_n$ は3-cycle全体によって生成される．
+\end{lemma}
+\begin{proof}
+符号写像は全射準同型なので，
+その核は指数2の正規部分群である．
+任意の偶置換は偶数個の互換の積で書ける．
+二つの互換の積は，
+互換が同じなら恒等置換，
+一点を共有するなら3-cycle，
+互いに交わらないなら
+\[
+ (ab)(cd)=(ab)(bc)(bc)(cd)
+\]
+のように3-cycle二つの積に書き直せる．
+実際，例えば
+$(ab)(cd)=(acb)(acd)$
+という直接計算で確認できる表示を用いてもよい．
+従って偶置換は3-cycleの積で表され，
+$A_n$ は3-cycle全体で生成される．
+\end{proof}
+
+\begin{lemma}[ $A_5$ の共役類]\label{lem:a5-classes}
+$A_5$ の共役類の大きさは
+\[
+ 1,\quad15,\quad20,\quad12,\quad12
+\]
+である．それぞれ恒等置換，二つの互換の積，
+3-cycle，および二種類の5-cycleに対応する．
+\end{lemma}
+\begin{proof}
+$|A_5|=5!/2=60$ である．
+偶置換の可能な巡回型は
+恒等置換，
+$(ab)(cd)$ 型，
+3-cycle型，
+5-cycle型の四種類である．
+それぞれの元の個数は
+\[
+ 1,\quad\frac12\binom52\binom32=15,\quad
+ \binom53\cdot2=20,\quad(5-1)!=24.
+\]
+3-cycle $(123)$ の $S_5$ における中心化群は
+$\langle(123)\rangle\times\langle(45)\rangle$ で位数6である．
+その偶置換部分は位数3なので，
+$A_5$ における共役類の大きさは $60/3=20$ である．
+二重互換 $(12)(34)$ の $S_5$ における中心化群は
+位数8で，偶置換部分は位数4である．
+従って $A_5$ における共役類の大きさは $60/4=15$ である．
+5-cycleの中心化群はその生成する位数5の巡回群であり，
+全て偶置換なので，$A_5$ における共役類の大きさは
+$60/5=12$ である．
+5-cycleは24個あるから二つの共役類に分かれる．
+\end{proof}
+
+\begin{theorem}[ $A_5$ の単純性]\label{thm:a5-simple}
+$A_5$ は非可換単純群である．
+従って $A_5$ は可解群ではない．
+\end{theorem}
+\begin{proof}
+$N\triangleleft A_5$ を正規部分群とする．
+$N$ は共役類の和集合であり単位元を含むから，
+補題\ref{lem:a5-classes}によってその位数は
+\[
+ |N|=1+15\varepsilon_1+20\varepsilon_2
+       +12\varepsilon_3+12\varepsilon_4,
+ \qquad \varepsilon_i\in\{0,1\}
+\]
+の形である．
+Lagrangeの定理により $|N|$ は $60$ の約数である．
+しかし上の16通りの和のうち，
+$60$ の約数となるものは $1$ と $60$ のみである．
+実際，真の非自明な和は少なくとも $13$ であり，
+$60$ の真の約数で $13$ 以上のものは
+$15,20,30$ だけであるが，
+上の和はそのいずれにも等しくならない．
+従って $N=\{1\}$ または $N=A_5$ であり，
+$A_5$ は単純である．
+また $(123)$ と $(345)$ は可換でないので
+$A_5$ は非可換である．
+非可換単純群の交換子部分群は
+非自明な正規部分群なので群全体に等しく，
+導来列は零にならない．
+従って $A_5$ は可解でない．
+\end{proof}
+
+\begin{corollary}\label{cor:sn-nonsolvable}
+$n\ge5$ に対して $S_n$ は可解群ではない．
+\end{corollary}
+\begin{proof}
+$S_n$ は最初の5個の文字だけを置換する
+部分群として $S_5$ を含み，$S_5$ は $A_5$ を含む．
+もし $S_n$ が可解なら
+補題\ref{lem:solvable}からその部分群 $A_5$ も可解となるが，
+定理\ref{thm:a5-simple}に矛盾する．
+\end{proof}
+
+\section{一般の方程式のGalois群}
+
+\begin{theorem}[一般の $n$ 次多項式のGalois群]\label{thm:generic}
+$x_1,\dots,x_n$ を $\mathbb Q$ 上代数的独立な不定元とし，
+$e_1,\dots,e_n$ をその基本対称式とする．
+\[
+ K=\mathbb Q(e_1,\dots,e_n),\qquad
+ L=\mathbb Q(x_1,\dots,x_n)
+\]
+と置く．多項式
+\[
+ F(T)=\prod_{j=1}^n(T-x_j)
+ =T^n-e_1T^{n-1}+e_2T^{n-2}
+ -\cdots+(-1)^ne_n
+\]
+は $K[T]$ に属し，
+その分解体は $L$ である．さらに
+\[
+ \operatorname{Gal}(L/K)\cong S_n.
+\]
+\end{theorem}
+\begin{proof}
+$F$ の係数は基本対称式なので $K$ に属する．
+根は互いに異なる不定元 $x_1,\dots,x_n$ であり，
+標数0だから分離的である．
+$L$ はこれらの根によって生成されるので
+$F$ の分解体であり，$L/K$ は有限Galoisである．
+
+任意の $\sigma\in S_n$ は
+不定元の置換
+$x_i\mapsto x_{\sigma(i)}$ によって
+$\mathbb Q$ 上の体自己同型 $L\to L$ を定める．
+基本対称式は置換で不変なので，
+この自己同型は $K$ を固定する．
+異なる置換は少なくとも一つの $x_i$ の像が異なるので，
+$S_n\hookrightarrow\operatorname{Gal}(L/K)$ は単射である．
+逆に任意の $\tau\in\operatorname{Gal}(L/K)$ は
+多項式 $F$ の根全体を置換するので，
+$\operatorname{Gal}(L/K)\hookrightarrow S_n$ が得られる．
+二つの単射から位数は等しく，
+群として $\operatorname{Gal}(L/K)\cong S_n$ となる．
+\end{proof}
+
+\begin{remark}
+$e_1,\dots,e_n$ は代数的独立である．
+実際 $L$ は $K$ の有限代数拡大なので
+$\operatorname{trdeg}_{\mathbb Q}K
+=\operatorname{trdeg}_{\mathbb Q}L=n$ となる．
+$K$ は $n$ 個の $e_i$ で生成されるため，
+それらの間に非自明な代数関係は存在しない．
+従って $F$ は係数が互いに独立な
+\emph{一般の $n$ 次多項式}を表す．
+\end{remark}
+
+\begin{theorem}[Abel--Ruffiniの定理]\label{thm:abel-ruffini}
+$n\ge5$ とする．
+一般の $n$ 次方程式
+\[
+ T^n+a_1T^{n-1}+\cdots+a_n=0
+\]
+の全ての根を，
+係数 $a_1,\dots,a_n$ から四則演算と
+有限回の根号抽出によって表す公式は存在しない．
+\end{theorem}
+\begin{proof}
+係数を代数的独立な不定元として扱い，
+$K=\mathbb Q(a_1,\dots,a_n)$ を係数体とする．
+定理\ref{thm:generic}により，
+この一般多項式の分解体のGalois群は $S_n$ である．
+$n\ge5$ なら系\ref{cor:sn-nonsolvable}から
+$S_n$ は可解群でない．
+一方，もし全ての根を根号抽出で表す公式が存在すれば，
+多項式は定義によって根号可解であり，
+定理\ref{thm:iff}からGalois群は可解でなければならない．
+これは矛盾する．
+従って一般の方程式に対する根号公式は存在しない．
+\end{proof}
+
+\section{3次・4次方程式の根号表示}
+
+\begin{proposition}[3次方程式の根号可解性]\label{prop:cubic}
+標数0の体 $K$ 上の任意の3次方程式は根号可解である．
+\end{proposition}
+\begin{proof}
+変数変換によって
+$x^3+px+q=0$ の形へ帰着できる．
+$p=0$ なら $x^3=-q$ なので根号で解ける．
+$p\ne0$ とし $x=u+v$ と置くと
+\[
+ (u+v)^3+p(u+v)+q
+ =u^3+v^3+(3uv+p)(u+v)+q.
+\]
+そこで $uv=-p/3$，
+$u^3+v^3=-q$ とすればよい．
+$U=u^3,V=v^3$ は
+\[
+ U+V=-q,\qquad UV=-p^3/27
+\]
+を満たすので，$U,V$ は二次方程式
+\[
+ Z^2+qZ-\frac{p^3}{27}=0
+\]
+の二根である．
+二次方程式の公式によって $U,V$ は平方根で表される．
+$U$ の三乗根 $u$ を一つ選び，
+$v=-p/(3u)$ と定めれば
+$v^3=V$ となり，$x=u+v$ は所望の根である．
+三乗根の選択を1の三乗根で変えることにより
+三つの根を得られる．
+従って分解体は根号拡大の塔に含まれる．
+\end{proof}
+
+\begin{proposition}[4次方程式の根号可解性]\label{prop:quartic}
+標数0の体 $K$ 上の任意の4次方程式は根号可解である．
+\end{proposition}
+\begin{proof}
+変数の平行移動によって
+\[
+ x^4+px^2+qx+r=0
+\]
+の形へ帰着する．
+$q=0$ の場合は $z=x^2$ と置くことで
+二次方程式に帰着し，根号で解ける．
+$q\ne0$ の場合，
+\[
+ (x^2+ux+v)(x^2-ux+w)
+ =x^4+(v+w-u^2)x^2+u(w-v)x+vw
+\]
+という因数分解を考える．
+係数を比較すると
+\[
+ v+w=p+u^2,\qquad u(w-v)=q,\qquad vw=r.
+\]
+$z=u^2\ne0$ と置き，
+\[
+ v=\frac{p+z-q/u}{2},\qquad
+ w=\frac{p+z+q/u}{2}
+\]
+とすれば，$vw=r$ は
+\[
+ z(p+z)^2-4rz-q^2=0,
+\]
+すなわち
+\[
+ z^3+2pz^2+(p^2-4r)z-q^2=0
+\]
+と同値である．
+この3次方程式は命題\ref{prop:cubic}によって根号で解ける．
+$q\ne0$ なので $z=0$ は根でなく，
+根号表示された非零の根 $z$ を一つ選べる．
+$u^2=z$ を満たす $u$ を選び，
+上の式で $v,w$ を定めれば，
+もとの4次多項式は二つの2次式の積に分解される．
+従ってそれぞれ二次方程式の公式で根号表示でき，
+全ての根を含む根号拡大の塔が得られる．
+\end{proof}
+
+\begin{remark}
+Abel--Ruffiniの定理は，
+全ての5次以上の方程式が根号可解でないと主張するものではない．
+例えば $x^5-2=0$ は
+$\sqrt[5]{2}$ と1の五乗根によって解ける．
+非可解性は，\emph{一般の}方程式のGalois群が
+非可解な対称群となることから導かれる．
+\end{remark}
+
+\begin{example}[根号可解な5次方程式]
+$f(x)=x^5-2\in\mathbb Q[x]$ とする．
+その全ての根は
+\[
+ \sqrt[5]{2},\quad\zeta_5\sqrt[5]{2},\quad
+ \zeta_5^2\sqrt[5]{2},\quad
+ \zeta_5^3\sqrt[5]{2},\quad
+ \zeta_5^4\sqrt[5]{2}
+\]
+であり，根号可解である．
+\end{example}
+\begin{proof}
+$\alpha=\sqrt[5]{2}$，$\zeta_5=e^{2\pi i/5}$ とすると
+$\alpha^5=2$，$\zeta_5^5=1$ である．
+従って表示した各元は $f$ の根であり，
+互いに異なるので5次多項式の全ての根を尽くす．
+また
+\[
+ \mathbb Q\subset\mathbb Q(\zeta_5)
+ \subset\mathbb Q(\zeta_5,\alpha)
+\]
+は $\zeta_5^5=1$，$\alpha^5=2$ を満たす根号拡大の塔である．
+\end{proof}
+
+\begin{remark}
+群論の可解性と体の根号拡大の存在を結びつけるには，
+根号の共役を全て加える正規化と，
+1の冪根を用いる巡回拡大の構造が必要である．
+それらを経由することで，
+多項式の根号可解性は分解体のGalois群の
+可解性という純代数的な条件へ置き換えられる．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{三次多項式のGalois群を決定する．}
+\begin{proposition}
+$f(x)=x^3-2\in\mathbb Q[x]$ の分解体 $L$ は
+$L=\mathbb Q(\sqrt[3]2,\omega)$
+（$\omega=e^{2\pi i/3}$）で，
+$\operatorname{Gal}(L/\mathbb Q)\cong S_3$ である．
+\end{proposition}
+\begin{proof}
+Eisensteinの判定法から $x^3-2$ は既約なので
+$[\mathbb Q(\sqrt[3]2):\mathbb Q]=3$ である．
+$\mathbb Q(\sqrt[3]2)\subset\mathbb R$ に
+非実数 $\omega$ を添加すると次数2の拡大となる．
+従って $[L:\mathbb Q]=6$．
+この拡大は標数零の既約多項式の分解体なのでGalois拡大であり，
+Galois群は三つの根への忠実な作用から $S_3$ に埋め込まれる．
+位数は6なので埋め込みは同型となる．
+\end{proof}
+\begin{corollary}
+$x^3-2=0$ は根号で解ける．
+\end{corollary}
+\begin{proof}
+$S_3$ は正規列
+$\{1\}\triangleleft A_3\triangleleft S_3$ を持ち，
+商は位数3と2の巡回群なので可解群である．
+Galois群が可解であるため根号可解となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$x^2-2$ のGalois群を求めよ．
+\par\noindent\textbf{解答．}
+分解体は $\mathbb Q(\sqrt2)$，次数は2なので
+Galois群は $\mathbb Z/2\mathbb Z$ に同型である．
+\end{document}

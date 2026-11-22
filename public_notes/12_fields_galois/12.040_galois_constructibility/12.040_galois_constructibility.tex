@@ -1,0 +1,488 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Galois理論と定規・コンパス作図}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，定規・コンパス作図，体の二次拡大．
+本稿の具体的な到達課題は，作図可能性を体の拡大次数で判定する．
+
+\section{作図可能な点と数}
+
+本稿では平面を複素平面 $\mathbb C$ と同一視し，
+初期点を $0,1$ とする．
+定規・コンパスによる操作とは，
+既知の二点を通る直線，既知の中心と半径で定まる円を描き，
+それらの交点を新しい既知の点に加える操作をいう．
+
+\begin{definition}
+有限回の定規・コンパス操作で得られる点を
+\emph{作図可能点}といい，
+その複素数座標を作図可能数という．
+作図可能数全体を $\mathcal C\subset\mathbb C$ と書く．
+\end{definition}
+
+\begin{lemma}[初等演算の作図可能性]\label{lem:arithmetic}
+$a,b\in\mathcal C$ なら，
+$a+b$，$a-b$，$ab$ は作図可能である．
+$b\ne0$ なら $a/b$ も作図可能である．
+さらに $a\in\mathcal C$ の複素共役 $\overline a$ も作図可能である．
+\end{lemma}
+\begin{proof}
+平行線・垂線の作図は定規とコンパスで行える．
+この事実を用いて，複素平面の実軸と虚軸への
+直交射影を作図できる．
+従って作図可能点の実部・虚部の点も作図可能である．
+実直線上で平行線を用いた相似三角形の定理により，
+長さ $r,s$ の和・差・積・商（$s\ne0$）を作図できる．
+実際，原点から二本の半直線を取り，
+一方に長さ1と $r$，他方に長さ $s$ を刻み，
+対応する二辺を平行にする作図によって
+比 $r:s$ と $1:1$ を保つ長さを得る．
+符号は実軸の正負方向で表せる．
+$a=x+iy$，$b=u+iv$ と書けば
+\[
+ a+b=(x+u)+i(y+v),\quad
+ ab=(xu-yv)+i(xv+yu),
+\]
+\[
+ a/b=\frac{xu+yv}{u^2+v^2}
+ +i\frac{yu-xv}{u^2+v^2}
+\]
+なので，実数の四則演算ができれば
+複素数についてもできる．
+複素共役は $x+iy\mapsto x-iy$ であるから作図可能である．
+\end{proof}
+
+\begin{lemma}[正の平方根と複素平方根]\label{lem:sqrt}
+正の作図可能実数 $r$ に対し $\sqrt r$ は作図可能である．
+従って任意の $z\in\mathcal C$ に対して
+$w^2=z$ となる $w\in\mathcal C$ が存在する．
+\end{lemma}
+\begin{proof}
+実数直線上に長さ $1+r$ の線分を取り，
+長さ1と $r$ に分ける点を通る垂線を引く．
+この線分を直径とする半円との交点を取れば，
+直角三角形の相似性によりその垂線の長さは
+幾何平均 $\sqrt r$ に等しい．
+従って平方根は作図可能である．
+
+$z=x+iy$ と書くと，$\rho=\sqrt{x^2+y^2}$ は
+作図可能である．$y\ne0$ なら
+\[
+ u=\sqrt{\frac{\rho+x}{2}},\qquad
+ v=\operatorname{sgn}(y)\sqrt{\frac{\rho-x}{2}}
+\]
+を取れば，$u,v$ は実数の作図可能数であり，
+$2uv=y$，$u^2-v^2=x$ となるので
+$(u+iv)^2=z$ である．
+$y=0$ なら $x\ge0$ のとき $w=\sqrt x$，
+$x<0$ のとき $w=i\sqrt{-x}$ とすればよい．
+\end{proof}
+
+\section{作図操作の代数化}
+
+\begin{lemma}[直線と円の交点]\label{lem:line-circle}
+$F\subset\mathbb R$ を四則演算に閉じた体とする．
+係数が $F$ に属する二直線，直線と円，
+または二円の交点の座標は，
+ある二次以下の体拡大 $E/F$ に属する．
+\end{lemma}
+\begin{proof}
+二直線の交点は二元一次連立方程式を解くことで得られるため，
+座標は $F$ に属する．
+直線と円の場合，
+直線を $(x,y)=(x_0,y_0)+t(u,v)$ と表示でき，
+これを円の方程式
+$(x-a)^2+(y-b)^2=r^2$ に代入すると
+$t$ に関する二次方程式が得られる．
+その係数は $F$ に属するので，
+交点の座標は判別式の平方根を加えた体に属する．
+二円の場合には両円の方程式を引けば，
+中心が異なるなら一次方程式が得られ，
+直線と円の場合に帰着する．
+中心が同じなら二円は一致するか交わらないので，
+新しい孤立した交点は得られない．
+従ってどの場合も高々二次拡大で足りる．
+\end{proof}
+
+\begin{theorem}[作図可能性の体論的特徴づけ]\label{thm:constructible}
+複素数 $z$ が作図可能であるための必要十分条件は，
+有限個の体からなる塔
+\[
+ \mathbb Q=F_0\subset F_1\subset\cdots\subset F_r
+ \subset\mathbb C,\qquad [F_i:F_{i-1}]\le2
+\]
+が存在し，$z\in F_r$ となることである．
+\end{theorem}
+\begin{proof}
+作図可能点の座標は最初 $0,1$ から始まり，
+線・円の方程式の係数は既知点の実部・虚部から
+四則演算で得られる．
+補題\ref{lem:line-circle}により，
+一回の作図で新しい座標を付け加える操作は
+高々二次の拡大で実現できる．
+複数の新しい座標が現れても有限個の二次拡大に分割できる．
+従って作図可能数は所望の塔に含まれる．
+
+逆に $F_{i}=F_{i-1}(\alpha)$ が二次拡大なら，
+$\alpha$ は
+$\alpha^2+a\alpha+b=0$（$a,b\in F_{i-1}$）
+を満たすから，二次方程式の公式によって
+\[
+ \alpha=\frac{-a\pm\sqrt{a^2-4b}}2
+\]
+と書ける．
+塔の最初の体 $\mathbb Q$ の元は四則演算で作図可能であり，
+補題\ref{lem:arithmetic}と補題\ref{lem:sqrt}により，
+各段階で体を構成する全ての元が作図可能となる．
+従って最後の体 $F_r$ の元 $z$ も作図可能である．
+\end{proof}
+
+\begin{corollary}[次数による障害]\label{cor:degree}
+$z\in\mathbb C$ が作図可能で，$z$ が $\mathbb Q$ 上代数的なら，
+\[
+ [\mathbb Q(z):\mathbb Q]=2^k
+\]
+となる非負整数 $k$ が存在する．
+\end{corollary}
+\begin{proof}
+定理\ref{thm:constructible}の塔について
+$[F_r:\mathbb Q]$ は2の冪である．
+$\mathbb Q\subset\mathbb Q(z)\subset F_r$ なので
+塔の定理から $[\mathbb Q(z):\mathbb Q]$ は
+$[F_r:\mathbb Q]$ の約数である．
+2の冪の正の約数は2の冪なので結論を得る．
+\end{proof}
+
+\section{正規拡大と2群}
+
+\begin{lemma}[有限2群の正規列]\label{lem:2group}
+有限群 $G$ の位数が2の冪なら，
+\[
+ G=G_0\triangleright G_1\triangleright\cdots
+ \triangleright G_r=1
+\]
+で，各 $[G_i:G_{i+1}]=2$ となる列が存在する．
+\end{lemma}
+\begin{proof}
+$G\ne1$ なら有限 $p$ 群の中心は非自明である．
+これは類等式
+$|G|=|Z(G)|+\sum_i[G:C_G(g_i)]$ において
+中心外の各共役類の大きさが2の倍数であることから従う．
+従って $Z(G)$ は非自明な2群であり，
+Cauchyの定理によって位数2の元 $z$ を持つ．
+$\langle z\rangle$ は中心に含まれるため正規部分群であり，
+商 $G/\langle z\rangle$ も2群である．
+位数について帰納法を適用すると，
+商群が指数2の正規列を持つ．
+その逆像を取って $G$ の正規列へ引き戻せば，
+各指数は2であり，最後に $\langle z\rangle\triangleright1$
+を加えて所望の列を得る．
+\end{proof}
+
+\begin{theorem}[Galois拡大における作図可能性]
+\label{thm:galois-2}
+$L/\mathbb Q$ を有限Galois拡大とする．
+$L$ の全ての元が作図可能であるための必要十分条件は
+$\operatorname{Gal}(L/\mathbb Q)$ が2群であることである．
+\end{theorem}
+\begin{proof}
+$L$ の全ての元が作図可能なら，
+特に原始元定理により
+$L=\mathbb Q(\alpha)$ となる原始元 $\alpha$ は作図可能である．
+系\ref{cor:degree}から
+$[L:\mathbb Q]=[\mathbb Q(\alpha):\mathbb Q]$
+は2の冪である．
+$L/\mathbb Q$ はGaloisなので
+$|\operatorname{Gal}(L/\mathbb Q)|=[L:\mathbb Q]$
+であり，Galois群は2群となる．
+
+逆にGalois群が2群なら補題\ref{lem:2group}によって
+指数2の正規列を持つ．
+Galois対応を適用すると
+\[
+ \mathbb Q=F_0\subset F_1\subset\cdots\subset F_r=L
+\]
+で $[F_i:F_{i-1}]=2$ となる体の塔が得られる．
+定理\ref{thm:constructible}によって
+$L$ の全ての元は作図可能である．
+\end{proof}
+
+\section{古典的作図不可能性}
+
+\begin{theorem}[立方体倍積問題]\label{thm:duplication}
+単位立方体と体積が二倍の立方体の一辺の長さ
+$\sqrt[3]2$ は定規・コンパスで作図できない．
+\end{theorem}
+\begin{proof}
+$X^3-2$ は素数2に関するEisensteinの判定法により
+$\mathbb Q$ 上既約である．
+従って
+$[\mathbb Q(\sqrt[3]2):\mathbb Q]=3$
+である．
+これは2の冪ではないから
+系\ref{cor:degree}によって作図不可能である．
+\end{proof}
+
+\begin{theorem}[一般の角の三等分は不可能]
+\label{thm:trisection}
+$60^\circ$ の角を定規・コンパスで三等分することはできない．
+\end{theorem}
+\begin{proof}
+$60^\circ$ を三等分できるなら $20^\circ$ を作図でき，
+$x=2\cos20^\circ$ も作図可能となる．
+三倍角の公式から
+\[
+ 2\cos60^\circ
+ =(2\cos20^\circ)^3-3(2\cos20^\circ)
+\]
+なので
+\[
+ x^3-3x-1=0.
+\]
+有理根定理からこのモニック三次式の有理根候補は
+$\pm1$ だけであり，
+$f(1)=-3$，$f(-1)=1$ なので有理根はない．
+三次式は有理根を持たなければ既約だから
+$[\mathbb Q(x):\mathbb Q]=3$ である．
+系\ref{cor:degree}に反するため作図不可能である．
+\end{proof}
+
+\section{円分多項式の既約性}
+
+\begin{definition}
+$n\ge1$ に対し，原始 $n$ 乗根の集合を
+$\mu_n^{\mathrm{prim}}$ と書き，
+\[
+ \Phi_n(X)=\prod_{\zeta\in\mu_n^{\mathrm{prim}}}(X-\zeta)
+\]
+を\emph{第 $n$ 円分多項式}という．
+\end{definition}
+
+\begin{lemma}[円分多項式は整数係数]\label{lem:cyclotomic-integral}
+任意の $n\ge1$ について
+$\Phi_n(X)\in\mathbb Z[X]$ が成り立ち，
+\[
+ X^n-1=\prod_{d\mid n}\Phi_d(X).
+\]
+\end{lemma}
+\begin{proof}
+$X^n-1$ の根は位数 $d\mid n$ によって一意に分類されるので，
+複素数係数多項式として積公式が従う．
+$n=1$ では $\Phi_1(X)=X-1$ であり整数係数である．
+$n>1$ について帰納法で
+$d<n$ の $\Phi_d$ が整数係数であるとする．
+\[
+ \Phi_n(X)=\frac{X^n-1}{\prod_{\substack{d\mid n\\d<n}}\Phi_d(X)}
+\]
+であり，分母はモニックな整数係数多項式である．
+モニック多項式での割り算を整数係数環で実行すると，
+商と余りはともに整数係数となる．
+複素数係数の積公式から余りは零なので，
+商 $\Phi_n$ は整数係数である．
+\end{proof}
+
+\begin{theorem}[円分多項式の既約性]\label{thm:cyclotomic-irred}
+$\Phi_n(X)$ は $\mathbb Q$ 上既約である．
+従って
+\[
+ [\mathbb Q(\zeta_n):\mathbb Q]=\varphi(n)
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+$\zeta$ を原始 $n$ 乗根とし，
+$f\in\mathbb Z[X]$ を $\zeta$ のモニック最小多項式とする．
+Gaussの補題と補題\ref{lem:cyclotomic-integral}から
+$f$ は $\Phi_n$ のモニックな整数係数因子である．
+任意の素数 $p\nmid n$ に対して
+$\zeta^p$ も $f$ の根であることを示す．
+もしそうでなければ，$\zeta^p$ の最小多項式
+$g\in\mathbb Z[X]$ は $f$ と異なり，
+$f$ と $g$ はともに $X^n-1$ の異なる既約因子となる．
+$g(\zeta^p)=0$ だから
+$f$ は $g(X^p)$ を割る．
+係数を $\mathbb F_p$ に移すと
+\[
+ g(X^p)\equiv g(X)^p\pmod p
+\]
+である．
+従って $\overline f$ と $\overline g$ は
+$\mathbb F_p[X]$ で共通の非定数因子を持つ．
+一方 $fg$ は $X^n-1$ を $\mathbb Z[X]$ で割るので，
+$\overline f\,\overline g$ は
+$X^n-1$ を $\mathbb F_p[X]$ で割る．
+$p\nmid n$ だから
+$(X^n-1)'=nX^{n-1}$ は $X^n-1$ と互いに素である．
+従って $X^n-1$ は $\mathbb F_p$ 上平方因子を持たず，
+$\overline f,\overline g$ が共通因子を持つことに矛盾する．
+よって $\zeta^p$ も $f$ の根である．
+
+任意の $a$ が $\gcd(a,n)=1$ を満たすなら，
+$a$ の素因数は全て $n$ と互いに素である．
+上の結論を $\zeta$ の各共役に繰り返し適用することで
+$\zeta^a$ も $f$ の根となる．
+従って $f$ は全ての原始 $n$ 乗根を根として含む．
+$\Phi_n$ はちょうどそれらを根とするモニック多項式であり，
+$f\mid\Phi_n$ だから $f=\Phi_n$ である．
+$\Phi_n$ の次数は原始 $n$ 乗根の個数
+$\varphi(n)$ であるため，後半も従う．
+\end{proof}
+
+\section{Gauss--Wantzelの定理}
+
+\begin{theorem}[正多角形の作図可能性]\label{thm:gauss-wantzel}
+$n\ge3$ とする．正 $n$ 角形が定規・コンパスで作図可能である
+ための必要十分条件は
+\[
+ n=2^a p_1\cdots p_r
+\]
+と書けることである．
+ここで $a\ge0$，$p_1,\dots,p_r$ は相異なる
+Fermat素数，すなわち
+$p_j=2^{2^{k_j}}+1$ となる素数である．
+\end{theorem}
+\begin{proof}
+正 $n$ 角形が作図可能であることは，
+原始 $n$ 乗根 $\zeta_n$ が作図可能であることと同値である．
+$\mathbb Q(\zeta_n)/\mathbb Q$ は円分多項式の分解体で
+有限Galois拡大である．
+定理\ref{thm:cyclotomic-irred}から次数は
+$\varphi(n)$ である．
+定理\ref{thm:galois-2}により，
+正 $n$ 角形が作図可能であることと
+$\varphi(n)$ が2の冪であることは同値である．
+
+$n=2^a\prod_{j=1}^r p_j^{e_j}$ と
+相異なる奇素数 $p_j$ によって素因数分解する．
+Euler関数の乗法性と素数冪上の公式から
+\[
+ \varphi(n)=\varphi(2^a)
+ \prod_{j=1}^r p_j^{e_j-1}(p_j-1).
+\]
+これが2の冪となるためには，各 $e_j=1$ かつ
+$p_j-1$ が2の冪でなければならない．
+逆にこれらの条件があれば明らかに
+$\varphi(n)$ は2の冪となる．
+$p_j=2^m+1$ が素数なら $m$ は2の冪であることを示す．
+もし $m=2^kr$ と書け，$r>1$ が奇数なら，
+$2^m+1=(2^{2^k})^r+1$ は
+$2^{2^k}+1$ を因数に持つため合成数となる．
+従って $m=2^k$ である．
+ゆえに条件は表示したFermat素数による形と同値である．
+\end{proof}
+
+\begin{example}
+正17角形は作図可能である．
+実際 $17=2^{2^2}+1$ はFermat素数であり，
+$\varphi(17)=16$ は2の冪である．
+一方，正7角形は作図できない．
+\end{example}
+\begin{proof}
+$17$ が素数であることは
+$2,3,4$ のうち素数2,3で割り切れないことから従う．
+定理\ref{thm:gauss-wantzel}を適用して正17角形の
+作図可能性を得る．
+正7角形については
+$\varphi(7)=6$ が2の冪ではないため
+同じ定理から作図不可能である．
+\end{proof}
+
+\begin{remark}
+作図可能性の定理は，
+幾何学的操作を二次体拡大の塔へ翻訳し，
+有限Galois群の2群性で特徴づけることで成立する．
+「次数が2の冪」という必要条件は一般の代数数について
+十分条件ではないが，円分拡大のようにGaloisである場合には
+Galois対応によって十分条件となる点が重要である．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{正三角形と立方体倍積の比較．}
+\begin{proposition}
+$\sqrt3$ は $\mathbb Q$ 上作図可能であるが，
+$\sqrt[3]2$ は作図不可能である．
+\end{proposition}
+\begin{proof}
+$\sqrt3$ は $x^2-3$ の根であり，
+平方根を取る操作は定規・コンパスで実行できる．
+一方 $x^3-2$ はEisensteinの判定法で既約で，
+$[\mathbb Q(\sqrt[3]2):\mathbb Q]=3$ である．
+作図可能な実数は $\mathbb Q$ からの
+二次拡大の塔に含まれるため，
+その最小多項式の次数は2の冪を割り切る必要がある．
+3は2の冪ではないので $\sqrt[3]2$ は作図不可能である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\sqrt{2+\sqrt2}$ は作図可能か．
+\par\noindent\textbf{解答．}
+$\mathbb Q\subset\mathbb Q(\sqrt2)
+\subset\mathbb Q(\sqrt2,\sqrt{2+\sqrt2})$
+は各段階で次数高々2の拡大なので作図可能である．
+\end{document}

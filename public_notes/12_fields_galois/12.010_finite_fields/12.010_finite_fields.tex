@@ -1,0 +1,461 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{有限体の構造}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，有限体，Frobenius写像，既約多項式．
+本稿の具体的な到達課題は，有限体の元を具体的な多項式商環で表し，積・逆元を計算する．
+
+\section{有限体の位数}
+
+本稿では体は可換体とし，有限体の標数・部分体・乗法群を
+代数的に特徴づける．
+
+\begin{lemma}\label{lem:char}
+有限体 $K$ の標数は素数 $p$ である．
+このとき $K$ は素体 $\mathbb F_p$ の有限次拡大であり，
+$n=[K:\mathbb F_p]$ とすれば
+$|K|=p^n$ である．
+\end{lemma}
+\begin{proof}
+$K$ の標数は有限な正整数 $m$ である．
+もし $m=ab$（$1<a,b<m$）なら
+$(a1_K)(b1_K)=m1_K=0$ となり，
+零因子を持たないという体の性質に反する．
+従って $m=p$ は素数である．
+$\mathbb Z\to K$ の核は $p\mathbb Z$ なので，
+素体 $\mathbb F_p=\mathbb Z/p\mathbb Z$ が $K$ に埋め込まれる．
+$K$ は有限集合だから $\mathbb F_p$ 上有限次元である．
+その基底を $e_1,\dots,e_n$ とすると，
+$K$ の各元は一意に
+$\sum_{j=1}^na_je_j$（$a_j\in\mathbb F_p$）
+と書けるため，$|K|=p^n$ である．
+\end{proof}
+
+\begin{lemma}[Frobenius写像]\label{lem:frob}
+標数 $p$ の体 $K$ について
+\[
+ F:K\to K,\qquad F(x)=x^p
+\]
+は単射な体準同型である．
+$K$ が有限なら $F$ は自己同型である．
+\end{lemma}
+\begin{proof}
+二項定理と
+$p\mid{p\choose k}$（$1\le k\le p-1$）
+により $(x+y)^p=x^p+y^p$ となる．
+また $(xy)^p=x^py^p$，$1^p=1$ なので体準同型である．
+体準同型の核は零イデアルなので単射である．
+$K$ が有限なら単射は全射でもある．
+\end{proof}
+
+\section{存在と一意性}
+
+\begin{theorem}[有限体の存在と一意性]\label{thm:finite-field}
+任意の素数 $p$ と正整数 $n$ に対し，
+位数 $p^n$ の体が存在する．
+また位数 $p^n$ の任意の二つの体は同型である．
+\end{theorem}
+\begin{proof}
+$\mathbb F_p$ 上の多項式
+$f(X)=X^{p^n}-X$ の分解体を $L$ とし，
+その根全体を
+\[
+ K=\{x\in L:x^{p^n}=x\}
+\]
+と置く．
+標数 $p$ におけるFrobeniusの加法性から，
+$x,y\in K$ なら
+$(x-y)^{p^n}=x^{p^n}-y^{p^n}=x-y$ である．
+積についても $(xy)^{p^n}=xy$ が成立する．
+$x\ne0$ なら
+$(x^{-1})^{p^n}=(x^{p^n})^{-1}=x^{-1}$
+である．$0,1\in K$ なので $K$ は $L$ の部分体である．
+また $f'(X)=p^nX^{p^n-1}-1=-1$ だから
+$f$ は重根を持たず，分解体 $L$ 内に相異なる根を
+ちょうど $p^n$ 個持つ．従って $|K|=p^n$ である．
+
+一意性について，
+$K'$ を位数 $p^n$ の任意の体とする．
+乗法群 $(K')^\times$ の位数は $p^n-1$ なので，
+Lagrangeの定理から
+$x^{p^n-1}=1$（$x\ne0$）である．
+従って全ての $x\in K'$ が $x^{p^n}=x$ を満たす．
+よって $f$ は $K'$ 上で完全に一次式に分解し，
+その根全体は $K'$ に等しい．
+従って $K'$ は $f$ の $\mathbb F_p$ 上の分解体である．
+分解体の一意性により $K'\cong K$ となる．
+\end{proof}
+
+\begin{definition}
+定理\ref{thm:finite-field}の一意な同型類を
+$\mathbb F_{p^n}$ と書く．
+その元の同一視は一般には一意ではなく，
+Frobeniusの冪によって異なる自己同型が生じる．
+\end{definition}
+
+\section{乗法群の巡回性}
+
+\begin{lemma}\label{lem:order-coprime}
+可換群 $G$ の元 $x,y$ の位数がそれぞれ
+有限な $m,n$ で $\gcd(m,n)=1$ なら，
+$xy$ の位数は $mn$ である．
+\end{lemma}
+\begin{proof}
+可換性により $(xy)^{mn}=1$ である．
+$(xy)^k=1$ なら $x^k=y^{-k}$ となる．
+左辺は位数が $m$ を割る元，
+右辺は位数が $n$ を割る元であるから，
+両者の位数は $\gcd(m,n)=1$ を割り，従って双方とも単位元である．
+ゆえに $m\mid k$，$n\mid k$ であり，
+互いに素であることから $mn\mid k$ となる．
+従って位数は $mn$ である．
+\end{proof}
+
+\begin{lemma}[有限可換群の最大位数]\label{lem:exponent}
+$G$ を有限可換群とし，
+$e$ を全ての元の位数の最小公倍数とする．
+このとき位数 $e$ の元が存在する．
+\end{lemma}
+\begin{proof}
+$e=\prod_{j=1}^r\ell_j^{a_j}$ を素因数分解する．
+各 $j$ について $G$ の元 $g_j$ で
+その位数が $\ell_j^{a_j}$ を因数として持つものを取れる．
+そうでなければ全ての元の位数の
+$\ell_j$-進指数が $a_j$ より小さくなり，
+$e$ の定義に矛盾する．
+$\operatorname{ord}(g_j)=\ell_j^{a_j}m_j$
+かつ $\gcd(\ell_j,m_j)=1$ と書き，
+$h_j=g_j^{m_j}$ と置くと
+$\operatorname{ord}(h_j)=\ell_j^{a_j}$ である．
+$G$ は可換だから，
+補題\ref{lem:order-coprime}を繰り返し適用すると
+$h=h_1\cdots h_r$ の位数は
+$\prod_j\ell_j^{a_j}=e$ となる．
+$e=1$ の場合は単位元を取ればよい．
+\end{proof}
+
+\begin{theorem}[有限体の乗法群]\label{thm:cyclic}
+有限体 $K$ の乗法群 $K^\times$ は巡回群である．
+特に $\mathbb F_{p^n}$ には乗法位数 $p^n-1$ の元が存在する．
+\end{theorem}
+\begin{proof}
+$G=K^\times$ と置くと有限可換群である．
+補題\ref{lem:exponent}によって位数 $e$ の元が存在する．
+$e$ は全ての元の位数の公倍数なので，
+全ての $x\in K^\times$ は $x^e=1$ を満たす．
+従って $K^\times$ の全ての元は
+多項式 $X^e-1$ の根である．体上の次数 $e$ の
+非零多項式の根は高々 $e$ 個だから
+$|K^\times|\le e$ となる．
+一方，位数 $e$ の元を含むから $e\le|K^\times|$ である．
+よって $e=|K^\times|$ となり，
+位数 $|K^\times|$ の元が $G$ 全体を生成する．
+\end{proof}
+
+\begin{corollary}
+位数 $q=p^n$ の有限体において，
+$X^m=1$ の解の個数は
+$\gcd(m,q-1)$ である．
+\end{corollary}
+\begin{proof}
+$K^\times$ の生成元 $g$ を取ると，
+任意の元は $g^j$（$0\le j<q-1$）と一意に書ける．
+$(g^j)^m=1$ は
+$(q-1)\mid mj$ と同値であり，
+この合同式の異なる解は
+法 $q-1$ で $\gcd(m,q-1)$ 個ある．
+\end{proof}
+
+\section{Frobenius自己同型とGalois群}
+
+\begin{theorem}\label{thm:galois}
+$K=\mathbb F_{p^n}$ とし，
+$F:K\to K$ を $F(x)=x^p$ と定める．
+このとき $F$ の位数は $n$ であり，
+\[
+ \operatorname{Gal}(K/\mathbb F_p)
+ =\langle F\rangle\cong\mathbb Z/n\mathbb Z
+\]
+である．
+\end{theorem}
+\begin{proof}
+$K$ の全ての元は $x^{p^n}=x$ を満たすので
+$F^n=\operatorname{id}$ である．
+もし $1\le d<n$ について
+$F^d=\operatorname{id}$ なら，
+$K$ の全ての元が $X^{p^d}-X$ の根となる．
+この多項式の次数は $p^d<p^n=|K|$ なので矛盾する．
+従って $F$ の位数はちょうど $n$ である．
+
+$K$ は $\mathbb F_p$ 上の
+$X^{p^n}-X$ の分解体であり，
+導関数が $-1$ なので分離拡大である．
+従って $K/\mathbb F_p$ は有限Galois拡大で，
+Galois群の位数は
+$[K:\mathbb F_p]=n$ に等しい．
+$F$ は $\mathbb F_p$ を固定する位数 $n$ の自己同型なので，
+Galois群の全体を生成する．
+\end{proof}
+
+\begin{theorem}[部分体の分類]\label{thm:subfields}
+$K=\mathbb F_{p^n}$ とする．
+任意の正の約数 $d\mid n$ に対して，
+$K$ は位数 $p^d$ の部分体をただ一つ持つ．
+また $K$ の全ての部分体はこの形であり，
+$F$ の適切な冪の固定体として記述できる．
+\end{theorem}
+\begin{proof}
+有限Galois拡大 $K/\mathbb F_p$ のGalois群は
+$\langle F\rangle$ という位数 $n$ の巡回群である．
+$G$ の部分群は約数 $d\mid n$ に対して
+$H_d=\langle F^d\rangle$ と一意に対応する．
+$H_d$ の位数は $n/d$ なので，
+Galois対応による固定体 $K^{H_d}$ の次数は
+\[
+ [K^{H_d}:\mathbb F_p]
+ =\frac{|G|}{|H_d|}=d
+\]
+となる．従って固定体の位数は $p^d$ である．
+Galois対応は包含を逆向きにする全単射なので，
+全ての中間体はこのように得られ，
+各 $d$ について一意である．
+\end{proof}
+
+\begin{corollary}
+$\mathbb F_{p^a}$ が $\mathbb F_{p^b}$ に
+$\mathbb F_p$-埋め込み可能であることと
+$a\mid b$ は同値である．
+\end{corollary}
+\begin{proof}
+埋め込みがあるなら像は $\mathbb F_{p^b}$ の
+位数 $p^a$ の部分体なので，定理\ref{thm:subfields}から
+$a\mid b$ となる．逆に $a\mid b$ なら定理から
+位数 $p^a$ の部分体が存在し，
+有限体の一意性によって
+$\mathbb F_{p^a}$ と同型である．
+\end{proof}
+
+\section{既約多項式とM\"obius反転}
+
+\begin{lemma}\label{lem:irreducible-divisor}
+$f\in\mathbb F_p[X]$ を次数 $d\ge1$ のモニック既約多項式とする．
+このとき $f\mid X^{p^n}-X$ であることと $d\mid n$ は同値である．
+\end{lemma}
+\begin{proof}
+$f$ の根 $\alpha$ を含む分解体を考える．
+$\mathbb F_p(\alpha)$ は位数 $p^d$ の有限体である．
+$\alpha^{p^n}=\alpha$ が成り立つことは，
+$\alpha$ が $X^{p^n}-X$ の根であることと同値であり，
+$f$ の既約性により $f\mid X^{p^n}-X$ と同値である．
+一方，$\alpha$ のFrobenius軌道の長さは $d$ である．
+実際，$\alpha^{p^d}=\alpha$ なので長さは $d$ を割るが，
+長さが $e<d$ なら $\alpha$ は次数 $p^e$ の有限体の元であり，
+$\mathbb F_p(\alpha)$ の次数が $d$ であることに矛盾する．
+従って $\alpha^{p^n}=\alpha$ であることは
+$d\mid n$ と同値となる．
+\end{proof}
+
+\begin{theorem}[既約多項式の個数]\label{thm:irreducible-count}
+$N_p(n)$ を $\mathbb F_p[X]$ 上の次数 $n$ の
+モニック既約多項式の個数とする．
+このとき
+\[
+ p^n=\sum_{d\mid n}d\,N_p(d),
+ \qquad
+ N_p(n)=\frac1n\sum_{d\mid n}\mu(d)\,p^{n/d}
+\]
+が成り立つ．
+ここで $\mu$ はM\"obius関数である．
+\end{theorem}
+\begin{proof}
+多項式 $X^{p^n}-X$ の導関数は $-1$ なので重根を持たない．
+補題\ref{lem:irreducible-divisor}によって，
+そのモニック既約因子は次数が $n$ を割るものに限られ，
+逆にそのような既約多項式は全て因子となる．
+従って
+\[
+ X^{p^n}-X=
+ \prod_{d\mid n}\ \prod_{\substack{f\ {\rm monic\ irreducible}\\\deg f=d}}f(X)
+\]
+である．両辺の次数を比較すると
+$p^n=\sum_{d\mid n}dN_p(d)$ を得る．
+この式に整数の約数関係に対する
+M\"obius反転公式を適用すれば
+$nN_p(n)=\sum_{d\mid n}\mu(d)p^{n/d}$
+となる．
+\end{proof}
+
+\begin{proposition}[既約多項式の存在]\label{prop:irreducible-exists}
+任意の素数 $p$ と正整数 $n$ に対し，
+$\mathbb F_p[X]$ には次数 $n$ の既約多項式が存在する．
+\end{proposition}
+\begin{proof}
+$K=\mathbb F_{p^n}$ とする．
+定理\ref{thm:cyclic}により
+$K^\times$ の生成元 $\alpha$ が存在する．
+$\mathbb F_p(\alpha)$ は $\alpha$ を含む部分体であり，
+$\alpha$ のべきとして $K^\times$ の全ての元を含むので
+$\mathbb F_p(\alpha)=K$ である．
+従って $\alpha$ の $\mathbb F_p$ 上の最小多項式は
+次数 $[K:\mathbb F_p]=n$ の既約多項式である．
+\end{proof}
+
+\section{具体的な有限体の構成}
+
+\begin{example}[$\mathbb F_4$]
+$\mathbb F_2[X]$ における $X^2+X+1$ は既約である．
+\[
+ \mathbb F_4=\mathbb F_2[\alpha],\qquad
+ \alpha^2+\alpha+1=0
+\]
+と置くと，元は $0,1,\alpha,\alpha+1$ の4個であり，
+$\alpha^3=1$ なので乗法群は $\alpha$ で生成される．
+\end{example}
+\begin{proof}
+多項式 $X^2+X+1$ は $X=0$，$X=1$ のどちらでも
+零にならないので次数2の既約多項式である．
+商環 $\mathbb F_2[X]/(X^2+X+1)$ は体であり，
+剰余類の各元は $a+b\alpha$（$a,b\in\mathbb F_2$）
+と一意に書ける．
+$\alpha^2=\alpha+1$ なので
+$\alpha^3=\alpha(\alpha+1)=\alpha^2+\alpha=1$ である．
+$\alpha\ne1$ だから乗法位数は3となる．
+\end{proof}
+
+\begin{example}[$\mathbb F_8$]
+$\mathbb F_2[X]$ の多項式 $X^3+X+1$ は既約である．
+従って
+\[
+ \mathbb F_8\cong\mathbb F_2[X]/(X^3+X+1)
+\]
+であり，$\alpha=X\bmod(X^3+X+1)$ は
+$\alpha^3=\alpha+1$ を満たす．
+\end{example}
+\begin{proof}
+次数3の多項式が既約でないなら一次因子を持つ．
+$X^3+X+1$ は $0$，$1$ のいずれも根に持たないので
+既約である．
+商環は次数3の $\mathbb F_2$-拡大だから
+元は8個であり，関係式は定義から従う．
+\end{proof}
+
+\begin{example}[$\mathbb F_9$]
+$\mathbb F_3[X]$ の多項式 $X^2+1$ は既約である．
+\[
+ \mathbb F_9\cong\mathbb F_3[\beta],
+ \qquad \beta^2=-1=2
+\]
+と置く．
+\end{example}
+\begin{proof}
+$\mathbb F_3$ の平方は $0,1$ なので
+$X^2+1$ は根を持たない．
+次数2だから既約であり，商は位数9の体である．
+\end{proof}
+
+\begin{remark}
+有限体は同型を除いて一意だが，その具体的な表示には
+既約多項式の選択が必要である．
+特に有限体間の埋め込みは，Frobeniusの自己同型のため
+一般に一意ではない．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{4元体の乗法を実行する．}
+\begin{proposition}
+$\mathbb F_4=\mathbb F_2[t]/(t^2+t+1)$ は体であり，
+$\alpha=[t]$ とすると $\alpha^2=\alpha+1$，
+$\alpha^3=1$ が成立する．
+\end{proposition}
+\begin{proof}
+$t^2+t+1$ は $\mathbb F_2$ 上で
+$t=0,1$ のいずれでも零とならないので既約である．
+従ってその商環は体であり，元は
+$0,1,\alpha,\alpha+1$ である．
+商の関係式から $\alpha^2=\alpha+1$，
+さらに
+$\alpha^3=\alpha(\alpha+1)
+=\alpha^2+\alpha=1$ を得る．
+\end{proof}
+\begin{proposition}
+$\mathbb F_4^\times$ は $\alpha$ を生成元とする位数3の巡回群である．
+\end{proposition}
+\begin{proof}
+非零元は $1,\alpha,\alpha+1=\alpha^2$ であり，
+$\alpha^3=1$，$\alpha\ne1$ だから $\alpha$ の位数は3である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$(\alpha+1)^{-1}$ を求めよ．
+\par\noindent\textbf{解答．}
+$\alpha+1=\alpha^2$，
+$(\alpha^2)\alpha=\alpha^3=1$ だから
+逆元は $\alpha$ である．
+\end{document}

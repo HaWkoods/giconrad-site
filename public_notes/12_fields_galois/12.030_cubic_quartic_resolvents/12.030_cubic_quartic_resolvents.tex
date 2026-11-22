@@ -1,0 +1,483 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{三次・四次方程式の解の公式とLagrange分解式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，三次方程式，判別式と平方根の選択．
+本稿の具体的な到達課題は，三次方程式を抑圧三次式へ変換して根を構成する．
+
+\section{方程式と根の対称式}
+
+本稿では標数0の体 $K$ を考え，必要に応じて
+その代数閉包 $\overline K$ を固定する．
+解の公式は体拡大の中で根号を選択するという意味で扱う．
+
+\begin{lemma}[Vietaの公式]\label{lem:vieta}
+$K$ 上のモニック多項式が
+\[
+ f(X)=\prod_{j=1}^n(X-\alpha_j)
+ =X^n+a_1X^{n-1}+\cdots+a_n
+\]
+と分解するとき，
+\[
+ a_k=(-1)^k\sum_{1\le i_1<\cdots<i_k\le n}
+ \alpha_{i_1}\cdots\alpha_{i_k}.
+\]
+\end{lemma}
+\begin{proof}
+積 $\prod_j(X-\alpha_j)$ の $X^{n-k}$ の係数は，
+$n$ 個の因子のうちちょうど $k$ 個から
+$-\alpha_j$，残りから $X$ を選んだ積の総和である．
+この選択は $k$ 元部分集合に一対一に対応するので
+表示式が従う．
+\end{proof}
+
+\begin{proposition}[平行移動による二次項の消去]
+\label{prop:depressed}
+三次方程式
+$X^3+aX^2+bX+c=0$ で
+$X=Y-a/3$ と置くと
+\[
+ Y^3+pY+q=0,
+ \quad p=b-\frac{a^2}3,\quad
+ q=c-\frac{ab}3+\frac{2a^3}{27}.
+\]
+四次方程式
+$X^4+aX^3+bX^2+cX+d=0$ は
+$X=Y-a/4$ により
+$Y^4+pY^2+qY+r=0$ へ帰着する．
+\end{proposition}
+\begin{proof}
+二項定理を用いて $X=Y-a/3$ を三次式へ代入し，
+$Y^2$ の係数が $-a+a=0$ となることを確認する．
+残りの一次係数と定数係数を整理すれば
+$p,q$ の式が得られる．
+四次では $Y^3$ の係数は
+$4(-a/4)+a=0$ であり，残る三係数を
+$p,q,r$ と置けばよい．
+\end{proof}
+
+\section{Cardanoの公式}
+
+\begin{theorem}[三次方程式の根号表示]\label{thm:cardano}
+標数0の体 $K$ 上の三次方程式
+\[
+ Y^3+pY+q=0
+\]
+を考える．
+\[
+ \Delta=\left(\frac q2\right)^2+
+          \left(\frac p3\right)^3
+\]
+と置き，$u^3=-q/2+\sqrt\Delta$，
+$v^3=-q/2-\sqrt\Delta$，
+$uv=-p/3$ を満たす $u,v\in\overline K$ を取ると，
+$u+v$ は方程式の根である．
+$\zeta^3=1$ なる原始3乗根 $\zeta$ を取れば，
+三根は重複を込めて
+\[
+ u+v,\quad\zeta u+\zeta^2v,\quad
+ \zeta^2u+\zeta v
+\]
+で与えられる．
+\end{theorem}
+\begin{proof}
+$Y=u+v$ と置くと
+\[
+ Y^3+pY+q
+ =u^3+v^3+(3uv+p)(u+v)+q.
+\]
+仮定から $u^3+v^3=-q$，
+$3uv+p=0$ なので右辺は零である．
+さらに
+$\zeta^j u$ と $\zeta^{-j}v$ は
+積 $uv$ とそれぞれの三乗を変えないので，
+$j=0,1,2$ について全て根となる．
+三次多項式の根は重複を込めてちょうど三個なので
+これらが全ての根である．
+
+$u,v$ の選択可能性を確認する．
+$p\ne0$ なら
+$U=-q/2+\sqrt\Delta$ を取り，
+その三乗根 $u\ne0$ を選ぶ．
+$v=-p/(3u)$ とすれば
+\[
+ v^3=-\frac{p^3}{27U}.
+\]
+$U(-q/2-\sqrt\Delta)
+ =q^2/4-\Delta=-p^3/27$
+なので $v^3=-q/2-\sqrt\Delta$ が従う．
+$p=0$ なら $v=0$，$u^3=-q$ と選べばよい．
+このとき上の式で $u+v=\zeta^ju$ の三根を得る．
+\end{proof}
+
+\begin{example}[二次根号の見掛け上の複素化]
+$Y^3-3Y-1=0$ のCardano判別式は
+$\Delta=1/4-1=-3/4<0$ である．
+従って三実根を持つ場合でも，
+公式の途中に複素平方根が現れ得る．
+\end{example}
+\begin{proof}
+微分すると
+$f'(Y)=3(Y^2-1)$ であり，
+$f(-1)=1$，$f(1)=-3$ となる．
+$f$ は負の無限遠で負，正の無限遠で正なので，
+中間値の定理から
+$(-\infty,-1)$，$(-1,1)$，$(1,\infty)$ に
+それぞれ一つ根を持つ．
+三次式なので三根は相異なる実数である．
+一方 $\Delta=-3/4$ なので平方根は非実数となる．
+\end{proof}
+
+\section{三次のLagrange分解式}
+
+\begin{definition}
+三次方程式の根を $\alpha,\beta,\gamma$ とし，
+原始3乗根 $\zeta$ を固定する．
+\[
+ L_1=\alpha+\zeta\beta+\zeta^2\gamma,\qquad
+ L_2=\alpha+\zeta^2\beta+\zeta\gamma
+\]
+をLagrangeの分解式という．
+\end{definition}
+
+\begin{lemma}[分解式の三乗]\label{lem:lagrange-cubes}
+三次式を $Y^3+pY+q$ とすると
+\[
+ L_1L_2=-3p,\qquad
+ L_1^3+L_2^3=-27q,\qquad
+ L_1^3L_2^3=-27p^3.
+\]
+\end{lemma}
+\begin{proof}
+根の和は $\alpha+\beta+\gamma=0$，
+二根の積の和は
+$\alpha\beta+\beta\gamma+\gamma\alpha=p$
+である．
+$\zeta+\zeta^2=-1$，
+$\zeta^3=1$ を用いて
+\begin{align*}
+ L_1L_2
+ &=\alpha^2+\beta^2+\gamma^2
+   -(\alpha\beta+\beta\gamma+\gamma\alpha)\\
+ &=(-2p)-p=-3p.
+\end{align*}
+また $L_1+L_2=3\alpha$ なので
+\[
+ L_1^3+L_2^3
+ =(L_1+L_2)^3-3L_1L_2(L_1+L_2)
+ =27\alpha^3+27p\alpha=-27q.
+\]
+最後の式は $L_1L_2=-3p$ を三乗して得る．
+\end{proof}
+
+\begin{proposition}[分解式と置換群]\label{prop:lagrange-action}
+根の巡回置換
+$(\alpha,\beta,\gamma)\mapsto
+(\beta,\gamma,\alpha)$ は
+\[
+ (L_1,L_2)\longmapsto(\zeta^2L_1,\zeta L_2)
+\]
+を引き起こす．
+二つの根の交換は $L_1,L_2$ を交換する．
+従って $L_1^3,L_2^3$ は $A_3$ の作用で不変であり，
+$S_3$ はその二つを置換する．
+\end{proposition}
+\begin{proof}
+$\beta+\zeta\gamma+\zeta^2\alpha
+=\zeta^2(\alpha+\zeta\beta+\zeta^2\gamma)$
+であり，
+$\beta+\zeta^2\gamma+\zeta\alpha=\zeta L_2$
+である．
+$\beta,\gamma$ を交換すると
+$L_1=\alpha+\zeta\beta+\zeta^2\gamma$
+は $L_2$ に変わり，逆も同様である．
+三乗は $\zeta^3=1$ から巡回置換で不変であり，
+$A_3$ は3-cycleで生成されるので結論を得る．
+\end{proof}
+
+\section{Ferrariの四次解法}
+
+\begin{theorem}[四次方程式の二次式への分解]
+\label{thm:ferrari}
+四次式
+\[
+ f(Y)=Y^4+pY^2+qY+r
+\]
+に対して
+\[
+ R(Z)=Z^3+2pZ^2+(p^2-4r)Z-q^2
+\]
+と置く．$q\ne0$ とする．
+$R(z)=0$ となる任意の根 $z$ は非零である．
+$u^2=z$ を満たす $u$ を選び，
+\[
+ v=\frac{p+z-q/u}{2},\qquad
+ w=\frac{p+z+q/u}{2}
+\]
+と置くと
+\[
+ f(Y)=(Y^2+uY+v)(Y^2-uY+w)
+\]
+となる．
+従って四次方程式は三次方程式一つと
+二次方程式二つを解くことに帰着する．
+\end{theorem}
+\begin{proof}
+$R(0)=-q^2\ne0$ なので $z=0$ は根でない．
+従って $u\ne0$ である．
+右辺の二次式の積を展開すると
+\[
+ Y^4+(v+w-u^2)Y^2+u(w-v)Y+vw
+\]
+となる．
+$v+w=p+u^2$，
+$u(w-v)=q$ が定義から成り立つ．
+また
+\[
+ 4vw=(p+z)^2-\frac{q^2}z
+\]
+であり，
+$R(z)=z(p+z)^2-4rz-q^2=0$ だから
+$vw=r$ である．
+従って係数は $p,q,r$ と一致して分解式が得られる．
+三次式 $R$ はCardanoの公式で根号可解であり，
+$u$ と二つの二次式の根は平方根で表される．
+$q=0$ の場合は $Z=Y^2$ と置く二次方程式で
+直接解ける．
+\end{proof}
+
+\section{四次方程式と三つの分割}
+
+\begin{definition}
+四次方程式の根を
+$\alpha_1,\alpha_2,\alpha_3,\alpha_4$ とする．
+四つの添字の二組への分割
+\[
+ \{12|34,\ 13|24,\ 14|23\}
+\]
+に対して
+\[
+ z_1=(\alpha_1+\alpha_2)^2,\quad
+ z_2=(\alpha_1+\alpha_3)^2,\quad
+ z_3=(\alpha_1+\alpha_4)^2
+\]
+と置く．
+ここでは根の総和は零となるように
+四次式の三次項を消去してあるとする．
+\end{definition}
+
+\begin{theorem}[三次分解式の根]\label{thm:resolvent}
+上の $z_1,z_2,z_3$ は，
+定理\ref{thm:ferrari}で定義した
+\[
+ R(Z)=Z^3+2pZ^2+(p^2-4r)Z-q^2
+\]
+の三根である．
+\end{theorem}
+\begin{proof}
+$\alpha_1+\alpha_2=-(\alpha_3+\alpha_4)$
+だから，四つの根を
+\[
+ \alpha_1,\alpha_2
+ =\frac{-u\pm\sqrt{u^2-4v}}2,\qquad
+ \alpha_3,\alpha_4
+ =\frac{u\pm\sqrt{u^2-4w}}2
+\]
+と二組にまとめることができる．
+ここで $u=-(\alpha_1+\alpha_2)$，
+$v=\alpha_1\alpha_2$，
+$w=\alpha_3\alpha_4$ と置いた．
+Vietaの公式から
+$v+w-u^2=p$，
+$u(w-v)=q$，
+$vw=r$ が成り立つ．
+従って $z=u^2=(\alpha_1+\alpha_2)^2$
+は $R(z)=0$ を満たす．
+同じ議論は他の二組への分割にも適用できるので，
+$z_1,z_2,z_3$ は全て $R$ の根である．
+三つの値が重複しても，根を重複度を込めて考えれば
+次数3の多項式の三根を与える．
+\end{proof}
+
+\begin{proposition}[四次の置換表現]\label{prop:s4-s3}
+$S_4$ の三分割集合への作用は全射準同型
+\[
+ S_4\longrightarrow S_3
+\]
+を与え，その核は
+\[
+ V_4=\{1,(12)(34),(13)(24),(14)(23)\}
+\]
+に等しい．
+\end{proposition}
+\begin{proof}
+$S_4$ は四元集合の二組への分割を置換するので
+三元集合への置換表現が得られる．
+$(12)$ は $13|24$ と $14|23$ を交換し，
+$(23)$ は $12|34$ と $13|24$ を交換するため，
+像は $S_3$ の互換を生成し全射である．
+$S_4$ の位数は24，$S_3$ の位数は6だから
+核の位数は4である．
+$1$ と三つの二重互換は三分割をそれぞれ保存するので
+核に含まれる．これらは四元あるから核に等しい．
+\end{proof}
+
+\section{判別式と置換の符号}
+
+\begin{definition}
+根 $\alpha_1,\dots,\alpha_n$ を持つ
+モニック多項式の判別式を
+\[
+ \operatorname{Disc}(f)
+ =\prod_{1\le i<j\le n}(\alpha_i-\alpha_j)^2
+\]
+と定める．
+\end{definition}
+
+\begin{proposition}[判別式の平方根]\label{prop:disc}
+$f\in K[X]$ を標数0の分離的多項式とし，
+分解体を $L$ とする．
+\[
+ \delta=\prod_{i<j}(\alpha_i-\alpha_j)
+\]
+と置くと，
+任意の $\sigma\in\operatorname{Gal}(L/K)\le S_n$ に対して
+\[
+ \sigma(\delta)=\operatorname{sgn}(\sigma)\delta.
+\]
+従って
+$\operatorname{Gal}(L/K)\subset A_n$ と
+$\operatorname{Disc}(f)$ が $K$ の平方元であることは同値である．
+\end{proposition}
+\begin{proof}
+置換 $\sigma$ は差の積を並べ替える．
+一つの互換を適用すると積の符号が反転するので，
+互換の積による表示から
+$\sigma(\delta)=\operatorname{sgn}(\sigma)\delta$
+が従う．
+判別式は $\delta^2$ なので $K$ に属する．
+$f$ は分離的だから $\delta\ne0$ である．
+もしGalois群が $A_n$ に含まれれば
+全ての自己同型が $\delta$ を固定するから，
+Galois対応により $\delta\in K$ となり
+判別式は平方元である．
+逆に判別式が $b^2$（$b\in K$）なら，
+体 $L$ で $(\delta-b)(\delta+b)=0$ だから
+$\delta=\pm b$ となる．
+従って $\delta\in K$ であり，
+全ての $\sigma$ が $\delta$ を固定するため
+符号は全て正である．
+\end{proof}
+
+\begin{remark}
+三次・四次の解法は，根の置換作用に関して
+適切に対称化した量を先に求めるという共通の構造を持つ．
+三次のLagrange分解式は3-cycleで三乗が不変になり，
+四次の三次分解式は $S_4/V_4\cong S_3$ の置換作用を
+反映する．この群論的構造が，
+三次・四次方程式の根号表示の根拠となる．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Cardanoの方法を実際に使う．}
+\begin{proposition}
+三次方程式 $x^3-3x-2=0$ の根は
+$2,-1,-1$ である．
+\end{proposition}
+\begin{proof}
+$x=2$ を代入すると $8-6-2=0$ であるから
+$x-2$ で割り，
+\[
+x^3-3x-2=(x-2)(x^2+2x+1)
+=(x-2)(x+1)^2
+\]
+を得る．
+\end{proof}
+\begin{proposition}[Cardanoの置換]
+$x^3+px+q=0$ に対し $x=u+v$ と置き，
+$uv=-p/3$ を課せば
+\[
+u^3+v^3=-q,\qquad
+u^3v^3=-p^3/27.
+\]
+よって $u^3,v^3$ は
+$t^2+qt-p^3/27=0$ の根である．
+\end{proposition}
+\begin{proof}
+$(u+v)^3+p(u+v)+q
+=u^3+v^3+(3uv+p)(u+v)+q$ を展開する．
+指定した条件を使って整理すると表示式となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$x^3-3x+2=0$ の因数分解を求めよ．
+\par\noindent\textbf{解答．}
+$x=1$ が根であり，
+$x^3-3x+2=(x-1)^2(x+2)$ となる．
+\end{document}
