@@ -1,0 +1,806 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル：platex main.tex（3回），dvipdfmx main.dvi
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Hilbert空間とRieszの表現定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，実・複素内積空間，Hilbert空間の完備性，閉部分空間と連続線形汎関数の基本事項である．
+Rieszの表現定理および直交射影定理は本稿で証明する．
+本稿の具体的な到達課題は，具体的な有界線形汎関数の表現ベクトルを計算する．
+
+\section{内積空間とその完備化}
+
+本稿では $\mathbb K$ を $\mathbb R$ または $\mathbb C$ とし，
+内積は\textbf{第1変数について線形}とする．
+すなわち $\langle ax+by,z\rangle
+=a\langle x,z\rangle+b\langle y,z\rangle$，
+$\langle y,x\rangle=\overline{\langle x,y\rangle}$ とする．
+実数体の場合には複素共役を取り除けばよい．
+
+\begin{definition}
+$\mathbb K$ 上の線形空間 $H$ の内積とは，写像
+$\langle\cdot,\cdot\rangle:H\times H\to\mathbb K$ で，
+第1変数に関する線形性，Hermite対称性，
+および $\langle x,x\rangle\ge0$ と
+$\langle x,x\rangle=0\Longleftrightarrow x=0$ を満たすものをいう．
+$\|x\|=\sqrt{\langle x,x\rangle}$ と置く．
+このノルムに関して完備な内積空間を\emph{Hilbert空間}という．
+\end{definition}
+
+\begin{lemma}[Cauchy--Schwarzの不等式]
+任意の $x,y\in H$ に対して
+\[
+ |\langle x,y\rangle|\le\|x\|\,\|y\|
+\]
+が成り立つ．等号が成り立つのは $x,y$ が線形従属のとき，
+かつそのときに限る．
+\end{lemma}
+\begin{proof}
+$y=0$ のときは明らかである．$y\ne0$ とし，
+$a=\langle x,y\rangle/\|y\|^2$ と置く．
+内積の線形性とHermite対称性から
+\[
+0\le\|x-ay\|^2
+=\|x\|^2-\frac{|\langle x,y\rangle|^2}{\|y\|^2}
+\]
+である．これが所望の不等式を与える．
+等号は $x-ay=0$ と同値であり，$y\ne0$ のもとで線形従属と同値である．
+\end{proof}
+
+\begin{proposition}
+内積から定まる $\|\cdot\|$ はノルムであり，次の恒等式を満たす．
+\begin{align}
+ \|x+y\|^2+\|x-y\|^2&=2\|x\|^2+2\|y\|^2,\label{eq:para}\\
+ |\|x\|-\|y\||&\le\|x-y\|.\label{eq:reverse}
+\end{align}
+さらに内積は各変数に関して連続である．
+\end{proposition}
+\begin{proof}
+$\|ax\|=|a|\|x\|$ と正定値性は定義から直ちに従う．
+Cauchy--Schwarzの不等式を用いれば
+\[
+ \|x+y\|^2
+ =\|x\|^2+2\operatorname{Re}\langle x,y\rangle+\|y\|^2
+ \le(\|x\|+\|y\|)^2
+\]
+であり，三角不等式を得る．
+\eqref{eq:para} は左右を展開すればよい．
+三角不等式を $x=(x-y)+y$ と
+$y=(y-x)+x$ に適用すれば \eqref{eq:reverse} が従う．
+最後に
+\[
+ |\langle x_n,y_n\rangle-\langle x,y\rangle|
+ \le\|x_n-x\|\,\|y_n\|+\|x\|\,\|y_n-y\|
+\]
+を用いる．$x_n\to x$，$y_n\to y$ なら
+$\|y_n\|$ は有界であるから右辺は $0$ に収束する．
+\end{proof}
+
+\begin{example}
+$\mathbb K^n$ に標準内積
+$\langle x,y\rangle=\sum_{j=1}^n x_j\overline{y_j}$ を入れると
+Hilbert空間となる．
+また数列空間
+\[
+ \ell^2(\mathbb K)
+ =\left\{x=(x_n)_{n\ge1}:\sum_{n=1}^\infty|x_n|^2<\infty\right\}
+\]
+に $\langle x,y\rangle=\sum_{n=1}^\infty x_n\overline{y_n}$
+を入れてもHilbert空間となる．
+\end{example}
+\begin{proof}
+$\mathbb K^n$ の完備性は実数または複素数の完備性から従う．
+$\ell^2$ については，Cauchy--Schwarzの有限和版から
+内積を定める級数の絶対収束が従う．
+$(x^{(m)})$ が $\ell^2$ のCauchy列なら，
+各座標 $x^{(m)}_j$ は $\mathbb K$ のCauchy列なので
+$x^{(m)}_j\to x_j$ と置ける．
+任意の有限集合 $\{1,\dots,N\}$ に対し
+\[
+ \sum_{j=1}^N|x_j|^2
+ =\lim_{m\to\infty}\sum_{j=1}^N|x^{(m)}_j|^2
+ \le \sup_m\|x^{(m)}\|^2<\infty.
+\]
+$N\to\infty$ として $x\in\ell^2$ を得る．
+$\varepsilon>0$ に対し $m,m'\ge m_0$ なら
+$\|x^{(m)}-x^{(m')}\|<\varepsilon$ となるように取り，
+有限和で $m'\to\infty$，ついで $N\to\infty$ とすれば
+$\|x^{(m)}-x\|\le\varepsilon$ である．
+したがって $\ell^2$ は完備である．
+\end{proof}
+
+\begin{example}
+測度空間 $(\Omega,\mathcal A,\mu)$ に対し，
+ほとんど至る所等しい関数を同一視した $L^2(\mu)$ は
+\[
+ \langle f,g\rangle=\int_\Omega f\overline g\,d\mu
+\]
+によりHilbert空間になる．積分の存在は
+$2|fg|\le|f|^2+|g|^2$ から従い，完備性は
+$L^p$ の完備性定理の $p=2$ の場合である．
+\end{example}
+
+\section{閉凸集合への最近点}
+
+\begin{definition}
+内積空間の部分集合 $C$ が凸であるとは，
+$x,y\in C$ と $0\le t\le1$ に対して
+$(1-t)x+ty\in C$ が成り立つことをいう．
+$x\in H$ から $C\ne\varnothing$ への距離を
+$d(x,C)=\inf_{z\in C}\|x-z\|$ と定める．
+\end{definition}
+
+\begin{theorem}[最近点定理]\label{thm:nearest}
+$H$ をHilbert空間，$C\subset H$ を空でない閉凸集合とする．
+任意の $x\in H$ に対し，
+\[
+ \|x-p\|=d(x,C)
+\]
+を満たす $p\in C$ がただ一つ存在する．
+\end{theorem}
+\begin{proof}
+$d=d(x,C)$ と置き，
+$\|x-z_n\|\to d$ となる $(z_n)\subset C$ を取る．
+凸性により $(z_n+z_m)/2\in C$ である．
+平行四辺形恒等式を $x-z_n,x-z_m$ に適用すると
+\begin{align*}
+ \|z_n-z_m\|^2
+ &=2\|x-z_n\|^2+2\|x-z_m\|^2\\
+ &\quad-4\left\|x-\frac{z_n+z_m}{2}\right\|^2\\
+ &\le 2\|x-z_n\|^2+2\|x-z_m\|^2-4d^2.
+\end{align*}
+右辺は $m,n\to\infty$ で $0$ に収束するため，
+$(z_n)$ はCauchy列である．完備性によって
+$z_n\to p\in H$ となり，$C$ は閉だから $p\in C$ である．
+ノルムの連続性から $\|x-p\|=d$ を得る．
+
+$p,q\in C$ がいずれも距離 $d$ を実現するなら，
+同じ等式で $z_n=p,z_m=q$ とすれば
+$\|p-q\|^2\le0$ となり $p=q$ である．
+\end{proof}
+
+\begin{proposition}[最近点の特徴づけ]\label{prop:variational}
+上の条件のもとで，$p\in C$ が $x$ の最近点であることと
+\[
+ \operatorname{Re}\langle x-p,z-p\rangle\le0
+ \qquad(z\in C)                                     \tag{$*$}
+\]
+とは同値である．
+\end{proposition}
+\begin{proof}
+$p$ が最近点なら，任意の $z\in C$ と $0\le t\le1$ に対し
+$p+t(z-p)\in C$ なので
+\[
+0\le\|x-p-t(z-p)\|^2-\|x-p\|^2
+=-2t\operatorname{Re}\langle x-p,z-p\rangle
+  +t^2\|z-p\|^2.
+\]
+$t>0$ で割って $t\downarrow0$ とすれば $(*)$ を得る．
+逆に $(*)$ ならば任意の $z\in C$ に対し
+\[
+ \|x-z\|^2
+ =\|x-p\|^2+\|z-p\|^2
+ -2\operatorname{Re}\langle x-p,z-p\rangle
+ \ge\|x-p\|^2,
+\]
+ゆえに $p$ は最近点である．
+\end{proof}
+
+\begin{remark}
+最近点定理の存在証明ではHilbert空間の完備性を，
+一意性では平行四辺形恒等式を用いた．
+一般のBanach空間の閉凸集合で同じ結論が成り立つとは限らない．
+\end{remark}
+
+\section{直交射影と直交分解}
+
+\begin{definition}
+$M\subset H$ を線形部分空間とする．直交補空間を
+\[
+ M^\perp=\{x\in H:\langle x,m\rangle=0
+  \text{ for all }m\in M\}
+\]
+と定義する．
+\end{definition}
+
+\begin{lemma}
+任意の部分集合 $S\subset H$ に対して
+$S^\perp$ は閉線形部分空間である．また
+$S\subset(S^\perp)^\perp$ である．
+\end{lemma}
+\begin{proof}
+固定した $s\in S$ に対して $x\mapsto\langle x,s\rangle$
+は連続線形汎関数であるから，その核は閉線形部分空間である．
+$S^\perp$ はこれらの核の共通部分である．
+$s\in S,x\in S^\perp$ に対して
+$\langle s,x\rangle=\overline{\langle x,s\rangle}=0$ であるため
+$s\in(S^\perp)^\perp$ となる．
+\end{proof}
+
+\begin{theorem}[直交射影定理]\label{thm:projection}
+$H$ をHilbert空間，$M\subset H$ を閉線形部分空間とする．
+各 $x\in H$ に対し，ただ一つの $p\in M$ が存在して
+$x-p\in M^\perp$ となる．この $p$ は
+$\|x-p\|=d(x,M)$ を満たす．
+従って
+\[
+ H=M\oplus M^\perp
+\]
+という直交直和分解を得る．
+\end{theorem}
+\begin{proof}
+$M$ は空でない閉凸集合であるから，
+定理\ref{thm:nearest}によって最近点 $p\in M$ が存在する．
+命題\ref{prop:variational}を $z=p+tm$ に適用すると，
+任意の $m\in M$ と実数 $t$ に対して
+$t\,\operatorname{Re}\langle x-p,m\rangle\le0$ を得る．
+$t$ の符号を変えて実部は $0$ と分かる．
+$\mathbb K=\mathbb C$ のとき $im$ にも適用すれば
+虚部も $0$ である．従って $x-p\in M^\perp$ である．
+
+逆に $x=p+q$, $p\in M$, $q\in M^\perp$ と書けば，
+任意の $m\in M$ に対して
+\[
+ \|x-m\|^2=\|p-m\|^2+\|q\|^2\ge\|q\|^2=\|x-p\|^2.
+\]
+よって $p$ は最近点であり，定理\ref{thm:nearest}によって
+一意である．最後に $M\cap M^\perp=\{0\}$ は
+$\langle u,u\rangle=0$ から従う．
+\end{proof}
+
+\begin{definition}
+定理\ref{thm:projection}で定まる写像
+$P_M:H\to M$, $P_Mx=p$ を $M$ への\emph{直交射影}という．
+必要に応じて $M$ から $H$ への包含と合成し，
+$P_M:H\to H$ ともみなす．
+\end{definition}
+
+\begin{proposition}\label{prop:projection}
+$P_M$ は線形で $P_M^2=P_M$ を満たす．
+$\ker P_M=M^\perp$，$\operatorname{ran}P_M=M$ であり，
+\[
+ \|x\|^2=\|P_Mx\|^2+\|x-P_Mx\|^2.
+\]
+特に $\|P_Mx\|\le\|x\|$ である．$M\ne\{0\}$ なら
+$\|P_M\|=1$ となる．
+\end{proposition}
+\begin{proof}
+$x=P_Mx+(x-P_Mx)$ および
+$y=P_My+(y-P_My)$ の二つの直交分解を線形結合すれば，
+$ax+by$ の直交分解の一意性により
+$P_M(ax+by)=aP_Mx+bP_My$ を得る．
+$P_Mm=m$（$m\in M$）と $P_Mq=0$（$q\in M^\perp$）は
+直交分解の一意性から従い，核・像および冪等性を与える．
+Pythagorasの恒等式は内積を展開すればよい．
+$M\ne\{0\}$ のとき $m\in M\setminus\{0\}$ に対して
+$\|P_Mm\|/\|m\|=1$ なのでノルムは $1$ である．
+\end{proof}
+
+\begin{corollary}[二重直交補空間]
+任意の線形部分空間 $M\subset H$ について
+\[
+ (M^\perp)^\perp=\overline M
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+連続性により $M^\perp=(\overline M)^\perp$ であり，
+$\overline M\subset(M^\perp)^\perp$ である．
+$x\in(M^\perp)^\perp$ を
+$x=p+q$，$p\in\overline M$, $q\in(\overline M)^\perp=M^\perp$
+と直交分解すると，
+\[
+ 0=\langle x,q\rangle=\langle p,q\rangle+\|q\|^2=\|q\|^2.
+\]
+ゆえに $q=0$ かつ $x=p\in\overline M$ である．
+\end{proof}
+
+\section{Rieszの表現定理}
+
+\begin{definition}
+ノルム空間 $X$ 上の線形汎関数 $f:X\to\mathbb K$ が
+\emph{有界}であるとは，
+ある $C\ge0$ が存在して $|f(x)|\le C\|x\|$ が
+すべての $x\in X$ に対して成立することをいう．
+このような汎関数全体を連続双対空間 $X^*$ と書き，
+\[
+ \|f\|=\sup_{\|x\|\le1}|f(x)|
+\]
+と定義する．
+\end{definition}
+
+\begin{lemma}
+線形汎関数 $f:X\to\mathbb K$ について，
+有界性と連続性は同値である．有界な $f$ の核は
+閉線形部分空間となる．
+\end{lemma}
+\begin{proof}
+$|f(x)-f(y)|\le\|f\|\|x-y\|$ から有界性は連続性を導く．
+逆に $0$ で連続なら，ある $\delta>0$ に対して
+$\|x\|<\delta$ なら $|f(x)|<1$ となる．
+$x\ne0$ に対して $u=\delta x/(2\|x\|)$ と置くと
+$|f(u)|<1$ なので $|f(x)|<2\|x\|/\delta$ となる．
+$\ker f=f^{-1}(\{0\})$ は連続写像による閉集合の逆像である．
+\end{proof}
+
+\begin{theorem}[Rieszの表現定理]\label{thm:riesz}
+$H$ を $\mathbb K$ 上のHilbert空間とする．
+任意の $f\in H^*$ に対して，ただ一つの $y\in H$ が存在し，
+\[
+ f(x)=\langle x,y\rangle\qquad(x\in H)
+\]
+が成り立つ．しかも
+\[
+ \|f\|=\|y\|
+\]
+である．
+\end{theorem}
+\begin{proof}
+$f=0$ のときは $y=0$ とすればよい．
+$f\ne0$ とし，$M=\ker f$ と置く．
+$M$ は真の閉部分空間である．
+$u_0\notin M$ を取り，
+直交射影定理によって
+$u_0=m_0+u$，$m_0\in M$, $u\in M^\perp$
+と分解する．
+$u=0$ なら $u_0=m_0\in M$ となるので $u\ne0$ であり，
+$f(u)=f(u_0)\ne0$ である．
+任意の $x\in H$ に対して
+\[
+ m=x-\frac{f(x)}{f(u)}u
+\]
+と置けば $f(m)=0$ であり $m\in M$ となる．
+従って $u\perp M$ によって
+\[
+ \langle x,u\rangle
+ =\frac{f(x)}{f(u)}\|u\|^2.
+\]
+ここで
+\[
+ y=\frac{\overline{f(u)}}{\|u\|^2}\,u
+\]
+と置く．第2変数についての共役線形性より
+\[
+ \langle x,y\rangle
+ =\frac{f(u)}{\|u\|^2}\langle x,u\rangle=f(x)
+\]
+を得る．
+
+もし $y,z$ が共に $f$ を表すなら
+$\langle x,y-z\rangle=0$ がすべての $x$ で成り立つ．
+$x=y-z$ として $y=z$ を得る．
+最後にCauchy--Schwarzによって
+$|f(x)|\le\|x\|\|y\|$ なので $\|f\|\le\|y\|$ である．
+$y\ne0$ の場合には $x=y/\|y\|$ を代入して
+$\|f\|\ge\|y\|$ を得る．$y=0$ なら両辺は $0$ である．
+\end{proof}
+
+\begin{remark}
+この証明の核心は，$\ker f$ に対する直交分解にある．
+$H$ の完備性は直交射影定理を通じて使われている．
+また，表現元の存在は $f$ が線形であるだけでは従わず，
+有界性が本質的である．
+\end{remark}
+
+\begin{proposition}[双対空間の同定]\label{prop:dual}
+\[
+ J:H\longrightarrow H^*,\qquad
+ J(y)(x)=\langle x,y\rangle
+\]
+は等距離な全単射である．
+$\mathbb K=\mathbb R$ のとき $J$ は線形であり，
+$\mathbb K=\mathbb C$ のとき $J$ は共役線形である．
+\end{proposition}
+\begin{proof}
+$J$ が全単射であることと $\|J(y)\|=\|y\|$ は
+定理\ref{thm:riesz}から従う．
+\[
+ J(ay+bz)(x)
+ =\langle x,ay+bz\rangle
+ =\overline a\,J(y)(x)+\overline b\,J(z)(x)
+\]
+なので複素数体の場合は共役線形となる．
+\end{proof}
+
+\begin{corollary}
+Hilbert空間 $H$ は反射的である．すなわち，
+自然な写像
+\[
+ \iota:H\to H^{**},\qquad
+ \iota(x)(f)=f(x)
+\]
+は等距離な線形全単射となる．
+\end{corollary}
+\begin{proof}
+任意のノルム空間において $\iota$ は線形であり，
+$\|\iota(x)\|\le\|x\|$ である．Hilbert空間では
+$x\ne0$ のとき $f=J(x/\|x\|)$ とすれば
+$\|f\|=1$ かつ $|f(x)|=\|x\|$ だから等距離である．
+
+全射性を示す．$F\in H^{**}$ に対して
+$G:H\to\mathbb K$ を
+$G(y)=\overline{F(J(y))}$（複素数体の場合）と定義する．
+$J$ は共役線形なので $G$ は線形であり，
+$|G(y)|\le\|F\|\|y\|$ である．
+Rieszの表現定理により
+$G(y)=\langle y,x\rangle$ となる $x\in H$ がある．
+任意の $f=J(y)\in H^*$ について
+\[
+ F(f)=\overline{G(y)}
+ =\langle x,y\rangle=f(x)=\iota(x)(f).
+\]
+実数体の場合は共役を取り除けば同じ証明である．
+従って $F=\iota(x)$ となる．
+\end{proof}
+
+\section{有界線形作用素の随伴}
+
+\begin{definition}
+ノルム空間 $X,Y$ の間の有界線形作用素 $T:X\to Y$ の
+作用素ノルムを
+\[
+ \|T\|=\sup_{\|x\|\le1}\|Tx\|
+\]
+と定める．Hilbert空間 $H,K$ に対し
+\[
+ \mathcal B(H,K)
+ =\{T:H\to K:T\text{ は有界線形}\}
+\]
+と書く．
+\end{definition}
+
+\begin{theorem}[随伴作用素]\label{thm:adjoint}
+$H,K$ をHilbert空間，
+$T\in\mathcal B(H,K)$ とする．
+このとき，ただ一つの $T^*\in\mathcal B(K,H)$ が存在して
+\[
+ \langle Tx,y\rangle_K
+ =\langle x,T^*y\rangle_H
+ \qquad(x\in H,\ y\in K)
+\]
+を満たす．さらに $\|T^*\|=\|T\|$ である．
+\end{theorem}
+\begin{proof}
+各 $y\in K$ を固定すると
+$f_y(x)=\langle Tx,y\rangle_K$ は線形であり，
+\[
+ |f_y(x)|\le\|Tx\|\,\|y\|
+ \le\|T\|\,\|x\|\,\|y\|.
+\]
+よって $f_y\in H^*$ である．
+定理\ref{thm:riesz}によりただ一つの $T^*y\in H$ が存在して
+$f_y(x)=\langle x,T^*y\rangle_H$ が成り立つ．
+任意の $a,b\in\mathbb K$，$y,z\in K$ に対して
+\[
+ \langle x,T^*(ay+bz)\rangle_H
+ =\langle Tx,ay+bz\rangle_K
+ =\langle x,aT^*y+bT^*z\rangle_H
+\]
+だから，Riesz表現の一意性より $T^*$ は線形である．
+さらに
+\[
+ \|T^*y\|=\|f_y\|\le\|T\|\|y\|
+\]
+となるので $\|T^*\|\le\|T\|$ である．
+任意の $x\in H$ に対し
+\[
+ \|Tx\|
+ =\sup_{\|y\|\le1}|\langle Tx,y\rangle|
+ =\sup_{\|y\|\le1}|\langle x,T^*y\rangle|
+ \le\|T^*\|\|x\|
+\]
+が成り立つため逆向きの不等式も得る．
+一意性は任意の $x$ に対して
+$\langle x,Sy-T^*y\rangle=0$ なら
+$Sy=T^*y$ であることから従う．
+\end{proof}
+
+\begin{proposition}\label{prop:adjoint-rules}
+Hilbert空間間の有界線形作用素に対して，
+次の恒等式が成り立つ（積は合成とする）．
+\begin{align*}
+ (aS+bT)^*&=\overline a\,S^*+\overline b\,T^*,\\
+ (ST)^*&=T^*S^*,\\
+ (T^*)^*&=T,\qquad \|T^*T\|=\|T\|^2.
+\end{align*}
+また
+$\ker T^*=(\operatorname{ran}T)^\perp$，
+$\ker T=(\operatorname{ran}T^*)^\perp$ である．
+\end{proposition}
+\begin{proof}
+最初の二式は，それぞれ
+$\langle(aS+bT)x,y\rangle$ および
+$\langle STx,y\rangle$ を随伴の定義に従って書き換え，
+一意性を用いれば従う．
+同様に
+\[
+ \langle T^*y,x\rangle_H
+ =\overline{\langle x,T^*y\rangle_H}
+ =\overline{\langle Tx,y\rangle_K}
+ =\langle y,Tx\rangle_K
+\]
+から $(T^*)^*=T$ を得る．
+
+$\|T^*T\|\le\|T^*\|\|T\|=\|T\|^2$ である．
+逆に $\|x\|=1$ に対して
+\[
+ \|Tx\|^2=\langle T^*Tx,x\rangle
+ \le\|T^*Tx\|\le\|T^*T\|
+\]
+だから，$x$ に関する上限を取れば
+$\|T\|^2\le\|T^*T\|$ を得る．
+
+$y\in\ker T^*$ と
+$\langle Tx,y\rangle=0$ がすべての $x$ で成り立つことは
+同値であるため，$\ker T^*=(\operatorname{ran}T)^\perp$ となる．
+もう一つは $(T^*)^*=T$ を用いて同様に得る．
+\end{proof}
+
+\begin{corollary}
+任意の $T\in\mathcal B(H,K)$ に対して
+\[
+ \overline{\operatorname{ran}T}
+   =(\ker T^*)^\perp,\qquad
+ \overline{\operatorname{ran}T^*}
+   =(\ker T)^\perp
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+命題\ref{prop:adjoint-rules}と二重直交補空間の公式を用い，
+$\overline{\operatorname{ran}T}
+=((\operatorname{ran}T)^\perp)^\perp
+=(\ker T^*)^\perp$ を得る．他方も同様である．
+\end{proof}
+
+\begin{example}[射影の自己随伴性]
+閉部分空間 $M\subset H$ への直交射影 $P_M$ は
+$P_M^*=P_M$ を満たす．
+\end{example}
+\begin{proof}
+$x=p+q$，$y=r+s$ を
+$p,r\in M$，$q,s\in M^\perp$ と分解すると
+\[
+ \langle P_Mx,y\rangle
+ =\langle p,r+s\rangle=\langle p,r\rangle
+ =\langle p+q,r\rangle=\langle x,P_My\rangle.
+\]
+随伴の一意性によって結論が従う．
+\end{proof}
+
+\section{数列空間と関数空間での具体化}
+
+\begin{example}[有限次元内積空間]
+$H=\mathbb K^n$ に標準内積を入れる．
+任意の線形汎関数 $f:H\to\mathbb K$ は
+ある $a_1,\dots,a_n\in\mathbb K$ によって
+\[
+ f(x)=\sum_{j=1}^n a_jx_j
+\]
+と表され，Rieszの表現元は
+$y=(\overline{a_1},\dots,\overline{a_n})$ である．
+特に $\|f\|=(\sum_{j=1}^n|a_j|^2)^{1/2}$ となる．
+\end{example}
+\begin{proof}
+標準基底 $e_j$ に対して $a_j=f(e_j)$ とすれば，
+$x=\sum_jx_je_j$ の線形性から表示式を得る．
+標準内積の規約により
+$\langle x,y\rangle=\sum_jx_j\overline{y_j}
+=\sum_j a_jx_j=f(x)$ である．
+Cauchy--Schwarzの不等式から $\|f\|\le\|y\|$ であり，
+$y\ne0$ なら $x=y/\|y\|$ を代入して
+$\|f\|\ge\|y\|$ を得る．$y=0$ も自明である．
+\end{proof}
+
+\begin{lemma}[Besselの不等式]\label{lem:bessel}
+$H$ を内積空間，$e_1,\dots,e_n\in H$ を
+正規直交系とする．すなわち
+$\langle e_j,e_k\rangle=\delta_{jk}$ とする．
+このとき任意の $x\in H$ に対して
+\[
+ \sum_{j=1}^n|\langle x,e_j\rangle|^2\le\|x\|^2
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$p_n=\sum_{j=1}^n\langle x,e_j\rangle e_j$ と置く．
+各 $k=1,\dots,n$ に対して
+$\langle x-p_n,e_k\rangle=0$ なので
+$\langle x-p_n,p_n\rangle=0$ である．
+従って
+\[
+ \|x\|^2=\|p_n\|^2+\|x-p_n\|^2
+ \ge\|p_n\|^2
+ =\sum_{j=1}^n|\langle x,e_j\rangle|^2
+\]
+となる．
+\end{proof}
+
+\begin{proposition}[Parsevalの等式]\label{prop:parseval}
+$H$ をHilbert空間，
+$(e_n)_{n\ge1}$ を正規直交列であって
+$\overline{\operatorname{span}}\{e_n:n\ge1\}=H$
+を満たすものとする．
+このとき全ての $x\in H$ に対して
+\[
+ x=\sum_{n=1}^\infty\langle x,e_n\rangle e_n
+ \quad\text{（ノルム収束）},\qquad
+ \|x\|^2=\sum_{n=1}^\infty|\langle x,e_n\rangle|^2
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+$p_N=\sum_{n=1}^N\langle x,e_n\rangle e_n$ と置く．
+$N>M$ に対して直交性により
+\[
+ \|p_N-p_M\|^2
+ =\sum_{n=M+1}^N|\langle x,e_n\rangle|^2.
+\]
+補題\ref{lem:bessel}により右辺の級数は収束するから
+$(p_N)$ はCauchy列となる．
+Hilbert空間の完備性から $p_N\to p\in H$ と置ける．
+固定した $k$ に対して $N\ge k$ なら
+$\langle x-p_N,e_k\rangle=0$ であり，
+内積の連続性から $\langle x-p,e_k\rangle=0$ となる．
+従って $x-p$ は全ての $e_k$ に直交する．
+正規直交列の張る部分空間が稠密であるから
+$\langle x-p,z\rangle=0$ が全ての $z\in H$ で成立し，
+$z=x-p$ として $x=p$ を得る．
+最後に $\|p_N\|^2
+=\sum_{n=1}^N|\langle x,e_n\rangle|^2$ で
+$N\to\infty$ とすればParsevalの等式を得る．
+\end{proof}
+
+\begin{example}[$\ell^2$ の連続線形汎関数]
+任意の $y=(y_n)\in\ell^2$ に対して
+\[
+ f_y(x)=\sum_{n=1}^\infty x_n\overline{y_n}
+\]
+は連続線形汎関数であり，$\|f_y\|=\|y\|_2$ を満たす．
+逆に $\ell^2$ 上のすべての連続線形汎関数は
+ただ一つの $y\in\ell^2$ によってこの形に表される．
+\end{example}
+\begin{proof}
+有限和についてのCauchy--Schwarzの不等式により
+\[
+ \sum_{n=1}^\infty|x_ny_n|
+ \le\|x\|_2\|y\|_2
+\]
+となり，級数は絶対収束する．ノルムの一致と逆向きの主張は
+定理\ref{thm:riesz}から従う．
+また具体的には，標準正規直交系 $e_n$ を用いれば
+$f_y(e_n)=\overline{y_n}$ だから表現元は一意である．
+\end{proof}
+
+\begin{example}[$L^2$ の連続線形汎関数]
+測度空間 $(\Omega,\mathcal A,\mu)$ に対し，
+任意の $F\in (L^2(\mu))^*$ はただ一つの
+$g\in L^2(\mu)$ により
+\[
+ F(f)=\int_\Omega f\overline g\,d\mu
+ \qquad(f\in L^2(\mu))
+\]
+と表され，$\|F\|=\|g\|_2$ である．
+\end{example}
+\begin{proof}
+$L^2(\mu)$ はHilbert空間だから
+定理\ref{thm:riesz}を適用すればよい．
+表現元はほとんど至る所等しい関数を同一視した元として一意である．
+\end{proof}
+
+\begin{remark}
+$L^2(\mu)$ の元は関数のほとんど至る所での同値類である．
+したがって一般には $f\mapsto f(t_0)$ は
+同値類上で定義された汎関数ではない．
+Rieszの表現定理は点評価をすべて表現できると述べているのではない．
+\end{remark}
+
+\begin{example}[Hilbert空間の仮定の重要性]
+$C([0,1],\mathbb R)$ に一様ノルムを入れた空間はBanach空間だが，
+このノルムは内積から定まらない．
+\end{example}
+\begin{proof}
+$f(t)=1$，$g(t)=t$ とすると
+\[
+ \|f+g\|_\infty^2+\|f-g\|_\infty^2=4+1=5
+\]
+であるのに対し，
+$2\|f\|_\infty^2+2\|g\|_\infty^2=4$ となる．
+よって平行四辺形恒等式 \eqref{eq:para} が成り立たず，
+このノルムは内積に由来しない．
+\end{proof}
+
+\section{結語}
+Rieszの表現定理は，Hilbert空間の連続双対を
+元の空間と等距離に対応づける定理である．
+その証明は閉凸集合への最近点定理と直交分解に帰着する．
+ここから随伴作用素の存在，反射性，
+作用素の核と像の直交関係が一貫して導かれる．
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{Riesz表現定理を有限次元で計算する．}
+\begin{proposition}
+$\mathbb R^2$ に標準内積を入れ，
+$\ell(x,y)=2x-y$ とすると，
+Riesz表現ベクトルは $v=(2,-1)$ であり，
+$\|\ell\|=\sqrt5$ である．
+\end{proposition}
+\begin{proof}
+$(x,y)\cdot(2,-1)=2x-y=\ell(x,y)$ だから
+$v$ が表現ベクトルである．
+Cauchy--Schwarzの不等式より
+$|\ell(w)|\le\|v\|\|w\|$ である．
+$w=v/\|v\|$ を取れば等号が成立するので
+$\|\ell\|=\|v\|=\sqrt5$ となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\ell(x,y,z)=x+2y+2z$ のRieszベクトルとノルムを求めよ．
+\par\noindent\textbf{解答．}
+$v=(1,2,2)$ で，$\|\ell\|=\|v\|=3$ である．
+\end{document}

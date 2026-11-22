@@ -1,0 +1,621 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Laplace変換と反転公式}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Laplace変換，部分積分，指数関数．
+本稿の具体的な到達課題は，Laplace変換を直接計算し，常微分方程式の解に適用する．
+
+\section{Laplace変換の定義}
+
+本稿では $f:[0,\infty)\to\mathbb C$ を可測関数とする．
+等式は，特に断らない限りLebesgue積分の意味で解釈する．
+
+\begin{definition}
+$f$ に対し，
+\[
+ \mathcal Lf(s)=F(s)=\int_0^\infty e^{-st}f(t)\,dt
+\]
+が絶対収束する複素数 $s$ における積分を
+\emph{片側Laplace変換}という．
+ある実数 $a$ に対して
+$e^{-at}f(t)\in L^1(0,\infty)$ となるとき，
+$f$ を\emph{指数重み付き可積分}という．
+\end{definition}
+
+\begin{proposition}[収束半平面]\label{prop:half-plane}
+$e^{-at}f\in L^1(0,\infty)$ と仮定する．
+このとき $\mathcal Lf(s)$ は
+$\operatorname{Re}s\ge a$ で絶対収束し，
+\[
+ |F(s)|\le\int_0^\infty e^{-at}|f(t)|\,dt
+\]
+を満たす．
+特に $\operatorname{Re}s>a$ では連続である．
+\end{proposition}
+\begin{proof}
+$\sigma=\operatorname{Re}s\ge a$ なら
+$|e^{-st}f(t)|=e^{-\sigma t}|f(t)|
+\le e^{-at}|f(t)|$ であるから，
+比較によって絶対収束と評価が従う．
+$s_n\to s$ に対し被積分関数は各 $t$ で収束し，
+上の可積分関数で抑えられるので
+Lebesgueの収束定理から $F(s_n)\to F(s)$ となる．
+\end{proof}
+
+\begin{example}
+$\operatorname{Re}s>\operatorname{Re}\lambda$ に対し
+\[
+ \mathcal L(e^{\lambda t})(s)=\frac1{s-\lambda}.
+\]
+また $\operatorname{Re}s>0$ で
+$\mathcal L1(s)=1/s$ が成り立つ．
+\end{example}
+\begin{proof}
+$\operatorname{Re}(s-\lambda)>0$ のもとで
+\[
+ \int_0^\infty e^{-(s-\lambda)t}\,dt
+ =\lim_{R\to\infty}
+ \frac{1-e^{-(s-\lambda)R}}{s-\lambda}
+ =\frac1{s-\lambda}.
+\]
+後半は $\lambda=0$ とすればよい．
+\end{proof}
+
+\begin{definition}
+$f:\mathbb R\to\mathbb C$ が可測で
+$e^{-\sigma t}f(t)\in L^1(\mathbb R)$ となる
+$\sigma\in\mathbb R$ に対して
+\[
+ \mathcal L_{\mathrm b}f(s)
+ =\int_{\mathbb R}e^{-st}f(t)\,dt
+ \quad(\operatorname{Re}s=\sigma)
+\]
+を\emph{両側Laplace変換}という．
+\end{definition}
+
+\section{正則性と微分公式}
+
+\begin{theorem}[Laplace変換の正則性]\label{thm:holomorphic}
+ある $a\in\mathbb R$ について
+$e^{-at}f\in L^1(0,\infty)$ とする．
+このとき $F(s)=\mathcal Lf(s)$ は
+半平面 $\operatorname{Re}s>a$ で正則であり，
+任意の整数 $n\ge0$ に対して
+\[
+ F^{(n)}(s)
+ =(-1)^n\int_0^\infty t^n e^{-st}f(t)\,dt
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$\operatorname{Re}s>a$ を固定し，
+$0<\delta<\operatorname{Re}s-a$ を取る．
+$|h|<\delta/2$ なら
+\[
+ \frac{e^{-(s+h)t}-e^{-st}}h
+ =-t e^{-st}\int_0^1e^{-\theta ht}\,d\theta
+\]
+である．
+絶対値は
+$t e^{-(\operatorname{Re}s-\delta/2)t}|f(t)|$
+以下であり，
+\[
+ t e^{-(\operatorname{Re}s-\delta/2-a)t}
+\]
+は $[0,\infty)$ 上有界なので，
+これは定数倍の $e^{-at}|f(t)|$ で抑えられる．
+従って優収束定理を用いて
+\[
+ F'(s)=-\int_0^\infty t e^{-st}f(t)\,dt
+\]
+を得る．
+同じ議論を $t^nf(t)$ に繰り返し適用する．
+任意の $n$ と $\varepsilon>0$ に対して
+$t^n e^{-\varepsilon t}$ が有界であるから，
+必要な可積分支配が常に成り立つ．
+従って全ての階数の公式が得られる．
+\end{proof}
+
+\begin{proposition}[指数移動と時間平行移動]\label{prop:shifts}
+$f$ が指数重み付き可積分とし，
+$c\in\mathbb C$，$b\ge0$ とする．
+\[
+ \mathcal L(e^{ct}f(t))(s)=F(s-c)
+\]
+が収束領域で成り立つ．
+また
+\[
+ g_b(t)=
+ \begin{cases}
+ 0&(0\le t<b),\\
+ f(t-b)&(t\ge b)
+ \end{cases}
+\]
+とすると
+\[
+ \mathcal Lg_b(s)=e^{-bs}F(s)
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+第一式は
+$e^{-st}e^{ct}=e^{-(s-c)t}$ であることによる．
+第二式は変数変換 $u=t-b$ によって
+\[
+ \int_b^\infty e^{-st}f(t-b)\,dt
+ =e^{-bs}\int_0^\infty e^{-su}f(u)\,du
+\]
+となることから従う．
+\end{proof}
+
+\section{時間微分と積分}
+
+\begin{theorem}[微分のLaplace変換]\label{thm:derivatives}
+$f:[0,\infty)\to\mathbb C$ が各有限区間で絶対連続で，
+$f$ と $f'$ がある $a\in\mathbb R$ に対して
+指数重み付き可積分であるとする．
+さらに $b>a$ を固定する．
+このとき $\operatorname{Re}s>b$ で
+\[
+ \mathcal L(f')(s)=sF(s)-f(0)
+\]
+が成り立つ．
+同様の仮定を $f,f',\dots,f^{(n)}$ に課せば
+\[
+ \mathcal L(f^{(n)})(s)
+ =s^nF(s)-\sum_{k=0}^{n-1}
+ s^{n-1-k}f^{(k)}(0)
+\]
+を得る．
+\end{theorem}
+\begin{proof}
+$f$ は局所絶対連続なので
+$e^{-st}f(t)$ は各有限区間で絶対連続である．
+部分積分によって
+\[
+ \int_0^R e^{-st}f'(t)\,dt
+ =e^{-sR}f(R)-f(0)
+ +s\int_0^R e^{-st}f(t)\,dt
+\]
+が成り立つ．
+$e^{-a t}f$ と $e^{-a t}f'$ が $L^1$ に属するので
+$g(t)=e^{-at}f(t)$ は局所絶対連続であり，
+\[
+ g'(t)=e^{-at}(f'(t)-af(t))\in L^1(0,\infty).
+\]
+従って $g$ は $t\to\infty$ で有限の極限を持つ：
+$g(t)=g(0)+\int_0^t g'(u)\,du$ による．
+特に $g$ は有界であり，
+$\operatorname{Re}s>a$ なら
+$e^{-sR}f(R)=e^{-(s-a)R}g(R)\to0$ である．
+$R\to\infty$ として最初の公式を得る．
+高階微分の場合は同じ公式を順に適用し，
+帰納法によって表示式を得る．
+\end{proof}
+
+\begin{proposition}[積分と時間乗法]\label{prop:integration}
+$a\in\mathbb R$ とし，$e^{-at}f(t)\in L^1(0,\infty)$ と仮定して
+\[
+ H(t)=\int_0^t f(u)\,du
+\]
+と置く．$\operatorname{Re}s>\max\{a,0\}$ なら
+\[
+ \mathcal LH(s)=\frac{F(s)}s.
+\]
+また $\operatorname{Re}s>a$ で
+\[
+ \mathcal L(tf(t))(s)=-F'(s).
+\]
+\end{proposition}
+\begin{proof}
+$\operatorname{Re}s=\sigma>\max\{a,0\}$ とし，
+Fubiniの定理を適用する．その正当性は
+\[
+ \int_0^\infty\int_0^t
+ e^{-\sigma t}|f(u)|\,du\,dt
+ =\frac1\sigma\int_0^\infty e^{-\sigma u}|f(u)|\,du<\infty
+\]
+による．従って
+\[
+ \mathcal LH(s)
+ =\int_0^\infty f(u)\int_u^\infty e^{-st}\,dt\,du
+ =\frac1s\int_0^\infty e^{-su}f(u)\,du.
+\]
+後半は定理\ref{thm:holomorphic}で $n=1$ とすればよい．
+\end{proof}
+
+\section{畳み込み}
+
+\begin{definition}
+$f,g\in L^1_{\mathrm{loc}}(0,\infty)$ に対し
+\[
+ (f*g)(t)=\int_0^t f(u)g(t-u)\,du
+\]
+を片側畳み込みという．
+\end{definition}
+
+\begin{theorem}[畳み込み定理]\label{thm:convolution}
+$f,g$ が
+$e^{-at}f,e^{-at}g\in L^1(0,\infty)$ を満たすとする．
+このとき $f*g$ はほとんど至る所定義され，
+$\operatorname{Re}s\ge a$ において
+\[
+ \mathcal L(f*g)(s)
+ =(\mathcal Lf)(s)(\mathcal Lg)(s)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$t=u+v$ という変数変換に対しTonelliの定理を適用すると
+\begin{align*}
+ &\int_0^\infty e^{-at}\int_0^t
+ |f(u)g(t-u)|\,du\,dt\\
+ &\qquad=\int_0^\infty\int_0^\infty
+ e^{-a(u+v)}|f(u)||g(v)|\,du\,dv\\
+ &\qquad=\norm{e^{-a\cdot}f}_{L^1}
+ \norm{e^{-a\cdot}g}_{L^1}<\infty.
+\end{align*}
+従って畳み込みはほとんど至る所定義され，
+$e^{-at}(f*g)(t)$ は可積分である．
+$\operatorname{Re}s\ge a$ では同じ絶対値評価が成り立つため，
+Fubiniの定理を用いて
+\begin{align*}
+ \mathcal L(f*g)(s)
+ &=\int_0^\infty\int_0^\infty
+ e^{-s(u+v)}f(u)g(v)\,du\,dv\\
+ &=\left(\int_0^\infty e^{-su}f(u)\,du\right)
+   \left(\int_0^\infty e^{-sv}g(v)\,dv\right).
+\end{align*}
+よって結論が従う．
+\end{proof}
+
+\begin{example}
+$f(t)=e^{-\alpha t}$，$g(t)=e^{-\beta t}$ なら，
+$\alpha\ne\beta$ のとき
+\[
+ (f*g)(t)=
+ \frac{e^{-\alpha t}-e^{-\beta t}}{\beta-\alpha}.
+\]
+\end{example}
+\begin{proof}
+\[
+ (f*g)(t)=\int_0^t
+ e^{-\alpha u}e^{-\beta(t-u)}\,du
+ =e^{-\beta t}
+ \frac{e^{(\beta-\alpha)t}-1}{\beta-\alpha}
+\]
+であり，これを整理すればよい．
+\end{proof}
+
+\section{Fourier変換とLaplace反転}
+
+\begin{definition}
+$f$ が $e^{-ct}f(t)\in L^1(0,\infty)$ を満たすとする．
+$g_c:\mathbb R\to\mathbb C$ を
+\[
+ g_c(t)=\begin{cases}
+ e^{-ct}f(t)&(t\ge0),\\
+ 0&(t<0)
+ \end{cases}
+\]
+と定める．
+\end{definition}
+
+\begin{lemma}[垂直直線上のFourier表現]\label{lem:vertical}
+$f$ と $c$ が上の仮定を満たすなら
+\[
+ F(c+i\xi)
+ =\int_{\mathbb R}g_c(t)e^{-i\xi t}\,dt
+ =\sqrt{2\pi}\,\widehat{g_c}(\xi)
+\]
+である．ここで右辺のFourier変換は
+$(2\pi)^{-1/2}$ 正規化を用いる．
+\end{lemma}
+\begin{proof}
+$g_c(t)=0$（$t<0$）を用いて積分区間を
+$[0,\infty)$ に制限すれば
+\[
+ \int_{\mathbb R}g_c(t)e^{-i\xi t}\,dt
+ =\int_0^\infty e^{-(c+i\xi)t}f(t)\,dt
+ =F(c+i\xi).
+\]
+Fourier変換の定義から最後の等式も従う．
+\end{proof}
+
+\begin{theorem}[Laplace反転公式]\label{thm:inversion}
+$f$ は $e^{-ct}f\in L^1(0,\infty)$ を満たすとする．
+さらに $\xi\mapsto F(c+i\xi)$ が $L^1(\mathbb R)$ に属し，
+$f$ が $t_0>0$ で連続であると仮定する．
+このとき
+\[
+ f(t_0)=\frac{e^{ct_0}}{2\pi}
+ \int_{-\infty}^\infty
+ F(c+i\xi)e^{i\xi t_0}\,d\xi.
+\]
+特に，$f$ が $(0,\infty)$ 上で連続であれば，
+この反転公式は各 $t_0>0$ で成立し，Laplace変換は
+$f$ を点ごとに一意に決定する．一般の可測函数は
+後述の一意性定理により，ほとんど至る所でのみ決定される．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:vertical}によって
+$g_c\in L^1(\mathbb R)$ かつ
+$\widehat{g_c}\in L^1(\mathbb R)$ である．
+Fourier反転定理によって，
+$g_c$ の連続点 $t_0$ では
+\[
+ g_c(t_0)
+ =\frac1{2\pi}\int_{\mathbb R}
+ F(c+i\xi)e^{i\xi t_0}\,d\xi
+\]
+が成り立つ．
+$g_c(t_0)=e^{-ct_0}f(t_0)$ だから両辺に
+$e^{ct_0}$ を掛ければ反転公式となる．
+二つの連続函数が同じLaplace変換を持ち，
+ともに定理の可積分性の仮定を満たすなら，
+各 $t_0>0$ で反転公式を適用できるので，
+両者は $(0,\infty)$ 上で一致する．
+\end{proof}
+
+\begin{remark}[零集合上の値は復元できない]
+可測函数に対する点ごとの一意性は一般には成り立たない．
+例えば $f(t)=0$ とし，$g(1)=1$，$g(t)=0$（$t\ne1$）
+と定めれば，$f,g$ はすべての $c\in\mathbb R$ に対して
+$e^{-ct}f,e^{-ct}g\in L^1(0,\infty)$ を満たし，
+両者のLaplace変換は恒等的に零であるが，$f(1)\ne g(1)$．
+従って可測函数のLaplace変換は，函数の
+ほとんど至る所での同値類のみを決定する．
+\end{remark}
+
+\begin{theorem}[Gaussianによる正則化反転]
+\label{thm:regularized-inversion}
+$e^{-ct}f\in L^1(0,\infty)$ とし，
+$f$ は $t_0>0$ で連続とする．
+このとき
+\[
+ f(t_0)=\lim_{\varepsilon\downarrow0}
+ \frac{e^{ct_0}}{2\pi}\int_{\mathbb R}
+ e^{-\varepsilon\xi^2/2}
+ F(c+i\xi)e^{i\xi t_0}\,d\xi.
+\]
+この式では $\xi\mapsto F(c+i\xi)$ の
+絶対可積分性を仮定しない．
+\end{theorem}
+\begin{proof}
+$g_c$ を先の定義の関数とし，
+\[
+ \rho_\varepsilon(x)
+ =(2\pi\varepsilon)^{-1/2}
+ e^{-x^2/(2\varepsilon)}
+\]
+と置く．
+GaussianのFourier変換の公式と
+Fubiniの定理によって
+\[
+ (\rho_\varepsilon*g_c)(t_0)
+ =\frac1{2\pi}\int_{\mathbb R}
+ e^{-\varepsilon\xi^2/2}
+ F(c+i\xi)e^{i\xi t_0}\,d\xi.
+\]
+実際 $|F(c+i\xi)|\le\norm{g_c}_1$ であり，
+Gaussian因子が可積分なので全ての積分交換は
+絶対収束によって正当化される．
+一方，$(\rho_\varepsilon)$ は近似恒等作用素であり，
+$g_c$ が $t_0$ で連続で $L^1$ に属することから
+\[
+ (\rho_\varepsilon*g_c)(t_0)\longrightarrow g_c(t_0)
+ =e^{-ct_0}f(t_0).
+\]
+これを代入して結論を得る．
+\end{proof}
+
+\begin{theorem}[Laplace変換の一意性]\label{thm:uniqueness}
+$f,g$ が可測で，ある $c\in\mathbb R$ に対して
+$e^{-ct}f,e^{-ct}g\in L^1(0,\infty)$ とする．
+半平面 $\operatorname{Re}s>c$ において
+$\mathcal Lf(s)=\mathcal Lg(s)$ なら
+$f=g$ がほとんど至る所成立する．
+\end{theorem}
+\begin{proof}
+$h=f-g$ と置く．
+半平面 $\operatorname{Re}s>c$ で $\mathcal Lh=0$ だから，
+任意の $b>c$ と $\xi\in\mathbb R$ について
+$\mathcal Lh(b+i\xi)=0$ である．
+補題\ref{lem:vertical}から
+$e^{-bt}h(t)1_{\{t\ge0\}}$ のFourier変換は恒等的に零となる．
+$L^1$ 上のFourier変換の一意性定理から
+$e^{-bt}h(t)=0$ がほとんど至る所成立する．
+$e^{-bt}$ は全ての $t$ で非零なので
+$h=0$ がほとんど至る所成立する．
+\end{proof}
+
+\section{常微分方程式への応用}
+
+\begin{proposition}[一次線形方程式]\label{prop:ode1}
+$a,y_0\in\mathbb C$，$h:[0,\infty)\to\mathbb C$ は連続で
+指数型の増大条件
+$|h(t)|\le Me^{bt}$ を満たすとする．
+初期値問題
+\[
+ y'(t)+ay(t)=h(t),\qquad y(0)=y_0
+\]
+の唯一の $C^1$ 解は
+\[
+ y(t)=y_0e^{-at}
+ +\int_0^t e^{-a(t-u)}h(u)\,du
+\]
+である．
+\end{proposition}
+\begin{proof}
+表示式の右辺を $y(t)$ と置く．
+Leibnizの微分公式から
+\begin{align*}
+ y'(t)
+ &=-ay_0e^{-at}+h(t)
+   -a\int_0^te^{-a(t-u)}h(u)\,du\\
+ &=h(t)-ay(t).
+\end{align*}
+$t=0$ で積分は零なので $y(0)=y_0$ となる．
+任意の二解の差 $z$ は $z'+az=0$，$z(0)=0$ を満たし，
+$(e^{at}z(t))'=0$ なので $z=0$ である．
+従って唯一解である．
+またLaplace変換の微分公式と畳み込み定理を形式上でなく
+実際に適用すれば，
+十分大きい $\operatorname{Re}s$ に対し
+\[
+ (s+a)Y(s)=y_0+H(s),\qquad
+ Y(s)=\frac{y_0}{s+a}+\frac{H(s)}{s+a}
+\]
+となる．
+右辺をLaplace変換の基本公式で反転すれば
+上の表示式を再び得る．
+\end{proof}
+
+\begin{proposition}[二階振動方程式]\label{prop:oscillator}
+$\omega>0$ とする．初期値問題
+\[
+ y''(t)+\omega^2y(t)=0,\qquad
+ y(0)=a,\quad y'(0)=b
+\]
+の唯一の $C^2$ 解は
+\[
+ y(t)=a\cos(\omega t)+
+ \frac b\omega\sin(\omega t)
+\]
+である．
+\end{proposition}
+\begin{proof}
+微分して代入すると表示式は方程式と初期条件を満たす．
+二解の差 $z$ について
+$E(t)=|z'(t)|^2+\omega^2|z(t)|^2$ と置くと，
+$z''=-\omega^2z$ を用いて
+\[
+ E'(t)=2\operatorname{Re}
+ (z''\overline{z'}+\omega^2z'\overline z)=0
+\]
+となる．$E(0)=0$ だから $z=z'=0$ である．
+Laplace変換の微分公式からも
+\[
+ (s^2+\omega^2)Y(s)=as+b
+\]
+を得る．
+$\mathcal L(\cos\omega t)=s/(s^2+\omega^2)$，
+$\mathcal L(\sin\omega t)=\omega/(s^2+\omega^2)$
+（$\operatorname{Re}s>0$）なので，
+反転と一意性の定理によって同じ解が得られる．
+\end{proof}
+
+\begin{remark}
+Laplace変換は時間微分を代数的な乗法に変え，
+畳み込みを積へ変える．
+ただし反転公式には可積分性や連続性の条件が必要である．
+本稿のGaussian正則化反転は，
+通常の垂直線上の積分が絶対収束しない場合にも
+反転を厳密に意味づける一つの方法である．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{振動関数のLaplace変換．}
+\begin{proposition}
+実数 $b$ と $s>0$ に対し
+\[
+\mathcal L(\sin bt)(s)
+=\int_0^\infty e^{-st}\sin(bt)\,dt
+=\frac{b}{s^2+b^2}
+\]
+である．
+\end{proposition}
+\begin{proof}
+$I=\int_0^\infty e^{-st}\sin(bt)dt$，
+$J=\int_0^\infty e^{-st}\cos(bt)dt$ と置く．
+部分積分より
+$I=(b/s)J$，
+$J=1/s-(b/s)I$．
+これらを解くと
+$(s^2+b^2)I=b$ となる．
+$s>0$ のため全ての境界項は無限遠で零になる．
+\end{proof}
+\begin{proposition}
+$y''+b^2y=0$，$y(0)=0$，$y'(0)=1$
+の解は $b\ne0$ なら
+$y(t)=\sin(bt)/b$ である．
+\end{proposition}
+\begin{proof}
+方程式のLaplace変換を取れば
+$(s^2+b^2)Y(s)=1$．
+上の公式より逆変換は $\sin(bt)/b$ である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\mathcal L(\cos bt)(s)$ を求めよ．
+\par\noindent\textbf{解答．}
+部分積分で得た $J=1/s-(b/s)I$ に
+$I=b/(s^2+b^2)$ を代入すると
+$J=s/(s^2+b^2)$ である．
+\end{document}

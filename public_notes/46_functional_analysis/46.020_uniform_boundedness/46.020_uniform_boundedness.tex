@@ -1,0 +1,654 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル：platex main.tex（3回），dvipdfmx main.dvi
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Baireのカテゴリー定理と一様有界性原理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Banach空間，一様有界性原理，双対ノルム．
+本稿の具体的な到達課題は，完備性の仮定がないと一様有界性が破れる例を構成する．
+
+\section{完備距離空間とカテゴリー}
+
+\begin{definition}
+位相空間 $X$ の部分集合 $A$ が\emph{至る所疎}であるとは，
+$\operatorname{int}(\overline A)=\varnothing$ であることをいう．
+可算個の至る所疎な集合の和集合を\emph{第一類集合}，
+第一類でない集合を\emph{第二類集合}という．
+可算個の開集合の共通部分を $G_\delta$ 集合という．
+\end{definition}
+
+\begin{lemma}\label{lem:nowhere}
+$A\subset X$ が至る所疎であることと
+$X\setminus\overline A$ が稠密開集合であることは同値である．
+また $X$ の閉集合 $F$ が至る所疎であることと
+$F$ の内部が空であることは同値である．
+\end{lemma}
+\begin{proof}
+$X\setminus\overline A$ が開であることは明らかである．
+それが稠密であることは，その補集合である
+$\overline A$ が空でない開集合を含まないこと，
+すなわち $\operatorname{int}(\overline A)=\varnothing$
+と同値である．閉集合の場合には $\overline F=F$ を用いる．
+\end{proof}
+
+\begin{theorem}[Baireのカテゴリー定理]\label{thm:baire}
+$X$ を空でない完備距離空間とし，
+$(U_n)_{n\ge1}$ を $X$ の稠密開集合の列とする．
+このとき
+\[
+ \bigcap_{n=1}^\infty U_n
+\]
+は $X$ で稠密である．特に空でない．
+\end{theorem}
+\begin{proof}
+空でない任意の開集合 $V\subset X$ に対して
+$V\cap\bigcap_nU_n\ne\varnothing$ を示す．
+$U_1$ は稠密であるから $V\cap U_1$ は空でない開集合である．
+$x_1\in V\cap U_1$ を取り，
+$r_1>0$ を十分小さくして
+\[
+ \overline{B(x_1,r_1)}\subset V\cap U_1,
+ \qquad 0<r_1<2^{-1}
+\]
+とする．これは距離空間では開集合の各点のまわりに，
+その閉包がもとの開集合に含まれる開球を取れるためである．
+
+帰納的に $x_n,r_n$ が得られたとする．
+$U_{n+1}$ は稠密開なので
+$B(x_n,r_n)\cap U_{n+1}$ は空でない開集合である．
+そこで
+\[
+ \overline{B(x_{n+1},r_{n+1})}
+ \subset B(x_n,r_n)\cap U_{n+1},
+ \qquad 0<r_{n+1}<2^{-(n+1)}
+\]
+となる $x_{n+1},r_{n+1}$ を取る．
+この構成から，$m>n$ なら $x_m\in B(x_n,r_n)$ である．
+従って $d(x_m,x_n)<r_n<2^{-n}$ なので
+$(x_n)$ はCauchy列である．完備性により $x_n\to x$ となる．
+固定した $n$ に対しすべての $m>n$ で
+$x_m\in\overline{B(x_n,r_n)}$ だから，
+その閉性により
+\[
+ x\in\overline{B(x_n,r_n)}\subset U_n.
+\]
+また $x\in\overline{B(x_1,r_1)}\subset V$ となる．
+ゆえに $x\in V\cap\bigcap_nU_n$ である．
+\end{proof}
+
+\begin{corollary}\label{cor:baire-category}
+空でない完備距離空間は第一類ではない．
+より一般に，完備距離空間 $X$ の第一類集合
+$A\subset X$ は，空でない開集合を含まない．
+\end{corollary}
+\begin{proof}
+$A\subset\bigcup_{n=1}^\infty A_n$，
+$\operatorname{int}\overline{A_n}=\varnothing$ とする．
+補集合 $U_n=X\setminus\overline{A_n}$ は稠密開である．
+任意の空でない開集合 $V$ について
+定理\ref{thm:baire}により
+$V\cap\bigcap_nU_n\ne\varnothing$ となる．
+ここで $\bigcap_nU_n\subset X\setminus A$ だから，
+$V\not\subset A$ である．特に $A=X$ は不可能である．
+\end{proof}
+
+\begin{corollary}[閉集合による被覆]\label{cor:closedcover}
+$X$ を空でない完備距離空間とする．
+閉集合 $F_n\subset X$ が
+\[
+ X=\bigcup_{n=1}^\infty F_n
+\]
+を満たすなら，ある $N$ に対して
+$\operatorname{int}F_N\ne\varnothing$ である．
+\end{corollary}
+\begin{proof}
+すべての $F_n$ の内部が空なら，
+補題\ref{lem:nowhere}により各 $F_n$ は至る所疎である．
+このとき $X$ が第一類となり，
+系\ref{cor:baire-category}に矛盾する．
+\end{proof}
+
+\begin{remark}
+定理\ref{thm:baire}の結論は，
+完備性から単に共通部分が空でないというだけでなく，
+任意の空でない開集合と交わることまで主張している．
+また，カテゴリーの第一類という概念は測度零とは異なる．
+例えば $\mathbb R$ の有理数集合は可算で第一類であるが，
+密度の点では $\mathbb R$ 全体に稠密である．
+\end{remark}
+
+\section{有界線形作用素の準備}
+
+以下，$\mathbb K$ は $\mathbb R$ または $\mathbb C$ とし，
+$X,Y$ を $\mathbb K$ 上のノルム空間とする．
+
+\begin{definition}
+線形作用素 $T:X\to Y$ が\emph{有界}であるとは，
+ある $C\ge0$ が存在して
+$\|Tx\|_Y\le C\|x\|_X$ がすべての $x$ に対して
+成り立つことをいう．
+有界線形作用素全体を $\mathcal B(X,Y)$ と書き，
+\[
+ \|T\|=\sup_{\|x\|_X\le1}\|Tx\|_Y
+\]
+を作用素ノルムという．
+\end{definition}
+
+\begin{lemma}\label{lem:cont-bound}
+線形作用素 $T:X\to Y$ について，
+次は同値である．
+\begin{enumerate}
+\item $T$ は有界である．
+\item $T$ は $0$ において連続である．
+\item $T$ は全ての点で連続である．
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+有界なら
+$\|Tx-Ty\|\le\|T\|\|x-y\|$ だから全点で連続である．
+全点で連続なら特に $0$ で連続である．
+逆に $0$ で連続とすると，
+ある $\delta>0$ に対し
+$\|u\|<\delta$ なら $\|Tu\|<1$ となる．
+$x\ne0$ に対して $u=\delta x/(2\|x\|)$ とすれば
+$\|Tx\|<2\|x\|/\delta$ となり有界である．
+\end{proof}
+
+\begin{proposition}\label{prop:operator-norm}
+$\mathcal B(X,Y)$ は作用素ノルムに関してノルム空間であり，
+\[
+ \|Tx\|_Y\le\|T\|\|x\|_X
+\]
+がすべての $x\in X$ に対して成立する．
+さらに $Z$ をノルム空間，
+$S\in\mathcal B(Y,Z)$ とすれば
+$ST\in\mathcal B(X,Z)$ かつ
+$\|ST\|\le\|S\|\|T\|$ である．
+\end{proposition}
+\begin{proof}
+$x=0$ のとき最初の不等式は明らかである．
+$x\ne0$ に対して $x/\|x\|$ を用いれば定義から従う．
+作用素ノルムの斉次性および三角不等式は，
+それぞれ $\|(aT)x\|=|a|\|Tx\|$ と
+$\|(S+T)x\|\le\|Sx\|+\|Tx\|$ から得る．
+$\|T\|=0$ ならすべての $x$ に対して $Tx=0$ である．
+最後に
+\[
+ \|STx\|\le\|S\|\|Tx\|
+ \le\|S\|\|T\|\|x\|
+\]
+を用いる．
+\end{proof}
+
+\begin{proposition}[作用素空間の完備性]\label{prop:operator-complete}
+$Y$ がBanach空間なら $\mathcal B(X,Y)$ は
+作用素ノルムに関してBanach空間である．
+ここでは $X$ の完備性は仮定しない．
+\end{proposition}
+\begin{proof}
+$(T_n)$ を $\mathcal B(X,Y)$ のCauchy列とする．
+任意の $x\in X$ に対して
+\[
+ \|T_nx-T_mx\|\le\|T_n-T_m\|\,\|x\|
+\]
+だから $(T_nx)$ は $Y$ のCauchy列である．
+$Y$ の完備性により
+$Tx=\lim_nT_nx$ と定めることができる．
+極限を取れば $T$ は線形である．
+
+$(T_n)$ は作用素ノルムについて有界なので，
+$M=\sup_n\|T_n\|<\infty$ と置ける．
+従って任意の $x$ に対して
+\[
+ \|Tx\|=\lim_n\|T_nx\|\le M\|x\|
+\]
+であり，$T$ は有界である．
+$\varepsilon>0$ に対して $n,m\ge N$ なら
+$\|T_n-T_m\|<\varepsilon$ とする．
+$m\to\infty$ とすれば
+$\|(T_n-T)x\|\le\varepsilon\|x\|$ である．
+$\|x\|\le1$ で上限を取って
+$\|T_n-T\|\le\varepsilon$ を得る．
+\end{proof}
+
+\section{一様有界性原理}
+
+以下，作用素族の添字集合 $\Lambda$ は空でないものとする．
+
+\begin{definition}
+作用素族 $(T_\lambda)_{\lambda\in\Lambda}
+\subset\mathcal B(X,Y)$ が\emph{各点有界}であるとは，
+すべての $x\in X$ に対して
+\[
+ \sup_{\lambda\in\Lambda}\|T_\lambda x\|_Y<\infty
+\]
+が成り立つことをいう．
+一方，$\sup_\lambda\|T_\lambda\|<\infty$
+が成り立つとき，作用素ノルムについて
+\emph{一様有界}であるという．
+\end{definition}
+
+\begin{theorem}[一様有界性原理，Banach--Steinhaus]\label{thm:ubp}
+$X$ をBanach空間，$Y$ をノルム空間，
+$(T_\lambda)_{\lambda\in\Lambda}\subset\mathcal B(X,Y)$
+を各点有界な作用素族とする．
+このとき
+\[
+ \sup_{\lambda\in\Lambda}\|T_\lambda\|<\infty
+\]
+である．
+\end{theorem}
+\begin{proof}
+各正整数 $n$ に対して
+\[
+ F_n=\left\{x\in X:
+   \sup_{\lambda\in\Lambda}\|T_\lambda x\|\le n\right\}
+ =\bigcap_{\lambda\in\Lambda}
+    \{x\in X:\|T_\lambda x\|\le n\}
+\]
+と置く．各 $T_\lambda$ は連続なので
+$F_n$ は閉集合である．
+各点有界性により
+$X=\bigcup_{n=1}^\infty F_n$ となる．
+系\ref{cor:closedcover}から，ある $N$ について
+$\operatorname{int}F_N\ne\varnothing$ である．
+従ってある $x_0\in X$ と $r>0$ に対して
+$B(x_0,r)\subset F_N$ となる．
+特に $x_0\in F_N$ だから
+\[
+ \|T_\lambda x_0\|\le N
+ \qquad(\lambda\in\Lambda)
+\]
+である．$\|u\|<r$ なら $x_0+u\in F_N$ なので
+\[
+ \|T_\lambda u\|
+ \le\|T_\lambda(x_0+u)\|+\|T_\lambda x_0\|
+ \le2N
+\]
+となる．$\|x\|\le1$ とし $u=(r/2)x$ を代入すれば，
+すべての $\lambda$ について
+\[
+ \|T_\lambda x\|\le \frac{4N}{r}.
+\]
+従って $\sup_\lambda\|T_\lambda\|\le4N/r<\infty$ である．
+\end{proof}
+
+\begin{remark}
+定理\ref{thm:ubp}は値域 $Y$ の完備性を必要としない．
+また，作用素の添字集合 $\Lambda$ は可算でなくてもよい．
+証明では添字に関する無限個の閉集合の共通部分を取るが，
+Baireのカテゴリー定理を使うのは数列 $(F_n)_{n\ge1}$
+に対してである．
+\end{remark}
+
+\begin{proposition}[第二類集合上の評価]\label{prop:second-category}
+$X$ をBanach空間，$Y$ をノルム空間，
+$(T_\lambda)\subset\mathcal B(X,Y)$ とする．
+各点有界性が $X$ 全体でなく，
+ある第二類集合 $E\subset X$ 上でのみ成立すると仮定しても，
+作用素ノルムは一様有界である．
+\end{proposition}
+\begin{proof}
+上の証明で定めた閉集合 $F_n$ に対して
+$E\subset\bigcup_nF_n$ が成立する．
+もしすべての $F_n$ が内部を持たなければ
+各 $F_n$ は至る所疎となり，
+$E$ は第一類になってしまう．
+よってある $F_N$ は空でない内部を持つ．
+後は定理\ref{thm:ubp}の証明と同じ評価を行えばよい．
+\end{proof}
+
+\section{各点収束する作用素列}
+
+\begin{theorem}[各点極限の連続性]\label{thm:pointwise-limit}
+$X$ をBanach空間，$Y$ をノルム空間とする．
+$T_n\in\mathcal B(X,Y)$ が各 $x\in X$ において
+$T_nx\to Tx\in Y$ を満たすとする．
+このとき $T:X\to Y$ は有界線形作用素であり，
+\[
+ \|T\|\le\sup_n\|T_n\|<\infty
+\]
+である．
+\end{theorem}
+\begin{proof}
+任意の $x,y\in X$ および $a,b\in\mathbb K$ に対して
+\[
+ T(ax+by)=\lim_nT_n(ax+by)
+ =aTx+bTy
+\]
+なので $T$ は線形である．
+各 $x$ に対して $(T_nx)$ は収束するから有界である．
+定理\ref{thm:ubp}により
+$M=\sup_n\|T_n\|<\infty$ となる．
+そこで
+\[
+ \|Tx\|=\lim_n\|T_nx\|
+ \le M\|x\|
+\]
+となり，$T$ は有界である．
+\end{proof}
+
+\begin{remark}
+定理\ref{thm:pointwise-limit}において，
+$Y$ がBanach空間である必要はない．
+各点での極限 $Tx$ が $Y$ の元として存在することを
+明示的に仮定しているからである．
+また，各点収束から作用素ノルム収束は従わない．
+\end{remark}
+
+\begin{example}[各点収束とノルム収束の相違]\label{ex:coordinate}
+$X=\ell^2(\mathbb K)$ とし
+$T_n:X\to\mathbb K$ を $T_nx=x_n$ と定める．
+このとき $T_nx\to0$ がすべての $x\in X$ に対して
+成り立つが，$\|T_n\|=1$ は全ての $n$ で成り立つ．
+\end{example}
+\begin{proof}
+$\sum_{n=1}^\infty|x_n|^2<\infty$ なら
+$x_n\to0$ である．また $|x_n|\le\|x\|_2$ だから
+$\|T_n\|\le1$ となる．標準基底の第 $n$ 項 $e_n$ に対し
+$\|e_n\|_2=1$ かつ $T_ne_n=1$ であるから
+$\|T_n\|\ge1$ である．
+\end{proof}
+
+\begin{theorem}[別々の連続性から同時連続性へ]\label{thm:bilinear}
+$X$ をBanach空間，$Y$ をノルム空間とし，
+$b:X\times Y\to\mathbb K$ を双線形写像とする．
+各 $y\in Y$ に対して $x\mapsto b(x,y)$ が連続であり，
+各 $x\in X$ に対して $y\mapsto b(x,y)$ が連続なら，
+ある $C\ge0$ が存在して
+\[
+ |b(x,y)|\le C\|x\|\,\|y\|
+\]
+が全ての $x,y$ に対して成立する．
+従って $b$ は積ノルム位相に関して同時連続である．
+\end{theorem}
+\begin{proof}
+$\|y\|\le1$ を満たす各 $y$ に対して
+$T_y:X\to\mathbb K$ を $T_y(x)=b(x,y)$ と置く．
+仮定から $T_y\in X^*$ である．
+固定した $x$ に対して $y\mapsto b(x,y)$ は
+有界線形汎関数だから
+\[
+ \sup_{\|y\|\le1}|T_y(x)|<\infty
+\]
+である．定理\ref{thm:ubp}を族
+$\{T_y:\|y\|\le1\}$ に適用して
+$\sup_{\|y\|\le1}\|T_y\|=C<\infty$ を得る．
+よって $\|y\|\le1$ なら
+$|b(x,y)|\le C\|x\|$ である．
+$y\ne0$ について $y/\|y\|$ を代入し，
+$y=0$ では双線形性を用いれば結論が従う．
+最後に
+\[
+ b(x+h,y+k)-b(x,y)
+ =b(h,y)+b(x,k)+b(h,k)
+\]
+を上の評価に代入すれば連続性を得る．
+\end{proof}
+
+\begin{proposition}[作用素族の同程度連続性]\label{prop:equicont}
+ノルム空間 $X,Y$ と
+$(T_\lambda)_{\lambda\in\Lambda}\subset\mathcal B(X,Y)$ に対し，
+次は同値である．
+\begin{enumerate}
+\item $\sup_{\lambda\in\Lambda}\|T_\lambda\|<\infty$．
+\item 任意の $\varepsilon>0$ に対しある $\delta>0$ が存在して，
+      全ての $\lambda$ と $\|x\|<\delta$ に対し
+      $\|T_\lambda x\|<\varepsilon$ が成立する．
+\end{enumerate}
+特に $X$ がBanach空間なら，この二条件は
+各点有界性とも同値である．
+\end{proposition}
+\begin{proof}
+$M=\sup_\lambda\|T_\lambda\|<\infty$ とすれば，
+$\delta=\varepsilon/(M+1)$ と取ることにより
+$\|T_\lambda x\|\le M\|x\|<\varepsilon$ を得る．
+逆に第2条件を $\varepsilon=1$ で適用し，
+対応する $\delta>0$ を取る．
+$\|x\|\le1$ なら
+$\|\delta x/2\|<\delta$ だから，
+全ての $\lambda$ に対して
+\[
+ \|T_\lambda x\|
+ =\frac{2}{\delta}
+   \left\|T_\lambda\!\left(\frac{\delta x}{2}\right)\right\|
+ <\frac{2}{\delta}
+\]
+である．従って $\sup_\lambda\|T_\lambda\|\le2/\delta$ となる．
+最後の主張は一様有界性原理と，
+一様な作用素ノルムの上界が各点有界性を導くことから従う．
+\end{proof}
+
+\section{特異性の凝縮}
+
+一様有界性原理の対偶は，
+作用素ノルムが一様有界でない作用素族に対し，
+ある点での像が非有界となることを意味する．
+実際には，そのような点は位相的に大きな集合をなす．
+
+\begin{theorem}[共鳴の原理]\label{thm:condensation}
+$X$ をBanach空間，$Y$ をノルム空間，
+$(T_\lambda)\subset\mathcal B(X,Y)$ とする．
+\[
+ \sup_{\lambda\in\Lambda}\|T_\lambda\|=\infty
+\]
+であるなら，
+\[
+ E=\left\{x\in X:
+  \sup_{\lambda\in\Lambda}\|T_\lambda x\|=\infty\right\}
+\]
+は稠密な $G_\delta$ 集合である．
+\end{theorem}
+\begin{proof}
+各 $n\ge1$ に対して
+\[
+ F_n=\{x\in X:\sup_\lambda\|T_\lambda x\|\le n\}
+\]
+と置く．$F_n$ が閉であることは
+定理\ref{thm:ubp}の証明のとおりである．
+もしある $F_n$ が内部を持つなら，
+同じ証明の球上の評価から
+$\sup_\lambda\|T_\lambda\|<\infty$ が従い，
+仮定に矛盾する．
+従って各 $F_n$ は至る所疎な閉集合である．
+そこで
+\[
+ E=X\setminus\bigcup_{n=1}^\infty F_n
+   =\bigcap_{n=1}^\infty(X\setminus F_n)
+\]
+は稠密開集合の可算共通部分である．
+Baireのカテゴリー定理によって $E$ は稠密であり，
+定義から $G_\delta$ 集合でもある．
+\end{proof}
+
+\begin{corollary}
+ノルムが非有界な作用素列 $(T_n)$ について，
+$\sup_n\|T_nx\|=\infty$ を満たす $x$ は，
+任意の空でない開集合の中に存在する．
+\end{corollary}
+\begin{proof}
+定理\ref{thm:condensation}による集合 $E$ の稠密性を用いる．
+\end{proof}
+
+\section{完備性の必要性と反例}
+
+\begin{example}[稠密集合上の各点有界性は不十分]
+$X=\ell^2(\mathbb K)$ とし，
+$T_n:X\to\mathbb K$ を $T_nx=nx_n$ と定める．
+このとき各 $T_n$ は連続であり，$\|T_n\|=n$ である．
+しかし，稠密な線形部分空間 $c_{00}\subset\ell^2$ 上では
+族 $(T_n)$ は各点有界である．
+\end{example}
+\begin{proof}
+$|T_nx|=n|x_n|\le n\|x\|_2$ より $\|T_n\|\le n$，
+標準基底 $e_n$ について $T_ne_n=n$ より
+$\|T_n\|=n$ となる．
+任意の $x\in c_{00}$ は有限台を持つため
+$\sup_n|nx_n|<\infty$ である．
+$c_{00}$ の稠密性は，任意の $x=(x_j)\in\ell^2$ を
+その最初の $N$ 成分だけで切った元 $x^{(N)}$ により
+\[
+ \|x-x^{(N)}\|_2^2=\sum_{j>N}|x_j|^2\to0
+\]
+となることから従う．
+一方 $x_j=j^{-3/4}$ と置くと
+$\sum_j|x_j|^2=\sum_jj^{-3/2}<\infty$ であるのに，
+$T_nx=n^{1/4}\to\infty$ となる．
+従って完備な空間の稠密部分集合上で各点有界でも，
+空間全体で各点有界とは限らない．
+\end{proof}
+
+\begin{example}[非完備空間での失敗]\label{ex:c00}
+$c_{00}$ を有限個を除き全ての成分が $0$ である
+数列全体とし，$\ell^2$ ノルムを入れる．
+$T_n:c_{00}\to\mathbb K$ を
+\[
+ T_nx=n x_n
+\]
+と定めると，各 $T_n$ は有界線形汎関数で，
+族 $(T_n)$ は各点有界だが，
+$\sup_n\|T_n\|=\infty$ である．
+\end{example}
+\begin{proof}
+各 $n$ について
+$|T_nx|=n|x_n|\le n\|x\|_2$ なので
+$\|T_n\|\le n$ である．標準基底 $e_n\in c_{00}$ により
+$T_ne_n=n$ だから $\|T_n\|=n$ である．
+一方，任意の $x\in c_{00}$ では
+$x_n=0$ は十分大きい $n$ について成立するので
+$\sup_n|nx_n|<\infty$ となる．
+
+$c_{00}$ が完備でないことを直接確認する．
+$x=(2^{-n})_{n\ge1}\in\ell^2\setminus c_{00}$ とし，
+その最初の $m$ 成分以外を $0$ にした数列を
+$x^{(m)}\in c_{00}$ とすると
+\[
+ \|x^{(m)}-x^{(k)}\|_2^2
+ \le\sum_{n>\min\{m,k\}}4^{-n}\longrightarrow0
+\]
+である．従って $(x^{(m)})$ は $c_{00}$ のCauchy列だが，
+$c_{00}$ 内では収束しない．
+実際，収束するなら各座標の極限は $2^{-n}$ でなければならず，
+その極限は $c_{00}$ に属さない．
+\end{proof}
+
+\begin{example}[非完備空間上の不連続な各点極限]
+同じ $c_{00}$ について
+\[
+ S_nx=\sum_{j=1}^n jx_j
+\]
+と置く．各 $S_n$ は有界線形汎関数で，
+任意の $x\in c_{00}$ について $S_nx$ は
+\[
+ Sx=\sum_{j=1}^\infty jx_j
+\]
+に収束するが，$S$ は有界でない．
+\end{example}
+\begin{proof}
+有限和にCauchy--Schwarzの不等式を適用すると
+\[
+ |S_nx|\le\left(\sum_{j=1}^n j^2\right)^{1/2}\|x\|_2
+\]
+となるので $S_n$ は有界である．
+$c_{00}$ の各元は有限台なので，その台を含む $n$ 以降では
+$S_nx=Sx$ となる．
+しかし $S(e_j)=j$ かつ $\|e_j\|_2=1$ だから，
+$S$ が有界だと仮定すると
+$j\le\|S\|$ がすべての $j$ で成立して矛盾する．
+\end{proof}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{Banach--Steinhausの完備性を検証する．}
+\begin{proposition}
+$c_{00}$ を有限個の成分しか非零でない実数列の空間とし，
+$\|x\|_\infty=\sup_k|x_k|$ とする．
+線形汎関数 $T_n(x)=nx_n$ は各 $x\in c_{00}$ について
+$\sup_n|T_n(x)|<\infty$ を満たすが，
+$\sup_n\|T_n\|=\infty$ である．
+\end{proposition}
+\begin{proof}
+$x$ は有限個の座標以外では零だから，
+十分大きい $n$ で $T_n(x)=0$ となり，
+値の集合は有界である．
+一方 $|T_n(x)|\le n\|x\|_\infty$ であり，
+第 $n$ 単位ベクトル $e_n$ に対し
+$T_n(e_n)=n$，$\|e_n\|_\infty=1$ だから
+$\|T_n\|=n$ となる．
+$c_{00}$ は $\ell^\infty$ の閉部分空間ではなく，
+例えば $(1/n)_{n\ge1}$ は有限支持列によって
+一様近似できるが $c_{00}$ には属さない．
+したがって $c_{00}$ はBanach空間でなく，
+一様有界性原理の仮定を満たさない．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\ell^\infty$ 上の $T_n(x)=x_n$ の作用素ノルムは幾つか．
+\par\noindent\textbf{解答．}
+$|x_n|\le\|x\|_\infty$ で，上界1．
+$e_n$ により等号を達成するので1である．
+\end{document}

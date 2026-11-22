@@ -1,0 +1,436 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Arzel\`a--Ascoliの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，一様収束，等連続性，Arzelà--Ascoliの定理．
+本稿の具体的な到達課題は，関数列の相対コンパクト性を等連続性から判定する．
+
+\section{関数空間の完備性}
+
+本稿では $K$ を空でないコンパクト距離空間とし，
+$\mathbb F=\mathbb R$ または $\mathbb C$ とする．
+$C(K)=C(K,\mathbb F)$ に一様ノルム
+$\norm f_\infty=\sup_{t\in K}|f(t)|$ を入れる．
+コンパクト性により連続関数は有界なので，
+この値は有限である．
+
+\begin{proposition}\label{prop:complete}
+$C(K)$ は一様ノルムについてBanach空間である．
+\end{proposition}
+\begin{proof}
+$(f_n)$ を一様ノルムのCauchy列とする．
+各 $t\in K$ について $(f_n(t))$ は $\mathbb F$ の
+Cauchy列だから $f(t)=\lim_nf_n(t)$ と置ける．
+任意の $\varepsilon>0$ に対し，ある $N$ が存在して
+$n,m\ge N$ なら
+$\sup_{t\in K}|f_n(t)-f_m(t)|<\varepsilon$ である．
+$m\to\infty$ として
+$\norm{f_n-f}_\infty\le\varepsilon$ を得る．
+従って $f_n\to f$ は一様収束であり，
+連続関数の一様極限は連続だから $f\in C(K)$ である．
+\end{proof}
+
+\begin{definition}
+距離空間 $(X,d)$ の部分集合 $A$ が\emph{全有界}であるとは，
+任意の $\varepsilon>0$ に対して有限個の中心
+$x_1,\dots,x_N\in X$ を選び，
+$A\subset\bigcup_{j=1}^NB(x_j,\varepsilon)$
+とできることをいう．
+$A$ の閉包がコンパクトであるとき
+$A$ を\emph{相対コンパクト}という．
+\end{definition}
+
+\begin{lemma}\label{lem:compact-total}
+距離空間のコンパクト部分集合は全有界である．
+また，完備距離空間の部分集合 $A$ が全有界なら
+$\overline A$ はコンパクトである．
+\end{lemma}
+\begin{proof}
+コンパクト集合 $C$ に対し
+$\{B(x,\varepsilon):x\in C\}$ は開被覆である．
+有限部分被覆が存在するから $C$ は全有界である．
+
+$A$ が全有界とする．その閉包も全有界である：
+$A$ を半径 $\varepsilon/2$ の有限個の開球で被覆すれば，
+$\overline A$ は同じ中心の半径 $\varepsilon$ の開球で被覆できる．
+$\overline A$ は完備距離空間の閉集合だから完備である．
+$\overline A$ の任意の列 $(x_n)$ を取る．
+全有界性から，半径 $1$ の有限個の球の少なくとも一つに
+無限個の項が属する．その無限部分列について，
+半径 $1/2$ の有限球被覆からさらに無限部分列を取り，
+これを繰り返す．対角線部分列 $(x_{n_j})$ は，
+任意の $k$ について十分大きい $j,j'$ に対し
+$d(x_{n_j},x_{n_{j'}})<2^{1-k}$ を満たす．
+従ってCauchy列であり，
+完備性から $\overline A$ 内の点に収束する．
+すなわち $\overline A$ は点列コンパクトである．
+
+最後に距離空間では点列コンパクト性がコンパクト性を導くことを示す．
+点列コンパクト空間 $Z$ と開被覆 $\mathcal U$ を取る．
+もし任意の $n$ に対して直径 $1/n$ 以下であり
+どの $U\in\mathcal U$ にも含まれない球が存在するなら，
+その球の中心列の収束部分列から，極限点を含む
+$U\in\mathcal U$ に十分大きい球が含まれ矛盾する．
+従って $\mathcal U$ にはLebesgue数 $\delta>0$ がある．
+一方，点列コンパクト空間は全有界である：
+そうでなければある $\varepsilon>0$ と
+互いの距離が $\varepsilon$ 以上の列を帰納的に構成でき，
+収束部分列を持たない．
+そこで半径 $\delta/3$ の有限球被覆を選び，
+各球を含む $\mathcal U$ の元を選べば有限部分被覆を得る．
+\end{proof}
+
+\begin{remark}
+上のLebesgue数の議論で，開被覆に含まれない
+任意に小さな球の中心を選ぶ際には，
+収束部分列の極限点を含む $U$ の開性により
+ある半径の球全体が $U$ に含まれることを用いる．
+したがってこれは距離空間の一般的な性質である．
+\end{remark}
+
+\section{同程度連続性}
+
+\begin{definition}
+$\mathcal F\subset C(K)$ が\emph{同程度連続}であるとは，
+任意の $t\in K$ と $\varepsilon>0$ に対し
+$\delta>0$ が存在して
+\[
+ d(s,t)<\delta
+ \quad\Longrightarrow\quad
+ |f(s)-f(t)|<\varepsilon
+ \qquad(f\in\mathcal F)
+\]
+を満たすことをいう．
+$\mathcal F$ が\emph{各点有界}であるとは，
+任意の $t\in K$ について
+$\sup_{f\in\mathcal F}|f(t)|<\infty$
+が成り立つことをいう．
+\end{definition}
+
+\begin{lemma}[一様な同程度連続性]\label{lem:uniform-equicont}
+$K$ がコンパクトなら，
+同程度連続な $\mathcal F\subset C(K)$ は，
+任意の $\varepsilon>0$ に対してある $\delta>0$ が存在し，
+\[
+ d(s,t)<\delta
+ \quad\Longrightarrow\quad |f(s)-f(t)|<\varepsilon
+ \quad(f\in\mathcal F)
+\]
+を満たす．
+\end{lemma}
+\begin{proof}
+任意の $\varepsilon>0$ に対し，各 $t\in K$ で
+$\varepsilon/2$ に対する同程度連続性の半径 $r_t>0$ を取る．
+$K$ のコンパクト性から
+$B(t_i,r_{t_i}/2)$（$1\le i\le N$）が $K$ を被覆するように選べる．
+この有限開被覆にLebesgue数 $\delta>0$ を取り，
+さらに $\delta<\min_i r_{t_i}/2$ とする．
+$d(s,t)<\delta$ のとき，
+ある $i$ に対して $s,t\in B(t_i,r_{t_i})$
+となるように選べるから
+\[
+ |f(s)-f(t)|\le|f(s)-f(t_i)|+|f(t_i)-f(t)|<\varepsilon
+\]
+である．
+\end{proof}
+
+\begin{lemma}\label{lem:pointwise-to-uniform}
+$K$ がコンパクトで $\mathcal F\subset C(K)$ が
+各点有界かつ同程度連続なら，
+$\sup_{f\in\mathcal F}\norm f_\infty<\infty$
+である．
+\end{lemma}
+\begin{proof}
+$\varepsilon=1$ に対する補題
+\ref{lem:uniform-equicont}の $\delta>0$ を取り，
+$K$ を有限個の $B(t_i,\delta/2)$ で被覆する．
+各点有界性により
+$M=\max_i\sup_{f\in\mathcal F}|f(t_i)|<\infty$ である．
+任意の $t\in K$ と $f\in\mathcal F$ に対して，
+$d(t,t_i)<\delta$ となる $i$ を選ぶと
+$|f(t)|\le|f(t)-f(t_i)|+|f(t_i)|<1+M$ である．
+\end{proof}
+
+\section{Arzel\`a--Ascoliの定理}
+
+\begin{theorem}[Arzel\`a--Ascoli]\label{thm:ascoli}
+$K$ をコンパクト距離空間とし，
+$\mathcal F\subset C(K,\mathbb F)$ とする．
+次は同値である．
+\begin{enumerate}
+\item $\mathcal F$ は一様ノルムについて相対コンパクトである．
+\item $\mathcal F$ は各点有界かつ同程度連続である．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+まず (1) を仮定し，$\overline{\mathcal F}$ を
+一様ノルムでのコンパクト閉包とする．
+固定した $t\in K$ に対して
+$f\mapsto f(t)$ は $C(K)$ 上の連続写像だから，
+$\{f(t):f\in\overline{\mathcal F}\}$
+は $\mathbb F$ のコンパクト集合であり有界である．
+従って $\mathcal F$ は各点有界である．
+任意の $\varepsilon>0$ に対し，
+コンパクト性から $\overline{\mathcal F}$ は
+半径 $\varepsilon/3$ の有限個の球で被覆できる．
+その中心を $g_1,\dots,g_N\in C(K)$ とする．
+各 $g_j$ はコンパクト距離空間上で一様連続なので，
+ある $\delta>0$ が存在して
+$d(s,t)<\delta$ なら
+$|g_j(s)-g_j(t)|<\varepsilon/3$
+がすべての $j$ に対して成り立つ．
+$f\in\mathcal F$ に対し $\norm{f-g_j}_\infty<\varepsilon/3$
+となる $j$ を選べば
+\[
+ |f(s)-f(t)|
+ \le2\norm{f-g_j}_\infty+|g_j(s)-g_j(t)|
+ <\varepsilon.
+\]
+従って $\mathcal F$ は同程度連続である．
+
+次に (2) を仮定する．
+補題\ref{lem:uniform-equicont}により，
+任意の $\varepsilon>0$ に対して
+$d(s,t)<\delta$ なら
+$|f(s)-f(t)|<\varepsilon/3$
+となる $\delta>0$ が取れる．
+コンパクト性から
+$K=\bigcup_{i=1}^N B(t_i,\delta)$
+となる有限個の点 $t_i$ を取る．
+点集合
+\[
+ V=\{(f(t_1),\dots,f(t_N)):f\in\mathcal F\}
+ \subset\mathbb F^N
+\]
+は各点有界性により有界であるから全有界である．
+ゆえに有限個の $f_1,\dots,f_m\in\mathcal F$ を選び，
+任意の $f\in\mathcal F$ に対してある $j$ が存在して
+\[
+ |f(t_i)-f_j(t_i)|<\varepsilon/3
+ \quad(1\le i\le N)
+\]
+とできる．$\mathcal F$ が空なら結論は自明なので，
+以下は空でない場合を扱っている．
+任意の $t\in K$ に対して $d(t,t_i)<\delta$ となる $i$ を取れば
+\begin{align*}
+ |f(t)-f_j(t)|
+ &\le|f(t)-f(t_i)|\\
+ &\quad+|f(t_i)-f_j(t_i)|
+       +|f_j(t_i)-f_j(t)|\\
+ &<\varepsilon.
+\end{align*}
+従って $\mathcal F$ は全有界である．
+命題\ref{prop:complete}と補題\ref{lem:compact-total}から
+$\overline{\mathcal F}$ はコンパクトである．
+\end{proof}
+
+\begin{corollary}\label{cor:sequence}
+$(f_n)\subset C(K)$ が一様有界かつ同程度連続なら，
+一様収束する部分列を持つ．
+\end{corollary}
+\begin{proof}
+$\{f_n:n\ge1\}$ は各点有界かつ同程度連続だから
+定理\ref{thm:ascoli}より相対コンパクトである．
+コンパクト距離空間では任意の列が収束部分列を持つため，
+$(f_n)$ は一様収束する部分列を持つ．
+\end{proof}
+
+\section{可算稠密集合と対角線論法}
+
+\begin{lemma}\label{lem:countable-dense}
+コンパクト距離空間 $K$ には可算稠密集合が存在する．
+\end{lemma}
+\begin{proof}
+各 $n$ について半径 $1/n$ の有限開球被覆の中心の集合を
+$D_n$ とし，$D=\bigcup_nD_n$ と置く．
+$D$ は可算であり，
+任意の $x\in K$ と $\varepsilon>0$ に対し
+$1/n<\varepsilon$ となる $n$ を選べば
+$d(x,D_n)<1/n<\varepsilon$ なので稠密である．
+\end{proof}
+
+\begin{proposition}[対角線法による選択]\label{prop:diagonal}
+$(f_n)\subset C(K)$ が各点有界かつ同程度連続なら，
+$(f_n)$ は一様収束する部分列を持つ．
+\end{proposition}
+\begin{proof}
+補題\ref{lem:countable-dense}により可算稠密集合
+$D=\{t_1,t_2,\dots\}$ を取る．
+$(f_n(t_1))$ は有界な $\mathbb F$ の列なので
+収束部分列を持つ．この部分列から
+$(f_n(t_2))$ が収束する部分列を選ぶ．
+これを繰り返して対角線部分列 $(g_j)$ を作ると，
+各 $k$ について $(g_j(t_k))$ は収束する．
+
+一様Cauchy性を示す．
+任意の $\varepsilon>0$ に対し
+補題\ref{lem:uniform-equicont}から
+$d(s,t)<\delta$ なら
+$|g_j(s)-g_j(t)|<\varepsilon/3$
+となる $\delta>0$ を取る．
+$D$ が稠密で $K$ がコンパクトなので，
+有限個の $t_{k_1},\dots,t_{k_N}\in D$ によって
+$K=\bigcup_{i=1}^NB(t_{k_i},\delta)$ とできる．
+各点での収束から，十分大きな $j,l$ について
+$|g_j(t_{k_i})-g_l(t_{k_i})|<\varepsilon/3$
+がすべての $i$ で成り立つ．
+任意の $t\in K$ に対して $d(t,t_{k_i})<\delta$
+となる $i$ を取れば
+$|g_j(t)-g_l(t)|<\varepsilon$ である．
+従って $(g_j)$ は一様ノルムのCauchy列となり，
+命題\ref{prop:complete}によって一様収束する．
+\end{proof}
+
+\section{積分作用素への応用}
+
+\begin{theorem}[連続核によるコンパクト作用素]\label{thm:integral}
+$k:[0,1]^2\to\mathbb F$ を連続関数とする．
+\[
+ (Tf)(t)=\int_0^1k(t,s)f(s)\,ds
+\]
+で定めた $T:C([0,1])\to C([0,1])$ は
+有界線形かつコンパクト作用素である．
+ここでコンパクトとは，単位球の像が相対コンパクトとなることをいう．
+\end{theorem}
+\begin{proof}
+線形性は積分の線形性から従う．
+$M=\max_{t,s}|k(t,s)|<\infty$ と置けば
+$|(Tf)(t)|\le M\norm f_\infty$ であるから
+$\norm{Tf}_\infty\le M\norm f_\infty$ となり，
+$T$ は有界である．
+
+$\mathcal U=\{Tf:\norm f_\infty\le1\}$ と置く．
+上の評価より $\mathcal U$ は一様有界である．
+また $k$ はコンパクト集合 $[0,1]^2$ 上で
+一様連続なので，任意の $\varepsilon>0$ に対し
+ある $\delta>0$ が存在して
+$|t-t'|<\delta$ なら
+$\sup_{s\in[0,1]}|k(t,s)-k(t',s)|<\varepsilon$
+となる．このとき $\norm f_\infty\le1$ なら
+\[
+ |(Tf)(t)-(Tf)(t')|
+ \le\int_0^1|k(t,s)-k(t',s)|\,|f(s)|\,ds
+ <\varepsilon.
+\]
+従って $\mathcal U$ は同程度連続である．
+定理\ref{thm:ascoli}から $\mathcal U$ は相対コンパクトである．
+\end{proof}
+
+\begin{example}[同程度連続性の必要性]
+$f_n(t)=t^n$（$0\le t\le1$）と置くと
+$\norm{f_n}_\infty=1$ であるが，
+$(f_n)$ は一様収束する部分列を持たない．
+\end{example}
+\begin{proof}
+各 $t\in[0,1)$ に対して $f_n(t)\to0$，
+$t=1$ では $f_n(1)=1$ である．
+従って任意の部分列の各点極限は
+$[0,1)$ で $0$，$1$ で $1$ となり不連続である．
+一様極限は連続でなければならないので
+一様収束部分列は存在しない．
+従ってこの関数族はArzel\`a--Ascoliの定理の同程度連続性を満たさない．
+\end{proof}
+
+\begin{example}[各点有界性の必要性]
+$f_n(t)=n$（$t\in K$）とすれば，
+$(f_n)$ は同程度連続であるが，
+任意の点で値が有界でない．
+従って一様ノルムについて相対コンパクトでない．
+\end{example}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{等連続性の必要性を調べる．}
+\begin{proposition}
+$f_n(x)=x^n$（$0\le x\le1$）は
+一様有界だが等連続でなく，
+一様収束する部分列を持たない．
+\end{proposition}
+\begin{proof}
+$|f_n(x)|\le1$ だから一様有界である．
+任意の部分列 $f_{n_k}$ に対し
+$0\le x<1$ では $f_{n_k}(x)\to0$，
+一方 $f_{n_k}(1)=1$ である．
+点ごとの極限は $[0,1)$ で零，$x=1$ で1の
+不連続関数となる．
+連続関数列の一様極限は連続なので
+一様収束する部分列は存在しない．
+Arzelà--Ascoli定理によれば
+一様有界な関数族に相対コンパクト性があれば
+等連続である．従ってこの族は等連続でない．
+\end{proof}
+\noindent\textbf{到達確認．}
+$g_n(x)=\sin(nx)/n$ は一様収束するか．
+\par\noindent\textbf{解答．}
+$\|g_n\|_\infty\le1/n\to0$ だから
+零関数へ一様収束する．
+さらに $|g_n'(x)|=|\cos(nx)|\le1$ なので
+平均値の定理から族は等Lipschitzでもある．
+\end{document}
