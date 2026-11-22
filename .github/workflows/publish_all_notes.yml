@@ -1,0 +1,45 @@
+name: Publish all catalogued note PDFs and sources
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-all-notes
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source access token
+        env:
+          SOURCE_TOKEN: ${{ secrets.GICONRAD_SOURCE_TOKEN }}
+        run: |
+          if [ -z "$SOURCE_TOKEN" ]; then
+            echo "::error::Set repository secret GICONRAD_SOURCE_TOKEN with read access to HaWkoods/giconrad"
+            exit 1
+          fi
+      - name: Checkout public website
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Checkout private mathematical notes (read-only)
+        uses: actions/checkout@v4
+        with:
+          repository: HaWkoods/giconrad
+          token: ${{ secrets.GICONRAD_SOURCE_TOKEN }}
+          path: _private_source
+          persist-credentials: false
+      - name: Copy only catalogued PDFs and TeX sources
+        run: python3 scripts/publish_all_notes.py
+      - name: Stage public files only
+        run: |
+          git add public_notes data/public_pdf_links.json
+          if git diff --cached --quiet; then
+            echo "No changes to publish"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Publish all catalogued mathematical notes"
+          git push
