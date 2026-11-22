@@ -1,0 +1,466 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{分岐理論の基礎}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+本稿の到達目標は，パラメータ付きの一変数微分方程式について，
+各パラメータにおける平衡点を求め，安定性と吸引域を判定し，
+分岐図を自分で作成することである．
+さらに，平衡点の線形化が零となる場合には，
+線形化に代えて非線形項や解の明示式から安定性を決定する．
+前提は常微分方程式の局所存在・一意性，単調収束定理，
+陰関数定理および初等的な微積分法である．
+
+\section{パラメータを持つ平衡点}
+$\dot x=f(x,\mu)$（$x,\mu\in\mathbb R$）を考える．
+$f(x_*,\mu)=0$ の点を平衡点とする．
+\begin{proposition}[双曲的平衡点の局所持続]
+$f$ を $C^1$ とし，$f(x_0,\mu_0)=0$，
+$\partial_xf(x_0,\mu_0)\ne0$ とする．
+このとき $\mu_0$ の近傍で平衡点を与える唯一の $C^1$ 関数
+$x=x(\mu)$ が存在する．
+\end{proposition}
+\begin{proof}
+陰関数定理を $f(x,\mu)=0$ に適用する．
+\end{proof}
+\section{鞍点分岐}
+\begin{theorem}
+$\dot x=\mu-x^2$ について，$\mu<0$ では平衡点がなく，
+$\mu=0$ では $x=0$，$\mu>0$ では $x=\pm\sqrt\mu$ が平衡点である．
+$\mu>0$ の正の平衡点は局所漸近安定，負の平衡点は不安定である．
+\end{theorem}
+\begin{proof}
+$\mu-x^2=0$ を解けば平衡点の個数が得られる．
+$\partial_xf=-2x$ だから，正の平衡点近傍で速度場は
+平衡点の左右から内向き，負の平衡点近傍で外向きとなる．
+一次元の解の一意性により前者は収束し，後者は任意に近い初期値から離れる．
+\end{proof}
+\section{pitchfork分岐}
+\begin{theorem}
+$\dot x=\mu x-x^3$ は $x=0$ を全 $\mu$ で平衡点に持つ．
+$\mu>0$ のときさらに $x=\pm\sqrt\mu$ を持ち，
+$0$ は不安定，$\pm\sqrt\mu$ は局所漸近安定である．
+$\mu<0$ のとき $0$ は漸近安定である．
+$\mu=0$ でも $0$ は漸近安定だが線形化は零となる．
+\end{theorem}
+\begin{proof}
+$f(x,\mu)=x(\mu-x^2)$ を零とすれば個数が決まる．
+微分 $\partial_xf=\mu-3x^2$ を各平衡点で評価すると，
+$\mu>0$ では原点で正，非零平衡点で $-2\mu<0$ となる．
+$\mu<0$ では原点で負である．
+$\mu=0$ では $\dot x=-x^3$ となり
+$V(x)=x^2/2$ は $\dot V=-x^4<0$（$x\ne0$）である．
+\end{proof}
+\begin{remark}[前節までの範囲]
+ここでの「分岐」は明示的な標準形によって確認した．
+後続節では一変数の非退化条件を使って同様の現象を示す．
+多変数での中心多様体還元は依然として別問題である．
+\end{remark}
+
+
+\section{非退化条件からの鞍点分岐}
+\begin{theorem}[一般の鞍点分岐]
+$f\in C^2$ が $(x,\mu)=(0,0)$ の近傍で
+\[
+ f(0,0)=f_x(0,0)=0,\qquad
+ f_{xx}(0,0)\ne0,\quad f_\mu(0,0)\ne0
+\]
+を満たすとする．十分小さい近傍に限れば，
+$\mu$ の片側で平衡点が二つ，反対側で零，$\mu=0$ で一つ存在する．
+二つの平衡点が存在するとき，一方は局所安定，他方は不安定である．
+\end{theorem}
+\begin{proof}
+$f_\mu(0,0)\ne0$ なので陰関数定理から，平衡点集合は
+$\mu=\psi(x)$（$\psi\in C^2$）で局所的に表せる．
+$f(x,\psi(x))=0$ を微分すると
+$\psi'(0)=-f_x(0,0)/f_\mu(0,0)=0$ であり，
+再度微分して
+$\psi''(0)=-f_{xx}(0,0)/f_\mu(0,0)\ne0$ を得る．
+$\psi''$ の符号を一定にできる近傍では，$\psi$ は
+原点に厳密な極大または極小を持ち，その左右で狭義単調となる．
+従って水平線 $\mu=\mathrm{const}$ との交点数は述べた通りである．
+平衡点における $f_x$ の符号は，
+$0=f_x+f_\mu\psi'$ より
+$f_x=-f_\mu\psi'$ である．二つの枝では $\psi'$ の符号が逆だから，
+$f_x$ の符号も逆である．一次元ベクトル場の向きから，
+$f_x<0$ の点は局所漸近安定，$f_x>0$ の点は不安定である．
+\end{proof}
+\begin{remark}
+pitchfork分岐の一般標準形には，奇対称性などの追加仮定が必要である．
+上の定理はその仮定を要求しない鞍点分岐の場合である．
+\end{remark}
+\section{対称性を持つ一般のpitchfork分岐}
+\begin{theorem}
+$g(y,\mu)$ を $(0,0)$ 近傍の $C^2$ 関数とし，
+$g(0,0)=0$，$g_y(0,0)<0$，$g_\mu(0,0)>0$ とする．
+$\dot x=f(x,\mu)=xg(x^2,\mu)$ を考える．
+十分小さい $\mu<0$ では原点のみが平衡点で漸近安定である．
+$\mu>0$ では原点は不安定で，さらに二つの漸近安定な平衡点
+$x=\pm\sqrt{\psi(\mu)}$ が存在する．
+$\mu=0$ でも原点は局所漸近安定である．
+\end{theorem}
+\begin{proof}
+陰関数定理を $g(y,\mu)=0$ に適用すると，
+$y=\psi(\mu)$ が局所的に一意に存在し，
+$\psi(0)=0$，$\psi'(0)=-g_\mu(0,0)/g_y(0,0)>0$ である．
+従って小さい $\mu>0$ でのみ $\psi(\mu)>0$ となり，
+非零平衡点が $\pm\sqrt{\psi(\mu)}$ として現れる．
+原点では $f_x(0,\mu)=g(0,\mu)$ であり，
+$g_\mu(0,0)>0$ からその符号は小さい $\mu$ の符号と一致する．
+非零平衡点では
+$f_x=g(x^2,\mu)+2x^2g_y(x^2,\mu)
+=2\psi(\mu)g_y(\psi(\mu),\mu)<0$ だから漸近安定である．
+$\mu=0$ では $g(y,0)<0$（小さい $y>0$）なので
+$x f(x,0)=x^2 g(x^2,0)<0$（$x\ne0$）．
+$V(x)=x^2/2$ を使うLyapunov判定から局所漸近安定が従う．
+\end{proof}
+
+
+\section{平面でのHopf標準形}
+以下では $z\in\mathbb C$ を $\mathbb R^2$ と同一視する．
+\begin{theorem}[超臨界Hopf標準形の周期軌道]
+$a>0$，$b\in\mathbb R$，$\omega\ne0$ を固定し，
+\[
+ \dot z=(\mu+i\omega)z-(a+ib)|z|^2z
+ \qquad(\mu\in\mathbb R)
+\]
+を考える．$\mu<0$ では原点が漸近安定である．
+$\mu=0$ でも原点は漸近安定であるが，線形化の固有値の実部は零である．
+$\mu>0$ かつ $\omega-b\mu/a\ne0$ なら
+半径 $\sqrt{\mu/a}$ の円は周期軌道であり，
+原点は不安定，その円は半径方向に漸近安定である．
+その周期は $2\pi/|\omega-b\mu/a|$ である．
+\end{theorem}
+\begin{proof}
+$z=re^{i\varphi}$（$r>0$）と書けば方程式は
+\[
+ \dot r=\mu r-ar^3=r(\mu-ar^2),\qquad
+ \dot\varphi=\omega-br^2
+\]
+となる．$\mu<0$ では $r>0$ で $\dot r<0$ なので，
+$r(t)$ は減少して非負の極限 $\ell$ を持つ．
+極限が正なら右辺は $\ell(\mu-a\ell^2)<0$ に収束してしまうので
+$\ell=0$．$\mu=0$ の場合も $\dot r=-ar^3$ から同じ結論を得る．
+$r(t)$ が初期半径以下に保たれるため原点はLyapunov安定である．
+
+$\mu>0$ では $r_*=\sqrt{\mu/a}$ が半径の正の平衡点であり，
+$0<r<r_*$ なら $\dot r>0$，$r>r_*$ なら $\dot r<0$．
+従って任意の $r(0)>0$ に対して $r(t)\to r_*$ となる．
+一方，原点近傍で $\dot r>0$ なので原点は不安定である．
+$r=r_*$ 上では角速度 $\omega-br_*^2$ が零でないという仮定の下で
+一定となり，円上の流れは周期
+$2\pi/|\omega-br_*^2|$ の回転である．
+半径の単調収束からこの円は軌道集合として漸近安定である．
+\end{proof}
+\begin{remark}
+これは明示された平面標準形の完全な解析である．
+一般の滑らかな多次元ベクトル場に対するHopf分岐定理は，
+中心多様体の構成および標準形の正当化を別途必要とする．
+\end{remark}
+
+
+\section{一変数の安定性を速度場から判定する}
+\begin{proposition}[双曲的平衡点の安定性と局所吸引域]\label{prop:bif-hyperbolic}
+$f\in C^1((a,b))$，$f(p)=0$ とする．
+$f'(p)<0$ なら $p$ は局所漸近安定であり，
+$f'(p)>0$ なら $p$ は不安定である．
+\end{proposition}
+\begin{proof}
+$f'(p)<0$ とする．連続性より $p$ の十分小さい近傍で
+$f'(x)<0$ が成り立つ．従って $x<p$ なら $f(x)>0$，
+$x>p$ なら $f(x)<0$ である．
+初期値 $x_0$ が近傍内にあれば，解の一意性によって
+解は $p$ を横切れない．また速度場の符号から，
+$x_0<p$ の解は単調増加で上に $p$ によって有界，
+$x_0>p$ の解は単調減少で下に $p$ によって有界である．
+両者はコンパクトな小区間内にとどまるから前向き大域に存在する．
+その極限を $q$ とすれば，$f(q)\ne0$ なら
+右辺が十分大きい時刻に一定符号で零から離れ，
+解の収束に矛盾する．よって $f(q)=0$ となるが，
+$f$ はこの区間で狭義減少であるから零点は $p$ だけである．
+従って $x(t)\to p$．同じ単調性からLyapunov安定性も従う．
+$f'(p)>0$ なら近傍で $f$ は狭義増加で，
+$p$ の右では速度が正，左では負である．
+任意に近い初期値から出発した解は
+$p$ から離れ固定した小区間を退出するため不安定である．
+\end{proof}
+
+\section{鞍点分岐の解軌道と吸引域}
+\begin{theorem}[鞍点標準形の完全な分類]\label{thm:saddle-complete}
+$\dot x=\mu-x^2$ の最大解について次が成り立つ．
+\begin{enumerate}
+\item $\mu>0$ とし $a=\sqrt\mu$ と置く．
+ 初期値 $x_0>-a$ なら解は $t\ge0$ で存在し，
+ $x(t)\to a$ となる．$x_0=-a$ は定数解であり，
+ $x_0<-a$ の解は有限の正時間で $-\infty$ に発散する．
+\item $\mu=0$ では初期値 $x_0>0$ の解は
+ $x(t)=x_0/(1+x_0t)$ で，零へ収束する．
+ $x_0=0$ は定数解であり，$x_0<0$ の解は
+ 時刻 $-1/x_0$ で $-\infty$ に発散する．
+ 従って原点は右から吸引的だがLyapunov安定ではない．
+\item $\mu<0$ では平衡点がなく，全ての解は有限の
+ 正時間で $-\infty$ に発散する．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+$\mu>0$ なら
+$f(x)=a^2-x^2=(a-x)(a+x)$ である．
+$-a<x<a$ では $f(x)>0$ だから
+解は単調増加し，$a$ によって上から抑えられる．
+$x>a$ では $f(x)<0$ だから解は単調減少し，
+$a$ によって下から抑えられる．
+いずれも有界区間内に留まるため正時間に延長でき，
+単調性と極限での方程式から $a$ に収束する．
+$x_0<-a$ では $f(x)<0$ なので解は単調減少する．
+有限極限を持つならその極限は零点になるが，
+零点は $\pm a$ だけで，解は常に $x<-a$ だから不可能である．
+そこで解は $-\infty$ に向かう．十分大きい $M$ で
+$x\le-M\le-\sqrt{2\mu}$ となった後は
+$x'=\mu-x^2\le-x^2/2$ を満たす．
+$z=-x>0$ とすると $z'\ge z^2/2$ より
+$(1/z)'\le-1/2$ だから，その時点から
+高々 $2/z$ の時間で解は発散する．
+$\mu=0$ の場合は変数分離によって表示式を得る．
+$x_0<0$ なら分母が零になる時刻が正である．
+任意の小さい負の初期値から出発すると
+固定した負の値へ到達するから原点は不安定である．
+$\mu=-a^2<0$ とする．解は
+\[
+ \arctan\frac{x(t)}a
+ =\arctan\frac{x_0}a-at
+\]
+を満たす．右辺が $-\pi/2$ に達する有限の正時間に
+$x(t)\to-\infty$ となる．
+\end{proof}
+\begin{example}[パラメータと吸引域を一緒に記録する]
+$\mu=4$ なら平衡点は $-2,2$ で，
+$-2$ は不安定，$2$ は漸近安定である．
+正時間の吸引域は $(-2,\infty)$ であり，
+$x_0=-3$ なら有限時間で発散する．
+$\mu=0$ になると二つの平衡点が衝突し，
+原点は半安定となる．
+この現象は平衡点の個数だけでは読み取れない．
+\end{example}
+
+\section{pitchfork分岐の収束速度}
+\begin{theorem}[三次pitchforkの明示解]\label{thm:pitchfork-explicit}
+$\dot x=\mu x-x^3$，$x(0)=x_0\ne0$ とする．
+$\mu\ne0$ では解は任意の $t\ge0$ に存在し，
+\[
+ x(t)=\operatorname{sgn}(x_0)
+ \sqrt{\frac{\mu}
+ {1+(\mu/x_0^2-1)e^{-2\mu t}}}
+\]
+で与えられる．$\mu=0$ では
+\[
+ x(t)=\frac{x_0}{\sqrt{1+2x_0^2t}}.
+\]
+従って $\mu>0$ の場合には
+$x(t)\to\operatorname{sgn}(x_0)\sqrt\mu$，
+$\mu<0$ の場合には零へ収束し，
+$\mu=0$ では $|x(t)|$ が $t^{-1/2}$ の次数で減衰する．
+\end{theorem}
+\begin{proof}
+解の一意性から $x_0\ne0$ なら有限時刻で
+$x=0$ を横切れず，符号は一定である．
+$y(t)=x(t)^2$ と置けば
+\[
+ y'=2xx'=2x(\mu x-x^3)
+    =2\mu y-2y^2.
+\]
+ここで左辺は $y'=2xx'$ の意味である．
+$y>0$ だから $z=1/y$ と置くと
+\[
+ z'=-y'/y^2=2-2\mu z.
+\]
+$\mu\ne0$ なら一次線形方程式を解いて
+\[
+ z(t)=\frac1\mu+
+       \left(\frac1{x_0^2}-\frac1\mu\right)e^{-2\mu t}.
+\]
+これを逆数にして平方根を取り，
+$x_0$ の符号を掛ければ表示式になる．
+$\mu<0$ の場合も分母と分子がともに負となるので
+平方根の中身は正である．
+$\mu=0$ の場合は $z(t)=x_0^{-2}+2t$ である．
+いずれも分母が正の有限時刻で零にならないので
+正時間に解が存在する．
+極限は表示式から直接従う．
+\end{proof}
+\begin{remark}
+定理の証明中の表記 $y'=2xx'$ に注意する．
+線形化の固有値が零となる $\mu=0$ でも，
+非線形項によって収束が起こり，
+減衰速度が指数型ではなく冪型となる．
+\end{remark}
+
+\section{対称性を破った場合}
+\begin{proposition}[摂動した三次式の平衡点]\label{prop:imperfect-pitchfork}
+方程式
+$\dot x=\mu x-x^3+\varepsilon$
+を考える．$\mu>0$ とすると，平衡点は
+\[
+ |\varepsilon|<
+ \frac{2}{3\sqrt3}\mu^{3/2}
+\]
+のとき相異なる三点，
+等号のとき相異なる二点（うち一つは重根），
+逆向きの不等号のとき一点である．
+三点あるとき両端の平衡点は局所漸近安定で，
+中央の平衡点は不安定である．
+\end{proposition}
+\begin{proof}
+$f(x)=\mu x-x^3+\varepsilon$ の導関数は
+$f'(x)=\mu-3x^2$ であり，
+極値点は $x=\pm a$，$a=\sqrt{\mu/3}$ となる．
+\[
+ f(-a)=\varepsilon-\frac{2}{3\sqrt3}\mu^{3/2},
+ \quad f(a)=\varepsilon+\frac{2}{3\sqrt3}\mu^{3/2}.
+\]
+$f$ は負の無限遠で正の無限大へ，
+正の無限遠で負の無限大へ向かう．
+極小値が負で極大値が正の場合に
+横軸と三度交わることから，零点の個数が決まる．
+三点がある場合，両端の零点では
+$f'(x)<0$ であり，中央では $f'(x)>0$ である．
+命題\ref{prop:bif-hyperbolic}により安定性が従う．
+等号の場合の重根の安定性は双曲的判定では決定できないため，
+ここではその分類を主張しない．
+\end{proof}
+
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題1．}
+$\dot x=\mu x-x^5$ の全平衡点を求め，
+$\mu$ による安定性の変化を調べよ．
+$\mu=0$ で正の初期値 $x_0$ に対する
+解を求め，減衰速度を示せ．
+
+\medskip\noindent\textbf{解答．}
+$f(x)=x(\mu-x^4)$ である．
+$\mu<0$ のとき平衡点は0のみで
+$f'(0)=\mu<0$ だから漸近安定である．
+$\mu>0$ では0に加え
+$\pm\mu^{1/4}$ があり，原点は
+$f'(0)=\mu>0$ だから不安定である．
+非零平衡点では
+$f'(x)=\mu-5x^4=-4\mu<0$ なので
+局所漸近安定である．
+$\mu=0$ では $x'=-x^5$ となる．
+$x>0$ なら
+$(x^{-4})'=-4x^{-5}x'=4$ なので
+\[
+ x(t)=\frac{x_0}{(1+4x_0^4t)^{1/4}},
+\]
+従って $x(t)\to0$ で，
+$x(t)$ は $t^{-1/4}$ の次数で減衰する．
+負の初期値も符号を保って零へ収束するので，
+原点は漸近安定である．
+
+\medskip\noindent\textbf{問題2．}
+$\dot x=\mu-x^2+\varepsilon x$
+（$\varepsilon$ は固定実数）について，
+鞍点分岐が生じる $\mu$ を求めよ．
+二つの平衡点があるときの安定性も分類せよ．
+
+\medskip\noindent\textbf{解答．}
+平方完成により
+\[
+ \mu-x^2+\varepsilon x
+ =\mu+\frac{\varepsilon^2}{4}
+   -\left(x-\frac{\varepsilon}{2}\right)^2.
+\]
+よって分岐は $\mu=-\varepsilon^2/4$ で起こり，
+$\mu>-\varepsilon^2/4$ では二つの平衡点
+\[
+ x_\pm=\frac{\varepsilon}{2}
+       \pm\sqrt{\mu+\varepsilon^2/4}
+\]
+を持つ．$f'(x)=\varepsilon-2x$ だから
+$f'(x_+)<0$，$f'(x_-)>0$ である．
+よって $x_+$ は局所漸近安定，
+$x_-$ は不安定である．
+
+\medskip\noindent\textbf{問題3．}
+平面のHopf標準形で
+$a=2,b=1,\omega=3,\mu=2$ とする．
+周期軌道の半径，角速度，周期を求め，
+半径方向の一次線形化の固有値を求めよ．
+
+\medskip\noindent\textbf{解答．}
+半径は $r_*=\sqrt{\mu/a}=1$ である．
+角速度は $\omega-br_*^2=2$，周期は
+$2\pi/2=\pi$．半径方程式
+$\dot r=\mu r-ar^3$ の導関数は
+$\mu-3ar^2$ なので，
+$r_*=1$ での値は $2-3\cdot2=-4$．
+従って半径方向への小変位は局所的に
+指数率 $e^{-4t}$ で減衰する．
+
+\end{document}

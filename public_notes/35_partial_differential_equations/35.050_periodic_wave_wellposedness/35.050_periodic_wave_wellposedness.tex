@@ -1,0 +1,328 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{周期波動方程式のSobolev適切性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Fourier級数，周期波動方程式，Sobolevノルム．
+本稿の具体的な到達課題は，周期波動方程式のFourierモード解を構成してエネルギー保存を検算する．
+
+\section{問題設定と函数空間}
+非線形双曲型方程式の局所適切性を考える前提として，
+線形波動方程式の初期値問題を周期境界条件のもとで構成する．
+本稿ではFourier級数の基本的な完全性とParsevalの等式，
+Hilbert空間値積分の基本性質を既習として用いる．
+それ以外の主要な極限操作，時間正則性およびエネルギー評価は示す．
+
+$d\ge1$，$\mathbb T^d=\mathbb R^d/(2\pi\mathbb Z)^d$とする．
+函数$u\in L^2(\mathbb T^d)$のFourier係数を
+\[
+ \widehat u(k)=(2\pi)^{-d}\int_{\mathbb T^d}
+                 u(x)e^{-ik\cdot x}\,dx\quad(k\in\mathbb Z^d)
+\]
+で定める．本稿では内積とノルムに正規化された
+Lebesgue測度$(2\pi)^{-d}dx$を用いる．
+
+\begin{definition}[周期Sobolev空間]
+$s\in\mathbb R$に対し
+\[
+ H^s(\mathbb T^d)=\left\{u\in\mathcal D'(\mathbb T^d):
+ \sum_{k\in\mathbb Z^d}(1+|k|^2)^s|\widehat u(k)|^2<\infty
+ \right\}
+\]
+と定め，右辺の和の平方根を$\|u\|_{H^s}$と書く．
+Fourier係数による等長同型で$H^s$はHilbert空間となり，
+有限Fourier和は$H^s$で稠密である．
+\end{definition}
+
+\begin{lemma}[Fourier射影の収束]\label{lem:projection}
+$P_Nu=\sum_{|k|\le N}\widehat u(k)e^{ik\cdot x}$とする．
+任意の$s\in\mathbb R$および$u\in H^s$に対して
+$\|u-P_Nu\|_{H^s}\to0$であり，
+$\|P_Nu\|_{H^s}\le\|u\|_{H^s}$である．
+さらに$f\in C([0,T];H^s)$なら
+\[
+ \sup_{0\le t\le T}\|(I-P_N)f(t)\|_{H^s}\longrightarrow0.
+\]
+\end{lemma}
+\begin{proof}
+最初の二つの主張は非負項級数の尾部の収束による．
+連続写像$f$の像$K=f([0,T])$は$H^s$のコンパクト集合である．
+任意の$\varepsilon>0$について$K$の有限$\varepsilon$-網
+$\{v_1,\ldots,v_m\}$を取る．$\|I-P_N\|\le1$だから，
+$\|f(t)-v_j\|<\varepsilon$なら
+\[
+ \|(I-P_N)f(t)\|
+ \le\varepsilon+\max_j\|(I-P_N)v_j\|.
+\]
+右辺の第二項は各$v_j$に対して零へ収束する．
+$\varepsilon$の任意性から一様収束を得る．
+\end{proof}
+
+\section{有限Fourier系とエネルギー等式}
+$\omega_k=(1+|k|^2)^{1/2}$とおく．まず有限個の
+Fourierモードの問題を解く．
+
+\begin{lemma}[有限次元のDuhamel公式]\label{lem:duhamel}
+$a,b\in\mathbb C$，$h\in C([0,T];\mathbb C)$とする．
+\[
+ y(t)=a\cos(\omega t)+\frac b\omega\sin(\omega t)
+ +\int_0^t\frac{\sin(\omega(t-\tau))}{\omega}
+ h(\tau)\,d\tau\quad(\omega>0)
+\]
+は$C^2([0,T])$に属し，
+$y''+\omega^2y=h$，$y(0)=a$，$y'(0)=b$を満たす．
+この解は一意である．
+\end{lemma}
+\begin{proof}
+積分内の核が滑らかで$h$が連続なので，
+Leibnizの積分微分法則を二回適用できる．
+最初の微分では積分の上端からの境界項は零であり，
+二回目では境界項$h(t)$を得る．
+初期値は式に$t=0$を代入して求める．
+同次方程式の解の差$z$について
+$\frac d{dt}(|z'|^2+\omega^2|z|^2)=0$であり，
+零初期値なら全時刻で零となる．
+\end{proof}
+
+\begin{lemma}[有限系のエネルギー評価]\label{lem:energy}
+$u_N$を有限Fourier和で，
+\[
+ (u_N)_{tt}-\Delta u_N+u_N=P_Nf
+\]
+とする．$E_{s,N}(t)=\|(u_N)_t(t)\|_{H^s}^2+
+\|u_N(t)\|_{H^{s+1}}^2$とおくと，
+\[
+ E_{s,N}(t)^{1/2}\le
+ E_{s,N}(0)^{1/2}+\int_0^t\|P_Nf(\tau)\|_{H^s}\,d\tau.
+\]
+\end{lemma}
+\begin{proof}
+$\widehat u_N(k,t)=y_k(t)$，
+$\widehat f(k,t)=h_k(t)$とおく．
+有限和なので項別微分して
+\[
+ \frac d{dt} E_{s,N}(t)
+ =2\operatorname{Re}\sum_{|k|\le N}
+ (1+|k|^2)^s\,\overline{y_k'(t)}h_k(t)
+ \le2 E_{s,N}(t)^{1/2}\|P_N f(t)\|_{H^s}
+\]
+を得る．$E_{s,N}$が零となる時刻での除算を避けるため
+$\sqrt{E_{s,N}+\delta}$を微分すると，
+\[
+ \frac d{dt}\sqrt{E_{s,N}(t)+\delta}
+ \le\|P_N f(t)\|_{H^s}
+\]
+となる．積分して$\delta\downarrow0$とすれば結論を得る．
+\end{proof}
+
+\section{周期線形波動方程式の適切性}
+\begin{theorem}[Sobolev空間での大域的適切性]\label{thm:wellposed}
+$s\in\mathbb R$，$T>0$とする．
+$u_0\in H^{s+1}(\mathbb T^d)$，
+$u_1\in H^s(\mathbb T^d)$，
+$f\in C([0,T];H^s(\mathbb T^d))$を与える．
+このとき次の初期値問題
+\[
+ \begin{cases}
+ u_{tt}-\Delta u+u=f &(t,x)\in[0,T]\times\mathbb T^d,\\
+ u(0)=u_0,\quad u_t(0)=u_1
+ \end{cases}
+\]
+には，
+\[
+ u\in C([0,T];H^{s+1})\cap C^1([0,T];H^s)
+       \cap C^2([0,T];H^{s-1})
+\]
+に属する解がただ一つ存在する．等式は$H^{s-1}$の意味で成立する．
+さらに
+\[
+ \bigl(\|u_t(t)\|_{H^s}^2+\|u(t)\|_{H^{s+1}}^2\bigr)^{1/2}
+ \le
+ \bigl(\|u_1\|_{H^s}^2+\|u_0\|_{H^{s+1}}^2\bigr)^{1/2}
+ +\int_0^t\|f(\tau)\|_{H^s}\,d\tau
+\]
+が$0\le t\le T$で成立する．解は初期値と右辺に連続に依存する．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:duhamel}を各$k$に適用し，
+$P_Nu_0,P_Nu_1,P_Nf$を初期値・右辺とする
+有限Fourier和$u_N$を構成する．
+$N>M$とすると$w=u_N-u_M$は有限Fourier系の解で，
+初期値は$(P_N-P_M)u_0,(P_N-P_M)u_1$，右辺は
+$(P_N-P_M)f$である．補題\ref{lem:energy}から
+\[
+ \begin{aligned}
+ &\sup_{0\le t\le T}
+ \bigl(\|w_t(t)\|_{H^s}^2+\|w(t)\|_{H^{s+1}}^2\bigr)^{1/2}\\
+ &\quad\le
+ \bigl(\|(P_N-P_M)u_1\|_{H^s}^2
+ +\|(P_N-P_M)u_0\|_{H^{s+1}}^2\bigr)^{1/2}\\
+ &\qquad+\int_0^T\|(P_N-P_M)f(\tau)\|_{H^s}\,d\tau.
+ \end{aligned}
+\]
+右辺の初期値の部分はFourier射影の収束によって零へ向かい，
+積分項は補題\ref{lem:projection}により零へ向かう．
+従って$(u_N)$は$C([0,T];H^{s+1})$でCauchy列，
+$((u_N)_t)$は$C([0,T];H^s)$でCauchy列である．
+完備性により極限$u,v$が存在する．
+$u_N(t)=u_N(0)+\int_0^t (u_N)_t(\tau)\,d\tau$に
+極限を取れば$u(t)=u_0+\int_0^t v(\tau)\,d\tau$である．
+よって$u\in C^1([0,T];H^s)$で$u_t=v$となり，
+$u\in C([0,T];H^{s+1})$でもある．
+
+有限系の方程式より
+\[
+ (u_N)_{tt}=\Delta u_N-u_N+P_Nf.
+\]
+$\Delta-1:H^{s+1}\to H^{s-1}$は有界線形なので，
+右辺は$C([0,T];H^{s-1})$で
+$\Delta u-u+f$へ一様収束する．
+$(u_N)_t(t)=(u_N)_t(0)+\int_0^t(u_N)_{tt}(\tau)d\tau$
+に極限を取ることで
+$u_t(t)=u_1+\int_0^t(\Delta u-u+f)(\tau)\,d\tau$
+を得る．従って$u\in C^2([0,T];H^{s-1})$で，
+方程式と初期条件が成立する．
+
+補題\ref{lem:energy}の評価で$N\to\infty$とすると
+表示したエネルギー不等式を得る．一意性は，
+零初期値・零右辺の差についてエネルギー評価を示せばよい．
+一般の同次解$z$を有限射影すると$P_Nz$は有限系の解だから
+補題\ref{lem:energy}の評価を適用でき，
+$N\to\infty$で$z=0$となる．
+二組の初期値と右辺の差に同じ評価を適用すれば
+連続依存性が従う．
+\end{proof}
+
+\begin{corollary}[任意の有限時間への延長]
+上定理のデータが$f\in C([0,\infty);H^s)$で与えられているなら，
+一意な大域解$u$が任意の有限区間$[0,T]$で上定理の
+正則性とエネルギー評価を満たす．
+\end{corollary}
+\begin{proof}
+各$T$についての解は，短い区間に制限すると
+その区間での一意な解と一致する．ゆえに解を貼り合わせられる．
+\end{proof}
+
+\section{射程と非線形方程式への接続}
+\begin{remark}
+$+u$の項は零Fourierモードの振動数も正にするために置いた．
+この項が無い純粋な波動方程式も零モードを別に扱えば
+同様の方法で証明できる．本稿は周期空間上の線形方程式を対象とし，
+一般の有界領域での境界値問題や任意の非線形双曲型方程式の
+局所適切性を結論していない．
+\end{remark}
+\begin{remark}
+Einstein方程式の初期値問題では，計量に依存する非線形係数，
+拘束方程式，ゲージ条件，微分損失の管理が別途必要となる．
+本稿の線形適切性はその一つの分析的前提を与えるが，
+Einstein方程式のCauchy問題を解決したことにはならない．
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{taylor} M. E. Taylor, \emph{Partial Differential Equations III},
+ 2nd ed., Springer, 2011.
+\bibitem{evans} L. C. Evans, \emph{Partial Differential Equations},
+ 2nd ed., AMS, 2010.
+\end{thebibliography}
+
+\section{到達課題の完全解答}
+\noindent\textbf{波動方程式の一つのモード．}
+\begin{proposition}
+$2\pi$ 周期の関数
+$u(t,x)=\cos(nt)\sin(nx)$（$n$ は正整数）は
+波動方程式 $u_{tt}=u_{xx}$ の解であり，
+\[
+E(t)=\frac12\int_0^{2\pi}
+(u_t^2+u_x^2)\,dx
+=\frac{\pi n^2}{2}
+\]
+は時刻によらず一定である．
+\end{proposition}
+\begin{proof}
+$u_{tt}=-n^2u=u_{xx}$．
+また
+$u_t=-n\sin(nt)\sin(nx)$，
+$u_x=n\cos(nt)\cos(nx)$ だから
+\[
+\begin{aligned}
+2E(t)
+&=n^2\sin^2(nt)\int_0^{2\pi}\sin^2(nx)\,dx\\
+&\quad+n^2\cos^2(nt)\int_0^{2\pi}\cos^2(nx)\,dx\\
+&=\pi n^2.
+\end{aligned}
+\]
+\end{proof}
+\noindent\textbf{到達確認．}
+$u(t,x)=\sin(nt)\cos(nx)$ のエネルギーを求めよ．
+\par\noindent\textbf{解答．}
+同様に $u_t=n\cos(nt)\cos(nx)$，
+$u_x=-n\sin(nt)\sin(nx)$ なので
+$E(t)=\pi n^2/2$ である．
+\end{document}

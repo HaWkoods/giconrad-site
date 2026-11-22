@@ -1,0 +1,359 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{力学系と安定性理論}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+本稿を読了した後には，与えられた平衡点について
+具体的なLyapunov関数を構成し，導関数の符号から
+安定性・漸近安定性を証明できるようになることを目標とする．
+行列の固有値だけではなく，Lyapunov行列方程式を
+実際に解いて証明書となる正定値行列を得る方法，
+さらに導関数が半負定値の場合にLaSalleの不変集合原理を
+使う方法を学ぶ．前提は線形代数の正定値性，
+一変数微分法，常微分方程式の局所存在・延長定理である．
+
+\section{流れと平衡点}
+$F:\mathbb R^n\to\mathbb R^n$ を局所Lipschitz連続とし，
+常微分方程式 $\dot x=F(x)$ を考える．
+$F(x_*)=0$ となる点を平衡点と呼ぶ．
+\begin{definition}
+平衡点 $x_*$ がLyapunov安定であるとは，任意の $\varepsilon>0$ に対し
+$\delta>0$ が存在し，$\norm{x(0)-x_*}<\delta$ の解が
+すべての $t\ge0$ で存在し $\norm{x(t)-x_*}<\varepsilon$ となることをいう．
+加えて十分近い初期点からの解が $t\to\infty$ で $x_*$ に収束するとき漸近安定という．
+\end{definition}
+\section{Lyapunov関数}
+\begin{theorem}[Lyapunovの安定判定]
+$V$ を $x_*$ の近傍で定義された $C^1$ 関数とし，
+$V(x_*)=0$，$V(x)>0$（$x\ne x_*$）かつ
+$\nabla V(x)\cdot F(x)\le0$ とする．
+このとき $x_*$ はLyapunov安定である．
+\end{theorem}
+\begin{proof}
+平衡点を原点へ移す．小さい $r>0$ で閉球 $\bar B_r$ が定義域に入るよう選ぶ．
+球面上の連続関数 $V$ は正の最小値 $m_r>0$ を持つ．
+$V(0)=0$ と連続性より $\delta>0$ を小さくして
+$\norm{x(0)}<\delta$ なら $V(x(0))<m_r$ とする．
+解に沿って $V$ は非増加なので，解は球面 $\partial B_r$ に到達しない．
+従って $\bar B_r$ に留まり，局所存在・延長定理より全時刻で存在する．
+$r<\varepsilon$ を取れば安定性が従う．
+\end{proof}
+\begin{proposition}[厳密な減少による漸近安定]
+上の条件に加え，$\nabla V(x)\cdot F(x)<0$（$x\ne x_*$）なら，
+$x_*$ は局所漸近安定である．
+\end{proposition}
+\begin{proof}
+十分小さい閉球に解を閉じ込めることは前定理で示した．
+$V(x(t))$ は下に有界な単調関数だから極限 $\ell\ge0$ を持つ．
+$\ell>0$ なら，軌道の入るコンパクト集合のうち
+$V\ge\ell/2$ の部分で $\dot V\le-c<0$ が成り立つ．
+これは $V(x(t))\to-\infty$ を導き矛盾する．
+従って $\ell=0$．正値性とコンパクト性から $x(t)\to x_*$ である．
+\end{proof}
+\section{線形系の例}
+\begin{proposition}
+実対称正定値行列 $A$ に対して $\dot x=-Ax$ の原点は漸近安定である．
+\end{proposition}
+\begin{proof}
+$V(x)=\frac12\norm x^2$ とすると
+$\dot V=-x^TAx\le-\lambda_{\min}(A)\norm x^2<0$（$x\ne0$）．
+前命題を適用する．
+\end{proof}
+\begin{remark}
+Hurwitz条件による線形化安定判定は後続の節で証明する．
+中心多様体の定理には追加の非線形解析が必要である．
+\end{remark}
+
+
+\section{Hurwitz行列と線形化安定性}
+\begin{lemma}[Lyapunov行列方程式]
+実行列 $A\in\mathbb R^{n\times n}$ の固有値がすべて
+負の実部を持つとする．任意の実対称正定値 $Q$ に対し
+$A^TP+PA=-Q$ を満たす実対称正定値 $P$ がただ一つ存在する．
+\end{lemma}
+\begin{proof}
+Jordan標準形または行列指数関数の評価から，
+ある $C,c>0$ について $\norm{e^{At}}\le Ce^{-ct}$（$t\ge0$）である．
+従って
+\[
+ P=\int_0^\infty e^{A^Tt}Qe^{At}\,dt
+\]
+が収束する．任意の $v\ne0$ に対し
+$v^TPv=\int_0^\infty(e^{At}v)^TQ(e^{At}v)dt>0$ なので正定値である．
+積分記号の下で微分し，境界値を評価すると
+$A^TP+PA=[e^{A^Tt}Qe^{At}]_{t=0}^{\infty}=-Q$．
+もし $A^TR+RA=0$ なら
+$e^{A^Tt}Re^{At}$ は一定であり，$t\to\infty$ で零となるので $R=0$．
+よって一意である．
+\end{proof}
+\begin{theorem}[線形化による局所漸近安定]
+$F$ を原点近傍の $C^1$ ベクトル場とし，$F(0)=0$ とする．
+$A=DF(0)$ の固有値がすべて負の実部を持つなら，原点は局所漸近安定である．
+\end{theorem}
+\begin{proof}
+前補題を $Q=I$ に適用して $P>0$ を取る．
+$F(x)=Ax+r(x)$，$\norm{r(x)}=o(\norm x)$ と書く．
+$V(x)=x^TPx$ と置くと
+\[
+ \dot V=x^T(A^TP+PA)x+2x^TPr(x)
+ =-\norm x^2+2x^TPr(x).
+\]
+$|2x^TPr(x)|\le2\norm P\norm x\norm{r(x)}$ であり，
+原点の十分小さい近傍では $\dot V\le-\norm x^2/2$ となる．
+$V$ は正定値なのでLyapunovの漸近安定定理を適用する．
+\end{proof}
+
+\section{LaSalleの不変集合原理}
+\begin{theorem}[LaSalleの不変集合原理]
+$f:\mathbb R^d\to\mathbb R^d$ を局所Lipschitz連続とし，
+$K\subset\mathbb R^d$ をコンパクトで正向き不変な集合とする．
+$V\in C^1$ が $K$ の近傍で定義され，
+$\nabla V(x)\cdot f(x)\le0$ を全 $x\in K$ で満たすとする．
+$E=\{x\in K:\nabla V(x)\cdot f(x)=0\}$ とし，
+$E$ に含まれる最大の不変集合を $M$ とする．
+すると，任意の $x_0\in K$ に対して解軌道の
+$\omega$-極限集合は $M$ に含まれる．
+特に $M=\{x_*\}$ なら $x(t)\to x_*$ である．
+\end{theorem}
+\begin{proof}
+$K$ の正向き不変性とコンパクト性から，軌道は有界で正時間に
+無限に延長できる．$V(x(t))$ は単調非増加かつ下に有界なので
+ある実数 $\ell$ に収束する．
+$\omega(x_0)=\bigcap_{s\ge0}\overline{\{x(t):t\ge s\}}$
+は $K$ に含まれる非空コンパクト集合であり，
+その任意の点 $y$ は $x(t_n)\to y$ となる $t_n\to\infty$ によって表される．
+連続性から $V(y)=\ell$ である．
+
+$y\in\omega(x_0)$ と任意の固定した $\tau\ge0$ を取ると，
+解の連続依存性から
+$\varphi_\tau(y)=\lim_n x(t_n+\tau)\in\omega(x_0)$ となる．
+同様に $x(t_n-\tau)$ の部分列の極限 $z\in\omega(x_0)$ を取れば
+$\varphi_\tau(z)=y$ なので，解の一意性から $z=\varphi_{-\tau}(y)$ である．
+従って $\omega(x_0)$ は両時間に不変である．
+$V$ は $\omega(x_0)$ 上で恒等的に $\ell$ だから，
+その任意の軌道に沿う微分は零，すなわち
+$\omega(x_0)\subset E$ である．
+よって最大不変性から $\omega(x_0)\subset M$．
+
+$M=\{x_*\}$ なら $\omega(x_0)=\{x_*\}$．
+もし $x(t)\to x_*$ でなければ，ある $\varepsilon>0$ と
+$t_n\to\infty$ で $\norm{x(t_n)-x_*}\ge\varepsilon$ となる．
+コンパクト性から部分列の極限が $\omega(x_0)$ に入り，
+$x_*$ とは異なることになるので矛盾する．
+\end{proof}
+\begin{remark}
+この定理はコンパクトな正向き不変集合上の大域的な収束を与える．
+Lyapunov安定性まで必要な場合は，正定値な $V$ の評価や
+不変近傍の構成などを別途組み合わせる．
+\end{remark}
+
+
+\section{実際にLyapunov行列方程式を解く}
+\begin{example}[対角化だけでは見えない正定値な証明書]\label{ex:lyap-matrix-explicit}
+\[
+ A=\begin{pmatrix}-1&1\\0&-2\end{pmatrix}
+\]
+とする．$Q=I$ に対する
+$A^TP+PA=-I$ を実対称行列
+$P=\begin{pmatrix}p&q\\q&r\end{pmatrix}$ で解くと
+\[
+ -2p=-1,\qquad p-3q=0,\qquad2q-4r=-1
+\]
+だから
+\[
+ P=\begin{pmatrix}1/2&1/6\\1/6&1/3\end{pmatrix}.
+\]
+$p=1/2>0$，$\det P=5/36>0$ なので
+$P$ は正定値である．
+従って $\dot x=Ax$ に対し
+$V(x)=x^TPx$ と置けば
+\[
+ \dot V(x)=x^T(A^TP+PA)x=-\|x\|^2.
+\]
+正定値行列の最小・最大固有値を
+$m,M>0$ と書くと
+$m\|x\|^2\le V(x)\le M\|x\|^2$ なので
+\[
+ \dot V\le-\frac1M V.
+\]
+積分因子を使って
+$V(t)\le e^{-t/M}V(0)$ を得る．
+従って
+\[
+ \|x(t)\|\le\sqrt{M/m}\,e^{-t/(2M)}\|x(0)\|.
+\]
+このように安定性だけでなく収束速度まで評価できる．
+\end{example}
+\begin{proposition}[非線形摂動でも有効な証明書]
+例\ref{ex:lyap-matrix-explicit}の $A$ と
+$F(x)=Ax+(0,x_1^2)^T$ を考える．
+原点は局所漸近安定である．
+\end{proposition}
+\begin{proof}
+$P$ を前例で計算したものとすると
+\[
+ \dot V=-\|x\|^2+2x^TP(0,x_1^2)^T
+ \le-\|x\|^2+2\|P\|\|x\|^3.
+\]
+任意の $\|x\|<1/(4\|P\|)$ では
+$\dot V\le-\|x\|^2/2<0$（$x\ne0$）である．
+$P$ は正定値だからLyapunovの漸近安定判定を適用できる．
+具体的には上の開球に含まれる十分小さな
+$V$ の劣位集合を取れば，解はその内部に留まり
+原点へ収束する．
+\end{proof}
+\begin{remark}
+ここでは $Q=I$ と固定して計算したが，
+一般には $Q$ を別の正定値行列にして
+より扱いやすいLyapunov関数を設計することもできる．
+\end{remark}
+
+\section{LaSalleの原理が必要になる例}
+\begin{theorem}[半負定値の導関数からの収束]\label{thm:lasalle-example}
+\[
+ \dot x=-x+y,\qquad \dot y=-x
+\]
+の任意の初期値に対する解は原点へ収束する．
+\end{theorem}
+\begin{proof}
+$V(x,y)=(x^2+y^2)/2$ と置くと
+\[
+ \dot V=x(-x+y)+y(-x)=-x^2\le0.
+\]
+従って $V(t)\le V(0)$ であり，
+解はコンパクトな閉円盤内に留まるため
+$t\ge0$ にわたって存在する．
+$\dot V=0$ の集合は $E=\{(x,y):x=0\}$ である．
+$E$ にとどまる軌道があれば $x=0$ だから
+$\dot x=y$ が常に零である必要があり，
+$y=0$ と分かる．従って $E$ に含まれる
+最大の不変集合は原点のみである．
+LaSalleの不変集合原理より
+$(x(t),y(t))\to(0,0)$ を得る．
+\end{proof}
+\begin{example}[なぜ $\dot V\le0$ だけでは不十分か]
+比較対象として
+$\dot x=y,\ \dot y=-x$ を考えると
+$V=(x^2+y^2)/2$ は $\dot V=0$ を満たす．
+しかし非零初期値からの解は
+$x^2+y^2=x(0)^2+y(0)^2$ の円周上を
+回転し続けるため，原点へ収束しない．
+従ってLyapunov関数の単なる非増加性から
+漸近安定性は結論できない．
+\end{example}
+
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題1．}
+$\dot x=-x-x^3,\ \dot y=-2y$ について，
+原点の大域漸近安定性と具体的な収束率を証明せよ．
+
+\medskip\noindent\textbf{解答．}
+$V=(x^2+y^2)/2$ とすると
+\[
+ \dot V=x(-x-x^3)+y(-2y)
+ =-x^2-x^4-2y^2\le-2V.
+\]
+よって $(e^{2t}V(t))'\le0$ であり
+$V(t)\le e^{-2t}V(0)$．
+特に
+\[
+ \sqrt{x(t)^2+y(t)^2}\le
+ e^{-t}\sqrt{x(0)^2+y(0)^2}.
+\]
+軌道は初期ノルム以下の閉円盤にとどまるため，
+局所解は任意の正時間へ延長できる．
+任意の初期値から原点へ収束し，
+解の一様なノルム評価からLyapunov安定でもある．
+従って原点は大域漸近安定である．
+
+\medskip\noindent\textbf{問題2．}
+$\dot x=y,\ \dot y=-x$ の原点は
+Lyapunov安定か，漸近安定かを判定せよ．
+
+\medskip\noindent\textbf{解答．}
+$V=(x^2+y^2)/2$ が保存されるので
+任意の初期値に対し
+$\|(x(t),y(t))\|=\|(x(0),y(0))\|$．
+従って $\delta=\varepsilon$ と取れば
+Lyapunov安定である．
+ただし非零初期値からの軌道のノルムは正の定数なので
+原点へ収束しない．従って漸近安定ではない．
+
+\section*{本稿で使えるようになった方法}
+\noindent まず平衡点とその線形化を求める．
+Hurwitz条件が成立すればLyapunov行列方程式を解いて
+正定値の二次形式を作ることができる．
+その微分が厳密に負なら漸近安定性を示し，
+半負定値にとどまるなら不変集合を調べる．
+この手順は実際の非線形モデルにも適用できるが，
+局所的に得た結論を大域的な結論として使わないよう
+定義域と不変性を確かめる必要がある．
+
+\end{document}

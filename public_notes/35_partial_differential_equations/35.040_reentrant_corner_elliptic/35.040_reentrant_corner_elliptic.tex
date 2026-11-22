@@ -1,0 +1,411 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{凹角領域における楕円型正則性の限界}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Sobolev空間，極座標，楕円型境界値問題．
+本稿の具体的な到達課題は，凹角の特異関数が $H^1$ だが $H^2$ でないことを積分で判定する．
+
+\section{問題と主定理}
+本稿では，境界のLipschitz性だけからPoisson方程式の弱解の
+$H^2$ 正則性は従わないことを，具体的な函数と右辺を構成して証明する．
+この事実は，有限要素法の誤差評価で厳密解の$H^2$ 正則性を
+独立した仮定として置く必要があることを示す．
+
+\begin{definition}[弱解]
+有界開集合$\Omega\subset\mathbb R^2$と$f\in L^2(\Omega)$に対し，
+$u\in H_0^1(\Omega)$が
+\[
+ \int_\Omega\nabla u\cdot\nabla v\,dx
+   =\int_\Omega fv\,dx
+ \qquad(v\in H_0^1(\Omega))
+\]
+を満たすとき，$-\Delta u=f$の零Dirichlet境界条件に対する弱解という．
+ここで$H_0^1(\Omega)$は$C_c^\infty(\Omega)$の$H^1$閉包である．
+\end{definition}
+
+\begin{theorem}[凹角領域における$H^2$正則性の破綻]\label{thm:corner}
+$\pi<\omega<2\pi$とし，
+\[
+ \Omega_\omega=
+ \{(r\cos\theta,r\sin\theta):0<r<1,\ 0<\theta<\omega\}
+\]
+と定める．$\Omega_\omega$は有界Lipschitz領域である．
+ある$f\in C^\infty(\overline{\Omega_\omega})$が存在し，
+零Dirichlet境界条件を持つ$-\Delta u=f$の弱解は
+ただ一つ存在するが，その解は$H^2(\Omega_\omega)$に属さない．
+$f$は原点の近傍で恒等的に零となるように選べる．
+\end{theorem}
+
+この定理における$C^\infty(\overline\Omega)$は，
+閉包の各点の近傍で滑らかな函数へ延長できることを意味する．
+
+\section{領域の形状と角点函数}
+$\lambda=\pi/\omega$とおく．$1/2<\lambda<1$である．
+
+\begin{lemma}[扇形のLipschitz境界]\label{lem:lipschitz}
+$\Omega_\omega$は有界Lipschitz領域である．
+\end{lemma}
+\begin{proof}
+原点以外の境界は，二本の直線の一部と半径1の円弧からなり，
+それらの交点では二つの滑らかな曲線が零でない角度で交わる．
+従って各点の近傍で適切な直交座標を取れば，境界はLipschitz函数の
+グラフで，領域はその一方の側として表される．
+原点について確認する．領域の補集合が占める角度を
+$\beta=2\pi-\omega\in(0,\pi)$とする．欠損角の二等分線を
+負の$t$軸とする直交座標$(s,t)$を取る．十分小さい原点近傍では，
+領域は
+\[
+ t>-\cot(\beta/2)|s|
+\]
+で表される．右辺はLipschitz函数である．
+境界のコンパクト性から有限個のグラフ近傍で覆える．
+\end{proof}
+
+\begin{lemma}[角点の調和函数]\label{lem:harmonic}
+$0<r<1$, $0<\theta<\omega$で
+\[
+ w(r,\theta)=r^\lambda\sin(\lambda\theta)
+\]
+と置くと，$w$は滑らかで$\Delta w=0$となる．さらに
+$w(r,0)=w(r,\omega)=0$である．
+\end{lemma}
+\begin{proof}
+極座標におけるLaplacianは
+\[
+ \Delta=\partial_{rr}+r^{-1}\partial_r+r^{-2}\partial_{\theta\theta}
+\]
+である．これに$w$を代入すると
+\[
+ \Delta w=(\lambda(\lambda-1)+\lambda-\lambda^2)
+ r^{\lambda-2}\sin(\lambda\theta)=0.
+\]
+境界値については$\sin0=\sin(\lambda\omega)=\sin\pi=0$
+を用いればよい．
+\end{proof}
+
+\section{弱解の構成と零境界条件}
+$\chi\in C^\infty([0,\infty))$を
+\[
+ 0\le\chi\le1,\quad
+ \chi(r)=1\ (0\le r\le1/3),\qquad
+ \chi(r)=0\ (r\ge2/3)
+\]
+となるように取る．以後
+\[
+ u(r,\theta)=\chi(r)r^\lambda\sin(\lambda\theta)
+\]
+と定める．
+
+\begin{lemma}[エネルギー有限性]\label{lem:H1}
+$u\in H^1(\Omega_\omega)$であり，原点近傍では
+\[
+ \int_{\Omega_\omega\cap\{r<\varepsilon\}}|u|^2\,dx
+      \le C\varepsilon^{2\lambda+2},\qquad
+ \int_{\Omega_\omega\cap\{r<\varepsilon\}}|\nabla u|^2\,dx
+      \le C\varepsilon^{2\lambda}
+\]
+が$0<\varepsilon<1/3$について成立する．
+\end{lemma}
+\begin{proof}
+$r<1/3$では
+\[
+ |u|\le r^\lambda,\qquad
+ |\nabla u|^2=(\partial_r u)^2+r^{-2}(\partial_\theta u)^2
+             =\lambda^2r^{2\lambda-2}.
+\]
+極座標の面積要素$r\,dr\,d\theta$を用いて積分すると
+\[
+ \int_{r<\varepsilon}|u|^2\,dx
+   \le\omega\int_0^\varepsilon r^{2\lambda+1}\,dr,
+ \qquad
+ \int_{r<\varepsilon}|\nabla u|^2\,dx
+   =\omega\lambda^2\int_0^\varepsilon r^{2\lambda-1}\,dr.
+\]
+$\lambda>0$なので両積分は有限であり，記載した評価を得る．
+$r\ge1/3$で$u$とその導函数は有界で，$r\ge2/3$では零である．
+原点は領域の境界点であるから，領域内部での古典的な微分は
+弱微分と一致し，$u\in H^1(\Omega_\omega)$を得る．
+\end{proof}
+
+\begin{lemma}[零境界条件]\label{lem:H0}
+$u\in H_0^1(\Omega_\omega)$である．
+\end{lemma}
+\begin{proof}
+$\eta\in C^\infty([0,\infty))$を
+$0\le\eta\le1$，$\eta(t)=0$（$t\le1$），
+$\eta(t)=1$（$t\ge2$）となるように取る．
+$u_\varepsilon=\eta(r/\varepsilon)u$と置く．
+前補題の評価と
+$|\nabla\eta(r/\varepsilon)|\le C/\varepsilon$から
+\[
+ \|u-u_\varepsilon\|_{H^1(\Omega_\omega)}
+       \longrightarrow0\qquad(\varepsilon\downarrow0)
+\]
+を得る．実際，$\nabla(u-u_\varepsilon)$の第一項は
+$r<2\varepsilon$上の$\nabla u$で抑えられ，第二項は
+$\varepsilon<r<2\varepsilon$上で
+$C\varepsilon^{-1}|u|\le C\varepsilon^{\lambda-1}$
+と抑えられるので，それぞれの$L^2$ノルムは
+$O(\varepsilon^\lambda)$である．
+
+$\varepsilon>0$を固定する．滑らかな角度切断函数
+$\zeta_\delta(\theta)$を
+$\theta\in(0,\delta)\cup(\omega-\delta,\omega)$では0，
+$\theta\in(2\delta,\omega-2\delta)$では1，
+$|\zeta_\delta'|\le C/\delta$となるように取る．
+$u_{\varepsilon,\delta}=\zeta_\delta(\theta)u_\varepsilon$
+は，$0<\delta<\omega/4$について$C_c^\infty(\Omega_\omega)$に属する．
+$u_\varepsilon$の台は$r\ge\varepsilon$にあり，
+$\sin(\lambda\theta)$は両端角の近くで
+$C\min(\theta,\omega-\theta)$以下である．
+従って$\zeta_\delta'$を含む項
+$r^{-1}\zeta_\delta' u_\varepsilon$の絶対値は
+$r\ge\varepsilon$上で$C_\varepsilon$以下である．
+その台の角度方向の幅は$O(\delta)$であるため，
+この項の$L^2$ノルムは$O_\varepsilon(\sqrt\delta)$となる．
+他の項は有界収束定理で収束する．ゆえに
+\[
+ \|u_{\varepsilon,\delta}-u_\varepsilon\|_{H^1}
+   \longrightarrow0\qquad(\delta\downarrow0).
+\]
+対角列を選べば$u$を$C_c^\infty(\Omega_\omega)$で
+$H^1$近似できる．従って$u\in H_0^1(\Omega_\omega)$である．
+\end{proof}
+
+\section{滑らかな右辺と弱解の一意性}
+\begin{lemma}[右辺の正則性]\label{lem:rhs}
+$f=-\Delta u$を$\Omega_\omega$上で古典的に定めると，
+$f$は閉包の近傍に滑らかに延長でき，
+原点近傍で零となる．さらに
+\[
+ f(r,\theta)=-\bigl(\chi''(r)r^\lambda
+      +(2\lambda+1)\chi'(r)r^{\lambda-1}\bigr)
+      \sin(\lambda\theta)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+積の微分公式と補題\ref{lem:harmonic}から
+\[
+ \Delta(\chi w)=(\chi''+r^{-1}\chi')w
+                +2\chi'\partial_rw
+\]
+となる．$\partial_rw=\lambda r^{\lambda-1}\sin(\lambda\theta)$を
+代入して表示式を得る．$\chi',\chi''$は
+$1/3\le r\le2/3$に台を持つため，$f$も同じ帯に台を持つ．
+この帯では極座標表示が境界上を含めて滑らかであり，
+$f$は$C^\infty(\overline{\Omega_\omega})$に属する．
+\end{proof}
+
+\begin{lemma}[弱形式と一意性]\label{lem:weak}
+上で構成した$u$は，$f=-\Delta u$の零Dirichlet弱解であり，
+そのような弱解はただ一つである．
+\end{lemma}
+\begin{proof}
+$u$は領域内部で滑らかで，$f=-\Delta u$が成立する．
+任意の$v\in C_c^\infty(\Omega_\omega)$に対し
+通常の部分積分で
+\[
+ \int_{\Omega_\omega}\nabla u\cdot\nabla v\,dx
+   =\int_{\Omega_\omega}fv\,dx
+\]
+を得る．左辺は$H_0^1$，右辺は$L^2$ノルムに関して連続である．
+$C_c^\infty(\Omega_\omega)$の$H_0^1$稠密性から
+全ての$v\in H_0^1(\Omega_\omega)$へ等式が拡張される．
+
+一意性を示す．同じ$f$に対する弱解$u_1,u_2$を取り，
+$w=u_1-u_2$と置くと，$v=w$を代入して
+$\|\nabla w\|_2^2=0$を得る．
+$H_0^1(\Omega_\omega)$上のPoincar\'e不等式により
+$\|w\|_2=0$となる．この不等式は領域を含む長方形で
+$C_c^\infty(\Omega_\omega)$を零延長し，一変数の
+Newton--Leibniz公式とCauchy--Schwarzを適用して導ける．
+従って$u_1=u_2$である．
+\end{proof}
+
+\section{二階微分の非可積分性}
+\begin{lemma}[角点特異性の強さ]\label{lem:notH2}
+構成した$u$は$H^2(\Omega_\omega)$に属さない．
+\end{lemma}
+\begin{proof}
+$r<1/3$では$\chi=1$であり，
+\[
+ \partial_{rr}u
+   =\lambda(\lambda-1)r^{\lambda-2}\sin(\lambda\theta).
+\]
+$\lambda\in(1/2,1)$なので$\lambda(\lambda-1)\ne0$である．
+$\omega/4\le\theta\le3\omega/4$では
+$\sin(\lambda\theta)\ge1/\sqrt2$である．従って
+\[
+ \int_{\Omega_\omega\cap\{r<1/3\}}
+       |\partial_{rr}u|^2\,dx
+ \ge C\int_0^{1/3}r^{2\lambda-3}\,dr=+\infty,
+\]
+最後の発散は$\lambda<1$から従う．
+
+もし$u\in H^2(\Omega_\omega)$なら，領域内部での古典的な
+二階微分は弱二階微分と一致し，
+\[
+ \partial_{rr}u
+ =\cos^2\theta\,\partial_{xx}u
+  +2\sin\theta\cos\theta\,\partial_{xy}u
+  +\sin^2\theta\,\partial_{yy}u
+\]
+であるから$\partial_{rr}u\in L^2(\Omega_\omega)$となる．
+これは前の発散に矛盾する．
+\end{proof}
+
+\begin{proof}[定理\ref{thm:corner}の証明]
+補題\ref{lem:lipschitz}によって領域は有界Lipschitzである．
+補題\ref{lem:H0}により構成した$u$は零境界条件を持つ．
+補題\ref{lem:rhs}により$f$は滑らかであり，
+補題\ref{lem:weak}から弱解の存在と一意性を得る．
+補題\ref{lem:notH2}からその解は$H^2$に属さない．
+\end{proof}
+
+\section{正則性定理と有限要素法への帰結}
+\begin{corollary}[Lipschitz境界だけでは不十分]
+すべての有界Lipschitz領域$\Omega$と全ての
+$f\in L^2(\Omega)$について，零Dirichlet問題の弱解が
+$H^2(\Omega)$に属するという命題は偽である．
+また，一般のLipschitz領域で
+\[
+ \|u\|_{H^2(\Omega)}\le C_\Omega\|f\|_{L^2(\Omega)}
+\]
+というアプリオリ評価を主張することもできない．
+\end{corollary}
+\begin{proof}
+定理\ref{thm:corner}の領域と滑らかな$f$を選べば，
+左辺は有限値ではないので両命題の反例となる．
+\end{proof}
+
+\begin{remark}[有限要素法への適用]
+形状正則三角形分割に対する一次有限要素補間評価
+\[
+ \|u-I_hu\|_{H^1(\Omega)}\le Ch|u|_{H^2(\Omega)}
+\]
+は，$u\in H^2(\Omega)$という仮定の下で成立する評価である．
+本稿の$u$には右辺が有限でないため，この評価を適用できない．
+ここから直ちに有限要素解が収束しないという結論は出ない．
+より弱い正則性を仮定した誤差評価は別途検討を要する．
+\end{remark}
+
+\begin{remark}[論理的な結論]
+Poisson方程式の$H_0^1$弱解の存在一意性と$H^2$正則性は
+異なる主張である．前者はこの反例上でも成立するが後者は失敗する．
+「一般Lipschitz領域での$H^2$正則性」を完成させる代わりに，
+正則性定理には境界形状，係数および右辺について
+実際に十分な仮定を付ける必要がある．
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{grisvard} P. Grisvard,
+ \emph{Elliptic Problems in Nonsmooth Domains}, Pitman, 1985.
+\bibitem{evans} L. C. Evans,
+ \emph{Partial Differential Equations}, 2nd ed., AMS, 2010.
+\end{thebibliography}
+
+\section{到達課題の完全解答}
+\noindent\textbf{凹角で二階正則性が失われる理由．}
+\begin{proposition}
+開扇形
+$\Omega=\{(r,\theta):0<r<1,\ 0<\theta<\omega\}$
+を $\pi<\omega<2\pi$ として考え，
+$\alpha=\pi/\omega\in(1/2,1)$ と置く．
+\[
+u(r,\theta)=r^\alpha\sin(\alpha\theta)
+\]
+は原点近傍で $H^1$ に属するが $H^2$ には属さない．
+\end{proposition}
+\begin{proof}
+極座標の微分から
+$|\nabla u|^2=\alpha^2r^{2\alpha-2}$．
+原点近くのエネルギー積分は
+定数倍の $\int_0^\varepsilon r^{2\alpha-1}dr$
+となり，$\alpha>0$ だから有限である．
+一方二階微分は一般に
+$r^{\alpha-2}$ の大きさを持つ．
+その二乗の面積積分は
+$\int_0^\varepsilon r^{2\alpha-3}dr$
+を含む．$\alpha<1$ より指数が $-1$ 未満となり発散する．
+\end{proof}
+\begin{remark}
+原点から離れた場所で滑らかな径方向のカットオフを掛ければ，
+零境界値を持つ $H_0^1$ 関数で，
+Laplacianが $L^2$ に属するにもかかわらず
+$H^2$ に属さない例を得る．
+\end{remark}
+\noindent\textbf{到達確認．}
+角度 $\omega=3\pi/2$ のとき $\alpha$ はいくつか．
+\par\noindent\textbf{解答．}
+$\alpha=\pi/(3\pi/2)=2/3$ であり，
+$2\alpha-3=-5/3<-1$ だから二階微分の二乗は積分不能である．
+\end{document}
