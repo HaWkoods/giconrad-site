@@ -1,0 +1,573 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Seifert--van Kampenの定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，基本群，Seifert--van Kampenの定理．
+本稿の具体的な到達課題は，空間の分解から基本群の表示を導く．
+
+\section{群の自由積}
+
+本稿では全ての位相空間は道連結であると仮定しない．
+特にvan Kampenの基本定理では，
+必要な道連結性を明示する．
+
+\begin{definition}
+二つの群 $G,H$ に対し，群 $G*H$ と準同型
+$\iota_G:G\to G*H$，$\iota_H:H\to G*H$ が
+\emph{自由積}であるとは，
+任意の群 $K$ と準同型
+$f:G\to K$，$g:H\to K$ に対し，
+ただ一つの準同型
+$\Phi:G*H\to K$ が存在して
+\[
+ \Phi\circ\iota_G=f,\qquad
+ \Phi\circ\iota_H=g
+\]
+を満たすことをいう．
+\end{definition}
+
+\begin{theorem}[自由積の存在]\label{thm:free-product}
+任意の群 $G,H$ に対して自由積 $G*H$ は存在し，
+上の普遍性によって同型を除いて一意に決まる．
+\end{theorem}
+\begin{proof}
+$S$ を $G$ と $H$ の台集合の非交和とし，
+$F(S)$ を $S$ 上の自由群とする．
+$N$ を以下の形の元によって正規生成される正規部分群とする：
+\[
+ [g_1][g_2][g_1g_2]^{-1}\quad(g_1,g_2\in G),
+ \qquad
+ [h_1][h_2][h_1h_2]^{-1}\quad(h_1,h_2\in H),
+\]
+および $[1_G]$，$[1_H]$．
+ここで角括弧は非交和の記号に対応する自由生成元を表す．
+$P=F(S)/N$ と置く．
+関係式により，$g\mapsto[g]+N$ と
+$h\mapsto[h]+N$ はそれぞれ群準同型となる．
+
+群 $K$ への準同型 $f:G\to K$，$g:H\to K$ が与えられたとする．
+非交和 $S$ 上の写像を各成分で $f,g$ と定めると，
+自由群の普遍性によって準同型
+$\widehat\Phi:F(S)\to K$ が一意に存在する．
+この写像は $N$ の各生成元を単位元へ写すので
+$N\subset\ker\widehat\Phi$ である．
+従って唯一の準同型 $\Phi:P\to K$ が誘導され，
+両成分上で $f,g$ と一致する．
+$P$ は $G$ と $H$ の像で生成されるので，
+この性質を持つ準同型は一意である．
+従って $P$ は自由積である．
+二つの普遍性を満たす対象が互いに一意な逆写像を誘導することは
+自由対象の場合と同じ議論であり，
+同型を除く一意性も従う．
+\end{proof}
+
+\begin{lemma}[自由積の因子の単射性]\label{lem:free-product-injection}
+自由積の標準準同型
+$\iota_G:G\to G*H$ と
+$\iota_H:H\to G*H$ は単射である．
+\end{lemma}
+\begin{proof}
+普遍性を $K=G$ とし，
+$f=\operatorname{id}_G$，
+$g:H\to G$ を全ての元を単位元へ写す準同型とすると，
+$G*H\to G$ で $\iota_G$ と合成したものが
+$\operatorname{id}_G$ となる準同型が得られる．
+従って $\iota_G$ は左逆を持つので単射である．
+$H$ についても同様である．
+\end{proof}
+
+\section{共通部分群を同一視する自由積}
+
+\begin{definition}
+群 $A,G,H$ と準同型
+$\alpha:A\to G$，$\beta:A\to H$ が与えられたとき，
+\[
+ G*_A H
+ =(G*H)/\langle\!\langle
+ \iota_G(\alpha(a))\iota_H(\beta(a))^{-1}:
+ a\in A\rangle\!\rangle
+\]
+と定める．右辺の分母は表示した元全体の正規閉包である．
+この群を\emph{融合自由積}という．
+\end{definition}
+
+\begin{theorem}[融合自由積の普遍性]\label{thm:amalgam-universal}
+$G*_A H$ は次の普遍性を満たす．
+任意の群 $K$ と準同型
+$f:G\to K$，$g:H\to K$ が
+$f\circ\alpha=g\circ\beta$ を満たすなら，
+ただ一つの準同型
+$\Phi:G*_A H\to K$ が存在して
+$\Phi$ と両因子の標準写像との合成が
+それぞれ $f,g$ に等しい．
+\end{theorem}
+\begin{proof}
+自由積の普遍性によって
+$f,g$ は一意な準同型
+$\widehat\Phi:G*H\to K$ を誘導する．
+仮定から
+$\widehat\Phi(\iota_G(\alpha(a))
+\iota_H(\beta(a))^{-1})=1$ となるので，
+正規閉包は $\ker\widehat\Phi$ に含まれる．
+商群の普遍性によって
+$\widehat\Phi$ は一意に $G*_A H\to K$ へ降りる．
+一意性は自由積が因子の像で生成されることから従う．
+\end{proof}
+
+\section{道の分割と基本群}
+
+\begin{lemma}[Lebesgue数による道の分割]\label{lem:path-subdivide}
+$X=U\cup V$ を開被覆とし，
+$\gamma:[0,1]\to X$ を連続な道とする．
+このとき分割
+$0=t_0<\cdots<t_N=1$ が存在して，
+各 $\gamma([t_{j-1},t_j])$ は
+$U$ または $V$ のどちらかに含まれる．
+\end{lemma}
+\begin{proof}
+$\gamma^{-1}(U)$ と $\gamma^{-1}(V)$ は
+$[0,1]$ の開被覆である．
+コンパクト距離空間 $[0,1]$ に対する
+Lebesgue数の補題により，
+ある $\delta>0$ で長さが $\delta$ 未満の
+任意の区間は二つの開集合のいずれかに含まれる．
+$1/N<\delta$ となる $N$ で等分割すればよい．
+\end{proof}
+
+\begin{lemma}[道連結な共通部分と基本群の生成]\label{lem:surjectivity}
+$U,V,U\cap V$ が道連結で，
+$x_0\in U\cap V$ とする．
+包含による準同型
+\[
+ j_{U*}:\pi_1(U,x_0)\to\pi_1(X,x_0),\qquad
+ j_{V*}:\pi_1(V,x_0)\to\pi_1(X,x_0)
+\]
+の像は $\pi_1(X,x_0)$ を生成する．
+\end{lemma}
+\begin{proof}
+任意の基点付き閉曲線 $\gamma$ を取る．
+補題\ref{lem:path-subdivide}により
+$\gamma$ を有限個の部分道
+$\gamma_1*\cdots*\gamma_N$ に分け，
+各 $\gamma_j$ の像が $U$ または $V$ に含まれるようにする．
+分割の中間点で前後の部分道が異なる開集合に含まれるなら，
+その点は $U\cap V$ に属する．
+同じ開集合に属する隣接部分道は連結して
+一つの部分道とみなせるので，
+各中間点は $U\cap V$ に属するとしてよい．
+$U\cap V$ は道連結だから，
+中間点 $z_j=\gamma(t_j)$ について
+基点 $x_0$ から $z_j$ へ至る
+$U\cap V$ 内の道 $\alpha_j$ を選ぶ．
+$\alpha_0=\alpha_N$ は定数道とする．
+\[
+ \ell_j=\alpha_{j-1}*\gamma_j*\alpha_j^{-1}
+\]
+は，$\gamma_j$ の属する $U$ または $V$ の中の
+基点付き閉曲線である．
+これらの積は，中間に現れる
+$\alpha_j^{-1}*\alpha_j$ を縮めることで
+$\gamma$ と基点付きホモトピーで結ばれる．
+従って
+$[\gamma]=[\ell_1]\cdots[\ell_N]$ となり，
+二つの包含像が基本群を生成する．
+\end{proof}
+
+\section{Seifert--van Kampenの定理}
+
+\begin{theorem}[Seifert--van Kampen]\label{thm:svk}
+$X=U\cup V$ とし，
+$U,V$ は開集合，
+$U,V,U\cap V$ は道連結であるとする．
+$x_0\in U\cap V$ を固定する．
+包含による準同型
+\[
+ i_{U*}:\pi_1(U\cap V,x_0)\to\pi_1(U,x_0),\qquad
+ i_{V*}:\pi_1(U\cap V,x_0)\to\pi_1(V,x_0)
+\]
+を考える．このとき
+\[
+ \pi_1(X,x_0)\cong
+ \pi_1(U,x_0)*_{\pi_1(U\cap V,x_0)}
+ \pi_1(V,x_0).
+\]
+すなわち包含が誘導する準同型から得られる自然な写像
+\[
+ \Phi:\pi_1(U,x_0)*\pi_1(V,x_0)\to\pi_1(X,x_0)
+\]
+は全射であり，その核は
+\[
+ i_{U*}([\omega])i_{V*}([\omega])^{-1}
+ \quad([\omega]\in\pi_1(U\cap V,x_0))
+\]
+の正規閉包である．
+\end{theorem}
+\begin{proof}
+包含写像は共通部分からの像を等しくするので，
+定理\ref{thm:amalgam-universal}から自然な準同型
+$\overline\Phi$ が存在する．
+補題\ref{lem:surjectivity}により全射である．
+残るのは単射性である．
+以下，$Q$ を融合自由積とし，
+$Q$ 上で $U$ と $V$ の基本群の準同型像を
+それぞれ同じ記号で表す．
+
+$X$ の基点付き閉曲線 $\gamma$ について
+$[\gamma]$ に対応する $Q$ の元を定める．
+補題\ref{lem:path-subdivide}により
+$\gamma=\gamma_1*\cdots*\gamma_N$ と分割し，
+各部分道が $U$ または $V$ に含まれるようにする．
+分割の各頂点 $z_j$ に対し，
+その点が $U$ と $V$ の両方に属するなら
+基点 $x_0$ からの道 $\alpha_j$ を
+$U\cap V$ 内に取る．
+片方のみに属する場合には，その開集合内に取る．
+$U,V$ は道連結だから常に可能である．
+$\alpha_0,\alpha_N$ は定数道とする．
+各部分道 $\gamma_j$ の両端はその部分道を含む
+開集合に属し，$\alpha_{j-1},\alpha_j$ も
+その開集合に含まれるように選べる．
+従って
+\[
+ \ell_j=\alpha_{j-1}*\gamma_j*\alpha_j^{-1}
+\]
+は $U$ または $V$ の基点付き閉曲線を定める．
+その $Q$ での像の積を $q(\gamma)$ と書く．
+
+この定義が分割の細分によらないことを示す．
+一つの部分道を同じ開集合内の二つの部分道に分けると，
+中間点で選んだ道 $\alpha$ が二つの閉曲線の積の中で
+逆向きに現れるため，$Q$ における積は変わらない．
+同じ部分道が $U$ と $V$ の双方に含まれるなら，
+その端点も共通部分に属し，$\alpha$ も
+$U\cap V$ 内に選べる．
+この部分道から得られる基本群の元は
+二つの包含像を通じて $Q$ で同じ元に写る．
+従って開集合の割当てを変更しても $q(\gamma)$ は変わらない．
+異なる分割は共通細分を持つため，
+$q(\gamma)$ は選択によらず一意に定まる．
+
+次に $q(\gamma)$ が基点付きホモトピーで不変であることを示す．
+$\gamma$ が定数道へ縮む場合の
+$H:[0,1]^2\to X$ を取る．
+$H$ の各点を覆う $U,V$ の逆像に
+Lebesgue数の補題を適用して，
+十分細かい正方形格子に分割し，
+各閉小正方形の像が $U$ または $V$ に
+含まれるようにする．
+各頂点 $z$ では，その頂点に接する小正方形のうち
+$U$ と $V$ の両種類があれば
+$H(z)\in U\cap V$ なので
+$x_0$ から $H(z)$ への道 $\alpha_z$ を
+$U\cap V$ 内に選ぶ．
+一種類だけならその開集合内に選ぶ．
+$H(z)=x_0$ となる境界上の頂点では
+定数道を選ぶ．
+各向き付き辺 $e:z\to z'$ について
+$\alpha_z*(H|_e)*\alpha_{z'}^{-1}$
+を考え，辺に接する小正方形の色に従って
+$Q$ の元を割り当てる．
+二つの色が接する内部辺は $U\cap V$ に含まれ，
+両端の $\alpha$ も共通部分内に選ばれているため，
+どちらの色で計算しても $Q$ における元は同じである．
+また辺の向きを反転すると逆元が得られる．
+
+各小正方形 $C$ について，
+その境界の四辺の像は $U$ または $V$ 内で
+零ホモトピーである．
+実際 $H|_C$ がその開集合内で
+境界を埋めるホモトピーを与えるからである．
+従って四辺に付けた群元の積は $Q$ で単位元となる．
+全ての小正方形について境界の積を取ると，
+内部辺の寄与は正負で打ち消し合い，
+外周の群元の積が単位元となる．
+外周のうち $\gamma$ 以外は定数道だから，
+$q(\gamma)=1$ となる．
+
+一般に $\gamma_0$ と $\gamma_1$ が
+基点付きホモトピーで結ばれる場合には
+$\gamma_0*\gamma_1^{-1}$ が零ホモトピーであるため，
+同じ議論から $q(\gamma_0)=q(\gamma_1)$ となる．
+従って
+\[
+ \Psi:\pi_1(X,x_0)\to Q,\qquad
+ \Psi([\gamma])=q(\gamma)
+\]
+はwell-definedである．
+道の連結と積の定義から $\Psi$ は群準同型であり，
+包含された $U,V$ 内の閉曲線については
+$Q$ の標準写像と一致する．
+よって $\Psi\circ\overline\Phi=\operatorname{id}_Q$ となる．
+また $\overline\Phi\circ\Psi=\operatorname{id}_{\pi_1(X)}$ は
+補題\ref{lem:surjectivity}によって確認できる．
+従って $\overline\Phi$ は同型である．
+\end{proof}
+
+\begin{remark}
+この証明の核心は，ホモトピーの定義域である
+正方形を有限個の小正方形に分割し，
+各小正方形を $U$ または $V$ の中で処理することにある．
+共通部分の道連結性は，頂点を基点へ結ぶ道を選ぶ際に
+必要となる．
+\end{remark}
+
+\section{共通部分が単連結な場合}
+
+\begin{corollary}[自由積公式]\label{cor:free-prod}
+$X=U\cup V$ が定理\ref{thm:svk}の仮定を満たし，
+さらに $\pi_1(U\cap V,x_0)=1$ であるなら
+\[
+ \pi_1(X,x_0)\cong
+ \pi_1(U,x_0)*\pi_1(V,x_0).
+\]
+\end{corollary}
+\begin{proof}
+共通部分の基本群が自明なので，
+融合自由積に課す関係式は全て自明な等式である．
+従って定理\ref{thm:svk}の商は自由積そのものになる．
+\end{proof}
+
+\begin{corollary}[二つの単連結開集合の合併]\label{cor:simply}
+$X=U\cup V$ が定理\ref{thm:svk}の仮定を満たし，
+$\pi_1(U)=\pi_1(V)=1$ なら
+$\pi_1(X)=1$ である．
+\end{corollary}
+\begin{proof}
+二つの自明群の自由積は自明であり，
+その任意の商群も自明である．
+定理\ref{thm:svk}を適用すればよい．
+\end{proof}
+
+\section{円周の束と自由群}
+
+\begin{theorem}[二つの円周の一点和]\label{thm:wedge}
+$X=S^1\vee S^1$ を
+二つの円周を一点で同一視した空間とする．
+このとき
+\[
+ \pi_1(X)\cong\mathbb Z*\mathbb Z=F_2.
+\]
+一般に $n$ 個の円周の一点和の基本群は
+階数 $n$ の自由群である．
+\end{theorem}
+\begin{proof}
+二つの円周の一点和を平面内の8の字型のグラフとして表す．
+それぞれの円周から基点以外の一つの小さい閉弧を除いた部分を，
+もう一方の円周全体と基点近傍を含めるように
+開集合 $U,V$ を選ぶ．
+すると $U$ は一方の円周へ変形収縮し，
+$V$ は他方の円周へ変形収縮するように構成できる．
+さらに $U\cap V$ は基点の小さい開近傍へ変形収縮し，
+従って単連結かつ道連結である．
+よって
+\[
+ \pi_1(U)\cong\mathbb Z,\qquad
+ \pi_1(V)\cong\mathbb Z,\qquad
+ \pi_1(U\cap V)=1.
+\]
+系\ref{cor:free-prod}から
+$\pi_1(X)\cong\mathbb Z*\mathbb Z$ となる．
+一般の有限個の円周については帰納法で同じ構成を繰り返す．
+\end{proof}
+
+\begin{example}[高次元球面]
+$n\ge2$ の球面 $S^n$ は単連結である．
+\end{example}
+\begin{proof}
+北極と南極をそれぞれ除いた開集合
+$U=S^n\setminus\{\text{南極}\}$，
+$V=S^n\setminus\{\text{北極}\}$ を取る．
+いずれも $\mathbb R^n$ と同相なので単連結である．
+$U\cap V$ は $S^{n-1}$ と同じホモトピー型を持つ．
+$n\ge2$ なら $S^{n-1}$ は道連結なので，
+定理\ref{thm:svk}の仮定を満たす．
+系\ref{cor:simply}により $\pi_1(S^n)=1$ となる．
+\end{proof}
+
+\section{トーラスの基本群}
+
+\begin{theorem}[トーラスの群表示]\label{thm:torus}
+$T^2=S^1\times S^1$ の基本群は
+\[
+ \pi_1(T^2)\cong
+ \langle a,b\mid aba^{-1}b^{-1}=1\rangle
+ \cong\mathbb Z^2
+\]
+である．
+\end{theorem}
+\begin{proof}
+$T^2$ を正方形の向かい合う辺を同一視した
+CW複体として表す．その1骨格は
+$S^1\vee S^1$ であり，基本群は
+$a,b$ によって自由生成される．
+2次元セルは，境界を
+$a*b*a^{-1}*b^{-1}$ に沿って
+1骨格へ貼り付けたものである．
+
+貼り付けた2セルの内部の小さい閉円板を除いた部分の
+開近傍 $U$ と，
+2セルの内部を含む開円板状の近傍 $V$ を取る．
+$U$ は1骨格へ変形収縮し，
+$V$ は円板へ変形収縮する．
+$U\cap V$ は環状領域へ変形収縮するので
+$\pi_1(U\cap V)\cong\mathbb Z$ である．
+この群の生成元は $U$ 内で
+2セルの接着写像の境界に沿う閉曲線に対応し，
+$\pi_1(U)\cong F(a,b)$ の元
+$aba^{-1}b^{-1}$ を表す．
+一方，$V$ 内ではその閉曲線は零ホモトピーである．
+van Kampenの定理から
+\[
+ \pi_1(T^2)\cong
+ F(a,b)/\langle\!\langle aba^{-1}b^{-1}\rangle\!\rangle
+\]
+を得る．
+この群では $ab=ba$ が成立し，
+$a,b$ 以外に関係式はないから
+自由Abel群 $\mathbb Z^2$ と同型となる．
+\end{proof}
+
+\section{閉曲面の群表示}
+
+\begin{proposition}[向き付け可能閉曲面の基本群]
+\label{prop:surface}
+種数 $g\ge1$ の向き付け可能な閉曲面 $\Sigma_g$ は，
+一つの頂点，$2g$ 本の辺，一つの2セルを持つ
+CW表示を持つ．
+その接着語を
+$\prod_{j=1}^g[a_j,b_j]$ とすると，
+\[
+ \pi_1(\Sigma_g)\cong
+ \left\langle
+ a_1,b_1,\dots,a_g,b_g
+ \ \middle|\
+ \prod_{j=1}^g[a_j,b_j]=1
+ \right\rangle,
+\]
+ここで $[a,b]=aba^{-1}b^{-1}$ である．
+\end{proposition}
+\begin{proof}
+種数 $g$ の向き付け可能閉曲面の標準的な
+$4g$ 角形表示を用いる．
+各辺を
+$a_1,b_1,a_1^{-1},b_1^{-1},\dots,
+ a_g,b_g,a_g^{-1},b_g^{-1}$
+という順に同一視すると，
+すべての頂点は一つに同一視され，
+1骨格は $2g$ 個の円周の一点和となる．
+その基本群は階数 $2g$ の自由群である．
+2セルの境界は
+$\prod_j[a_j,b_j]$ を表すので，
+トーラスの場合と同じ開集合の取り方で
+van Kampenの定理を適用すると，
+この元を正規閉包で割った商群が
+$\pi_1(\Sigma_g)$ となる．
+これが表示式である．
+\end{proof}
+
+\begin{remark}
+van Kampenの定理は，空間の分解を
+群の自由積および商群の構成へ変換する．
+共通部分が道連結でない場合には，
+一つの基点の基本群だけでは貼り合わせの全情報を
+表しにくい．その一般化として基本群oidを用いる
+van Kampen型定理が存在する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{二つの円周の一点和の基本群．}
+\begin{proposition}
+二つの円周を一点で貼り合わせた空間
+$X=S^1\vee S^1$ の基本群は
+\[
+\pi_1(X)\cong\mathbb Z*\mathbb Z=F_2
+\]
+である．
+\end{proposition}
+\begin{proof}
+二つの円周の基点以外の点をそれぞれ $q_1,q_2$ と選び，
+$U=X\setminus\{q_2\}$，$V=X\setminus\{q_1\}$ とする．
+これらは開集合で，$U$ は第一円周へ，
+$V$ は第二円周へ変形レトラクトする．
+$U\cap V=X\setminus\{q_1,q_2\}$ は
+基点へ縮約可能である．従って
+$\pi_1(U)\cong\pi_1(V)\cong\mathbb Z$，
+$\pi_1(U\cap V)=1$．
+van Kampenの定理によれば
+$\pi_1(X)$ は二つの $\mathbb Z$ の
+自明群に沿った自由積となる．
+よって自由群 $F_2$ である．
+\end{proof}
+\noindent\textbf{到達確認．}
+三つの円周の一点和の基本群を求めよ．
+\par\noindent\textbf{解答．}
+同じ分解を繰り返すと
+$\mathbb Z*\mathbb Z*\mathbb Z=F_3$ である．
+\end{document}

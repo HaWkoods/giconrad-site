@@ -1,0 +1,255 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Sardの定理と横断性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，微分の階数，正則値，Sardの定理．
+本稿の具体的な到達課題は，臨界点・正則値を具体的に計算し，パラメータ付き方程式の正則性を判定する．
+
+
+\section{臨界点と正則値}
+\begin{definition}
+滑らかな写像 $f:M^m\to N^n$ に対して，
+$\operatorname{rank}(df_x)<n$ となる点を臨界点，
+その像を臨界値という．
+臨界値でない点を正則値という．
+\end{definition}
+\begin{lemma}[低次元の滑らかな像は零集合]
+$m<n$ なら，滑らかな写像
+$f:U\subset\mathbb R^m\to\mathbb R^n$ の像は
+$n$ 次元Lebesgue測度零である．
+\end{lemma}
+\begin{proof}
+$U$ を可算個のコンパクト立方体で覆えばよい．
+各立方体上で $Df$ は有界なので $f$ はLipschitzである．
+一辺 $\delta$ の立方体へ分割すると個数は
+$O(\delta^{-m})$，各像は半径 $O(\delta)$ の球に入る．
+像の $n$ 次元外測度は
+$O(\delta^{-m}\delta^n)=O(\delta^{n-m})\to0$ なので結論を得る．
+\end{proof}
+\section{Euclid空間上のSardの定理}
+\begin{theorem}[Sardの定理]\label{thm:sard}
+$U\subset\mathbb R^m$ を開とし，
+$f:U\to\mathbb R^n$ を $C^\infty$ とする．
+このとき $f$ の臨界値集合は $n$ 次元Lebesgue測度零である．
+\end{theorem}
+\begin{proof}
+$m<n$ は前補題による．$m\ge n$ とし
+$m$ に関する帰納法で証明する．
+$m=0$ は自明である．
+臨界点集合を $C$，$C_1=\{x:Df_x=0\}$ と置く．
+$C\setminus C_1$ の点では少なくとも一つの成分の偏微分が非零である．
+座標と値域の成分を並べ替え，例えば
+$\partial f_1/\partial x_1\ne0$ としてよい．
+逆写像定理で
+\[
+ (x_1,\ldots,x_m)\longmapsto
+ (f_1(x),x_2,\ldots,x_m)
+\]
+は局所微分同相になる．この座標で
+$f(u)=(u_1,g(u_1,\ldots,u_m))$ と書ける．
+$\operatorname{rank}Df<n$ と
+$\operatorname{rank}D_{(u_2,\dots,u_m)}g<n-1$ は同値である．
+固定した $u_1$ について $g(u_1,-)$ は
+$m-1$ 次元領域から $\mathbb R^{n-1}$ への滑らかな写像であり，
+帰納法により臨界値は $(n-1)$ 次元測度零．
+Fubiniの定理によって $f(C\setminus C_1)$ は
+$n$ 次元測度零となる．局所座標は可算個で覆えるので
+この結論は全体に成立する．
+
+$j\ge1$ について
+\[
+ C_j=\{x:\partial^\alpha f_\ell(x)=0,\
+ 1\le|\alpha|\le j,\ 1\le\ell\le n\}
+\]
+と置く．
+$x\in C_j\setminus C_{j+1}$ では，
+ある $|\alpha|=j$ と成分 $\ell$ について
+$\nabla(\partial^\alpha f_\ell)(x)\ne0$ である．
+陰関数定理により $C_j$ のこの点の近傍は
+滑らかな $(m-1)$ 次元超曲面に含まれる．
+その上で $f$ の制限の微分は
+$Df=0$ のため零となる．
+帰納法の仮定をこの超曲面の座標表示へ適用すると
+$f(C_j\setminus C_{j+1})$ も測度零である．
+可算個の局所近傍で覆うことができる．
+
+最後に $j$ を $n(j+1)>m$ となるように取る．
+コンパクト立方体 $Q\Subset U$ を固定する．
+一辺 $\delta$ の立方体で $Q$ を覆うと個数は
+$O(\delta^{-m})$ である．
+各小立方体が $C_j$ と交われば $a\in C_j$ を一つ取る．
+Taylorの定理と $a$ での1次から $j$ 次の導関数の消滅，
+および $f$ の $(j+1)$ 階導関数の局所有界性から
+\[
+ |f(x)-f(a)|\le C\delta^{j+1}
+\]
+が $C_j$ とその立方体の交わり上で成立する．
+従って像は半径 $C\delta^{j+1}$ の球に入り，
+その外測度は
+$O(\delta^{-m}\delta^{n(j+1)})\to0$ である．
+$Q$ を可算個選べるから $f(C_j)$ は測度零となる．
+\[
+ C=(C\setminus C_1)\cup
+ \bigcup_{i=1}^{j-1}(C_i\setminus C_{i+1})\cup C_j
+\]
+の各像が零集合なので定理が従う．
+\end{proof}
+\section{多様体への拡張}
+\begin{corollary}[多様体上のSardの定理]
+滑らかな多様体 $M,N$ の間の滑らかな写像
+$f:M\to N$ の臨界値集合は，$N$ の任意の滑らかな
+体積密度に関して局所的に測度零である．
+\end{corollary}
+\begin{proof}
+$M,N$ は第二可算なので可算個の座標近傍で覆える．
+各座標表示に定理\ref{thm:sard}を適用する．
+滑らかな座標変換はコンパクト部分集合上でLipschitzだから
+零集合を零集合へ写す．
+体積密度は各コンパクト座標箱上でLebesgue測度と
+相互に絶対連続なので結論を得る．
+\end{proof}
+\section{横断性}
+\begin{definition}
+$Z\subset N$ を埋め込み部分多様体とする．
+$f:M\to N$ が $Z$ に横断的とは，
+$f(x)\in Z$ の各 $x$ において
+\[
+ df_x(T_xM)+T_{f(x)}Z=T_{f(x)}N
+\]
+となることをいう．$f\pitchfork Z$ と書く．
+\end{definition}
+\begin{theorem}[横断的逆像定理]\label{thm:transversepre}
+$f\pitchfork Z$ なら
+$f^{-1}(Z)$ は $\dim M-\operatorname{codim}Z$ 次元の
+埋め込み部分多様体である（空集合も許す）．
+\end{theorem}
+\begin{proof}
+$y=f(x)\in Z$ の近傍の座標で
+$Z$ を $z_{k+1}=\cdots=z_n=0$ と表す．
+$f$ の後半 $n-k$ 成分からなる写像 $h$ を取ると，
+横断性は $dh_x$ が全射であることと同値である．
+陰関数定理により $h^{-1}(0)$ は
+所望の余次元の滑らかな部分多様体となり，
+これは局所的に $f^{-1}(Z)$ と一致する．
+\end{proof}
+\begin{theorem}[パラメータ付き横断性]
+$P,M,N$ を第二可算滑らかな多様体とし，
+$F:P\times M\to N$ が埋め込み部分多様体 $Z\subset N$ に
+横断的とする．このとき，$F_p=F(p,-)$ が
+$Z$ に横断的となる $p\in P$ の集合の補集合は
+$P$ の滑らかな体積密度に関して測度零である．
+\end{theorem}
+\begin{proof}
+$W=F^{-1}(Z)$ は横断的逆像定理で多様体である．
+射影 $\pi:W\to P$ を考える．
+$p$ が $\pi$ の正則値なら
+$F_p$ は $Z$ に横断的である．
+実際 $F(p,x)\in Z$ で
+$T_{(p,x)}W=\{(u,v):dF(u,v)\in TZ\}$ である．
+$\pi$ の微分が全射であることは，
+全ての $u\in T_pP$ に対し適当な $v$ を選んで
+$dF(u,v)\in TZ$ とできることをいう．
+$F$ 自身の横断性と合わせると
+$dF(0,T_xM)+TZ=T_{F(p,x)}N$ が従う．
+従って臨界値の集合のみが例外となり，
+多様体上のSardの定理から測度零である．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{臨界値を求めて正則値定理を使う．}
+\begin{proposition}[二次写像の正則値]
+$f:\mathbb R^2\to\mathbb R$，
+$f(x,y)=x^2+y^2$ を考える．
+臨界点は $(0,0)$ のみであり，
+臨界値は0のみである．
+$c>0$ なら $f^{-1}(c)$ は滑らかな一次元閉多様体で，
+半径 $\sqrt c$ の円周に一致する．
+\end{proposition}
+\begin{proof}
+微分 $df_{(x,y)}=(2x,2y)$ は
+$(x,y)\ne(0,0)$ なら階数1であり，
+原点では階数0である．
+よって臨界点・臨界値は表示したものだけである．
+$c>0$ は正則値なので正則値定理より
+$f^{-1}(c)$ は次元 $2-1=1$ の部分多様体となる．
+方程式 $x^2+y^2=c$ は半径 $\sqrt c$ の円周を表す．
+\end{proof}
+\begin{remark}
+$c=0$ に対しては逆像は一点集合であるが，
+この点では階数条件が破れる．
+したがって正則値定理から一次元の滑らかさを主張できない．
+\end{remark}
+\noindent\textbf{到達確認．}
+$g(x,y)=x^2-y^2$ の臨界値を求めよ．
+\par\noindent\textbf{解答．}
+$dg=(2x,-2y)$ は原点以外で階数1である．
+従って臨界点は原点のみで，臨界値は0である．
+例えば $g^{-1}(1)$ は一次元の滑らかな双曲線となる．
+\end{document}

@@ -1,0 +1,533 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{滑らかな多様体・接空間・微分}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，滑らかな多様体，接空間，正則値定理．
+本稿の具体的な到達課題は，方程式で与えられた部分多様体の接空間を計算する．
+
+\section{滑らかな多様体の定義}
+
+本稿では $n$ 次元の多様体はHausdorffかつ第二可算であり，
+滑らかさは $C^\infty$ 級を意味する．
+Euclid空間の逆写像定理・陰関数定理・階数定理を前提とする．
+
+\begin{definition}
+位相空間 $M$ の各点 $p$ が
+$\mathbb R^n$ の開集合と同相な開近傍 $U$ を持つとき，
+$M$ を $n$ 次元\emph{位相多様体}という．
+同相写像 $\varphi:U\to\varphi(U)\subset\mathbb R^n$ を
+\emph{座標写像}，対 $(U,\varphi)$ を座標近傍という．
+\end{definition}
+
+\begin{definition}
+座標近傍 $(U,\varphi),(V,\psi)$ が滑らかに両立するとは，
+$U\cap V\ne\varnothing$ のとき
+\[
+ \psi\circ\varphi^{-1}:
+ \varphi(U\cap V)\longrightarrow\psi(U\cap V)
+\]
+およびその逆写像が滑らかであることをいう．
+互いに両立する座標近傍が全体を覆う集合を
+\emph{滑らかなAtlas}という．
+最大の滑らかなAtlasを滑らかな構造という．
+\end{definition}
+
+\begin{proposition}[最大Atlasの存在と一意性]
+\label{prop:maxatlas}
+任意の滑らかなAtlas $\mathcal A$ に対して，
+$\mathcal A$ の全ての座標近傍と滑らかに両立する
+座標近傍全体は，$\mathcal A$ を含む唯一の
+最大Atlasをなす．
+\end{proposition}
+\begin{proof}
+$\mathcal A$ と両立する座標近傍全体を
+$\overline{\mathcal A}$ とする．
+任意の二つ $(U,\varphi),(V,\psi)$ を取る．
+$U\cap V$ の点 $p$ に対して
+$\mathcal A$ の座標近傍 $(W,\chi)$ で $p\in W$ となるものが
+存在する．
+\[
+ \psi\circ\varphi^{-1}
+ =(\psi\circ\chi^{-1})\circ(\chi\circ\varphi^{-1})
+\]
+は $p$ の座標近傍で滑らかである．
+その逆も同様なので二つの座標は両立する．
+従って $\overline{\mathcal A}$ はAtlasとなる．
+もしより大きい両立するAtlasがあれば，
+その全ての元は $\mathcal A$ と両立するため
+$\overline{\mathcal A}$ に既に属する．
+ゆえに最大性と一意性を得る．
+\end{proof}
+
+\section{滑らかな写像}
+
+\begin{definition}
+滑らかな多様体 $M,N$ と連続写像 $F:M\to N$ に対し，
+任意の $p\in M$ で座標近傍 $(U,\varphi)$，
+$(V,\psi)$ を選び，
+$F(U)\subset V$ となるように縮めた後
+\[
+ \psi\circ F\circ\varphi^{-1}
+\]
+がEuclid空間の開集合上の滑らかな写像になるとき，
+$F$ を滑らかという．
+\end{definition}
+
+\begin{proposition}[滑らかさの座標独立性]
+\label{prop:map-independence}
+滑らかな写像であることは，
+その判定に用いる座標近傍の選択によらない．
+また滑らかな写像の合成は滑らかである．
+\end{proposition}
+\begin{proof}
+別の座標近傍を $(U',\varphi')$，
+$(V',\psi')$ とすると重なりで
+\[
+ \psi'\circ F\circ(\varphi')^{-1}
+ =(\psi'\circ\psi^{-1})
+ \circ(\psi\circ F\circ\varphi^{-1})
+ \circ(\varphi\circ(\varphi')^{-1})
+\]
+と表される．
+両端は滑らかな座標変換であり，中間は仮定により滑らかだから，
+合成も滑らかである．
+同様に $F:M\to N$ と $G:N\to P$ の座標表示は
+Euclid空間の滑らかな写像の合成となるので滑らかである．
+\end{proof}
+
+\section{曲線による接空間}
+
+\begin{definition}
+$p\in M$ とし，$0$ の開近傍から $M$ への滑らかな曲線
+$\gamma:(-\varepsilon,\varepsilon)\to M$ で
+$\gamma(0)=p$ となるものを考える．
+二曲線 $\gamma_1,\gamma_2$ が同じ接ベクトルを表すとは，
+$p$ を含む任意の座標写像 $\varphi$ について
+\[
+ (\varphi\circ\gamma_1)'(0)
+ =(\varphi\circ\gamma_2)'(0)
+\]
+となることをいう．
+その同値類を $T_pM$ と書き，$p$ における接空間という．
+\end{definition}
+
+\begin{lemma}[接ベクトルの座標表示]\label{lem:tangent-coord}
+座標近傍 $(U,\varphi)$ と $p\in U$ を固定すると，
+\[
+ T_pM\longrightarrow\mathbb R^n,\qquad
+ [\gamma]\longmapsto(\varphi\circ\gamma)'(0)
+\]
+は全単射である．
+この同一視によって $T_pM$ は自然に
+$n$ 次元実線形空間となる．
+\end{lemma}
+\begin{proof}
+同値関係の定義から写像は単射である．
+任意の $v\in\mathbb R^n$ に対し，
+$t$ が十分小さいとき
+$\varphi(p)+tv\in\varphi(U)$ となるので
+\[
+ \gamma_v(t)=\varphi^{-1}(\varphi(p)+tv)
+\]
+を定められる．
+この曲線の座標速度は $v$ なので全射である．
+$\mathbb R^n$ の線形構造を引き戻して
+$T_pM$ の線形構造を定める．
+別の座標 $\psi$ に取り替えると速度は
+\[
+ (\psi\circ\gamma)'(0)
+ =D(\psi\circ\varphi^{-1})_{\varphi(p)}
+  (\varphi\circ\gamma)'(0)
+\]
+と変換される．
+Jacobi行列は線形同型なので，
+定義した線形構造は座標の選択によらない．
+\end{proof}
+
+\section{導分としての接ベクトル}
+
+\begin{definition}
+$p\in M$ の近傍で定義された滑らかな実数値関数の芽全体を
+$C_p^\infty(M)$ と書く．
+実線形写像
+$D:C_p^\infty(M)\to\mathbb R$ が
+\[
+ D(fg)=f(p)D(g)+g(p)D(f)
+\]
+を満たすとき，$p$ における導分という．
+\end{definition}
+
+\begin{lemma}[導分の局所表示]\label{lem:derivation}
+座標近傍 $(U,\varphi)$，$\varphi=(x^1,\dots,x^n)$ と
+$p\in U$ を固定する．
+任意の導分 $D$ は一意に
+\[
+ D(f)=\sum_{j=1}^na_j\frac{\partial(f\circ\varphi^{-1})}
+ {\partial x^j}(\varphi(p))
+\]
+と表される．
+係数は $a_j=D(x^j)$ である．
+\end{lemma}
+\begin{proof}
+まず $D(1)=D(1\cdot1)=2D(1)$ より $D(1)=0$ である．
+従って定数関数への作用は零である．
+Euclid空間の滑らかな関数 $g$ に対し，
+$a=\varphi(p)$ として
+\[
+ g(x)-g(a)=\sum_{j=1}^n(x^j-a^j)h_j(x),
+ \qquad
+ h_j(x)=\int_0^1\partial_jg(a+t(x-a))\,dt
+\]
+と書ける．
+$h_j$ は滑らかで $h_j(a)=\partial_jg(a)$ である．
+この等式を $M$ の座標近傍へ引き戻し，
+導分のLeibniz則を適用すると
+\[
+ D(f)=\sum_jD(x^j)h_j(a)
+ =\sum_jD(x^j)\partial_jg(a).
+\]
+従って表示式を得る．
+係数は座標関数 $x^j$ へ代入することで一意である．
+\end{proof}
+
+\begin{theorem}[曲線と導分による接空間の同一視]
+\label{thm:tangent-derivation}
+写像
+\[
+ T_pM\longrightarrow\operatorname{Der}(C_p^\infty(M),\mathbb R),
+ \qquad
+ [\gamma]\longmapsto
+ \left(f\longmapsto\frac d{dt}f(\gamma(t))\bigg|_{t=0}\right)
+\]
+は線形同型である．
+\end{theorem}
+\begin{proof}
+曲線の同値類が同じなら座標速度が同じであり，
+連鎖律から全ての $f$ に対する導関数は同じである．
+従って写像はwell-definedである．
+曲線の導関数は和について線形であり，
+積の微分公式からLeibniz則を満たすので導分となる．
+座標近傍を選ぶと，
+$[\gamma]$ は速度ベクトル $v$ に対応し，
+写像の像は
+\[
+ D_v(f)=\sum_jv^j\partial_j(f\circ\varphi^{-1})(\varphi(p))
+\]
+となる．
+補題\ref{lem:derivation}によって全ての導分は
+この形で一意に表されるので，
+写像は線形全単射である．
+\end{proof}
+
+\section{接写像と函手性}
+
+\begin{definition}
+滑らかな写像 $F:M\to N$ と $p\in M$ に対して
+\[
+ dF_p:T_pM\to T_{F(p)}N,\qquad
+ dF_p([\gamma])=[F\circ\gamma]
+\]
+を接写像という．
+\end{definition}
+
+\begin{theorem}[接写像の連鎖律]\label{thm:chain}
+滑らかな写像 $F:M\to N$，$G:N\to P$ について
+\[
+ d(G\circ F)_p=dG_{F(p)}\circ dF_p,\qquad
+ d(\operatorname{id}_M)_p=\operatorname{id}_{T_pM}
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+任意の $v=[\gamma]\in T_pM$ について
+\[
+ d(GF)_p(v)=[G\circ F\circ\gamma]
+ =dG_{F(p)}([F\circ\gamma])
+ =(dG_{F(p)}\circ dF_p)(v)
+\]
+となる．
+恒等写像の場合は
+$d(\operatorname{id}_M)_p([\gamma])=[\gamma]$
+なので従う．
+\end{proof}
+
+\begin{proposition}[座標による接写像]\label{prop:jacobian}
+座標写像 $\varphi$，$\psi$ のもとで
+$dF_p$ は
+\[
+ D(\psi\circ F\circ\varphi^{-1})_{\varphi(p)}
+\]
+というJacobi行列によって表される．
+\end{proposition}
+\begin{proof}
+$v=[\gamma]$ とする．
+\[
+ (\psi\circ F\circ\gamma)'(0)
+ =D(\psi\circ F\circ\varphi^{-1})_{\varphi(p)}
+  (\varphi\circ\gamma)'(0)
+\]
+がEuclid空間の連鎖律から成立する．
+左辺は $dF_p(v)$ の $\psi$ 座標，
+右辺の最後は $v$ の $\varphi$ 座標だから
+求める表示式である．
+\end{proof}
+
+\section{埋め込み・沈め込みと階数定理}
+
+\begin{definition}
+$F:M^m\to N^n$ が各点で
+$dF_p$ の階数 $m$ を持つとき\emph{はめ込み}，
+階数 $n$ を持つとき\emph{沈め込み}という．
+はめ込みであり，さらにその像への同相写像であるものを
+\emph{埋め込み}という．
+\end{definition}
+
+\begin{theorem}[多様体の階数定理]\label{thm:rank}
+滑らかな写像 $F:M^m\to N^n$ が $p$ の近傍で
+一定の階数 $r$ を持つとする．
+このとき $p$ と $F(p)$ の座標近傍を適切に選べば，
+$F$ の座標表示は
+\[
+ (x_1,\dots,x_m)\longmapsto
+ (x_1,\dots,x_r,0,\dots,0)
+\]
+となる．
+\end{theorem}
+\begin{proof}
+$p$ を含む座標近傍と $F(p)$ を含む座標近傍を選び，
+$F$ をEuclid空間の開集合間の滑らかな写像
+$f:\mathbb R^m\supset U\to V\subset\mathbb R^n$ として表す．
+座標変換は微分が可逆なので，
+$f$ は対応する点の近傍で階数 $r$ を持つ．
+Euclid空間の定階数定理によって，
+両側の局所微分同相写像を合成することで
+$f$ は上の標準形へ変換できる．
+それらの局所微分同相写像を元の座標写像と合成すれば，
+$M,N$ の新しい座標近傍となり所望の表示を得る．
+\end{proof}
+
+\begin{corollary}[正則値の逆像]\label{cor:regular-value}
+$F:M^m\to N^n$ が滑らかで，
+$q\in N$ が正則値，すなわち全ての $p\in F^{-1}(q)$ で
+$dF_p$ が全射であるとする．
+このとき $F^{-1}(q)$ は
+$M$ の埋め込まれた $(m-n)$ 次元部分多様体であり，
+\[
+ T_p(F^{-1}(q))=\ker dF_p
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+正則値の仮定から各 $p\in F^{-1}(q)$ で
+$dF_p$ は階数 $n$ を持つ．
+全射線形写像の近傍では適切な小行列式が非零であり続けるので，
+階数は $p$ の近傍で $n$ のままである．
+定理\ref{thm:rank}を適用すると，
+局所座標において $F$ は
+$(x_1,\dots,x_m)\mapsto(x_1,\dots,x_n)$ となる．
+従って $F^{-1}(q)$ は
+$x_1=\cdots=x_n=0$ によって局所的に記述されるため，
+$\mathbb R^{m-n}$ と同相な埋め込み部分多様体となる．
+その接空間は最初の $n$ 座標が零のベクトル全体であり，
+これは座標表示の微分の核に等しい．
+\end{proof}
+
+\section{接束とベクトル場}
+
+\begin{definition}
+接空間の非交和
+\[
+ TM=\bigsqcup_{p\in M}T_pM
+\]
+を接束といい，
+$\pi:TM\to M$，$\pi(v)=p$ を射影という．
+滑らかな写像 $X:M\to TM$ で $\pi\circ X=\operatorname{id}_M$
+を満たすものを滑らかなベクトル場という．
+\end{definition}
+
+\begin{proposition}[接束の局所自明性]\label{prop:tangent-bundle}
+$M$ が $n$ 次元滑らかな多様体なら，
+$TM$ は自然に $2n$ 次元滑らかな多様体となり，
+各座標近傍 $(U,\varphi)$ に対して
+\[
+ \pi^{-1}(U)\longrightarrow\varphi(U)\times\mathbb R^n,
+ \qquad
+ v\in T_pM\longmapsto(\varphi(p),d\varphi_p(v))
+\]
+は微分同相写像となる．
+\end{proposition}
+\begin{proof}
+表示した写像を $\Phi_\varphi$ と書く．
+補題\ref{lem:tangent-coord}によって
+各ファイバー上で全単射であるから，
+$\Phi_\varphi$ は集合として全単射である．
+これらの局所写像を座標図とする位相と
+滑らかな構造を $TM$ に入れる．
+二座標 $\varphi,\psi$ の遷移写像は
+\[
+ (x,v)\longmapsto
+ \bigl(\psi\circ\varphi^{-1}(x),
+       D(\psi\circ\varphi^{-1})_xv\bigr)
+\]
+であり，座標変換の滑らかさから滑らかである．
+その逆は座標を交換したものなので滑らかである．
+従ってこれらの座標は両立し，
+$TM$ に $2n$ 次元の滑らかな構造が定まる．
+射影 $\pi$ は局所座標で $(x,v)\mapsto x$ となり滑らかである．
+\end{proof}
+
+\section{単位の分割}
+
+\begin{definition}
+開被覆 $\{U_i\}_{i\in I}$ に従属する
+\emph{滑らかな単位の分割}とは，
+滑らかな関数族 $\{\rho_i:M\to[0,1]\}$ で
+各 $\operatorname{supp}\rho_i\subset U_i$ を満たし，
+族 $\{\operatorname{supp}\rho_i\}$ が局所有限であり，
+\[
+ \sum_i\rho_i(p)=1\qquad(p\in M)
+\]
+となるものをいう．
+\end{definition}
+
+\begin{theorem}[単位の分割の存在]\label{thm:partition}
+第二可算Hausdorffな滑らかな多様体の任意の開被覆に対し，
+その被覆に従属する滑らかな単位の分割が存在する．
+\end{theorem}
+\begin{proof}
+第二可算Hausdorff多様体は局所コンパクトかつ
+パラコンパクトであるという一般位相の定理を用いる．
+従って与えられた開被覆に対し，
+座標近傍の相対コンパクトな開集合からなる
+局所有限な細分 $\{V_j\}$ を選び，
+さらに
+$\overline{W_j}\subset V_j$ となる開集合族
+$\{W_j\}$ が全体を覆うようにできる．
+この事実はパラコンパクト性による
+縮小可能な局所有限開細分の存在定理から従う．
+各 $j$ について座標写像 $\varphi_j$ を選び，
+Euclid空間上の滑らかなコンパクト台関数
+$\beta_j\ge0$ で
+$\beta_j>0$ on $\overline{W_j}$，
+$\operatorname{supp}\beta_j\subset V_j$ となるものを構成する．
+これは $\overline{W_j}$ を有限個の小さい座標球で覆い，
+各閉球上で正となる標準的な滑らかなbump関数を
+有限和で組み合わせればよい．
+座標外では零と延長すれば $M$ 上の滑らかな関数となる．
+局所有限性から
+\[
+ B(p)=\sum_j\beta_j(p)
+\]
+は滑らかな関数であり，
+$\{W_j\}$ が全体を覆い，各 $\beta_j$ が対応する
+$\overline{W_j}$ 上で正なので $B(p)>0$ である．
+従って
+$\rho_j(p)=\beta_j(p)/B(p)$ と置けば滑らかで非負であり，
+局所有限性と $\sum_j\rho_j=1$ を満たす．
+各 $\rho_j$ の台は $V_j$ に含まれ，
+細分により与えられた開被覆のいずれかの元に含まれる．
+同じ被覆の元に対応する $\rho_j$ を必要に応じて
+まとめれば，元の被覆に従属する分割が得られる．
+\end{proof}
+
+\begin{remark}
+単位の分割は，Euclid空間の局所的な議論を
+多様体上の大域的な議論へ貼り合わせる基本的な道具である．
+ただしその存在にはパラコンパクト性が必要であり，
+ここでは第二可算Hausdorff多様体の一般位相的性質を
+明示的に前提とした．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{球面の接空間を求める．}
+\begin{proposition}
+$S^2=\{p\in\mathbb R^3:|p|^2=1\}$ の
+$p\in S^2$ における接空間は
+\[
+T_pS^2=\{v\in\mathbb R^3:p\cdot v=0\}
+\]
+である．
+\end{proposition}
+\begin{proof}
+$F:\mathbb R^3\to\mathbb R$，
+$F(x)=|x|^2$ と置くと
+$dF_p(v)=2p\cdot v$ である．
+$p\ne0$ だから $dF_p$ は全射であり，
+1は正則値である．
+正則値定理から $S^2=F^{-1}(1)$ は
+二次元部分多様体で，
+$T_pS^2=\ker dF_p=p^\perp$ となる．
+\end{proof}
+\noindent\textbf{到達確認．}
+北極 $p=(0,0,1)$ の接空間を求めよ．
+\par\noindent\textbf{解答．}
+$p\cdot v=v_3$ なので
+$T_pS^2=\{(v_1,v_2,0)\}$ である．
+\end{document}

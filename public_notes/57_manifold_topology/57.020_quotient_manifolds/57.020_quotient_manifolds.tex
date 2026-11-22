@@ -1,0 +1,243 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{多様体の構成と商多様体}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，滑らかな群作用，正則値定理，商位相．
+本稿の具体的な到達課題は，自由な群作用による商多様体の具体例を構成して次元を計算する．
+
+
+\section{標準的な多様体の構成}
+本稿の多様体はHausdorff・第二可算で境界を持たない
+$C^\infty$ 多様体とする．
+逆写像定理，陰関数定理と既存ノート57.010を前提とする．
+\begin{proposition}[正則値による部分多様体]
+$f:\mathbb R^n\to\mathbb R^k$ を滑らかな写像とし，
+$a$ が正則値，すなわち $x\in f^{-1}(a)$ で
+$Df_x$ が全射であるとする．
+このとき $f^{-1}(a)$ は自然な $(n-k)$ 次元滑らかな多様体である．
+\end{proposition}
+\begin{proof}
+各 $x\in f^{-1}(a)$ において
+$Df_x$ のある $k\times k$ 小行列式が非零である．
+変数を並べ替え，陰関数定理によって
+$f(y,z)=a$ を $z=g(y)$ と局所的に解ける．
+従って逆関数 $(y,g(y))$ を持つ滑らかな局所座標が得られる．
+これらの間の遷移写像はEuclid空間の滑らかな
+座標射影・逆写像の合成なので滑らかである．
+部分空間のHausdorff性・第二可算性も継承する．
+\end{proof}
+\begin{example}
+$S^n=\{x\in\mathbb R^{n+1}:\sum x_i^2=1\}$ は
+$n$ 次元滑らかな多様体である．
+\end{example}
+\begin{proof}
+$f(x)=\sum x_i^2$ と置くと
+$Df_x(v)=2\langle x,v\rangle$ であり，
+$f(x)=1$ 上では $x\ne0$ だから全射である．
+前命題を適用する．
+\end{proof}
+\begin{proposition}[積多様体]
+$M^m,N^n$ が滑らかな多様体なら
+$M\times N$ は自然な $(m+n)$ 次元滑らかな多様体である．
+\end{proposition}
+\begin{proof}
+座標近傍 $(U,\varphi)$，$(V,\psi)$ の積に
+$\varphi\times\psi:U\times V\to\mathbb R^{m+n}$
+を与える．遷移写像は
+$(\varphi'\varphi^{-1})\times(\psi'\psi^{-1})$
+なので滑らかである．
+有限積のHausdorff性と第二可算性から位相的な公理も満たす．
+\end{proof}
+\section{群作用と商}
+\begin{definition}
+離散群 $\Gamma$ の滑らかな作用
+$\Gamma\times M\to M$ が自由であるとは
+$\gamma x=x$ なら $\gamma=e$ となることをいう．
+適切に不連続であるとは，各点 $x$ が開近傍 $U$ を持ち，
+$\gamma U\cap U=\varnothing$（$\gamma\ne e$）であることをいう．
+作用がproperであるとは写像
+\[
+ \Gamma\times M\longrightarrow M\times M,\quad
+ (\gamma,x)\longmapsto(x,\gamma x)
+\]
+がproper（コンパクト集合の逆像がコンパクト）であることをいう．
+\end{definition}
+\begin{lemma}[商写像は開写像]\label{lem:open}
+任意の群作用の商写像 $q:M\to M/\Gamma$ は開写像である．
+\end{lemma}
+\begin{proof}
+$U\subset M$ が開なら
+$q^{-1}(q(U))=\bigcup_{\gamma\in\Gamma}\gamma U$
+は開である．商位相の定義から $q(U)$ は開である．
+\end{proof}
+\begin{lemma}[proper作用の商のHausdorff性]
+$M$ が局所コンパクトHausdorffで $\Gamma$ の作用がproperなら
+$M/\Gamma$ はHausdorffである．
+\end{lemma}
+\begin{proof}
+作用グラフ
+$R=\{(x,\gamma x):x\in M,\gamma\in\Gamma\}\subset M\times M$
+は閉である．
+実際 $R$ に収束するネットを取ると，
+局所コンパクト性によって極限点の周囲に
+相対コンパクトな直積近傍があり，その部分上の
+作用写像の逆像はproper性でコンパクトであるため，
+部分ネットの極限が $R$ に属する．
+異なる軌道 $[x]\ne[y]$ なら
+$(x,y)\notin R$ であり，
+$R$ の閉性から
+$U\times V$ が $R$ と交わらない開近傍
+$U\ni x,V\ni y$ を取れる．
+従って $q(U),q(V)$ は補題\ref{lem:open}で開であり，
+もし交わればある $\gamma u=v$ を持って
+$(u,v)\in R\cap(U\times V)$ となり矛盾する．
+\end{proof}
+\begin{theorem}[離散群の商多様体]\label{thm:quotientmanifold}
+$M^n$ に離散群 $\Gamma$ が自由かつproperに滑らかに作用するとき，
+$M/\Gamma$ は自然な $n$ 次元滑らかな多様体となり，
+商写像 $q:M\to M/\Gamma$ は滑らかな被覆写像である．
+\end{theorem}
+\begin{proof}
+properかつ自由な離散群作用は，
+各点 $x$ において
+$\gamma U\cap U=\varnothing$（$\gamma\ne e$）となる
+十分小さい座標近傍 $U$ を持つ．
+これを示すには
+$(x,x)$ の小さいコンパクト近傍を考えれば，
+そこへ戻す $\gamma$ はproper性で有限個しかない．
+その有限個の非自明な $\gamma$ について
+$x$ と $\gamma x$ をHausdorff性で分離し，
+全てについて同時に近傍を縮める．
+すると $q^{-1}(q(U))=\coprod_{\gamma\in\Gamma}\gamma U$ であり，
+各 $\gamma U$ で $q$ は同相写像である．
+$U$ の座標写像 $\varphi$ から
+$q(U)$ 上の座標
+$\varphi\circ(q|_U)^{-1}$ を定める．
+二つのこのような座標の遷移写像は，
+重なりの適当な部分で作用の元 $\gamma$ と
+元の座標変換の合成となるので滑らかである．
+商は前補題でHausdorffである．
+$M$ の可算基底の像が
+補題\ref{lem:open}から商の可算基底となるため第二可算でもある．
+従って商は滑らかな多様体で，$q$ は被覆写像となる．
+\end{proof}
+\section{射影空間とトーラス}
+\begin{example}[実射影空間]
+$n\ge1$ について
+$\mathbb{RP}^n=S^n/(x\sim-x)$ は
+滑らかな $n$ 次元多様体である．
+\end{example}
+\begin{proof}
+$\mathbb Z/2\mathbb Z$ が $S^n$ に反転で作用する．
+$x=-x$ は $x=0$ を意味するが球面上では起こらないから自由である．
+有限群のコンパクトHausdorff空間への作用はproperなので
+定理\ref{thm:quotientmanifold}を適用できる．
+\end{proof}
+\begin{example}[トーラス]
+$\mathbb T^n=\mathbb R^n/\mathbb Z^n$ は滑らかな
+コンパクト $n$ 次元多様体である．
+\end{example}
+\begin{proof}
+$\mathbb Z^n$ は $\mathbb R^n$ へ平行移動で作用する．
+自由であり，任意のコンパクト集合 $K$ と $L$ に対して
+$(K+\gamma)\cap L\ne\varnothing$ となる格子点 $\gamma$
+は有界集合 $L-K$ に含まれるから有限個である．
+従ってproperである．
+商は $[0,1]^n$ の像で覆われるのでコンパクトでもある．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{実射影空間の商構成．}
+\begin{proposition}[球面の反対点同一視]
+$S^n$ 上の $\mathbb Z/2\mathbb Z$ の作用
+$x\mapsto-x$ は滑らかで自由である．
+その商は $n$ 次元の滑らかな多様体であり，
+通常の実射影空間 $\mathbb{RP}^n$ に同相である．
+\end{proposition}
+\begin{proof}
+$x=-x$ を満たす $x\in S^n$ は存在しないので自由である．
+有限群の滑らかな自由作用は固有であるため，
+商には一意な滑らかな構造が入り射影は局所微分同相となる．
+$x\in S^n$ をその張る直線 $\mathbb Rx$ へ送る写像は
+反対点同士を同じ直線に送る．
+全ての直線は球面と反対点の組で交わるので
+誘導写像 $S^n/\{\pm1\}\to\mathbb{RP}^n$
+は全単射である．
+定義域はコンパクト，値域はHausdorffなので同相となる．
+局所微分同相性から次元は $n$ である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\mathbb{RP}^1$ が $S^1$ と同相であることを示せ．
+\par\noindent\textbf{解答．}
+$S^1$ を複素数の単位円とみなすと
+$z\mapsto z^2$ は $z$ と $-z$ を同じ点へ写す
+連続全射である．商を通した連続全単射は
+コンパクトからHausdorffへの写像なので同相である．
+\end{document}
