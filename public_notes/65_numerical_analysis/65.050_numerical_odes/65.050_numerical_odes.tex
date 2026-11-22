@@ -1,0 +1,365 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{常微分方程式の数値解法}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+常微分方程式の数値解をEuler法と二段Runge--Kutta法で
+実際に計算し，刻み幅に伴う誤差を定量的に評価する．
+前提はTaylor展開，Lipschitz連続，数列の収束である．
+
+\section{Euler法と局所離散誤差}
+$y'=f(t,y)$，$y(0)=y_0$ を $0\le t\le T$ で考える．
+$f$ は $y$ に関して一様Lipschitz定数 $L$ を持つとする．
+$h=T/N$，$t_n=nh$ と置き，Euler法
+$Y_{n+1}=Y_n+h f(t_n,Y_n)$，$Y_0=y_0$ を定める．
+\begin{lemma}[局所打切り誤差]
+厳密解が二階連続微分可能で
+$|y''(t)|\le M$ なら
+\[
+ |y(t_{n+1})-y(t_n)-h f(t_n,y(t_n))|
+ \le Mh^2/2.
+\]
+\end{lemma}
+\begin{proof}
+Taylorの積分剰余式から
+$y(t+h)-y(t)-hy'(t)=\int_t^{t+h}(t+h-s)y''(s)ds$．
+絶対値を評価すると結果を得る．
+\end{proof}
+\begin{theorem}[Euler法の大域収束]
+上の仮定のもとで
+\[
+ \max_{0\le n\le N}|Y_n-y(t_n)|
+ \le\begin{cases}
+ \dfrac{Mh}{2L}(e^{LT}-1)&L>0,\\
+ \dfrac{MTh}{2}&L=0
+ \end{cases}
+\]
+となる．
+\end{theorem}
+\begin{proof}
+$e_n=|Y_n-y(t_n)|$ とおくと前補題とLipschitz性より
+$e_{n+1}\le(1+Lh)e_n+Mh^2/2$，$e_0=0$．
+これを帰納的に反復し
+$e_n\le(Mh^2/2)\sum_{j=0}^{n-1}(1+Lh)^j$ を得る．
+$1+Lh\le e^{Lh}$ と等比和の公式から評価を得る．
+\end{proof}
+\section{線形安定性}
+\begin{proposition}
+試験方程式 $y'=\lambda y$（$\lambda\in\mathbb C$，$\operatorname{Re}\lambda<0$）に
+Euler法を適用すると
+$Y_n=(1+h\lambda)^nY_0$ となり，
+反復が零へ収束する必要十分条件は $|1+h\lambda|<1$ である．
+\end{proposition}
+\begin{proof}
+更新式は $Y_{n+1}=(1+h\lambda)Y_n$ なので反復式を得る．
+幾何級数の公比の絶対値が1未満であることと零収束は同値である．
+\end{proof}
+\begin{remark}
+Runge--Kutta法のButcher条件や高次収束の一般定理は未収録である．
+\end{remark}
+\section{二段Runge--Kutta法}
+$f$ は二変数で二階まで連続微分可能で，その導関数が解の近傍で有界とする．
+\begin{definition}
+Heun法を
+\[
+ \begin{aligned}
+ k_1&=f(t_n,Y_n),\\
+ k_2&=f(t_n+h,Y_n+hk_1),\\
+ Y_{n+1}&=Y_n+\frac h2(k_1+k_2)
+ \end{aligned}
+\]
+で定める．
+\end{definition}
+\begin{proposition}[Heun法の局所誤差]
+厳密解 $y$ が三階連続微分可能なら，
+厳密値 $y(t_n)$ を一段法の初期値に代入したときの誤差は $O(h^3)$ である．
+\end{proposition}
+\begin{proof}
+$y'=f(t,y)$ の微分から $y''=f_t+f_y f$．
+一方Taylor展開により
+\[
+ f(t+h,y+h f(t,y))
+ =f(t,y)+h(f_t+f_yf)(t,y)+O(h^2).
+\]
+従ってHeun更新は
+$y+h f+\frac{h^2}{2}(f_t+f_yf)+O(h^3)$ であり，
+厳密解の二次Taylor多項式と一致する．
+\end{proof}
+\begin{theorem}[Heun法の大域二次収束]
+$f$ が解の周囲の固定したコンパクト集合で $C^2$ であり，
+Heun法の近似解がそこで定義されると仮定する．
+このとき $T$ を固定して $h\to0$ とすれば
+$\max_{0\le n\le N}|Y_n-y(t_n)|=O(h^2)$ である．
+\end{theorem}
+\begin{proof}
+一段更新写像を $\Psi_h(t,z)$ とすると，
+$f$ のLipschitz性から $h$ が十分小さいとき
+$|\Psi_h(t,z)-\Psi_h(t,w)|\le(1+Ch)|z-w|$ が一様に成り立つ．
+前命題による局所誤差は $C'h^3$ 以下である．
+従って誤差 $e_n$ には
+$e_{n+1}\le(1+Ch)e_n+C'h^3$，$e_0=0$ が成立する．
+等比和を取ると $e_n\le C'h^3((1+Ch)^n-1)/(Ch)=O(h^2)$．
+\end{proof}
+
+
+\section{Runge--Kutta法の次数条件と$A$安定性}
+\begin{theorem}[二段陽的Runge--Kutta法の二次条件]
+スカラー方程式 $y'=f(t,y)$ に対し
+\[
+ k_1=f(t,y),\quad k_2=f(t+c_2h,y+a_{21}hk_1),\quad
+ y_+=y+h(b_1k_1+b_2k_2)
+\]
+を考える．$f$ が十分滑らかなとき，この方法が任意の $f$ に対し
+局所打切り誤差 $O(h^3)$ を持つための必要十分条件は
+\[
+ b_1+b_2=1,\qquad b_2c_2=\frac12,
+ \qquad b_2a_{21}=\frac12
+\]
+である．
+\end{theorem}
+\begin{proof}
+Taylor展開によって
+$k_2=f+h(c_2f_t+a_{21}f_yf)+O(h^2)$ だから，一段更新は
+\[
+ y_+=y+h(b_1+b_2)f
+ +h^2b_2(c_2f_t+a_{21}f_yf)+O(h^3).
+\]
+真の解の展開は
+$y(t+h)=y+hf+h^2(f_t+f_yf)/2+O(h^3)$ である．
+任意の $f$ について両者の一次・二次係数が一致する条件が表示式である．
+必要性は $f=1$，$f=t$，$f=y$ をそれぞれ試して得られる．
+\end{proof}
+\begin{theorem}[$\theta$法の$A$安定性]
+$\theta\in[0,1]$ とし，試験方程式 $y'=\lambda y$ に対する
+$\theta$法を
+\[
+ Y_{n+1}=Y_n+h[(1-\theta)\lambda Y_n+
+ \theta\lambda Y_{n+1}]
+\]
+で定める．$\operatorname{Re}\lambda\le0$，$h>0$ に対し
+増幅率の絶対値が1以下となることが常に成立する必要十分条件は
+$\theta\ge1/2$ である．
+\end{theorem}
+\begin{proof}
+$z=h\lambda$ と置くと増幅率は
+$R(z)=(1+(1-\theta)z)/(1-\theta z)$ である．
+$\operatorname{Re}z\le0$ では分母は零にならない．
+直接計算すると
+\[
+ |1-\theta z|^2-|1+(1-\theta)z|^2
+ =-2\operatorname{Re}z+(2\theta-1)|z|^2.
+\]
+$\theta\ge1/2$ なら右辺は非負で $|R(z)|\le1$．
+$\theta<1/2$ なら $z=it$（$t\ne0$）で右辺は負となり，
+$A$安定性は成り立たない．
+\end{proof}
+
+
+\section{一般の三次Runge--Kutta条件}
+$y'=F(y)$（$y\in\mathbb R^d$）の明示的な $s$ 段Runge--Kutta法を
+\[
+ k_i=F\!\left(y+h\sum_{j<i}a_{ij}k_j\right),\qquad
+ \Psi_h(y)=y+h\sum_{i=1}^s b_i k_i
+\]
+と書き，$c_i=\sum_{j<i}a_{ij}$ と置く．
+\begin{theorem}[三次の次数条件]
+$F$ が十分滑らかであるとき，上の方法の一ステップ局所誤差が
+任意の自律系 $F$ について $O(h^4)$ となる必要十分条件は
+\[
+ \sum_i b_i=1,\qquad \sum_i b_ic_i=\frac12,
+ \qquad\sum_i b_ic_i^2=\frac13,\qquad
+ \sum_{i,j}b_i a_{ij}c_j=\frac16
+\]
+である．
+\end{theorem}
+\begin{proof}
+微分作用素の記法 $DF(y)v$，$D^2F(y)(v,w)$ を用いる．
+ステージを $h$ で展開すると
+\begin{align*}
+ k_i={}&F+h c_iDF(F)\\
+ &+h^2\biggl\{\sum_{j<i}a_{ij}c_jDF(DF(F))
+       +\frac{c_i^2}{2}D^2F(F,F)\biggr\}+O(h^3)
+\end{align*}
+となる．実際 $k_j=F+h c_jDF(F)+O(h^2)$ を
+$F$ の二次Taylor展開に代入すれば得られる．
+よって数値解の一ステップ展開は
+\begin{align*}
+ \Psi_h(y)={}&y+h\Bigl(\sum_i b_i\Bigr)F
+ +h^2\Bigl(\sum_i b_ic_i\Bigr)DF(F)\\
+ &+h^3\Bigl(\sum_{i,j}b_i a_{ij}c_j\Bigr)DF(DF(F))\\
+ &+\frac{h^3}{2}\Bigl(\sum_i b_ic_i^2\Bigr)D^2F(F,F)+O(h^4).
+\end{align*}
+一方，真の解の三次Taylor展開は
+\[
+ y(h)=y+hF+\frac{h^2}{2}DF(F)
+ +\frac{h^3}{6}\{DF(DF(F))+D^2F(F,F)\}+O(h^4)
+\]
+である．したがって四条件が十分である．
+
+必要性は，まず定数ベクトル場 $F=1$（一次元）で第一条件，
+$F(y)=y$ を $y=1$ で展開して二次係数から第二条件，
+さらに三次係数から第四条件を得る．最後に $F(y)=y^2$ を
+$y=1$ で展開して第三条件を得る．
+この二つの試験関数では
+$DF(DF(F))$ と $D^2F(F,F)$ の値を別々に区別できるので，
+全ての滑らかな $F$ について三次誤差が消えるなら四条件は必要である．
+\end{proof}
+\begin{example}[三段三次のKutta法]
+\[
+ \begin{array}{c|ccc}
+ 0&0&0&0\\
+ \frac12&\frac12&0&0\\
+ 1&-1&2&0\\ \hline
+ &\frac16&\frac23&\frac16
+ \end{array}
+\]
+は上の四条件を満たすので三次である．
+特に $\sum_i b_i c_i^2=1/3$，
+$\sum_{ij}b_i a_{ij}c_j=(1/6)\cdot 2\cdot(1/2)=1/6$ である．
+\end{example}
+\begin{corollary}[有限時間区間での大域誤差]
+$F\in C^3$ が解軌道の近傍で有界な三階微分を持ち，
+上の三次条件を満たすとする．初期値を一致させ，
+固定区間 $[0,T]$ 上の真の解がその近傍に留まるなら，
+十分小さい $h$ に対して
+$\max_{0\le nh\le T}\norm{y_n-y(nh)}\le C_T h^3$ である．
+\end{corollary}
+\begin{proof}
+局所誤差は一様に $Ch^4$ である．$F$ の局所Lipschitz性と
+ステージの逐次定義から，一ステップ写像は軌道の十分小さい近傍で
+$\norm{\Psi_h(y)-\Psi_h(z)}\le(1+Lh)\norm{y-z}$ を満たす．
+誤差 $e_n$ は
+$\norm{e_{n+1}}\le(1+Lh)\norm{e_n}+Ch^4$ を満たし，
+$e_0=0$ なので幾何級数評価から
+$\norm{e_n}\le Ch^4\sum_{j=0}^{n-1}(1+Lh)^j
+ \le C_T h^3$ となる．この評価は帰納的に局所近傍内で成立する．
+\end{proof}
+
+
+\section{実際の近似値と誤差を比較する}
+\begin{example}[指数関数の初期値問題]
+$y'=y$，$y(0)=1$ を区間 $[0,1]$ で解く．
+厳密解は $y(t)=e^t$ である．
+刻み幅 $h=1/n$ とするとEuler法は
+\[
+ Y_{k+1}=(1+h)Y_k,\qquad
+ Y_n=(1+1/n)^n.
+\]
+例えば $n=2$ では $Y_2=(3/2)^2=9/4$ となる．
+一方Heun法では $k_1=Y_k$，
+$k_2=(1+h)Y_k$ なので
+\[
+ Y_{k+1}=(1+h+h^2/2)Y_k.
+\]
+従って $n=2$ で
+$Y_2=(1+1/2+1/8)^2=169/64$ となり，
+厳密値 $e$ と比較できる．
+\end{example}
+\begin{proposition}[Euler法の明示的な誤差上界]
+上の初期値問題について，任意の整数 $n\ge1$ で
+\[
+ 0<e-(1+1/n)^n\le \frac{e}{2n}
+\]
+が成立する．
+\end{proposition}
+\begin{proof}
+$x\ge0$ について
+$\log(1+x)\le x$ は対数の凹性から従う．
+また $h(x)=\log(1+x)-x+x^2/2$ と置くと
+$h'(x)=x^2/(1+x)\ge0$，$h(0)=0$
+だから $\log(1+x)\ge x-x^2/2$．
+$x=1/n$ として $n$ 倍すれば
+\[
+ 1-\frac1{2n}\le n\log(1+1/n)<1.
+\]
+指数を取って
+$e^{1-1/(2n)}\le(1+1/n)^n<e$．
+よって
+\[
+ 0<e-(1+1/n)^n
+ \le e(1-e^{-1/(2n)})
+ \le\frac{e}{2n}
+\]
+となる．最後に $1-e^{-t}\le t$（$t\ge0$）を用いた．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+$y'=-2y$，$y(0)=1$ にEuler法を用いる．
+刻み幅 $h=1/4$ で2回更新した値を求め，
+厳密解と比較せよ．
+
+\medskip\noindent\textbf{解答．}
+Euler法の倍率は $1-2h=1/2$．
+$Y_2=(1/2)^2=1/4$ であり，時刻 $t=1/2$ の
+厳密値は $e^{-1}$ である．
+従ってEuler法の絶対誤差は
+$|1/4-e^{-1}|=e^{-1}-1/4$．
+
+\end{document}

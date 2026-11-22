@@ -1,0 +1,320 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{補間と数値積分}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提知識}
+本稿では，指定された節点から補間多項式を構成し，
+その誤差を証明に基づいて評価する．さらに
+直交多項式からGauss求積の節点・重みを自分で計算し，
+積分の近似値と誤差を検算できるようになることを目標とする．
+前提は多項式の除法・微積分・Rolleの定理である．
+
+\section{多項式補間}
+$x_0,\ldots,x_n$ を相異なる実数とする．
+\begin{theorem}[Lagrange補間]
+任意の値 $y_0,\ldots,y_n$ に対し次数高々 $n$ の多項式 $p$ で
+$p(x_i)=y_i$ を満たすものが一意に存在し，
+\[
+ p(x)=\sum_{i=0}^ny_i\ell_i(x),\qquad
+ \ell_i(x)=\prod_{j\ne i}\frac{x-x_j}{x_i-x_j}
+\]
+で与えられる．
+\end{theorem}
+\begin{proof}
+$\ell_i(x_j)=\delta_{ij}$ より表示式は指定値をとる．
+二つの多項式の差は $n+1$ 個の相異なる根を持つ次数高々 $n$ の多項式なので零である．
+\end{proof}
+\begin{theorem}[補間誤差]
+$f\in C^{n+1}([a,b])$ とし $x,x_i\in[a,b]$ とする．
+補間多項式 $p$ についてある $\xi\in(a,b)$ が存在して
+\[
+ f(x)-p(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}
+ \prod_{i=0}^n(x-x_i)
+\]
+となる．
+\end{theorem}
+\begin{proof}
+$x=x_i$ なら明らかである．そうでない場合
+$\omega(t)=\prod_i(t-x_i)$，$c=(f(x)-p(x))/\omega(x)$ とし
+$g(t)=f(t)-p(t)-c\omega(t)$ と置く．
+$g$ は $n+2$ 個の相異なる点で零になる．Rolleの定理を $n+1$ 回用いると
+$g^{(n+1)}(\xi)=0$ となる．一方
+$g^{(n+1)}=f^{(n+1)}-c(n+1)!$ なので式を得る．
+\end{proof}
+\section{Gauss求積の高精度性}
+$w$ を $[a,b]$ 上ほとんど至る所正の可積分重みとする．
+$\langle f,g\rangle=\int_a^b f(x)g(x)w(x)dx$ とする．
+\begin{lemma}[直交多項式の零点]
+$n$ 次のモニック多項式 $P_n$ が全ての次数 $n$ 未満の多項式と直交するとき，
+$P_n$ は $(a,b)$ に $n$ 個の相異なる零点を持つ．
+\end{lemma}
+\begin{proof}
+$P_n$ が $(a,b)$ に持つ奇数重複度の零点を $r$ 個とし，
+それらを $c_1,\ldots,c_r$ とする．
+$Q(x)=\prod_{j=1}^r(x-c_j)$ と置くと $P_nQ$ は
+$(a,b)$ 上で符号が一定であり，零多項式ではない．
+$w>0$ がほとんど至る所成立するから
+$\int_a^bP_n(x)Q(x)w(x)dx\ne0$．
+もし $r<n$ なら $\deg Q<n$ なので直交性に反する．
+よって $r\ge n$．一方 $\deg P_n=n$ なので
+$r=n$ であり，全零点は $(a,b)$ の相異なる単根である．
+\end{proof}
+\begin{theorem}[Gauss求積の代数的正確性]
+モニック直交多項式 $P_n$ の $n$ 個の相異なる根
+$x_1,\ldots,x_n\in(a,b)$ を用いて
+$\lambda_i=\int_a^b\ell_i(x)w(x)dx$ と置く．
+このとき
+\[
+ \int_a^bq(x)w(x)dx=\sum_{i=1}^n\lambda_iq(x_i)
+\]
+は次数高々 $2n-1$ の全多項式 $q$ に対して成立し，$\lambda_i>0$ である．
+\end{theorem}
+\begin{proof}
+$q=P_ns+r$ と除算する（$\deg s,\deg r<n$）．
+直交性から $\int P_nsw=0$，根 $x_i$ で $q(x_i)=r(x_i)$．
+$r$ のLagrange補間式を積分して結論を得る．
+さらに $\ell_i(x)^2-\ell_i(x)$ は各 $x_j$ で零になり，
+次数高々 $2n-2$ だから上の正確性を用いて
+$\lambda_i=\int\ell_i^2w>0$ である．
+\end{proof}
+
+
+
+\section{複合求積とGauss求積の誤差公式}
+\begin{theorem}[複合台形公式の誤差]
+$f\in C^2([a,b])$ とし，$N$ 等分点の幅を $h=(b-a)/N$ とする．
+複合台形公式
+\[
+ T_N(f)=h\left(\frac{f(a)+f(b)}2+
+ \sum_{j=1}^{N-1}f(a+jh)\right)
+\]
+について
+\[
+ \left|\int_a^bf(x)dx-T_N(f)\right|
+ \le\frac{(b-a)h^2}{12}\norm{f''}_\infty
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+各小区間 $[u,v]$ で $f$ の一次補間多項式を $p$ とすると
+補間誤差公式から
+$|f(x)-p(x)|\le\norm{f''}_\infty(x-u)(v-x)/2$．
+これを積分すると
+$|\int_u^v(f-p)|\le\norm{f''}_\infty h^3/12$．
+$p$ の積分はその区間の台形公式に等しい．
+全 $N$ 区間の誤差を加えると主張を得る．
+\end{proof}
+\begin{theorem}[Gauss求積の誤差公式]
+$w$ を正の可積分重み，$P_n$ を前節のモニック直交多項式とする．
+$f\in C^{2n}([a,b])$ に対しある $\xi\in(a,b)$ が存在して
+\[
+ \int_a^b f(x)w(x)dx-\sum_{i=1}^n\lambda_i f(x_i)
+ =\frac{f^{(2n)}(\xi)}{(2n)!}
+ \int_a^bP_n(x)^2w(x)dx
+\]
+となる．
+\end{theorem}
+\begin{proof}
+各 $x_i$ で $f$ の値と一階導関数の値を一致させる
+次数高々 $2n-1$ のHermite補間多項式 $H$ を取る．
+存在と一意性は，その補間条件を全て零にする
+次数 $2n-1$ 以下の多項式が $\prod_i(x-x_i)^2$ で
+割り切れなければならず，従って零であることから従う．
+重複節点での補間誤差公式（Rolleの定理を $2n$ 回適用して導く）から
+各 $x$ に応じた $\xi_x\in(a,b)$ について
+$ f(x)-H(x)=f^{(2n)}(\xi_x)P_n(x)^2/(2n)!$ である．
+Gauss求積は $H$ に対して正確であり，$H(x_i)=f(x_i)$ だから
+求積誤差は $\int(f-H)w$ に等しい．
+$f^{(2n)}$ の最小値・最大値でこの積分を挟み，
+$\int P_n^2w>0$ と中間値の定理を用いれば式を得る．
+\end{proof}
+
+\section{端点を指定するGauss--Radau求積}
+\begin{theorem}[Gauss--Radau求積の存在と正値性]
+$w$ を $[a,b]$ 上ほとんど至る所正の可積分関数とし，$n\ge2$ とする．
+左端点 $a$ を必ず求積節点に含めるとき，
+互いに異なる節点 $a=x_1<x_2<\cdots<x_n<b$ と
+正の重み $\lambda_1,\ldots,\lambda_n$ が存在して
+\[
+ \int_a^b q(x)w(x)\,dx=\sum_{j=1}^n\lambda_j q(x_j)
+\]
+が次数 $2n-2$ 以下の全多項式 $q$ について成立する．
+\end{theorem}
+\begin{proof}
+$(x-a)w(x)$ は $(a,b)$ 上ほとんど至る所正なので，
+これを重みとする次数 $n-1$ のモニック直交多項式 $P_{n-1}$ が存在する．
+存在は正定値な内積についてのGram--Schmidt直交化から従う．
+前節の直交多項式の零点補題により，
+$P_{n-1}$ の根 $x_2,\ldots,x_n$ は
+$(a,b)$ 内の相異なる単根である．
+節点を $x_1=a,x_2,\ldots,x_n$ とし，
+次数 $n-1$ のLagrange基底を $\ell_j$ と置いて
+$\lambda_j=\int_a^b\ell_j(x)w(x)\,dx$ と定義する．
+
+次数 $2n-2$ 以下の $q$ を
+\[
+ q(x)=(x-a)P_{n-1}(x)s(x)+r(x),
+ \quad\deg s\le n-2,\quad\deg r<n
+\]
+と除算する．直交性により
+$\int_a^b(x-a)P_{n-1}(x)s(x)w(x)\,dx=0$ であり，
+全節点で $(x_j-a)P_{n-1}(x_j)=0$ だから
+$q(x_j)=r(x_j)$ である．
+次数 $n-1$ 以下の $r$ は
+$r=\sum_jr(x_j)\ell_j$ と補間されるので
+求積式を得る．
+
+最後に $\ell_j^2$ の次数は $2n-2$ 以下であり，
+全節点で $\ell_j(x_i)^2=\ell_j(x_i)$ だから
+\[
+ \lambda_j=\sum_i\lambda_i\ell_j(x_i)^2
+ =\int_a^b\ell_j(x)^2w(x)\,dx>0
+\]
+である．最後の不等号は $\ell_j$ が零でない多項式で
+$w>0$ がほとんど至る所成り立つことから従う．
+\end{proof}
+\begin{remark}
+Gauss--Radau公式は端点を一つ固定した $2n-2$ 次の代数的正確性を持つ．
+$n$ 点のGauss公式に $n+1$ 点を加えるGauss--Kronrod拡張は
+別問題であり，任意の正の重みについて正重みの拡張の存在を主張しない．
+\end{remark}
+
+
+\section{補間誤差と求積公式を計算する}
+\begin{example}[補間誤差を厳密に算出する]\label{ex:interp-cubic}
+$f(x)=x^3$ を節点 $-1,0,1$ で二次以下の多項式に
+補間する．データ値は $-1,0,1$ である．
+$f(x_i)=x_i$ が各節点で成り立つから，
+Lagrange補間の一意性により $p(x)=x$ である．
+従って実際の誤差は
+\[
+ f(x)-p(x)=x^3-x=(x+1)x(x-1).
+\]
+一方 $f^{(3)}(x)=6$ なので，一般の補間誤差公式は
+\[
+ \frac{f^{(3)}(\xi)}{3!}(x+1)x(x-1)
+ =(x+1)x(x-1)
+\]
+を与え，完全に一致する．
+一般に，補間節点での値が一致しても
+区間の内部全体で正確とは限らないことが分かる．
+\end{example}
+\begin{proposition}[二点Gauss求積の節点と重み]\label{prop:gauss2}
+重み $w(x)=1$ の区間 $[-1,1]$ に対して
+二点Gauss求積公式は
+\[
+ \int_{-1}^1f(x)\,dx
+ \ \simeq\
+ f(-1/\sqrt3)+f(1/\sqrt3)
+\]
+である．この公式は次数3以下の多項式に対して正確である．
+$f(x)=x^4$ の場合の誤差は厳密に $8/45$ となる．
+\end{proposition}
+\begin{proof}
+二次のモニック直交多項式は
+$P_2(x)=x^2-1/3$ である．
+実際，$\int_{-1}^1P_2(x)\,dx=0$ であり，
+$\int_{-1}^1xP_2(x)\,dx=0$ は奇関数性による．
+零点は $\pm1/\sqrt3$ である．
+二点におけるLagrange補間基底 $\ell_\pm$ の積分は
+対称性により等しく，その和は
+$\int_{-1}^1 1\,dx=2$ だから各重みは1である．
+従って先のGauss求積定理により3次以下で正確である．
+$x^4$ の積分は $2/5$，求積値は
+$2(1/\sqrt3)^4=2/9$ なので差は $8/45$．
+さらに一般誤差公式では
+$f^{(4)}=24$，
+$\int_{-1}^1P_2^2\,dx=8/45$ であり
+同じ誤差を与える．
+\end{proof}
+\section*{到達確認問題と完全解答}
+\noindent\textbf{問題．}
+$f(x)=x^2$ を $[0,1]$ で積分するとき，
+等間隔の二分割による複合台形公式の値と厳密積分値を求め，
+誤差を評価定理と比較せよ．
+
+\medskip\noindent\textbf{解答．}
+$h=1/2$ で
+\[
+ T_2(f)=\frac12\left(
+ \frac{f(0)+f(1)}2+f(1/2)\right)
+ =\frac12\left(\frac12+\frac14\right)=\frac38.
+\]
+厳密積分値は $\int_0^1x^2dx=1/3$ であり，
+絶対誤差は
+\[
+ \frac38-\frac13=\frac1{24}.
+\]
+$f''=2$ だから一般の誤差上界は
+$(b-a)h^2\|f''\|_\infty/12
+ =1\cdot(1/4)\cdot2/12=1/24$．
+従ってこの例では上界に等号が成立する．
+
+\end{document}

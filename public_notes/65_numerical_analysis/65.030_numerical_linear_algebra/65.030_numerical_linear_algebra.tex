@@ -1,0 +1,281 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{数値線形代数}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{到達目標と前提}
+行列のQR分解を用いて過剰決定系の最小二乗解を
+実際に求め，残差が像空間に直交することを確認する．
+前提は線形代数の内積・直交射影・行列計算である．
+
+\section{行列のLU分解}
+\begin{theorem}[LU分解の存在]
+$A\in\mathbb R^{n\times n}$ のすべての左上 $k\times k$ 主小行列式
+$\det A_{1:k,1:k}$ が $0$ でないとする（$1\le k\le n$）．
+このとき $A=LU$ と一意に分解できる．
+ただし $L$ は対角成分が1の下三角行列，$U$ は対角成分が非零の上三角行列である．
+\end{theorem}
+\begin{proof}
+$n$ について帰納法を用いる．$n=1$ は明らかである．
+$A=\begin{pmatrix}a&r\\c&B\end{pmatrix}$ と置くと $a\ne0$．
+\[
+ A=\begin{pmatrix}1&0\\c/a&I\end{pmatrix}
+   \begin{pmatrix}a&r\\0&B-cr/a\end{pmatrix}.
+\]
+Schur補行列 $S=B-cr/a$ の左上主小行列式は
+$\det A_{1:k+1,1:k+1}/a\ne0$．
+帰納法により $S=L_1U_1$ と一意に分解される．
+得られたブロック三角因子を掛け合わせると所要の分解を得る．
+一意性は $LU=L'U'$ なら
+$L^{-1}L'=UU'^{-1}$ が同時に単位下三角かつ上三角であるため恒等行列となることによる．
+\end{proof}
+\section{直交化とQR分解}
+\begin{theorem}[QR分解]
+$A\in\mathbb R^{m\times n}$（$m\ge n$）の列が一次独立なら，
+$A=QR$ と書ける．ここで $Q^TQ=I_n$，$R$ は正の対角成分を持つ上三角行列であり，
+この条件で分解は一意である．
+\end{theorem}
+\begin{proof}
+列 $a_1,\ldots,a_n$ にGram--Schmidt直交化を行う．
+$u_j=a_j-\sum_{i<j}(q_i^Ta_j)q_i$，$q_j=u_j/\norm{u_j}$ とすれば
+線形独立性によって $u_j\ne0$．
+$r_{ij}=q_i^Ta_j$（$i\le j$）と置くと $A=QR$ で $r_{jj}=\norm{u_j}>0$．
+二つの分解があるとき
+\[Q^TQ'=RR'^{-1}\]
+は直交かつ上三角で，対角成分は正である．
+したがって恒等行列である．
+\end{proof}
+\section{最小二乗問題}
+\begin{corollary}
+列フルランク $A$ の最小二乗問題
+$\min_x\norm{Ax-b}_2$ の一意解は，
+$A=QR$ としたとき $Rx=Q^Tb$ により計算できる．
+\end{corollary}
+\begin{proof}
+$P=QQ^T$ は $\operatorname{Ran}A$ への直交射影で，
+$\norm{Ax-b}^2=\norm{Rx-Q^Tb}^2+\norm{(I-P)b}^2$．
+$R$ は可逆だから第一項を零にする $x$ が一意に存在する．
+\end{proof}
+\begin{remark}[前節までの範囲]
+数値安定性では古典Gram--SchmidtとHouseholder法を区別する必要がある．
+上の結果は厳密演算での構造定理であり，丸め誤差解析は含まない．
+\end{remark}
+
+
+\section{Householder反射と固有値反復}
+\begin{lemma}[Householder反射]
+$0\ne v\in\mathbb R^m$ に対し
+$H=I-2vv^T/(v^Tv)$ は $H^T=H$，$H^TH=I$ を満たす．
+さらに同じノルムを持つ相異なる $a,b\in\mathbb R^m$ に対し
+$v=a-b$ と取れば $Ha=b$ である．
+\end{lemma}
+\begin{proof}
+$P=vv^T/(v^Tv)$ は $P^T=P$，$P^2=P$ を満たすから
+$(I-2P)^2=I$．$\norm a=\norm b$ なら
+$2v^Ta=\norm{a-b}^2=v^Tv$ である．
+従って $Ha=a-2v(v^Ta)/(v^Tv)=a-v=b$ となる．
+\end{proof}
+\begin{theorem}[Householder法によるQR分解]
+任意の $A\in\mathbb R^{m\times n}$（$m\ge n$）は
+$A=QR$ と書ける．ここで $Q\in\mathbb R^{m\times m}$ は直交行列，
+$R\in\mathbb R^{m\times n}$ は上三角形状である．
+\end{theorem}
+\begin{proof}
+第一列の先頭からなる非零ベクトルをHouseholder反射で
+第一座標方向へ移す．この反射を行列全体の左から掛けると
+第一列の第二成分以下が零になる．
+次に残った右下 $(m-1)\times(n-1)$ 部分行列だけに
+同じ操作を施し，第一列と第一行を保持する．
+これを高々 $n$ 回繰り返すと上三角形状の行列 $R$ を得る．
+各反射は直交行列だから，それらの積を $Q^T$ と書けば
+$Q$ も直交し，$A=QR$ となる．零列が現れたときは恒等変換を用いる．
+\end{proof}
+\begin{theorem}[対称行列の冪乗法]
+実対称行列 $A$ の固有値を
+$|\lambda_1|>|\lambda_2|\ge\cdots\ge|\lambda_n|$ とし，
+$A$ の正規直交固有基底 $v_i$ に対する初期ベクトル
+$x_0=\sum_i c_iv_i$ が $c_1\ne0$ を満たすとする．
+このとき $x_k=A^kx_0/\norm{A^kx_0}$ の張る直線は
+$\mathbb Rv_1$ に収束し，Rayleigh商
+$x_k^TAx_k$ は $\lambda_1$ に収束する．
+\end{theorem}
+\begin{proof}
+$A^kx_0=\lambda_1^k[c_1v_1+
+\sum_{i\ge2}c_i(\lambda_i/\lambda_1)^kv_i]$ であり，
+括弧内の第二項は $O((|\lambda_2|/|\lambda_1|)^k)$ で零へ収束する．
+規格化後のベクトルは符号を除いて $v_1$ に近づく．
+Rayleigh商は符号に依存せず連続なので $\lambda_1$ に収束する．
+\end{proof}
+
+\section{対称二次行列のQR反復の収束}
+\begin{theorem}[二次元正定値行列のQR反復]
+$A\in\mathbb R^{2\times2}$ を実対称正定値とし，
+固有値を $\lambda_1>\lambda_2>0$，単位固有ベクトルを $v_1,v_2$ とする．
+$e_1^Tv_1\ne0$ と仮定し，$A_0=A$ から
+\[
+ A_k=Q_kR_k,\qquad A_{k+1}=R_kQ_k
+\]
+と反復する．各QR分解では $Q_k$ を直交行列，
+$R_k$ を正の対角成分を持つ上三角行列として一意に取る．
+このとき
+\[
+ A_k\longrightarrow
+ \begin{pmatrix}\lambda_1&0\\0&\lambda_2\end{pmatrix}.
+\]
+\end{theorem}
+\begin{proof}
+$W_0=I$，$W_k=Q_0Q_1\cdots Q_{k-1}$ と置く．
+$A_{k+1}=Q_k^TA_kQ_k$ から帰納的に
+$A_k=W_k^TAW_k$ である．
+また $A W_k=W_{k+1}R_k$ なので
+\[
+ A^k=W_kR_{k-1}R_{k-2}\cdots R_0
+\]
+となる．右辺は直交行列と正の対角成分を持つ上三角行列の積なので，
+$A^k$ の一意なQR分解である．従って $W_k$ の第一列は
+$A^ke_1/\norm{A^ke_1}$ に等しい．
+$e_1=c_1v_1+c_2v_2$ と書けば $c_1\ne0$ で，
+\[
+ A^ke_1=\lambda_1^k
+ \left(c_1v_1+c_2(\lambda_2/\lambda_1)^kv_2\right).
+\]
+ゆえに $W_k$ の第一列は符号を除いて $v_1$ に収束する．
+$A_k=W_k^TAW_k$ の $(1,1)$ 成分は
+その第一列のRayleigh商なので $\lambda_1$ に収束する．
+$A_k$ は直交相似で跡が一定だから $(2,2)$ 成分は
+$\lambda_2$ に収束する．
+第一列と第二列が直交し，第一列が固有ベクトル $v_1$ に近づくので
+非対角成分も零に収束する．
+従って行列全体の収束を得る．
+\end{proof}
+\begin{remark}
+これは正定値二次行列に関する非シフトQR反復の完全な収束定理である．
+一般サイズ，重複固有値，非対称行列に対するQR算法の収束理論は別途必要である．
+\end{remark}
+
+
+\section{QR分解で最小二乗解を計算する}
+\begin{example}[3つの観測から2つの係数を推定する]
+\[
+ A=\begin{pmatrix}1&1\\1&-1\\1&0\end{pmatrix},
+ \qquad b=\begin{pmatrix}1\\2\\4\end{pmatrix}
+\]
+について $\min_{x\in\mathbb R^2}\|Ax-b\|_2$ を解く．
+$A$ の列は直交し，それぞれの長さは
+$\sqrt3,\sqrt2$ だから
+\[
+ Q=\begin{pmatrix}1/\sqrt3&1/\sqrt2\\
+                   1/\sqrt3&-1/\sqrt2\\
+                   1/\sqrt3&0\end{pmatrix},\qquad
+ R=\operatorname{diag}(\sqrt3,\sqrt2).
+\]
+従って $A=QR$，$Q^TQ=I_2$ を満たす．
+\[
+ Q^Tb=\begin{pmatrix}7/\sqrt3\\-1/\sqrt2\end{pmatrix}
+\]
+だから $Rx=Q^Tb$ の解は
+\[
+ x_*=\begin{pmatrix}7/3\\-1/2\end{pmatrix}.
+\]
+残差を求めると
+\[
+ b-Ax_*=
+ \begin{pmatrix}-5/6\\-5/6\\5/3\end{pmatrix},
+ \qquad
+ \|b-Ax_*\|_2^2=\frac{25}{6}.
+\]
+$A^T(b-Ax_*)=0$ が成り立つことも直接確認できる．
+\end{example}
+\begin{proposition}[残差の直交性が最小性を保証する]
+一般の列フルランク行列 $A$ に対し，
+$r=b-Ax_*$ が $A^Tr=0$ を満たせば
+$x_*$ は一意の最小二乗解である．
+\end{proposition}
+\begin{proof}
+任意の $h$ に対し $b-A(x_*+h)=r-Ah$ であり，
+$r^TAh=(A^Tr)^Th=0$．従って
+\[
+ \|b-A(x_*+h)\|_2^2
+ =\|r\|_2^2+\|Ah\|_2^2\ge\|r\|_2^2.
+\]
+等号なら $Ah=0$ であり列フルランク性から $h=0$．
+故に最小点は一意である．
+\end{proof}
+\section*{到達確認問題と解答}
+\noindent\textbf{問題．}
+前例で $b=(1,1,1)^T$ としたときの
+最小二乗解と最小残差ノルムを求めよ．
+
+\medskip\noindent\textbf{解答．}
+$b$ は $A$ の第一列そのものなので
+$x_*=(1,0)^T$ に対して $Ax_*=b$．
+よって残差は零で，最小残差ノルムは0である．
+列フルランクだからこの解は一意である．
+
+\end{document}

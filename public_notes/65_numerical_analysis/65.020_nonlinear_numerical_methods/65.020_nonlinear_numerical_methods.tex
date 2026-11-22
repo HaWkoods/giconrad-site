@@ -1,0 +1,566 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{非線形方程式の数値解法}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，Newton法，平均値の定理，二次収束．
+本稿の具体的な到達課題は，Newton反復を実行し，誤差の二乗評価を導く．
+
+\section{二分法の収束}
+\begin{theorem}[二分法]
+$f:[a,b]\to\mathbb R$ は連続で $f(a)f(b)<0$ とする．
+各段階で符号の異なる端点を持つ半区間を選び，
+区間 $I_n=[a_n,b_n]$ を作る．このとき
+$\bigcap_{n\ge0}I_n$ は $f$ の零点をただ一つ含み，
+中点 $m_n$ とその零点 $\xi$ について
+\[
+ |m_n-\xi|\le\frac{b-a}{2^{n+1}}.
+\]
+\end{theorem}
+\begin{proof}
+各区間には中間値の定理により零点が存在する．
+$I_{n+1}\subset I_n$，$|I_n|=(b-a)/2^n\to0$ だから
+完備性により共通部分は一点 $\xi$ である．
+$f$ の連続性と各区間の符号条件から $f(\xi)=0$．
+中点から区間内の点への距離は区間長の半分以下である．
+\end{proof}
+\section{Newton法の局所二次収束}
+\begin{theorem}[Newton法]
+$f$ は零点 $\xi$ の近傍で $C^2$ とし，
+$f(\xi)=0$，$f'(\xi)\ne0$ とする．
+十分近い初期点 $x_0$ に対する反復
+$ x_{n+1}=x_n-f(x_n)/f'(x_n)$ は定義され $\xi$ に収束し，
+ある $C>0$ について
+$|x_{n+1}-\xi|\le C|x_n-\xi|^2$ が成立する．
+\end{theorem}
+\begin{proof}
+$\xi$ の周囲の閉区間 $J$ を小さく取り，
+$|f'(x)|\ge m>0$，$|f''(x)|\le M$（$x\in J$）とする．
+Taylorの定理から $f(\xi)=f(x)+f'(x)(\xi-x)
++\frac12 f''(\eta)(\xi-x)^2$ となる．
+よって $x_+=x-f(x)/f'(x)$ について
+$|x_+-\xi|\le (M/2m)|x-\xi|^2$．
+$C=M/(2m)$ とし $r>0$ を $Cr<1$ かつ
+$[\xi-r,\xi+r]\subset J$ となるよう選ぶ．
+$|x_0-\xi|<r$ なら帰納的に区間内に留まり，
+誤差は幾何級数的に減少して零へ収束する．
+\end{proof}
+\section{数値的な注意}
+\begin{example}
+$f(x)=x^2-2$，$x_0=3/2$ の場合
+$ x_{n+1}=\frac12(x_n+2/x_n)$ となる．
+反復は正の実数を保ち，$\sqrt2$ 近傍で二次収束する．
+\end{example}
+\begin{remark}
+単根条件 $f'(\xi)\ne0$ を除くと一般に二次収束は保証できない．
+例えば $f(x)=x^2$ のNewton反復は $x_{n+1}=x_n/2$ で一次収束する．
+\end{remark}
+
+
+\section{Newton法の収束域の保証}
+\begin{theorem}[固定線形化によるNewton型反復]
+$F:\mathbb R^d\to\mathbb R^d$ を閉球
+$B=\overline B(x_0,r)$ の近傍で $C^1$ とし，
+$F'(x_0)$ は可逆とする．$B_0=F'(x_0)^{-1}$ と置き，
+ある $q\in[0,1)$ について
+\[
+ \sup_{x\in B}\norm{I-B_0F'(x)}\le q,
+ \qquad \norm{B_0F(x_0)}\le(1-q)r
+\]
+を仮定する．このとき $F(x)=0$ は $B$ にただ一つの解を持ち，
+$z_{n+1}=z_n-B_0F(z_n)$，$z_0=x_0$ はその解へ収束する．
+\end{theorem}
+\begin{proof}
+$T(x)=x-B_0F(x)$ と置くと，線分に沿った微分積分により
+$\norm{T(x)-T(y)}\le q\norm{x-y}$（$x,y\in B$）である．
+また任意の $x\in B$ について
+$\norm{T(x)-x_0}\le\norm{T(x)-T(x_0)}+
+\norm{T(x_0)-x_0}\le qr+(1-q)r=r$．
+よって $T:B\to B$ は完備距離空間上の縮小写像である．
+Banachの不動点定理により唯一の不動点 $x_*$ が存在し，反復は収束する．
+$B_0$ が可逆なので $T(x_*)=x_*$ と $F(x_*)=0$ は同値である．
+\end{proof}
+\begin{corollary}[導関数のLipschitz条件による検証]
+$F'$ が $B$ 上でLipschitz定数 $L$ を持ち，
+$q=\norm{B_0}Lr<1$ かつ
+$\norm{B_0F(x_0)}\le(1-q)r$ なら前定理の結論が成立する．
+\end{corollary}
+\begin{proof}
+$\norm{I-B_0F'(x)}=\norm{B_0(F'(x_0)-F'(x))}
+\le\norm{B_0}L\norm{x-x_0}\le q$ と評価できる．
+\end{proof}
+\section{大域的な勾配法の収束保証}
+\begin{theorem}[固定ステップ勾配法]
+$f:\mathbb R^d\to\mathbb R$ を $C^1$，下に有界とし，
+$\nabla f$ がLipschitz定数 $L>0$ を持つとする．
+反復 $x_{k+1}=x_k-L^{-1}\nabla f(x_k)$ について
+$\norm{\nabla f(x_k)}\to0$ が成立する．
+$f$ がさらに凸で最小化点 $x_*$ を持つなら
+\[
+ 0\le f(x_k)-f(x_*)\le\frac{L\norm{x_0-x_*}^2}{2k}
+ \qquad(k\ge1).
+\]
+\end{theorem}
+\begin{proof}
+Lipschitz微分の積分表示から
+$ f(y)\le f(x)+\nabla f(x)\cdot(y-x)+(L/2)\norm{y-x}^2$．
+$y=x-L^{-1}\nabla f(x)$ とすると
+\[
+ f(x_{k+1})\le f(x_k)-\frac1{2L}\norm{\nabla f(x_k)}^2.
+\]
+$f$ は下に有界だから右辺の減少分を和すると
+$\sum_k\norm{\nabla f(x_k)}^2<\infty$ となり，勾配は零へ収束する．
+凸性を仮定すると
+$f(x_k)-f(x_*)\le\nabla f(x_k)\cdot(x_k-x_*)$ である．
+反復式と上の減少評価を組み合わせると
+\[
+ \norm{x_{k+1}-x_*}^2
+ \le\norm{x_k-x_*}^2
+ -\frac2L\bigl(f(x_{k+1})-f(x_*)\bigr)
+\]
+が得られる．$k=0,\ldots,N-1$ について和を取り，
+$f(x_j)$ が非増加であることを用いると
+$N(f(x_N)-f(x_*))\le(L/2)\norm{x_0-x_*}^2$．
+\end{proof}
+
+\section{BFGS更新の正定値性}
+\begin{theorem}[正定値BFGS行列の更新]
+$B\in\mathbb R^{n\times n}$ を対称正定値行列とし，
+$s,y\in\mathbb R^n$ が $s\ne0$，$y^Ts>0$ を満たすとする．
+\[
+ B_+=B-\frac{Bss^TB}{s^TBs}+\frac{yy^T}{y^Ts}
+\]
+と置けば $B_+$ は対称正定値であり，
+$B_+s=y$（セカント条件）を満たす．
+\end{theorem}
+\begin{proof}
+対称性は表示式から明らかである．
+$s$ に作用させれば
+\[
+ B_+s=Bs-\frac{Bs(s^TBs)}{s^TBs}
+              +\frac{y(y^Ts)}{y^Ts}=y
+\]
+となる．任意の $v\in\mathbb R^n$ に対して
+\[
+ v^TB_+v=v^TBv-\frac{(v^TBs)^2}{s^TBs}
+                      +\frac{(v^Ty)^2}{y^Ts}
+\]
+である．最初の二項の和は，$B$ が定める内積に対する
+Cauchy--Schwarzの不等式により非負である．
+これが零なら $v=cs$ となる（$c\in\mathbb R$）．
+もしさらに最後の項も零なら
+$0=v^Ty=c\,s^Ty$ であり，$s^Ty>0$ だから $c=0$．
+従って $v\ne0$ では $v^TB_+v>0$ であり，$B_+$ は正定値である．
+\end{proof}
+\begin{remark}
+この定理は曲率条件 $y^Ts>0$ のもとでBFGS更新が
+正定値性とセカント条件を保つことを完全に証明する．
+直線探索を伴う反復全体の大域収束性には追加の仮定が要る．
+\end{remark}
+
+\section{Wolfe探索とZoutendijk収束定理への証明増補}
+降下方向法の大域収束とBFGS更新の適用範囲を明示する．
+
+\section{対象と仮定}
+本稿は，非線形最適化の降下方向法に対する
+Wolfe条件，Zoutendijkの定理，およびBFGS更新の正定値性を
+基礎的な解析から証明する．
+特にBFGSの大域収束については，正定値性だけから
+結論が出ると誤解しないように，必要な付加仮定を分けて示す．
+
+$\mathbb R^d$ にはEuclid内積とそのノルムを用いる．
+$f:\mathbb R^d\to\mathbb R$ は連続微分可能とし，
+$g(x)=\nabla f(x)$ と書く．
+
+\begin{definition}[降下方向とWolfe条件]
+$g(x)\ne0$ で $g(x)^Tp<0$ を満たす $p\in\mathbb R^d$ を
+$x$ における\emph{降下方向}という．
+$0<c_1<c_2<1$ を固定する．$\alpha>0$ が弱Wolfe条件を満たすとは
+\begin{align}
+ f(x+\alpha p)&\le f(x)+c_1\alpha g(x)^Tp,\label{eq:armijo}\\
+ g(x+\alpha p)^Tp&\ge c_2 g(x)^Tp\label{eq:curv}
+\end{align}
+が成立することである．
+後者を $|g(x+\alpha p)^Tp|\le c_2|g(x)^Tp|$ としたものを
+強Wolfe条件という．本稿の主要収束定理には弱条件で十分である．
+\end{definition}
+
+\section{Wolfeステップの存在}
+\begin{lemma}[弱Wolfeステップの存在]\label{lem:wolfeexist}
+$f$ が $\mathbb R^d$ 上で下に有界であり，
+$g(x)^Tp<0$ とする．このとき，任意の $0<c_1<c_2<1$ に対し
+弱Wolfe条件を満たす $\alpha>0$ が存在する．
+\end{lemma}
+\begin{proof}
+$\phi(t)=f(x+tp)$，$m=\phi'(0)=g(x)^Tp<0$ と置く．
+$h(t)=\phi(t)-\phi(0)-c_1tm$ と定めると
+$h(0)=0$，$h'(0)=(1-c_1)m<0$ である．
+従ってある $\varepsilon>0$ について
+$0<t\le\varepsilon$ で $h(t)<0$ となる．
+
+$\phi$ は下に有界であるが
+$\phi(0)+c_1tm\to-\infty$（$t\to\infty$）である．
+よって $h(t)>0$ となる $t$ が存在する．
+\[
+ \alpha=\inf\{t>0:h(t)>0\}
+\]
+と置くと $0<\alpha<\infty$ で，連続性により
+$h(\alpha)=0$，$h(t)\le0$（$0\le t\le\alpha$）が成り立つ．
+$h$ は微分可能であるから左微分商から
+$h'(\alpha)\ge0$ を得る．従って
+\[
+ \phi'(\alpha)\ge c_1m>c_2m
+\]
+となり，曲率条件を満たす．$h(\alpha)=0$ は
+Armijo条件そのものである．
+\end{proof}
+
+\begin{remark}
+弱Wolfe条件と強Wolfe条件は別物である．
+前補題は弱Wolfe条件の存在を証明したのであり，
+強Wolfe条件の存在を暗黙に主張してはいない．
+ただし収束定理は弱条件だけを使うため十分である．
+\end{remark}
+
+\section{Zoutendijkの定理}
+\begin{definition}[方向の角度]
+$g_k=g(x_k)\ne0$ とし，$p_k$ を降下方向とする．
+\[
+ \cos\theta_k=\frac{-g_k^Tp_k}{\norm{g_k}\norm{p_k}}>0
+\]
+で定める．
+\end{definition}
+
+\begin{theorem}[Zoutendijkの定理]\label{thm:zout}
+$f$ は下に有界であり，ある $L>0$ について
+\[
+ \norm{g(x)-g(y)}\le L\norm{x-y}
+ \qquad(x,y\in\mathbb R^d)
+\]
+を満たすとする．
+$g_k\ne0$ の間，降下方向 $p_k$ と
+弱Wolfe条件を満たす $\alpha_k>0$ を選び
+$x_{k+1}=x_k+\alpha_kp_k$ と定める．このとき
+\[
+ \sum_{k=0}^{\infty}\norm{g_k}^2\cos^2\theta_k<\infty.
+\]
+途中で $g_k=0$ となればその時点で反復を終了したものとする．
+\end{theorem}
+\begin{proof}
+曲率条件\eqref{eq:curv}から
+\[
+ (g_{k+1}-g_k)^Tp_k
+ \ge(c_2-1)g_k^Tp_k
+ =(1-c_2)(-g_k^Tp_k)>0.
+\]
+他方，勾配のLipschitz性とCauchy--Schwarzの不等式から
+\[
+ (g_{k+1}-g_k)^Tp_k
+ \le\norm{g_{k+1}-g_k}\norm{p_k}
+ \le L\alpha_k\norm{p_k}^2.
+\]
+従って
+\[
+ \alpha_k\ge\frac{(1-c_2)(-g_k^Tp_k)}{L\norm{p_k}^2}.
+\]
+Armijo条件\eqref{eq:armijo}を用いると
+\begin{align*}
+ f(x_k)-f(x_{k+1})
+ &\ge c_1\alpha_k(-g_k^Tp_k)\\
+ &\ge\frac{c_1(1-c_2)}{L}
+       \frac{(g_k^Tp_k)^2}{\norm{p_k}^2}\\
+ &=\frac{c_1(1-c_2)}{L}
+           \norm{g_k}^2\cos^2\theta_k.
+\end{align*}
+最初の $N$ 項について和を取れば左辺は
+$f(x_0)-f(x_{N+1})\le f(x_0)-\inf f$ で一様有界である．
+右辺は非負項の和だから $N\to\infty$ として結論を得る．
+\end{proof}
+
+\begin{corollary}[勾配の収束]\label{cor:grad}
+前定理の仮定のもとで，ある $\gamma>0$ が存在して
+$\cos\theta_k\ge\gamma$ がすべての $k$ で成立するとする．
+このとき $\norm{g_k}\to0$ である．
+特に最急降下方向 $p_k=-g_k$ では結論が成立する．
+\end{corollary}
+\begin{proof}
+$\gamma^2\sum_k\norm{g_k}^2\le
+\sum_k\norm{g_k}^2\cos^2\theta_k<\infty$ だから
+$\norm{g_k}^2\to0$ となる．$p_k=-g_k$ では
+$\cos\theta_k=1$ である．
+\end{proof}
+
+\section{強凸性と定量的収束}
+\begin{definition}[強凸函数]
+$m>0$ に対し
+\[
+ f(y)\ge f(x)+g(x)^T(y-x)+\frac m2\norm{y-x}^2
+ \qquad(x,y\in\mathbb R^d)
+\]
+を満たす $f$ を $m$-強凸という．
+\end{definition}
+
+\begin{lemma}[強凸函数の最小点と勾配評価]\label{lem:strong}
+$f\in C^1(\mathbb R^d)$ が $m$-強凸なら，
+ただ一つの最小点 $x_*$ が存在し $g(x_*)=0$ である．
+さらに任意の $x$ について
+\[
+ \norm{x-x_*}\le\frac{\norm{g(x)}}m,
+ \qquad
+ f(x)-f(x_*)\le\frac{\norm{g(x)}^2}{2m}
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+強凸性を $x=0$ として適用すると
+$f(y)\ge f(0)+g(0)^Ty+m\norm y^2/2$ だから
+$f(y)\to\infty$（$\norm y\to\infty$）である．
+連続性と有界閉球上の最小値定理から最小点 $x_*$ が存在する．
+微分可能性から $g(x_*)=0$ である．強凸性を二点
+$x_*,x$ で互いに適用して加えると
+\[
+ (g(x)-g(x_*))^T(x-x_*)\ge m\norm{x-x_*}^2.
+\]
+Cauchy--Schwarzと $g(x_*)=0$ により最初の評価を得る．
+また強凸性を $(x,y)=(x,x_*)$ に適用すると
+\[
+ f(x)-f(x_*)\le g(x)^T(x-x_*)-
+                  \frac m2\norm{x-x_*}^2
+ \le\frac{\norm{g(x)}^2}{2m}
+\]
+となる．最小点が二つあれば強単調性から一致する．
+\end{proof}
+
+\begin{theorem}[最急降下法の線形収束]\label{thm:linear}
+$f$ は $m$-強凸で，勾配はLipschitz定数 $L$ を持つとする．
+$0<c_1<c_2<1$ とし，$p_k=-g_k$ に対して
+弱Wolfe条件を満たす $\alpha_k$ を選ぶ．
+このとき $f_k=f(x_k)$，$f_*=f(x_*)$ と置いて
+\[
+ 0\le f_{k+1}-f_*\le q(f_k-f_*),
+ \qquad q=1-\frac{2mc_1(1-c_2)}L\in[0,1)
+\]
+が成り立ち，$x_k\to x_*$ となる．
+\end{theorem}
+\begin{proof}
+Zoutendijkの定理の証明における一段階の評価を
+$p_k=-g_k$ に適用すれば
+\[
+ f_k-f_{k+1}\ge \frac{c_1(1-c_2)}L\norm{g_k}^2.
+\]
+補題\ref{lem:strong}から
+$\norm{g_k}^2\ge2m(f_k-f_*)$ なので，
+上の線形収束評価を得る．
+$m\le L$ と $c_1(1-c_2)<1/4$ から $q\ge0$ である．
+従って $f_k-f_*\le q^k(f_0-f_*)\to0$．
+強凸性を $(x,y)=(x_*,x_k)$ に適用すると
+$f_k-f_*\ge m\norm{x_k-x_*}^2/2$ だから $x_k\to x_*$ である．
+\end{proof}
+
+\section{BFGS更新と保証できる収束範囲}
+\begin{definition}[BFGS更新]
+対称正定値行列 $B$，ベクトル $s,y\in\mathbb R^d$ で
+$s^Ty>0$ を満たすものに対し
+\[
+ B_+=B-\frac{Bss^TB}{s^TBs}+\frac{yy^T}{s^Ty}
+\]
+をBFGS更新と呼ぶ．ここでは $B$ はHessianの近似行列である．
+\end{definition}
+
+\begin{theorem}[正定値性の保存]\label{thm:spd}
+$B$ が対称正定値で $s^Ty>0$ なら，$B_+$ も対称正定値である．
+\end{theorem}
+\begin{proof}
+$\langle u,v\rangle_B=u^TBv$ を内積とすると，
+任意の $v\in\mathbb R^d$ について
+\[
+ v^TB_+v=\norm v_B^2-
+     \frac{|\langle v,s\rangle_B|^2}{\norm s_B^2}
+     +\frac{(v^Ty)^2}{s^Ty}\ge0.
+\]
+最後の不等式はCauchy--Schwarzによる．
+等号成立ならまず $v$ が $s$ に比例し，さらに $v^Ty=0$．
+$y^Ts>0$ なので $v=0$ である．従って正定値となる．
+\end{proof}
+
+\begin{lemma}[Wolfe条件は曲率条件を保証する]\label{lem:curv}
+反復 $s_k=\alpha_kp_k$，
+$y_k=g(x_{k+1})-g(x_k)$ が
+弱Wolfe条件を満たすなら，$s_k^Ty_k>0$ である．
+\end{lemma}
+\begin{proof}
+$g_k^Tp_k<0$ と曲率条件から
+\[
+ s_k^Ty_k=\alpha_k(g_{k+1}-g_k)^Tp_k
+ \ge\alpha_k(1-c_2)(-g_k^Tp_k)>0.
+\]
+\end{proof}
+
+\begin{theorem}[一様に良条件な準Newton方向の収束]\label{thm:qn}
+Zoutendijkの定理の仮定のもとで，
+各 $k$ における準Newton方向を
+$p_k=-B_k^{-1}g_k$ とする．
+さらにすべての $k$ で
+\[
+ m_BI\le B_k\le M_BI
+ \qquad(0<m_B\le M_B<\infty)
+\]
+が同一の定数で成立すると仮定する．
+このとき $\norm{g_k}\to0$ である．
+$f$ が $m$-強凸なら $x_k\to x_*$ である．
+\end{theorem}
+\begin{proof}
+$g_k^Tp_k=-g_k^TB_k^{-1}g_k\le-\norm{g_k}^2/M_B$ なので
+$p_k$ は降下方向である．
+さらに $\norm{p_k}\le\norm{g_k}/m_B$ より
+\[
+ \cos\theta_k=\frac{-g_k^Tp_k}{\norm{g_k}\norm{p_k}}
+ \ge\frac{m_B}{M_B}>0.
+\]
+系\ref{cor:grad}から $\norm{g_k}\to0$ を得る．
+強凸の場合は補題\ref{lem:strong}によって $x_k\to x_*$ となる．
+\end{proof}
+
+\begin{remark}
+BFGS更新の正定値性だけでは，更新行列 $B_k$ の固有値に
+上記の $m_B,M_B$ が一様に取れるとは限らない．
+従って定理\ref{thm:qn}を「すべての非凸函数に対する
+BFGSの無条件な大域収束定理」として引用してはならない．
+一様固有値評価を不要とする一般のBFGS収束定理には，
+強凸性・有界なレベル集合・適切なラインサーチなどの
+追加解析が必要となる．その完全証明は本稿の射程外である．
+\end{remark}
+
+\begin{example}[正定値二次函数と厳密直線探索]
+$Q$ を対称正定値行列，$b\in\mathbb R^d$ とし
+$f(x)=\frac12x^TQx-b^Tx$ とする．
+降下方向 $p$ に対する厳密直線探索の解は
+\[
+ \alpha_*=-\frac{g(x)^Tp}{p^TQp}>0.
+\]
+これは $f(x+\alpha p)$ を $\alpha$ について二次函数として
+微分すれば得られる．このとき
+$g(x+\alpha_*p)^Tp=0$ なので
+曲率条件を満たす．実際の減少量は
+$-\alpha_*g(x)^Tp/2$ であるから，$c_1\le1/2$ なら
+Armijo条件も成立する．
+\end{example}
+
+\section{まとめと依存関係}
+Wolfe条件の存在は初等微積分によって示し，
+Lipschitz勾配の下でZoutendijkの定理を証明した．
+同定理は降下方向と負勾配のなす角度が一様に0から離れるとき
+勾配が零へ収束することを保証する．
+強凸性の下では最急降下法の線形収束を導いた．
+BFGSについては正定値性の保存と，行列が一様に良条件の場合の
+収束を証明した．一般BFGSの無条件な収束とは区別する．
+
+\begin{thebibliography}{9}
+\bibitem{nw} J. Nocedal and S. J. Wright,
+ \emph{Numerical Optimization}, 2nd ed., Springer, 2006.
+\bibitem{bertsekas} D. P. Bertsekas,
+ \emph{Nonlinear Programming}, 3rd ed., Athena Scientific, 2016.
+\end{thebibliography}
+
+\section{到達課題の完全解答}
+\noindent\textbf{平方根をNewton法で求める．}
+\begin{proposition}
+$x_0=1$ とし，
+\[
+x_{n+1}=\frac12\left(x_n+\frac2{x_n}\right)
+\]
+と置く．この列は $\sqrt2$ に収束し，
+$n\ge1$ で
+\[
+x_{n+1}-\sqrt2
+=\frac{(x_n-\sqrt2)^2}{2x_n}
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+$x_1=3/2>\sqrt2$．任意の $x_n>0$ に対し
+\[
+x_{n+1}-\sqrt2
+=\frac{x_n^2+2-2\sqrt2x_n}{2x_n}
+=\frac{(x_n-\sqrt2)^2}{2x_n}\ge0.
+\]
+$x_n\ge\sqrt2$ のとき
+$x_{n+1}-x_n=(2-x_n^2)/(2x_n)\le0$．
+したがって $n\ge1$ で単調減少かつ
+下に $\sqrt2$ で有界だから極限 $L$ を持つ．
+反復式に極限を取れば $L^2=2$，
+$L>0$ なので $L=\sqrt2$．
+誤差恒等式はすでに計算した通りである．
+\end{proof}
+\noindent\textbf{到達確認．}
+$x_2$ を求めよ．
+\par\noindent\textbf{解答．}
+$x_2=\frac12(3/2+4/3)=17/12$ である．
+\end{document}
