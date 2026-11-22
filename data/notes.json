@@ -1940,6 +1940,90 @@
         "elliptic-curve",
         "finite-field"
       ]
+    },
+    {
+      "id": "97.030",
+      "title": "積分と極限の大学解析的解法",
+      "fields": [
+        "entrance-math",
+        "analysis",
+        "optimization"
+      ],
+      "topics": [
+        "integration",
+        "convergence",
+        "convexity"
+      ]
+    },
+    {
+      "id": "97.050",
+      "title": "二次形式と図形の極値",
+      "fields": [
+        "entrance-math",
+        "linear-algebra",
+        "optimization"
+      ],
+      "topics": [
+        "spectral-theory",
+        "optimization-method",
+        "convexity"
+      ]
+    },
+    {
+      "id": "97.120",
+      "title": "約数と群作用による整数問題",
+      "fields": [
+        "entrance-math",
+        "elementary-number-theory",
+        "enumeration"
+      ],
+      "topics": [
+        "group-action",
+        "burnside-lemma",
+        "arithmetic-function"
+      ]
+    },
+    {
+      "id": "97.130",
+      "title": "円とMöbius変換",
+      "fields": [
+        "entrance-math",
+        "complex-analysis",
+        "differential-geometry"
+      ],
+      "topics": [
+        "holomorphic",
+        "conformality",
+        "geometric-construction"
+      ]
+    },
+    {
+      "id": "97.170",
+      "title": "二項係数と有限Fourier解析",
+      "fields": [
+        "entrance-math",
+        "fourier-analysis",
+        "enumeration"
+      ],
+      "topics": [
+        "fourier-transform",
+        "polynomial-equations",
+        "finite-field"
+      ]
+    },
+    {
+      "id": "97.200",
+      "title": "交換操作と0-Heckeモノイド",
+      "fields": [
+        "entrance-math",
+        "enumeration",
+        "algebra"
+      ],
+      "topics": [
+        "group-action",
+        "algorithm",
+        "counting"
+      ]
     }
   ]
 }
