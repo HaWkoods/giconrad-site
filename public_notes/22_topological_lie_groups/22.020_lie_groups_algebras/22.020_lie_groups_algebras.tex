@@ -1,0 +1,290 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Lie群とLie代数}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，有限次元多様体の接空間，行列指数関数，行列の交換子．
+本稿の具体的な到達課題は，行列Lie群のLie代数を計算し，指数写像と随伴作用を明示する．
+
+
+\section{Lie群と左不変ベクトル場}
+\begin{definition}
+滑らかな多様体 $G$ が群であり，
+積 $m:G\times G\to G$ と逆元写像
+$\iota:G\to G$ が滑らかであるときLie群という．
+$L_g(h)=gh$，$R_g(h)=hg$ を左右移動という．
+\end{definition}
+\begin{lemma}
+任意の $g\in G$ に対して $L_g,R_g$ は微分同相である．
+\end{lemma}
+\begin{proof}
+逆写像はそれぞれ $L_{g^{-1}},R_{g^{-1}}$ であり，
+群の積が滑らかなので双方とも滑らかである．
+\end{proof}
+\begin{definition}
+ベクトル場 $X$ が左不変とは
+$(L_g)_*X=X$（全ての $g$）となることをいう．
+\end{definition}
+\begin{theorem}[左不変ベクトル場と単位元の接空間]\label{thm:leftinv}
+$e$ を単位元とすると，写像
+\[
+ T_eG\longrightarrow\mathfrak X(G),\qquad
+ v\longmapsto X^v,\quad X^v_g=(dL_g)_e(v)
+\]
+は $T_eG$ から左不変ベクトル場全体への線形同型である．
+\end{theorem}
+\begin{proof}
+$g\mapsto d(L_g)_ev$ は積写像の滑らかさにより
+滑らかなベクトル場である．
+$L_h\circ L_g=L_{hg}$ を微分すれば
+$(dL_h)_g(X^v_g)=X^v_{hg}$ となり左不変である．
+逆に左不変ベクトル場 $X$ は
+$X_g=(dL_g)_eX_e$ と表されるので，
+$X_e$ によって一意に決まる．線形性は微分の線形性による．
+\end{proof}
+\section{Lie代数}
+\begin{definition}
+左不変ベクトル場のLie括弧は再び左不変であり，
+$T_eG$ に誘導される双線形括弧を
+$\mathfrak g$ のLie括弧といい，
+$\mathfrak g=T_eG$ をLie代数という．
+\end{definition}
+\begin{proposition}[Jacobi恒等式]
+$\mathfrak g$ では
+$[u,v]=-[v,u]$ および
+$[u,[v,w]]+[v,[w,u]]+[w,[u,v]]=0$ が成り立つ．
+\end{proposition}
+\begin{proof}
+左移動は微分同相なのでベクトル場のLie括弧と可換であり，
+左不変ベクトル場の括弧も左不変となる．
+関数上の導分としてLie括弧を交換子 $XY-YX$ とみなせば，
+反対称性は明らかで，Jacobi恒等式は
+三重積を全て展開して各項が正負一度ずつ現れ相殺するため成立する．
+単位元で評価して結論を得る．
+\end{proof}
+\section{指数写像}
+\begin{lemma}[左不変ベクトル場の完備性]\label{lem:complete}
+任意の左不変ベクトル場は完備である．
+\end{lemma}
+\begin{proof}
+単位元 $e$ における局所積分曲線
+$\gamma:(-\varepsilon,\varepsilon)\to G$ を取る．
+任意の $g\in G$ における積分曲線は
+$L_g\gamma(t)$ であり，群の左移動によって
+同じ時間幅の局所解を持つ．
+従って極大積分曲線の有限端点の直前においても，
+現在の点から同じ $\varepsilon$ だけ延長できる．
+これは有限端点での極大性に反するので
+両端点は無限大である．
+\end{proof}
+\begin{definition}
+$v\in\mathfrak g$ に対して左不変ベクトル場 $X^v$ の
+単位元からの積分曲線を $\gamma_v(t)$ とする．
+\[
+ \exp(v)=\gamma_v(1)
+\]
+と定める．
+\end{definition}
+\begin{theorem}[指数写像と一パラメータ部分群]\label{thm:exp}
+$\exp:\mathfrak g\to G$ は滑らかで，
+\[
+ \exp((s+t)v)=\exp(sv)\exp(tv),\quad
+ \exp(0)=e,\quad
+ (d\exp)_0=\mathrm{id}_{\mathfrak g}.
+\]
+特に $\exp$ は $0$ の近傍から $e$ の近傍への微分同相を与える．
+\end{theorem}
+\begin{proof}
+左不変性と積分曲線の一意性から，
+$\gamma_v(s+t)=\gamma_v(s)\gamma_v(t)$ が成立する．
+時間変数の再尺度化によって
+$\gamma_{sv}(t)=\gamma_v(st)$ である．
+従って $\exp(sv)=\gamma_v(s)$ となり最初の等式を得る．
+零ベクトルの積分曲線は定数なので $\exp(0)=e$ である．
+初期値とベクトル場のパラメータへの滑らかな依存性から
+指数写像は滑らかである．
+\[
+ (d\exp)_0(v)=\left.\frac d{dt}\right|_0\exp(tv)
+ =\gamma_v'(0)=v
+\]
+なので微分は恒等であり，逆写像定理から局所微分同相となる．
+\end{proof}
+\begin{proposition}[一パラメータ部分群の分類]
+滑らかな準同型 $\alpha:(\mathbb R,+)\to G$ は
+ただ一つの $v\in\mathfrak g$ に対し
+$\alpha(t)=\exp(tv)$ と書ける．
+\end{proposition}
+\begin{proof}
+$v=\alpha'(0)$ と置く．
+$\alpha(t+s)=\alpha(t)\alpha(s)$ を $s=0$ で微分すると
+$\alpha'(t)=(dL_{\alpha(t)})_e v$ となる．
+従って $\alpha$ は $X^v$ の積分曲線であり，
+一意性から $\gamma_v(t)=\exp(tv)$ と一致する．
+\end{proof}
+\section{随伴表現}
+\begin{definition}
+共役 $C_g(h)=ghg^{-1}$ を用い
+$\operatorname{Ad}_g=(dC_g)_e:\mathfrak g\to\mathfrak g$
+と定める．
+\end{definition}
+\begin{proposition}
+$\operatorname{Ad}:G\to\operatorname{GL}(\mathfrak g)$ は
+滑らかな群準同型であり，
+\[
+ \operatorname{Ad}_g[u,v]
+ =[\operatorname{Ad}_gu,\operatorname{Ad}_gv],\qquad
+ g\exp(v)g^{-1}=\exp(\operatorname{Ad}_gv)
+\]
+を満たす．
+\end{proposition}
+\begin{proof}
+$C_{gh}=C_g\circ C_h$ なので微分して群準同型性を得る．
+微分同相による押し出しはベクトル場のLie括弧を保つため，
+その単位元での表示が第1式となる．
+$t\mapsto g\exp(tv)g^{-1}$ は一パラメータ部分群で，
+$t=0$ における速度は $\operatorname{Ad}_gv$ である．
+一パラメータ部分群の一意性から第2式が従う．
+\end{proof}
+\section{行列Lie群の例}
+\begin{example}
+$\operatorname{GL}_n(\mathbb R)$ のLie代数は
+$M_n(\mathbb R)$ であり，
+括弧は $[A,B]=AB-BA$，指数写像は
+$\exp A=\sum_{k=0}^\infty A^k/k!$ である．
+\end{example}
+\begin{proof}
+$\operatorname{GL}_n(\mathbb R)$ は
+$M_n(\mathbb R)$ の開集合である．
+行列指数級数はコンパクト集合上一様収束し
+$\frac d{dt}e^{tA}=Ae^{tA}$ を満たす．
+これは左不変ベクトル場 $X_A(g)=gA$ の初期値解なので
+群の指数写像と一致する．
+左不変場の交換子を単位元で計算すると
+$[X_A,X_B]_e=AB-BA$ である．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{行列群の実際の計算．}
+\begin{proposition}[上三角行列群のLie代数]
+\[
+G=\left\{\begin{pmatrix}a&b\\0&1\end{pmatrix}:
+a>0,\ b\in\mathbb R\right\}
+\]
+は積に関してLie群であり，そのLie代数は
+\[
+\mathfrak g=\left\{\begin{pmatrix}u&v\\0&0\end{pmatrix}:
+u,v\in\mathbb R\right\}
+\]
+である．標準基底を
+$H=\left(\begin{smallmatrix}1&0\\0&0\end{smallmatrix}\right)$，
+$E=\left(\begin{smallmatrix}0&1\\0&0\end{smallmatrix}\right)$
+とすると $[H,E]=E$ である．
+\end{proposition}
+\begin{proof}
+二つの元の積は
+$\left(\begin{smallmatrix}ac&ad+b\\0&1\end{smallmatrix}\right)$，
+逆元は
+$\left(\begin{smallmatrix}a^{-1}&-a^{-1}b\\0&1\end{smallmatrix}\right)$
+となり，いずれも表示された集合内に属し滑らかである．
+単位元を通る曲線の微分から示した二次元線形空間を得る．
+行列Lie群では括弧は交換子なので
+$HE=E$，$EH=0$ から結論が従う．
+\end{proof}
+\begin{proposition}[指数写像の明示式]
+$A=uH+vE$ に対し，
+\[
+\exp A=
+\begin{cases}
+\left(\begin{smallmatrix}
+e^u&v(e^u-1)/u\\0&1
+\end{smallmatrix}\right)&u\ne0,\\[2mm]
+\left(\begin{smallmatrix}1&v\\0&1\end{smallmatrix}\right)&u=0
+\end{cases}
+\]
+である．
+\end{proposition}
+\begin{proof}
+$n\ge1$ で
+$A^n=\left(\begin{smallmatrix}u^n&u^{n-1}v\\0&0\end{smallmatrix}\right)$
+であることを帰納法で確かめる．
+指数級数を成分ごとに足し合わせると
+右上成分が
+$v\sum_{n\ge1}u^{n-1}/n!$ となり，
+所要の表示を得る．$u=0$ は極限または
+$A^2=0$ による．
+\end{proof}
+\noindent\textbf{到達確認．}
+$g=\left(\begin{smallmatrix}a&b\\0&1\end{smallmatrix}\right)$
+について $\operatorname{Ad}_g(E)$ を求めよ．
+\par\noindent\textbf{解答．}
+$g^{-1}=\left(\begin{smallmatrix}a^{-1}&-b/a\\0&1\end{smallmatrix}\right)$
+であるから
+$gEg^{-1}=aE$ となる．
+従って随伴作用は一般には自明でない．
+\end{document}

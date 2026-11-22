@@ -1,0 +1,362 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode radon_nikodym.tex (2回)
+%              dvipdfmx radon_nikodym.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Radon--Nikodymの定理とLebesgue分解}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，測度とLebesgue積分，単調収束定理，実Hilbert空間のRiesz表現定理である．
+絶対連続性とRadon--Nikodymの定理は，本稿で定義・証明する．
+本稿の具体的な到達課題は，密度から測度を復元し，積分と全変動を計算する．
+
+\section{絶対連続性と密度}
+
+可測空間 $(X,\mathcal A)$ を固定する．以下，測度は $[0,\infty]$ に値をとる正測度とする．
+二つの測度 $\mu,\nu$ が与えられたとき，どのような条件のもとで
+\[
+             \nu(A)=\int_A f\,d\mu\qquad(A\in\mathcal A)
+\]
+と書けるであろうか．右辺は $\mu(A)=0$ ならば零である．本稿の目的は，適当な有限性の仮定のもとで，この必要条件が十分でもあることを示すことにある．
+積分の単調収束定理および実Hilbert空間のRiesz表現定理を既知とする．非負拡張実数の積では $0\cdot\infty=0$ とする．
+
+\begin{definition}
+すべての $A\in\mathcal A$ について $\mu(A)=0$ ならば $\nu(A)=0$ であるとき，
+$\nu$ は $\mu$ に関して絶対連続であるといい，$\nu\ll\mu$ と書く．
+$X$ が測度有限の可測集合の可算和であるとき，その測度を $\sigma$ 有限という．
+\end{definition}
+
+\begin{proposition}
+非負可測関数 $f$ に対し，$\nu_f(A)=\int_A f\,d\mu$ は測度であり，$\nu_f\ll\mu$ である．
+\end{proposition}
+\begin{proof}
+$\nu_f(\varnothing)=0$ である．互いに素な可測集合列 $(A_j)$ とその和集合 $A$ に対し，
+$\sum_{j=1}^n f\mathbf1_{A_j}$ は $f\mathbf1_A$ に単調増加する．単調収束定理と積分の加法性から
+$\nu_f(A)=\lim_n\sum_{j=1}^n\nu_f(A_j)$ を得る．零集合上の非負関数の積分は零ゆえ，絶対連続性も従う．
+\end{proof}
+
+$\nu=\nu_f$ となるとき，$f$ を $\mu$ に関する $\nu$ の密度といい，$d\nu=f\,d\mu$ と書く．
+この記号は，次の補題によって一般の被積分関数にも用いることができる．
+
+\begin{lemma}[重み付き積分]\label{lem:weight}
+$d\nu=f\,d\mu$ とする．任意の非負可測関数 $u$ に対して
+\[
+                   \int_X u\,d\nu=\int_X uf\,d\mu
+\]
+が成り立つ．両辺に $+\infty$ を許す．
+\end{lemma}
+\begin{proof}
+$u=\mathbf1_A$ の場合は密度の定義である．非負単関数については，指示関数の有限線形結合で表示して両辺の加法性を用いればよい．
+一般の $u$ には非負単関数列 $u_n\uparrow u$ をとる．このとき $u_nf\uparrow uf$ であるから，両辺に単調収束定理を用いると所期の等式を得る．
+\end{proof}
+
+\begin{lemma}[有限性と一意性]\label{lem:uniq}
+$\nu$ を $\sigma$ 有限とし，$f,g$ はともに $\mu$ に関する $\nu$ の密度とする．このとき $f$ は $\mu$ に関してほとんど至る所で有限であり，$f=g$ が $\mu$ に関してほとんど至る所で成り立つ．
+\end{lemma}
+\begin{proof}
+$X=\bigcup_n E_n$，$\nu(E_n)<\infty$ とする．
+$\int_{E_n} f\,d\mu=\nu(E_n)<\infty$ ゆえに，$f$ は $E_n$ 上ほとんど至る所で有限である．例外集合の可算和をとれば第一の主張を得る．$g$ についても同様である．
+$B_n=E_n\cap\{f>g\}$ とおく．$B_n$ 上で両関数は可積分であり，
+\[
+           \int_{B_n}(f-g)\,d\mu=\nu(B_n)-\nu(B_n)=0
+\]
+である．非負関数の積分が零ならばその関数はほとんど至る所で零であるから，$\mu(B_n)=0$ である．$n$ について和をとれば $\mu(\{f>g\})=0$ を得る．$f,g$ を交換すれば結論が従う．
+\end{proof}
+
+\section{有限測度に対する存在定理}
+
+$\mu,\nu$ を有限測度とする．$\nu$ による積分を線形汎関数とみなすには，積分値が代表元の選び方によらず，かつノルムによって評価できる空間が必要となる．和測度 $\lambda=\mu+\nu$ をとると，$\nu\le\lambda$ と $\mu\le\lambda$ が同時に成り立つ．ここで測度の不等号はすべての可測集合上での不等号を表す．
+
+\begin{lemma}[和測度に関する二つの密度]\label{lem:sum}
+ある可測関数 $g:X\to[0,1]$ が存在して，
+\[
+                 d\nu=g\,d\lambda,\qquad d\mu=(1-g)\,d\lambda
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+実Hilbert空間 $L^2(\lambda)$ の元 $u$ に対し $T(u)=\int_X u\,d\nu$ とおく．
+$\lambda$-零集合は $\nu$-零集合であるから，$\lambda$ に関してほとんど至る所で等しい代表元は $\nu$ に関してもほとんど至る所で一致する．また $\nu\le\lambda$ より非負関数の積分も同じ順序に従う．これは指示関数，単関数，単調極限の順に確かめられる．したがってCauchy--Schwarzの不等式から
+\[
+      \int_X |u|\,d\nu
+       \le \nu(X)^{1/2}\left(\int_X |u|^2\,d\nu\right)^{1/2}
+       \le \nu(X)^{1/2}\|u\|_{L^2(\lambda)} .
+\]
+ゆえに $T$ は代表元によらず定まる有界線形汎関数である．Riesz表現定理によってある $g\in L^2(\lambda)$ が存在し，すべての $u\in L^2(\lambda)$ に対し
+\[
+                    T(u)=\int_X ug\,d\lambda
+\]
+となる．以下 $g$ の可測な代表元をとる．$\lambda(X)<\infty$ だから，各 $A\in\mathcal A$ に対し $\mathbf1_A\in L^2(\lambda)$ である．これを代入すると
+\[
+             0\le \nu(A)=\int_A g\,d\lambda\le\lambda(A)
+\]
+を得る．$A=\{g\le-1/n\}$ とすれば $0\le-\lambda(A)/n$ であり，この集合は零集合である．同様に $A=\{g\ge1+1/n\}$ とすれば $\lambda(A)\ge(1+1/n)\lambda(A)$ なので $\lambda(A)=0$ である．可算和をとり，例外集合上の値を零に変更すれば $0\le g\le1$ が全点で成り立つ．最後に，有限量の差をとって
+$\mu(A)=\lambda(A)-\nu(A)=\int_A(1-g)\,d\lambda$ を得る．
+\end{proof}
+
+\begin{theorem}[有限測度に対するRadon--Nikodymの定理]\label{thm:finite}
+$\mu,\nu$ を有限測度とし，$\nu\ll\mu$ とする．このとき非負可積分関数 $f$ が存在して $d\nu=f\,d\mu$ となる．この $f$ は $\mu$-零集合上の変更を除いて一意である．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:sum}の $g$ に対して $S=\{g=1\}$ とおく．
+$\mu(S)=\int_S(1-g)\,d\lambda=0$ である．ここで $\nu\ll\mu$ より $\nu(S)=0$ も従う．
+\[
+ f(x)=\begin{cases}
+  g(x)/(1-g(x)) & (x\in X\setminus S),\\
+  0 & (x\in S)
+ \end{cases}
+\]
+とおけば $f$ は有限値非負可測関数である．補題\ref{lem:weight}を $d\mu=(1-g)\,d\lambda$ に適用すると
+\[
+ \int_A f\,d\mu=\int_A f(1-g)\,d\lambda
+    =\int_{A\setminus S} g\,d\lambda=\nu(A\setminus S)=\nu(A)
+\]
+がすべての $A\in\mathcal A$ に対して成り立つ．$A=X$ とすれば可積分性を得る．一意性は補題\ref{lem:uniq}による．
+\end{proof}
+
+\begin{remark}
+絶対連続性を仮定する前にも，$X\setminus S$ 上では上の商が定まり，
+$\int_A f\,d\mu=\nu(A\setminus S)$ が成り立つ．残る量は $\nu(A\cap S)$ である．第5節でこの項を調べる．
+\end{remark}
+
+\section{\texorpdfstring{$\sigma$}{σ}有限測度に対する定理}
+
+\begin{lemma}[共通の可測分割]\label{lem:partition}
+$\mu,\nu$ がともに $\sigma$ 有限ならば，$X$ は互いに素な可測集合 $D_n$ の可算和で，各 $D_n$ は両測度に関して有限である．特に $\mu+\nu$ も $\sigma$ 有限である．
+\end{lemma}
+\begin{proof}
+それぞれの有限測度集合による可算被覆をとり，初めの $n$ 個の和をとることにより，増大する被覆 $U_n,V_n$ で $\mu(U_n)<\infty$，$\nu(V_n)<\infty$ となるものを得る．
+$W_0=\varnothing$，$W_n=U_n\cap V_n$ とすれば $W_n\uparrow X$ である．実際，各点はある $U_i$ とある $V_j$ に属し，$n=\max(i,j)$ とすれば $W_n$ に属する．$D_n=W_n\setminus W_{n-1}$ が求める分割である．
+\end{proof}
+
+\begin{theorem}[Radon--Nikodym]\label{thm:rn}
+同じ可測空間上の $\sigma$ 有限測度 $\mu,\nu$ に対し，次の二条件は同値である．
+\begin{enumerate}
+\item $\nu\ll\mu$ である．
+\item ある有限値非負可測関数 $f$ が存在し，任意の $A\in\mathcal A$ に対して $\nu(A)=\int_A f\,d\mu$ が成り立つ．
+\end{enumerate}
+密度 $f$ は $\mu$ に関してほとんど至る所で一意である．
+\end{theorem}
+\begin{proof}
+第二条件から第一条件は第1節の命題による．逆に $\nu\ll\mu$ とする．補題\ref{lem:partition}の分割を用いる．
+$D_n$ に相対可測集合族 $\{A\cap D_n:A\in\mathcal A\}$ を入れ，$\mu,\nu$ をその上に制限する．各制限測度は有限であり，絶対連続性も保たれる．定理\ref{thm:finite}の構成から $D_n$ 上の有限値の密度 $f_n$ を得る．
+$x\in D_n$ に対して $f(x)=f_n(x)$ とおく．各 $t$ に対し $\{f>t\}$ は可測集合 $\{x\in D_n:f_n(x)>t\}$ の可算和であるから，$f$ は可測である．単調収束定理と可算加法性により
+\[
+ \int_A f\,d\mu
+  =\sum_{n=1}^{\infty}\int_{A\cap D_n} f_n\,d\mu
+  =\sum_{n=1}^{\infty}\nu(A\cap D_n)=\nu(A).
+\]
+一意性は補題\ref{lem:uniq}による．
+\end{proof}
+
+\begin{definition}
+定理\ref{thm:rn}の密度を $\mu$ に関する $\nu$ のRadon--Nikodym微分といい，$d\nu/d\mu$ で表す．関数として用いるときはその可測な代表元をとる．
+\end{definition}
+
+\begin{example}[基準測度が $\sigma$ 有限でない場合]
+$X=[0,1]$ にBorel集合族を入れ，$\mu$ を数え上げ測度，$\nu$ をLebesgue測度の制限とする．$\mu$ の零集合は空集合のみであり，$\nu\ll\mu$ である．$\mu$ に関して有限な集合は有限集合なので，その可算和で非可算な $X$ を覆うことはできない．
+密度 $f$ が存在すれば，任意の $x\in X$ に対し，一点集合上の積分から
+$f(x)=\int_{\{x\}}f\,d\mu=\nu(\{x\})=0$ を得る．ところが $\nu(X)=1$ であり，矛盾する．この例では拡張実数値を許しても密度は存在しない．
+\end{example}
+
+\begin{example}[表される測度が $\sigma$ 有限でない場合]
+一点空間 $X=\{a\}$ において $\mu(X)=1$，$\nu(X)=\infty$ とする．$\nu\ll\mu$ である．密度があれば $\nu(X)=f(a)\mu(X)=f(a)$ だから $f(a)=\infty$ でなければならない．逆にこの値をとれば空集合と全体で積分表示が成立する．したがってここで失われるのは密度の有限性である．
+\end{example}
+
+\section{測度の変換と連鎖律}
+
+\begin{proposition}[可積分関数の積分変換]\label{prop:change}
+$d\nu=f\,d\mu$ とし，$f$ は有限値非負可測関数とする．実数値可測関数 $u$ について，$u$ が $\nu$ に関して可積分であることと，$uf$ が $\mu$ に関して可積分であることは同値である．このとき
+\[
+                 \int_A u\,d\nu=\int_A uf\,d\mu
+                 \qquad(A\in\mathcal A)
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+補題\ref{lem:weight}を $|u|$ に用いると $\int_X |u|\,d\nu=\int_X|uf|\,d\mu$ であり，可積分性の同値を得る．さらに $u^+=\max(u,0)$，$u^-=\max(-u,0)$ とおき，同補題を $\mathbf1_Au^+$ と $\mathbf1_Au^-$ に適用する．可積分性によって両式の各辺は有限ゆえ，辺々引いて結論を得る．
+\end{proof}
+
+\begin{theorem}[連鎖律]
+$\rho,\nu,\mu$ を $\sigma$ 有限測度とし，$\rho\ll\nu\ll\mu$ とする．このとき $\rho\ll\mu$ であり，$\mu$ に関してほとんど至る所で
+\[
+            \frac{d\rho}{d\mu}=
+            \frac{d\rho}{d\nu}\frac{d\nu}{d\mu}
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$\mu(A)=0$ ならば $\nu(A)=0$，したがって $\rho(A)=0$ である．定理\ref{thm:rn}より $h=d\rho/d\nu$，$f=d\nu/d\mu$ の有限値非負可測な代表元をとれる．任意の $A\in\mathcal A$ について補題\ref{lem:weight}を用いると
+\[
+       \rho(A)=\int_A h\,d\nu=\int_A hf\,d\mu .
+\]
+ゆえに $hf$ は $\mu$ に関する $\rho$ の密度であり，一意性から結論を得る．
+\end{proof}
+
+\begin{remark}
+$h$ を変更できるのは $\nu$-零集合上である．そのような集合 $N$ は $\mu(N)>0$ を満たしうるが，$\int_N f\,d\mu=\nu(N)=0$ より，$N$ 上で $f=0$ が $\mu$ に関してほとんど至る所で成り立つ．したがって $h$ の代表元を変更しても積 $hf$ の $\mu$ に関する同値類は変わらない．
+\end{remark}
+
+\begin{corollary}[相互に絶対連続な測度]
+$\sigma$ 有限測度 $\mu,\nu$ が互いに絶対連続ならば，$f=d\nu/d\mu$ は $\mu$ に関してほとんど至る所で正であり，$d\mu/d\nu=1/f$ が $\nu$ に関してほとんど至る所で成り立つ．
+\end{corollary}
+\begin{proof}
+定数関数 $1$ は $\mu$ に関する $\mu$ の密度である．連鎖律で $\rho=\mu$ として $(d\mu/d\nu)f=1$ を $\mu$ に関してほとんど至る所で得る．この等式の成り立つ点で $f>0$ であり逆数が定まる．$\nu\ll\mu$ により同じ例外集合は $\nu$ に関しても零集合である．
+\end{proof}
+
+\section{Lebesgue分解}
+
+\begin{definition}
+ある $S\in\mathcal A$ について $\mu(S)=0$ かつ $\eta(X\setminus S)=0$ となるとき，測度 $\eta$ と $\mu$ は互いに特異であるといい，$\eta\perp\mu$ と書く．$S$ をその補集合と取り替えれば，この関係が対称であることがわかる．
+\end{definition}
+
+\begin{theorem}[Lebesgue分解]
+$\mu,\nu$ を $\sigma$ 有限測度とする．このとき，ただ一組の正測度 $\nu_{\mathrm a},\nu_{\mathrm s}$ が存在して
+\[
+       \nu=\nu_{\mathrm a}+\nu_{\mathrm s},\qquad
+       \nu_{\mathrm a}\ll\mu,\qquad \nu_{\mathrm s}\perp\mu
+\]
+を満たす．両測度は $\sigma$ 有限であり，$\nu_{\mathrm a}$ は $\mu$ に関する密度をもつ．
+\end{theorem}
+\begin{proof}
+$\lambda=\mu+\nu$ は補題\ref{lem:partition}より $\sigma$ 有限であり，$\nu\ll\lambda$，$\mu\ll\lambda$ である．定理\ref{thm:rn}より $g=d\nu/d\lambda$，$k=d\mu/d\lambda$ の非負有限値の代表元をとる．すべての $A$ について
+\[
+            \int_A(g+k)\,d\lambda=\lambda(A)=\int_A1\,d\lambda
+\]
+だから，補題\ref{lem:uniq}により $g+k=1$ が $\lambda$ に関してほとんど至る所で成り立つ．例外集合で $g=0,k=1$ と変更し，以下 $k=1-g$ とする．この議論は無限測度の差をとらずに第2節の表示を与える．
+
+$S=\{g=1\}$ とおき，$\nu_{\mathrm s}(A)=\nu(A\cap S)$，
+$\nu_{\mathrm a}(A)=\nu(A\setminus S)$ と定める．これらは測度であり，和は $\nu$ である．いずれも $\nu$ 以下だから $\sigma$ 有限である．
+$\mu(S)=\int_S(1-g)\,d\lambda=0$ および $\nu_{\mathrm s}(X\setminus S)=0$ より，$\nu_{\mathrm s}\perp\mu$ を得る．
+さらに $S$ 上で $f=0$，$X\setminus S$ 上で $f=g/(1-g)$ とおくと，補題\ref{lem:weight}により
+\[
+      \int_A f\,d\mu=\int_A f(1-g)\,d\lambda
+        =\int_{A\setminus S}g\,d\lambda=\nu_{\mathrm a}(A).
+\]
+したがって $f$ は $\nu_{\mathrm a}$ の密度であり，$\nu_{\mathrm a}\ll\mu$ である．
+
+一意性を示す．別の分解 $\nu=\alpha+\beta$，$\alpha\ll\mu$，$\beta\perp\mu$ をとる．
+$\mu(T)=0$，$\beta(X\setminus T)=0$ となる $T$ を選び，$N=S\cup T$ とおく．
+$\mu(N)=0$ だから $\alpha(N)=\nu_{\mathrm a}(N)=0$ であり，他方 $\beta(X\setminus N)=\nu_{\mathrm s}(X\setminus N)=0$ である．よって任意の $A$ に対し
+\[
+ \alpha(A)=\nu(A\setminus N)=\nu_{\mathrm a}(A),\qquad
+ \beta(A)=\nu(A\cap N)=\nu_{\mathrm s}(A).
+\]
+以上で一意性が従う．
+\end{proof}
+
+\begin{example}[密度と点質量]
+実直線のBorel集合族上で $m$ をLebesgue測度とし，$\delta_0(A)=\mathbf1_A(0)$ とおく．
+\[
+            \nu(A)=\int_A e^{-x^2}\,dm(x)+\delta_0(A)
+\]
+と定める．有界区間上では第一項はその区間の長さ以下なので，$\nu$ は $\sigma$ 有限である．第一項は $m$ に絶対連続であり，第二項は $m$-零集合 $\{0\}$ に集中している．したがって分解の一意性より，これらが順に絶対連続部分と特異部分である．
+
+構成中の $g$ も具体的に求まる．$\lambda=m+\nu$ とおき，
+\[
+  g(x)=\begin{cases}
+  e^{-x^2}/(1+e^{-x^2}) & (x\ne0),\\
+  1 & (x=0)
+  \end{cases}
+\]
+とする．原点の外では $d\lambda=(1+e^{-x^2})\,dm$ であり，原点では $\lambda(\{0\})=\nu(\{0\})=1$ である．可測集合をこの二部分に分けて積分すれば $\int_A g\,d\lambda=\nu(A)$ を得る．したがって $S=\{g=1\}=\{0\}$ であり，その外で $g/(1-g)=e^{-x^2}$ となる．原点でこの密度にどの値を与えても $m$ による積分は変わらない．残る質量 $\nu(\{0\})=1$ は，特異部分が担う．
+\end{example}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Radon--Nikodym微分の実際の計算．}
+\begin{proposition}
+$X=[0,1]$ にLebesgue測度 $\lambda$ を入れ，
+\[
+\nu(A)=\int_A2x\,d\lambda(x)
+\]
+と置く．このとき $\nu\ll\lambda$，
+$d\nu/d\lambda=2x$（ほとんど至る所）であり，
+$\nu(X)=1$ である．
+\end{proposition}
+\begin{proof}
+$\lambda(A)=0$ なら可積分関数の零集合上の積分は零なので
+$\nu(A)=0$．
+密度の定義そのものから
+Radon--Nikodym微分は $2x$ である．
+また $\nu(X)=\int_0^12x\,dx=1$ である．
+\end{proof}
+\begin{proposition}
+任意の有界可測関数 $f$ に対し
+$\int f\,d\nu=\int_0^1 2xf(x)\,dx$ である．
+\end{proposition}
+\begin{proof}
+可測集合の指示関数については $\nu$ の定義で成立し，
+単関数へ線形性で拡張できる．
+一般の非負可測関数は単関数の単調増加極限で近似し，
+単調収束定理を適用する．
+有界な符号付き関数は正部・負部に分ければよい．
+\end{proof}
+\noindent\textbf{到達確認．}
+この確率測度 $\nu$ の平均 $\int_0^1x\,d\nu$ を求めよ．
+\par\noindent\textbf{解答．}
+$\int_0^12x^2\,dx=2/3$ である．
+\end{document}

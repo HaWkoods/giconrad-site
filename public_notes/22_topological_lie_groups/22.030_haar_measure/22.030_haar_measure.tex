@@ -1,0 +1,626 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Haar測度と局所コンパクト群}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，局所コンパクト群，Haar測度，左不変性．
+本稿の具体的な到達課題は，具体的なコンパクト群でHaar測度を規格化して積分を計算する．
+
+\section{局所コンパクト群とRadon測度}
+
+本稿では $G$ を局所コンパクトHausdorff位相群とする．
+測度論についてはRadon測度の外正則性，
+開集合上の内正則性，Carath\'eodoryの外測度構成，
+およびTonelliの定理を前提とする．
+局所コンパクト空間のUrysohnの補題も用いる．
+
+\begin{definition}
+$G$ 上の正のBorel測度 $\mu$ が\emph{Radon測度}であるとは，
+各コンパクト集合 $K$ で $\mu(K)<\infty$ となり，
+任意のBorel集合 $A$ について
+\[
+ \mu(A)=\inf_{\substack{U\supset A\\U\ {\rm open}}}\mu(U)
+\]
+となり，任意の開集合 $U$ について
+\[
+ \mu(U)=\sup_{\substack{K\subset U\\K\ {\rm compact}}}\mu(K)
+\]
+となることをいう．
+\end{definition}
+
+\begin{definition}
+零でないRadon測度 $\mu$ が
+\[
+ \mu(gA)=\mu(A)
+ \qquad(g\in G,\ A\text{ はBorel集合})
+\]
+を満たすとき，\emph{左Haar測度}という．
+右移動 $A\mapsto Ag$ に関して不変なRadon測度を
+右Haar測度という．
+\end{definition}
+
+\begin{lemma}[コンパクト集合と平行移動]\label{lem:topological}
+次が成り立つ．
+\begin{enumerate}
+\item $G$ の任意の非空開集合の左平行移動全体は $G$ を覆う．
+\item コンパクト集合 $K$ と開集合 $U\supset K$ に対し，
+ $K\subset V\subset\overline V\subset U$ となる開集合 $V$ で
+ $\overline V$ がコンパクトなものを取れる．
+\item 交わらない二つのコンパクト集合 $K,L$ に対し，
+ 単位元 $e$ の近傍 $W$ で，
+ どの左平行移動 $gW$ も $K,L$ の両方とは交わらないものがある．
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(1) $U$ の元 $u$ を固定すると任意の $x\in G$ は
+$(xu^{-1})u\in(xu^{-1})U$ に属する．
+(2) 各 $x\in K$ で局所コンパクト正則性から
+$x\in V_x\subset\overline{V_x}\subset U$，
+$\overline{V_x}$ がコンパクトとなる近傍を取る．
+有限個の $V_x$ が $K$ を覆うのでその和集合を $V$ とすればよい．
+(3) $K^{-1}L$ はコンパクトで $e$ を含まない．
+連続性から単位元の近傍 $W$ を十分小さく取れば
+$W^{-1}W\cap K^{-1}L=\varnothing$ となる．
+もし $gW$ が $K,L$ の双方に交われば
+$k=gw_1\in K$，$\ell=gw_2\in L$ となり，
+$k^{-1}\ell=w_1^{-1}w_2$ が上の空集合に属する．
+矛盾するので主張が従う．
+\end{proof}
+
+\section{コンパクト集合の被覆数}
+
+\begin{definition}
+コンパクト集合 $K\subset G$ と
+非空開集合 $U\subset G$ に対し，
+\[
+ N(K,U)=\min\left\{r\ge0:
+ K\subset\bigcup_{j=1}^r g_jU
+ \text{ となる }g_j\in G\text{ がある}\right\}
+\]
+と定義する．ただし $N(\varnothing,U)=0$ とする．
+\end{definition}
+
+\begin{lemma}[被覆数の基本性質]\label{lem:cover}
+任意のコンパクト集合 $K,L$ と
+非空開集合 $U$ について
+\[
+ N(K,U)<\infty,\qquad
+ N(gK,U)=N(K,U),
+\]
+\[
+ K\subset L\ \Longrightarrow\ N(K,U)\le N(L,U),
+\]
+\[
+ N(K\cup L,U)\le N(K,U)+N(L,U)
+\]
+が成り立つ．
+さらに $K\cap L=\varnothing$ なら，
+十分小さい単位元の近傍 $U$ について
+\[
+ N(K\cup L,U)=N(K,U)+N(L,U)
+\]
+となる．
+\end{lemma}
+\begin{proof}
+補題\ref{lem:topological}(1)と $K$ のコンパクト性から
+有限個の左平行移動が $K$ を覆う．
+左平行移動は被覆全体を同じ個数の平行移動へ写すので
+被覆数を変えない．
+単調性と劣加法性は被覆の定義から従う．
+$K,L$ が交わらなければ
+補題\ref{lem:topological}(3)の近傍 $W$ を選ぶ．
+$U\subset W$ とし，$K\cup L$ の最小被覆を考える．
+各 $g_jU$ は $K$ と $L$ の両方には交わらないので，
+被覆のうち $K$ に交わるものだけで $K$ を，
+$L$ に交わるものだけで $L$ を覆える．
+従って被覆数は
+$N(K,U)+N(L,U)$ 以上となる．
+逆向きの不等式は劣加法性による．
+\end{proof}
+
+\begin{lemma}[正規化被覆数の有界性]\label{lem:bounded-ratios}
+空でない内部を持つコンパクト集合 $K_0$ を固定する．
+任意のコンパクト集合 $K$ に対して，
+$K$ のみに依存する整数 $m_K$ が存在して
+\[
+ 0\le\frac{N(K,U)}{N(K_0,U)}\le m_K
+\]
+が任意の単位元の開近傍 $U$ について成立する．
+\end{lemma}
+\begin{proof}
+$K_0^\circ$ は非空開集合なので，
+その左平行移動全体は $G$ を覆う．
+$K$ のコンパクト性から
+$K\subset\bigcup_{j=1}^{m_K}g_jK_0^\circ
+\subset\bigcup_{j=1}^{m_K}g_jK_0$
+となる有限個の $g_j$ を取れる．
+補題\ref{lem:cover}の単調性・劣加法性・移動不変性から
+\[
+ N(K,U)\le\sum_{j=1}^{m_K}N(g_jK_0,U)
+ =m_KN(K_0,U).
+\]
+$K_0$ は空でないので分母は1以上であり，結論が従う．
+\end{proof}
+
+\section{不変なコンパクト内容の構成}
+
+\begin{theorem}[不変なコンパクト内容]\label{thm:content}
+コンパクト集合全体の上に実数値写像 $c$ が存在して，
+次を満たす．
+\begin{enumerate}
+\item $c(\varnothing)=0$，$c(K_0)=1$，
+  $0\le c(K)<\infty$．
+\item $K\subset L$ なら $c(K)\le c(L)$．
+\item $c(gK)=c(K)$（$g\in G$）．
+\item $c(K\cup L)\le c(K)+c(L)$．
+\item $K\cap L=\varnothing$ なら
+$c(K\cup L)=c(K)+c(L)$．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+単位元の開近傍全体を，包含の逆順によって有向集合とする．
+各近傍 $U$ に対して
+\[
+ c_U(K)=\frac{N(K,U)}{N(K_0,U)}
+\]
+と定める．
+補題\ref{lem:bounded-ratios}によって
+$c_U(K)\in[0,m_K]$ である．
+コンパクト集合全体を添字とする直積
+$\prod_K[0,m_K]$ はTychonoffの定理によってコンパクトである．
+従ってネット $(c_U)_U$ はこの直積空間に収束する
+部分ネットを持つ．その座標ごとの極限を $c(K)$ と置く．
+各 $c_U$ は非負，正規化され，
+単調，移動不変，劣加法的であるので，
+不等式の極限から (1)--(4) が成立する．
+$K,L$ が交わらなければ，補題\ref{lem:cover}によって
+十分小さい近傍 $U$ で
+$c_U(K\cup L)=c_U(K)+c_U(L)$ が成立する．
+収束部分ネットは近傍系を共終的に細かくするので，
+その極限でも等式が成立する．従って (5) を得る．
+\end{proof}
+
+\section{コンパクト内容から測度へ}
+
+\begin{lemma}[Radon測度への拡張]\label{lem:content-extension}
+$X$ を局所コンパクトHausdorff空間とする．
+コンパクト集合上の写像 $c$ が
+定理\ref{thm:content}の非負性・有限性・単調性・
+劣加法性・互いに素なコンパクト集合への加法性を
+満たすとする．
+開集合 $U$ に対し
+\[
+ m(U)=\sup_{K\subset U,\ K\ {\rm compact}}c(K)
+\]
+と置く．このとき
+\[
+ \mu^*(A)=\inf_{A\subset U,\ U\ {\rm open}}m(U)
+\]
+は外測度であり，そのBorel集合への制限は
+Radon測度を与える．
+さらに $\mu(U)=m(U)$ が全ての開集合で成立する．
+\end{lemma}
+\begin{proof}
+$m$ は開集合の包含について単調であり，
+$m(\varnothing)=0$ である．
+開集合族 $(U_i)$ を取り，
+コンパクト集合 $K\subset\bigcup_iU_i$ を固定する．
+コンパクト性によって有限個の $U_i$ が $K$ を覆う．
+局所コンパクトHausdorff空間の正則性を用いて，
+コンパクト集合 $K_i\subset U_i$ で
+$K\subset\bigcup_iK_i$ となる有限個の $K_i$ を選べる．
+従って
+\[
+ c(K)\le\sum_i c(K_i)\le\sum_i m(U_i).
+\]
+$K$ について上限を取ると
+\[
+ m\!\left(\bigcup_iU_i\right)\le\sum_i m(U_i).
+ \tag{4}
+\]
+これにより $\mu^*$ は零集合・単調性・可算劣加法性を満たす．
+また開集合 $U$ 自身を包含する開集合のうち最小のものとして
+$U$ を選べるので $\mu^*(U)=m(U)$ である．
+
+次に可測性を確かめる．
+互いに交わらないコンパクト集合 $K,L$ は，
+互いに交わらない開近傍へ分離できる．
+そのための開近傍を一つの開集合 $W$ の内部で取れば，
+任意の開集合 $W\supset K\cup L$ に対して
+$m(W)\ge c(K)+c(L)$ となる．
+従って開集合の内側から近似する方法と
+コンパクト集合上の加法性を組み合わせることで，
+任意の開集合 $U$ と任意の集合 $A$ に対し
+\[
+ \mu^*(A)\ge\mu^*(A\cap U)+\mu^*(A\setminus U)
+ \tag{5}
+\]
+が従う．
+この操作の詳細を述べると，
+$A$ を覆う開集合 $W$ を固定し，
+$W$ 内の相対コンパクト開集合による有限被覆を取り，
+その閉包を $U$ の内部に入る部分と
+$X\setminus U$ の近傍に入る部分に細分する．
+閉包が互いに交わらないものについて
+$c$ の加法性を適用し，
+境界に当たる部分の近傍を縮めて
+$m$ の上限と $\mu^*$ の下限を取る．
+すると式 (5) を得る．
+この分離と正則化の議論は
+コンパクト内容からRadon測度を作る
+Carath\'eodory拡張手順である．
+式 (5) から開集合は $\mu^*$-可測となり，
+可測集合全体は $\sigma$-代数なのでBorel集合も可測である．
+Borel集合上の $\mu$ は従って可算加法的である．
+
+コンパクト $K$ には相対コンパクト開近傍 $U$ が存在する．
+$m(U)\le c(\overline U)<\infty$ だから
+$\mu(K)\le\mu(U)<\infty$ である．
+外正則性は $\mu^*$ の定義そのものであり，
+開集合の内正則性は $\mu(U)=m(U)$ と
+$\mu(K)\ge c(K)$ を用いると
+\[
+ \mu(U)=\sup_{K\subset U}c(K)
+ \le\sup_{K\subset U}\mu(K)
+ \le\mu(U)
+\]
+となることから従う．
+よって $\mu$ はRadon測度である．
+\end{proof}
+
+\begin{theorem}[左Haar測度の存在]\label{thm:haar-exists}
+任意の局所コンパクトHausdorff群 $G$ 上に
+左Haar測度が存在する．
+\end{theorem}
+\begin{proof}
+定理\ref{thm:content}で不変なコンパクト内容 $c$ を構成し，
+補題\ref{lem:content-extension}でRadon測度 $\mu$ へ拡張する．
+$c(gK)=c(K)$ なので開集合に対して
+\[
+ m(gU)=\sup_{K\subset U}c(gK)=m(U)
+\]
+である．
+従って任意の集合 $A$ について
+$\mu^*(gA)=\mu^*(A)$ が成立し，
+Borel集合上で $\mu(gA)=\mu(A)$ となる．
+この測度が零でないことを示す．
+$K_0$ は内部が非空で $c(K_0)=1$ なので，
+$K_0$ を含む開集合 $U$ では
+$\mu(U)=m(U)\ge c(K_0)=1$ である．
+よって $\mu$ は非零であり左Haar測度である．
+\end{proof}
+
+\section{Haar測度の一意性}
+
+\begin{lemma}[移動不変な可測関数]\label{lem:ergodic}
+$\rho$ を全ての非空開集合が正測度となる左Haar測度とし，
+$f:G\to\mathbb R$ を有界Borel関数とする．
+各 $a\in G$ について
+$f(a^{-1}x)=f(x)$ が $\rho$-ほとんど至る所成り立つなら，
+$f$ は $\rho$-ほとんど至る所定数である．
+\end{lemma}
+\begin{proof}
+$h\in C_c(G)$ を非負で零でない関数とし，
+$H=\int_Gh\,d\rho>0$ と置く．
+\[
+ F(x)=\int_G h(a)f(a^{-1}x)\,d\rho(a)
+\]
+を考える．
+Fubiniの定理と仮定から
+$F(x)=Hf(x)$ が $\rho$-ほとんど至る所成立する．
+一方，$a=xy^{-1}$，すなわち
+$a=xz$，$z=y^{-1}$ と置いて左不変性を用いると
+\[
+ F(x)=\int_Gh(xz)f(z^{-1})\,d\rho(z).
+\]
+$x$ がコンパクト集合内を動くと，
+被積分関数の台は共通のコンパクト集合内に入り，
+$h(xz)$ は $x$ について一様連続である．
+$f$ は有界なので優収束定理によって
+$F$ は連続である．
+各固定 $b\in G$ について
+$F(bx)=Hf(bx)=Hf(x)=F(x)$ が
+$\rho$-ほとんど至る所成立する．
+左辺と右辺は連続関数であり，
+非空開集合は正測度なので，
+この等式は全ての $x$ で成立する．
+$b,x$ は任意なので $F$ は定数である．
+$F=Hf$ がほとんど至る所成立することから
+$f$ もほとんど至る所定数となる．
+\end{proof}
+
+\begin{theorem}[Haar測度の一意性]\label{thm:haar-unique}
+$G$ の二つの左Haar測度 $\mu,\nu$ に対して，
+ただ一つの $c>0$ が存在して
+\[
+ \nu=c\mu
+\]
+となる．
+\end{theorem}
+\begin{proof}
+$\rho=\mu+\nu$ と置く．
+$\rho$ も零でない左不変Radon測度である．
+各非空開集合は正測度を持つ：
+もし $\rho(U)=0$ なら，$U$ の有限個の左平行移動で
+任意のコンパクト集合を覆えるので，
+任意のコンパクト集合の測度が零となる．
+開集合の内正則性から $\rho=0$ となって矛盾する．
+
+Radon--Nikodymの定理を局所有限な測度に適用し，
+\[
+ f=\frac{d\mu}{d\rho},\qquad
+ g=\frac{d\nu}{d\rho}
+\]
+を取る．$\mu,\nu\le\rho$ なので
+$0\le f,g\le1$ かつ $f+g=1$ が
+$\rho$-ほとんど至る所成り立つ．
+ここで $\rho$ は必ずしも $\sigma$-有限とは限らないが，
+局所コンパクトHausdorff空間のRadon測度に対する
+局所的なRadon--Nikodym定理を用いる．
+各点の相対コンパクト近傍では全ての測度が有限であり，
+重なり上の導関数の一意性で貼り合わせることで
+大域的な局所可測導関数が得られる．
+
+左不変性から各 $a\in G$ について
+\[
+ \int_A f(a^{-1}x)\,d\rho(x)
+ =\mu(a^{-1}A)=\mu(A)
+ =\int_Af(x)\,d\rho(x)
+\]
+が全てのBorel集合 $A$ で成り立つ．
+従って $f(a^{-1}x)=f(x)$ が
+$\rho$-ほとんど至る所成り立つ．
+補題\ref{lem:ergodic}から $f$ はほとんど至る所
+定数 $\alpha$ である．
+同様に $g$ は定数 $\beta$ であり，
+$\alpha,\beta\ge0$，$\alpha+\beta=1$ である．
+$\mu,\nu$ は零でないので
+$\alpha,\beta>0$ となる．
+従って
+$\mu=\alpha\rho$，$\nu=\beta\rho$ より
+$\nu=(\beta/\alpha)\mu$ である．
+$\mu$ が零でないので係数は一意である．
+\end{proof}
+
+\section{右Haar測度とモジュラー関数}
+
+\begin{definition}
+左Haar測度 $\mu$ と $g\in G$ に対し，
+$\mu_g(A)=\mu(Ag)$ と置く．
+$\mu_g$ も左Haar測度なので，一意性によって
+ある $\Delta(g)>0$ が存在して
+\[
+ \mu(Ag)=\Delta(g)\mu(A)
+\]
+となる．
+写像 $\Delta:G\to(0,\infty)$ を
+\emph{モジュラー関数}という．
+$\Delta\equiv1$ となる群をunimodular群という．
+\end{definition}
+
+\begin{theorem}[モジュラー関数の性質]\label{thm:modular}
+$\Delta:G\to(0,\infty)$ は連続群準同型である．
+特に
+\[
+ \Delta(gh)=\Delta(g)\Delta(h),\qquad
+ \Delta(g^{-1})=\Delta(g)^{-1}.
+\]
+またコンパクト群およびAbel群はunimodularである．
+\end{theorem}
+\begin{proof}
+$A$ を $0<\mu(A)<\infty$ となるBorel集合に取る．
+定義から
+\[
+ \mu(Agh)=\Delta(h)\mu(Ag)
+ =\Delta(h)\Delta(g)\mu(A)
+\]
+であり，係数の一意性から積の公式を得る．
+逆元の式は $gh=e$ を代入して従う．
+連続性を示すため
+$f\in C_c(G)$，$f\ge0$，$I=\int f\,d\mu>0$ と取る．
+変数変換によって
+\[
+ \int_G f(xg^{-1})\,d\mu(x)=\Delta(g)\,I
+\]
+である．
+$g$ が一定のコンパクト集合内を動くと，
+被積分関数の台は共通のコンパクト集合に入る．
+$f(xg^{-1})$ は $g$ について一様連続なので，
+優収束定理によって左辺は $g$ に連続に依存する．
+$I>0$ だから $\Delta$ も連続である．
+
+$G$ がコンパクトなら $\Delta(G)$ は
+$(0,\infty)$ のコンパクト部分群である．
+$(0,\infty)$ の非自明な元 $r$ の冪は
+一方向に非有界になるので，
+そのコンパクト部分群は $\{1\}$ のみである．
+従って $\Delta\equiv1$ である．
+$G$ がAbelなら右移動と左移動は同じ写像なので，
+左不変性から $\mu(Ag)=\mu(gA)=\mu(A)$ となる．
+\end{proof}
+
+\begin{proposition}[反転による右Haar測度]\label{prop:right}
+$\mu$ を左Haar測度とし
+\[
+ \nu(A)=\mu(A^{-1})
+\]
+と置くと，$\nu$ は右Haar測度である．
+\end{proposition}
+\begin{proof}
+反転 $x\mapsto x^{-1}$ は同相写像なので，
+$\nu$ はRadon測度である．
+任意のBorel集合 $A$ と $g\in G$ に対し
+\[
+ \nu(Ag)=\mu((Ag)^{-1})
+ =\mu(g^{-1}A^{-1})=\mu(A^{-1})=\nu(A)
+\]
+なので右不変である．
+\end{proof}
+
+\section{具体例}
+
+\begin{example}[離散群]
+$G$ が離散群なら計数測度は左かつ右Haar測度である．
+\end{example}
+\begin{proof}
+離散空間ではコンパクト集合は有限集合に限られるので
+計数測度は有限なコンパクト測度を持ち，
+全ての集合が開かつBorelである．
+平行移動は集合の全単射なので要素数を保存する．
+従って左右に不変なRadon測度となる．
+\end{proof}
+
+\begin{example}[Euclid空間]
+加法群 $\mathbb R^n$ 上のLebesgue測度はHaar測度であり，
+$\Delta\equiv1$ である．
+\end{example}
+\begin{proof}
+Lebesgue測度の平行移動不変性と正則性から
+Haar測度の定義を満たす．
+群はAbelなのでモジュラー関数は1である．
+\end{proof}
+
+\begin{example}[アフィン群]
+\[
+ G=\{(a,b):a>0,\ b\in\mathbb R\},\qquad
+ (a,b)(a',b')=(aa',b+ab')
+\]
+と置く．
+\[
+ d\mu(a,b)=a^{-2}\,da\,db
+\]
+は左Haar測度であり，
+\[
+ \Delta(a,b)=a^{-1}
+\]
+である．
+\end{example}
+\begin{proof}
+左移動
+$(a,b)\mapsto(a_0a,b_0+a_0b)$ の
+Jacobi行列式は $a_0^2$ である．
+従って
+$(a_0a)^{-2}a_0^2\,da\,db
+ =a^{-2}\,da\,db$
+となり，$\mu$ は左不変である．
+右移動
+$(a,b)\mapsto(aa_0,b+ab_0)$ の
+Jacobi行列式は $a_0$ であるから
+\[
+ (aa_0)^{-2}a_0\,da\,db
+ =a_0^{-1}a^{-2}\,da\,db.
+\]
+よって $\mu(A(a_0,b_0))=a_0^{-1}\mu(A)$ となり，
+モジュラー関数の表示を得る．
+\end{proof}
+
+\begin{remark}
+局所コンパクト性は測度の存在に重要である．
+特にコンパクト群のHaar測度は全測度1へ正規化できるが，
+非コンパクト群上には有限で非零な左不変Radon測度は存在しない．
+実際全測度が有限なら，
+正測度の相対コンパクト開集合を互いに交わらないよう
+無限回平行移動できる非コンパクト群では矛盾する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{円周群のHaar積分．}
+\begin{proposition}
+円周群 $S^1$ 上の規格化Haar積分は，
+連続関数 $f$ に対して
+\[
+\int_{S^1}f(z)\,d\mu(z)
+=\frac1{2\pi}\int_0^{2\pi}f(e^{it})\,dt
+\]
+で与えられる．
+\end{proposition}
+\begin{proof}
+右辺は正の線形汎関数で，
+$f=1$ の積分は1である．
+群の任意の元 $e^{i\theta}$ による左移動に対して，
+周期性と変数変換 $s=t+\theta$ から積分値は不変となる．
+正規化したHaar測度の一意性により
+この積分表示がHaar積分を与える．
+\end{proof}
+\begin{corollary}
+任意の整数 $n\ne0$ に対し
+\[
+\int_{S^1}z^n\,d\mu(z)=0
+\]
+が成立する．
+\end{corollary}
+\begin{proof}
+$(2\pi)^{-1}\int_0^{2\pi}e^{int}\,dt=0$ である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\int_{S^1}|1+z|^2\,d\mu(z)$ を計算せよ．
+\par\noindent\textbf{解答．}
+$|1+z|^2=(1+z)(1+\bar z)=2+z+\bar z$．
+非自明な指標の積分は零なので値は2である．
+\end{document}
