@@ -25,9 +25,9 @@ async function load(){
  const id=new URLSearchParams(window.location.search).get("id");
  if(!id||!/^\d{2}\.\d{3}$/.test(id)){showError("ノート番号が指定されていません。索引に戻ってノートを選択してください。");return;}
  try{
-   const response=await Promise.all(["./data/notes.json","./data/details.json","./data/taxonomy.json"].map(url=>fetch(url)));
+   const response=await Promise.all(["./data/notes.json","./data/details.json","./data/taxonomy.json","./data/private_pdf_links.json"].map(url=>fetch(url)));
    if(response.some(r=>!r.ok))throw Error("ノート情報の取得に失敗しました");
-   const [catalog,pages,taxonomy]=await Promise.all(response.map(r=>r.json()));
+   const [catalog,pages,taxonomy,pdfData]=await Promise.all(response.map(r=>r.json()));
    const index=new Map(catalog.notes.map(n=>[n.id,n]));
    const details=new Map(pages.notes.map(n=>[n.id,n]));
    const info=index.get(id),detail=details.get(id);
@@ -41,6 +41,11 @@ async function load(){
    $("#noteNumber").textContent=id;
    $("#noteTitle").textContent=info.title;
    $("#noteSummary").textContent=detail.summary;
+   const pdfUrl=pdfData.links?.[id];
+   if(typeof pdfUrl==="string"&&/^https:\/\/github\.com\/HaWkoods\/giconrad\/blob\/main\/notes\/[A-Za-z0-9_./-]+\.pdf$/.test(pdfUrl)){
+     $("#privatePdfLink").href=pdfUrl;
+     $("#privatePdfPanel").hidden=false;
+   }
    $("#currentNumber").textContent=info.id;
    $("#currentTitle").textContent=info.title;
    $("#basis").textContent=detail.summary_basis==="planned_goal"?"この概要には、既存の到達目標設計を利用しています。到達目標の記載は原稿の完成・検証を意味しません。":"この概要は主題に基づく案内文です。原稿全体の内容・数学的完成度を保証するものではありません。";
