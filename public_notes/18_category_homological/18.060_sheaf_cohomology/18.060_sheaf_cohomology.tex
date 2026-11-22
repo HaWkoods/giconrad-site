@@ -1,0 +1,571 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{層コホモロジーの構成と基本定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，層コホモロジー，acyclicな層，長完全列．
+本稿の具体的な到達課題は，簡単な空間で層コホモロジーの零・非零を判定する．
+
+\section{Abel群の層と大域切断}
+
+本稿では位相空間 $X$ 上のAbel群の層の圏
+$\operatorname{Sh}(X,\mathbf{Ab})$ を考える．
+前層・層・茎・層化，および
+ホモロジー代数の完全列・導来函手を前提とする．
+
+\begin{definition}
+Abel群の層 $\mathcal F$ の大域切断を
+\[
+ \Gamma(X,\mathcal F)=\mathcal F(X)
+\]
+と書く．層の射
+$\varphi:\mathcal F\to\mathcal G$ に対し
+$\Gamma(X,\varphi)=\varphi_X$ と置くことで，
+\[
+ \Gamma(X,-):\operatorname{Sh}(X,\mathbf{Ab})
+ \longrightarrow\mathbf{Ab}
+\]
+という函手が得られる．
+\end{definition}
+
+\begin{proposition}[大域切断の左完全性]
+\label{prop:global-left}
+層の短完全列
+\[
+ 0\to\mathcal F'\xrightarrow{i}\mathcal F
+ \xrightarrow{p}\mathcal F''\to0
+\]
+に対し
+\[
+ 0\to\Gamma(X,\mathcal F')
+ \xrightarrow{i_X}\Gamma(X,\mathcal F)
+ \xrightarrow{p_X}\Gamma(X,\mathcal F'')
+\]
+は完全である．
+ただし最後の $p_X$ は一般には全射でない．
+\end{proposition}
+\begin{proof}
+層の完全性は各茎で検査できる．
+$i$ は単射な層の射なので，各開集合上の写像も
+単射であり，$i_X$ は単射である．
+$p_Xi_X=0$ は層の射の合成が零であることから従う．
+$s\in\mathcal F(X)$ が $p_X(s)=0$ を満たすとする．
+各点 $x$ では $s_x$ が
+$\ker p_x=\operatorname{im}i_x$ に属するので，
+ある近傍 $U_x$ で $s|_{U_x}$ は
+$\mathcal F'$ の切断から来る．
+この局所的な持ち上げは $i$ の単射性によって
+重なり合う近傍上で一致する．
+$\mathcal F'$ の貼り合わせ公理を適用して
+大域切断 $s'\in\mathcal F'(X)$ を得て
+$i_X(s')=s$ となる．
+従って $\ker p_X=\operatorname{im}i_X$ である．
+最後の全射性は，局所的な持ち上げが存在しても
+それらを大域的に貼り合わせられるとは限らないため
+一般には成立しない．
+\end{proof}
+
+\section{Skyscraper層と入射層}
+
+\begin{definition}
+$x\in X$ とAbel群 $A$ に対して，
+\[
+ (i_{x*}A)(U)=
+ \begin{cases}
+ A&(x\in U),\\
+ 0&(x\notin U)
+ \end{cases}
+\]
+と置き，明らかな制限写像を入れる．
+これを点 $x$ に支持された
+\emph{skyscraper層}という．
+\end{definition}
+
+\begin{lemma}[茎函手の完全性]\label{lem:stalk-exact}
+$x\in X$ について，
+$\mathcal F\mapsto\mathcal F_x$ は
+Abel群の層の短完全列を
+Abel群の短完全列へ写す．
+\end{lemma}
+\begin{proof}
+層の短完全性は各茎における完全性と同値である．
+具体的には茎は $x$ を含む開近傍全体に沿う
+切断Abel群の帰納極限として得られる．
+Abel群のフィルター付き帰納極限は完全である：
+核または像に属するという有限個の元に関する条件は
+十分小さい共通近傍に制限すれば確認できる．
+従って茎へ移した列は完全である．
+\end{proof}
+
+\begin{lemma}[skyscraper層の随伴性]\label{lem:skyscraper-adj}
+任意の層 $\mathcal F$ とAbel群 $A$ に対して
+\[
+ \operatorname{Hom}_{\operatorname{Sh}(X)}
+ (\mathcal F,i_{x*}A)
+ \cong\operatorname{Hom}_{\mathbb Z}(\mathcal F_x,A)
+\]
+が自然に成立する．
+\end{lemma}
+\begin{proof}
+層の射 $\varphi:\mathcal F\to i_{x*}A$ が与えられると，
+$x$ の近傍での写像
+$\varphi_U:\mathcal F(U)\to A$ は制限と可換なので，
+同値な芽に同じ値を与える．
+従って茎上の準同型
+$\varphi_x:\mathcal F_x\to A$ が定まる．
+逆に $\psi:\mathcal F_x\to A$ が与えられたとき，
+$x\in U$ なら
+$s\mapsto\psi(s_x)$，
+$x\notin U$ なら零写像と定める．
+これらの写像は制限と可換なので層の射となる．
+両構成は互いに逆であり自然性も明らかである．
+\end{proof}
+
+\begin{theorem}[Abel群の層には十分な入射対象がある]
+\label{thm:enough-injective}
+任意のAbel群の層 $\mathcal F$ は
+入射的な層への単射
+$\mathcal F\hookrightarrow\mathcal I$ を持つ．
+\end{theorem}
+\begin{proof}
+任意の $x\in X$ について
+Abel群 $\mathcal F_x$ を入射Abel群 $E_x$ に埋め込む．
+その存在はBaerの判定条件と
+$\mathbb Q/\mathbb Z$ を用いた埋め込み構成から従う．
+$\mathcal I_x=i_{x*}E_x$ と置くと，
+補題\ref{lem:skyscraper-adj}および
+補題\ref{lem:stalk-exact}によって
+$\operatorname{Hom}(-,\mathcal I_x)$ は
+$\operatorname{Hom}((-)_{x},E_x)$ と自然同型であり，
+後者は完全函手だから $\mathcal I_x$ は入射的である．
+
+\[
+ \mathcal I=\prod_{x\in X}\mathcal I_x
+\]
+と置く．入射対象の直積は入射的である．
+実際，短完全列にHomを適用すると直積のHomは
+各成分のHomの直積となり，
+Abel群の直積は全射を成分ごとに持ち上げられるので
+完全性を保つ．
+各切断 $s\in\mathcal F(U)$ を，
+$x\in U$ のとき $s_x\in\mathcal F_x\subset E_x$ に写し，
+$x\notin U$ のとき零に写すことで
+層の射 $j:\mathcal F\to\mathcal I$ を定める．
+この射は茎で単射である：
+各 $x$ で成分 $i_{x*}E_x$ への写像を見れば
+$s_x\mapsto s_x\in E_x$ となるからである．
+従って $j$ は単射な層の射であり，
+十分な入射対象が存在する．
+\end{proof}
+
+\section{層コホモロジーの定義}
+
+\begin{definition}
+Abel群の層 $\mathcal F$ の入射分解
+\[
+ 0\to\mathcal F\to\mathcal I^0
+ \xrightarrow{d^0}\mathcal I^1
+ \xrightarrow{d^1}\cdots
+\]
+を取り，
+\[
+ H^q(X,\mathcal F)
+ =H^q\bigl(\Gamma(X,\mathcal I^\bullet)\bigr)
+\]
+と定める．
+これを第 $q$ 層コホモロジー群という．
+\end{definition}
+
+\begin{theorem}[入射分解によらない定義]\label{thm:sheaf-wd}
+層コホモロジー群 $H^q(X,\mathcal F)$ は，
+入射分解の選択によらず自然同型を除いて定まる．
+また
+\[
+ H^0(X,\mathcal F)\cong\Gamma(X,\mathcal F)
+\]
+である．
+\end{theorem}
+\begin{proof}
+入射分解の比較定理を用いる．
+二つの入射分解 $\mathcal I^\bullet$，
+$\mathcal J^\bullet$ の間に，
+$\mathcal F$ の恒等射を延長するコチェイン写像が
+両方向に存在し，
+その合成はそれぞれ恒等写像とコチェインホモトピックである．
+この比較定理は射影分解の比較定理の双対であり，
+その証明は分解の各次数で入射対象の延長性を使って
+帰納的に構成するものである．
+大域切断函手を適用してもコチェインホモトピーは保たれるので，
+二つのコホモロジーは自然同型となる．
+
+また $H^0$ は
+$\ker(\Gamma(\mathcal I^0)\to\Gamma(\mathcal I^1))$
+であり，大域切断の左完全性によって
+この核は $\Gamma(\mathcal F)$ と自然に同型である．
+\end{proof}
+
+\section{Flabby層と非輪状性}
+
+\begin{definition}
+Abel群の層 $\mathcal F$ が\emph{flabby}であるとは，
+任意の開集合包含 $V\subset U$ について
+制限写像
+$\mathcal F(U)\to\mathcal F(V)$ が全射であることをいう．
+\end{definition}
+
+\begin{lemma}[flabby核の大域切断]\label{lem:flabby-lifting}
+層の短完全列
+\[
+ 0\to\mathcal A\to\mathcal B\to\mathcal C\to0
+\]
+で $\mathcal A$ がflabbyなら，
+任意の開集合 $U$ に対して
+$\mathcal B(U)\to\mathcal C(U)$ は全射である．
+\end{lemma}
+\begin{proof}
+$c\in\mathcal C(U)$ を固定する．
+層の射 $\mathcal B\to\mathcal C$ は茎で全射なので，
+$U$ の各点の近傍に $c$ の局所的な持ち上げが存在する．
+開集合 $V\subset U$ と
+$b_V\in\mathcal B(V)$ で $b_V$ が $c|_V$ を持ち上げる対を
+延長の順序で考える．
+鎖の上限は層の貼り合わせによって得られるため，
+Zornの補題から極大な対 $(V,b_V)$ を取れる．
+もし $V\ne U$ なら，
+$U\setminus V$ の点 $x$ の近傍 $W\subset U$ で
+局所持ち上げ $b_W$ が存在する．
+重なり $V\cap W$ では $b_V-b_W$ の像が零なので，
+核 $\mathcal A$ の切断 $a$ に一意に対応する．
+$\mathcal A$ はflabbyなので $a$ は $W$ の切断へ延長できる．
+その像を $b_W$ から引けば $b_V$ と重なりで一致する．
+貼り合わせによって $V\cup W$ 上の持ち上げが得られ，
+極大性に矛盾する．
+従って $V=U$ であり全射性が従う．
+\end{proof}
+
+\begin{theorem}[flabby層の非輪状性]\label{thm:flabby-acyclic}
+$\mathcal F$ がflabbyなら
+\[
+ H^q(X,\mathcal F)=0\qquad(q\ge1).
+\]
+\end{theorem}
+\begin{proof}
+まず入射層はflabbyであることを示す．
+開集合 $U\subset X$ と
+入射層 $\mathcal I$ の切断 $s\in\mathcal I(U)$ を取る．
+$U$ の定数Abel群層の零延長 $j_!\mathbb Z_U$ から
+$\mathcal I$ への層の射は，$s$ の指定と同値である．
+自然な単射
+$j_!\mathbb Z_U\hookrightarrow\underline{\mathbb Z}_X$
+を考える．
+$\mathcal I$ の入射性によってこの射は
+$\underline{\mathbb Z}_X\to\mathcal I$ へ延長でき，
+その延長は $\mathcal I(X)$ の切断に対応する．
+従って $s$ は大域切断へ延長できる．
+同じ議論を $V\subset U$ の相対的な位相空間で行えば
+任意の制限写像が全射であり，$\mathcal I$ はflabbyとなる．
+
+flabby層 $\mathcal F$ の入射分解を
+$0\to\mathcal F\to\mathcal I^0\to\mathcal I^1\to\cdots$
+と取る．
+$C^1=\operatorname{coker}(\mathcal F\to\mathcal I^0)$ と置く．
+$\mathcal I^0$ はflabbyであり，
+補題\ref{lem:flabby-lifting}により
+$\mathcal I^0(U)\to C^1(U)$ は全射である．
+任意の $V\subset U$ の $C^1(V)$ の切断を
+$\mathcal I^0(V)$ に持ち上げ，
+$\mathcal I^0$ のflabby性によって
+$\mathcal I^0(U)$ へ延長してから $C^1(U)$ に写すと，
+元の切断の延長を得る．
+従って $C^1$ もflabbyである．
+この操作を帰納的に繰り返し，
+各段階の余核 $C^q$ がflabbyであることを得る．
+補題\ref{lem:flabby-lifting}から
+入射分解の大域切断に関する列は
+各次数で完全となるので，
+正の次数のコホモロジーは零である．
+\end{proof}
+
+\section{長完全コホモロジー列}
+
+\begin{theorem}[長完全列]\label{thm:sheaf-long}
+Abel群の層の短完全列
+$0\to\mathcal F'\to\mathcal F\to\mathcal F''\to0$
+に対し，自然な長完全列
+\[
+ \begin{aligned}
+ 0&\to H^0(X,\mathcal F')\to H^0(X,\mathcal F)
+ \to H^0(X,\mathcal F'')\\
+ &\to H^1(X,\mathcal F')\to H^1(X,\mathcal F)
+ \to H^1(X,\mathcal F'')\to H^2(X,\mathcal F')\to\cdots
+ \end{aligned}
+\]
+が存在する．
+\end{theorem}
+\begin{proof}
+Abel圏の入射版horseshoe lemmaを適用する．
+短完全列の両端 $\mathcal F',\mathcal F''$ に
+入射分解を選ぶと，中間 $\mathcal F$ の入射分解を
+各次数で直和を取る形に構成でき，
+三つの入射分解の間に短完全な複体の列が得られる．
+この構成は各次数で入射対象の延長性を用い，
+前段階の余核の短完全列に同じ操作を繰り返す
+帰納法による．
+大域切断は直和を保存するため，
+三つの大域切断複体の列も次数ごとに短完全である．
+鎖複体の短完全列からホモロジーの長完全列を作る
+連結準同型の構成を次数反転して適用すると，
+表示した長完全列が得られる．
+\end{proof}
+
+\section{\v Cechコホモロジー}
+
+\begin{definition}
+開被覆 $\mathcal U=\{U_i\}_{i\in I}$ と
+Abel群の層 $\mathcal F$ に対して，
+$U_{i_0\cdots i_q}=U_{i_0}\cap\cdots\cap U_{i_q}$ と置き，
+\[
+ \check C^q(\mathcal U,\mathcal F)
+ =\prod_{i_0<\cdots<i_q}
+ \mathcal F(U_{i_0\cdots i_q})
+\]
+を\v Cechコチェイン群とする．
+境界写像を
+\[
+ (\delta c)_{i_0\cdots i_{q+1}}
+ =\sum_{j=0}^{q+1}(-1)^j
+ c_{i_0\cdots\widehat{i_j}\cdots i_{q+1}}
+ \big|_{U_{i_0\cdots i_{q+1}}}
+\]
+で定める．
+\end{definition}
+
+\begin{proposition}[\v Cech微分の二乗]\label{prop:cech-d2}
+$\delta^2=0$ が成立する．
+\end{proposition}
+\begin{proof}
+$\delta(\delta c)$ を展開すると，
+添字を二つ取り除く各項が二回現れる．
+$i_j$ と $i_k$（$j<k$）を除く二順序は，
+一方が符号 $(-1)^{j+k-1}$，
+他方が $(-1)^{j+k}$ を持つため打ち消し合う．
+制限写像の合成は直接の制限と一致するので，
+二項の内容は同じである．
+従って全ての項が相殺され，$\delta^2=0$ となる．
+\end{proof}
+
+\begin{theorem}[非輪状な被覆による計算]\label{thm:leray}
+開被覆 $\mathcal U$ の任意の有限個の元の交わり $V$ について
+\[
+ H^q(V,\mathcal F)=0\qquad(q\ge1)
+\]
+が成り立つと仮定する．
+このとき
+\[
+ \check H^q(\mathcal U,\mathcal F)\cong H^q(X,\mathcal F)
+\]
+が自然に成立する．
+\end{theorem}
+\begin{proof}
+$\mathcal F$ の入射分解
+$0\to\mathcal F\to\mathcal I^\bullet$ を取る．
+二重複体
+\[
+ C^{p,q}=
+ \prod_{i_0<\cdots<i_p}
+ \mathcal I^q(U_{i_0\cdots i_p})
+\]
+を作る．横微分を\v Cech微分，縦微分を入射分解の
+微分とし，全微分を
+$d_{\mathrm{tot}}=\delta+(-1)^p d_{\mathrm{vert}}$
+と定める．
+二つの微分は制限と可換なので，
+符号を考慮すれば全微分の二乗は零となる．
+
+まず縦方向のコホモロジーを取る．
+各交わり $V$ では入射層の制限が入射層とは限らないが，
+入射層はflabbyなので，その制限はflabbyである．
+従って制限した入射分解は非輪状分解であり，
+その切断複体のコホモロジーは
+$H^q(V,\mathcal F)$ を計算する．
+仮定によって $q>0$ の項は零で，
+$q=0$ の項は $\mathcal F(V)$ である．
+よって縦方向からのスペクトル系列は
+$q=0$ の行だけに集中し，
+全コホモロジーは
+$\check H^p(\mathcal U,\mathcal F)$ に等しい．
+
+一方横方向からコホモロジーを取る．
+各 $\mathcal I^q$ はflabbyなので，
+その任意の局所切断は大域切断へ延長できる．
+この性質を用いて，\v Cech複体の正の次数の
+コサイクルを順に解消する．
+具体的には，被覆に全順序を固定し，
+最小の添字を含む局所切断を延長して
+零次のcochainを順に調整することで
+$\check H^p(\mathcal U,\mathcal I^q)=0$（$p>0$）
+を得る．
+また $p=0$ のコホモロジーは層の貼り合わせ公理から
+$\Gamma(X,\mathcal I^q)$ に等しい．
+従って横方向からのスペクトル系列は
+$p=0$ 列に集中し，
+全コホモロジーは
+$H^q(\Gamma(X,\mathcal I^\bullet))
+=H^q(X,\mathcal F)$ に等しい．
+二つの計算は同じ全複体のコホモロジーを与えるので，
+求める自然同型が得られる．
+\end{proof}
+
+\section{円周上の局所定数層}
+
+\begin{example}[円周の整数係数コホモロジー]
+$S^1$ 上の局所定数整数値関数の層
+$\underline{\mathbb Z}$ について
+\[
+ H^0(S^1,\underline{\mathbb Z})\cong\mathbb Z,\qquad
+ H^1(S^1,\underline{\mathbb Z})\cong\mathbb Z,
+\]
+かつ $q\ge2$ のコホモロジーは零である．
+\end{example}
+\begin{proof}
+円周を三つの開弧 $U_1,U_2,U_3$ で覆い，
+各開弧と任意の二つの交わりが連結かつ収縮可能であり，
+三つ全ての交わりが空になるように選ぶ．
+例えば円周上の中心角が120度ずつ異なり，
+長さが120度より大きく240度より小さい開弧を，
+三重交わりを生じないように選べる．
+収縮可能な開弧上の局所定数層は正の次数の
+コホモロジーを持たないので，この被覆は
+定理\ref{thm:leray}の仮定を満たす．
+
+\v Cech複体は
+\[
+ \check C^0=\mathbb Z^3,\qquad
+ \check C^1=\mathbb Z^3,\qquad
+ \check C^q=0\quad(q\ge2)
+\]
+となる．
+零次微分は
+\[
+ \delta(a_1,a_2,a_3)
+ =(a_2-a_1,a_3-a_1,a_3-a_2)
+\]
+（適切な辺の順序で記した）である．
+その核は三成分が等しい元全体なので
+$\ker\delta\cong\mathbb Z$ である．
+像は
+$(b_{12},b_{13},b_{23})$ について
+$b_{13}=b_{12}+b_{23}$ を満たす部分群であり，
+その余核は $\mathbb Z$ と同型である．
+従って表示したコホモロジー群を得る．
+\end{proof}
+
+\begin{remark}
+層コホモロジーは，大域切断が右完全でないことを
+導来函手として記録する．
+大域的な切断の存在障害を測るという見方は，
+de Rhamコホモロジーや複素解析における
+局所的原始関数の貼り合わせ問題とも関係する．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{一点空間上の層コホモロジー．}
+\begin{proposition}
+一点空間 $X=\{*\}$ 上のAbel群の層 $\mathcal F$
+に対して
+\[
+H^0(X,\mathcal F)=\mathcal F(X),\qquad
+H^q(X,\mathcal F)=0\quad(q\ge1)
+\]
+である．
+\end{proposition}
+\begin{proof}
+一点空間上のAbel群の層の圏は，
+全体切断 $\mathcal F\mapsto\mathcal F(X)$ により
+Abel群の圏と同値である．
+したがって大域切断函手は完全函手である．
+層コホモロジーはその右導来函手なので
+正次数の導来函手は零である．
+零次は定義より大域切断となる．
+\end{proof}
+\begin{proposition}
+一点空間上の短完全列
+$0\to\mathcal F'\to\mathcal F\to\mathcal F''\to0$
+に大域切断を適用しても短完全である．
+\end{proposition}
+\begin{proof}
+一点空間では全体切断がAbel群の恒等函手と同値なので
+完全列を保つ．
+\end{proof}
+\noindent\textbf{到達確認．}
+一点空間上の定数層 $\underline{\mathbb Z}$
+の $H^1$ を求めよ．
+\par\noindent\textbf{解答．}
+上の命題を適用して $H^1(X,\underline{\mathbb Z})=0$．
+\end{document}

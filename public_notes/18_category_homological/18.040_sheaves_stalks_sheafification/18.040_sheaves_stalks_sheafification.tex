@@ -1,0 +1,604 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{前層・層・茎と層化}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，前層，層条件，茎，制限写像．
+本稿の具体的な到達課題は，具体的な前層が層かどうかを貼り合わせ条件で判定する．
+
+
+\section{開集合の圏と前層}
+
+本稿では $X$ を任意の位相空間とする．
+圏・反変函手・自然変換の基本事項を既知とする．
+集合の層を中心に扱い，群や環の層はその変種として述べる．
+
+\begin{definition}
+$X$ の開集合を対象とし，
+$V\subset U$ のときに限り $V\to U$ という射をただ一つ持つ
+圏を $\operatorname{Open}(X)$ と書く．
+反変函手
+\[
+ \mathcal F:\operatorname{Open}(X)^{\mathrm{op}}
+ \longrightarrow\mathbf{Set}
+\]
+を $X$ 上の\emph{前層}という．
+$V\subset U$ に対応する写像
+$\rho^U_V:\mathcal F(U)\to\mathcal F(V)$ を
+\emph{制限写像}と書き，$s\in\mathcal F(U)$ の像を
+$s|_V$ と書く．
+\end{definition}
+
+\begin{proposition}[制限写像の公理]\label{prop:restriction}
+前層の制限写像は
+\[
+ \rho^U_U=\operatorname{id}_{\mathcal F(U)},\qquad
+ \rho^V_W\circ\rho^U_V=\rho^U_W
+ \quad(W\subset V\subset U)
+\]
+を満たす．
+逆に，開集合ごとに集合と制限写像が与えられ，
+これらの公理を満たすなら前層が定まる．
+\end{proposition}
+\begin{proof}
+前半は反変函手が恒等射と合成を保つという
+函手の公理を書き直したものである．
+逆に公理を満たす対応は
+各包含に制限写像を割り当てることで
+恒等射と合成に整合するので，反変函手となる．
+\end{proof}
+
+\begin{example}[連続関数の前層]
+$\mathcal C_X(U)=C(U,\mathbb R)$ と置き，
+$V\subset U$ に対して関数の制限を考えると，
+$\mathcal C_X$ は実数値関数の前層である．
+\end{example}
+\begin{proof}
+関数を同じ集合に制限すれば変化せず，
+$W\subset V\subset U$ への二段階の制限は
+$U$ から $W$ への直接の制限と一致する．
+従って命題\ref{prop:restriction}の公理を満たす．
+\end{proof}
+
+\section{層の貼り合わせ公理}
+
+\begin{definition}
+前層 $\mathcal F$ が\emph{層}であるとは，
+任意の開集合 $U\subset X$ と開被覆
+$U=\bigcup_{i\in I}U_i$ に対し，
+次の二条件を満たすことをいう．
+\begin{enumerate}
+\item （局所性）
+$s,t\in\mathcal F(U)$ が
+$s|_{U_i}=t|_{U_i}$ を全ての $i$ で満たせば $s=t$ である．
+\item （貼り合わせ）
+$s_i\in\mathcal F(U_i)$ が
+\[
+ s_i|_{U_i\cap U_j}=s_j|_{U_i\cap U_j}
+\]
+を全ての $i,j$ で満たすなら，
+$s|_{U_i}=s_i$ を全ての $i$ で満たす
+$s\in\mathcal F(U)$ が存在する．
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}[連続関数は層をなす]\label{prop:continuous-sheaf}
+$\mathcal C_X(U)=C(U,\mathbb R)$ は層である．
+\end{proposition}
+\begin{proof}
+二つの関数が開被覆の各集合上で等しければ，
+任意の点は被覆のどれかに属するので全体でも等しい．
+これが局所性である．
+次に互いの重なりで一致する連続関数
+$s_i:U_i\to\mathbb R$ が与えられたとする．
+$x\in U_i$ のとき $s(x)=s_i(x)$ と置けば，
+重なりの条件からwell-definedである．
+任意の $x\in U$ はある $U_i$ に属し，
+その開近傍 $U_i$ 上では $s=s_i$ だから $s$ は連続である．
+従って $s\in C(U,\mathbb R)$ であり貼り合わせが成立する．
+\end{proof}
+
+\begin{example}[定数前層と局所定数層]
+集合 $A$ を固定し，
+非空開集合 $U$ に対して
+$\mathcal P_A(U)=A$，全ての非空包含への制限を
+恒等写像とする．
+$\mathcal P_A(\varnothing)$ を一元集合として，
+空集合への制限を唯一の写像とすると前層が得られる．
+これは一般には層ではない．
+一方
+\[
+ \underline A(U)=\{f:U\to A:
+ f\text{ は局所定数}\}
+\]
+（$A$ には離散位相を入れる）は層である．
+\end{example}
+\begin{proof}
+$A$ に相異なる二元があり，
+$X$ のある開集合 $U$ が互いに交わらない
+非空開集合 $U_1,U_2$ の和であるとする．
+$\mathcal P_A(U_1)$ と $\mathcal P_A(U_2)$ の異なる元を選ぶと，
+重なりは空なので整合条件は自動的に成立するが，
+$A=\mathcal P_A(U)$ の一つの元として
+両方へ制限できない．従って層でない．
+$\underline A$ については，
+局所定数関数は各開集合上で制限可能であり，
+互いに一致する局所定数関数を貼り合わせた関数は
+各点の近傍で局所定数だから，再び局所定数である．
+局所性は関数の値による．
+従って層である．
+\end{proof}
+
+\section{芽と茎}
+
+\begin{definition}
+前層 $\mathcal F$ と $x\in X$ に対して
+\[
+ \mathcal F_x=
+ \left(\bigsqcup_{x\in U}\mathcal F(U)\right)\big/{\sim}
+\]
+と置く．ここで $(U,s)\sim(V,t)$ とは，
+ある $x$ の開近傍 $W\subset U\cap V$ が存在して
+$s|_W=t|_W$ となることをいう．
+$\mathcal F_x$ を $x$ における\emph{茎}，
+$(U,s)$ の同値類を $s_x$ と書き，\emph{芽}という．
+\end{definition}
+
+\begin{lemma}[芽の同値関係]\label{lem:germs}
+$\sim$ は同値関係である．
+また $U\ni x$ の元 $s,t$ に対して
+$s_x=t_x$ であることと，
+ある $x$ の開近傍 $W\subset U$ 上で
+$s|_W=t|_W$ であることは同値である．
+\end{lemma}
+\begin{proof}
+反射律と対称律は定義から明らかである．
+$(U,s)\sim(V,t)$ と $(V,t)\sim(Z,u)$ のとき，
+$s=t$ となる近傍 $W_1$ と
+$t=u$ となる近傍 $W_2$ を取る．
+$W_1\cap W_2$ は $x$ の開近傍であり，
+その上で $s=u$ となるので推移律が成り立つ．
+最後の主張は定義そのものである．
+\end{proof}
+
+\begin{proposition}[局所性と茎]\label{prop:stalk-separated}
+前層 $\mathcal F$ が局所性公理を満たすとする．
+同じ開集合 $U$ 上の二つの切断 $s,t$ について
+\[
+ s_x=t_x\qquad(x\in U)
+\]
+なら $s=t$ である．
+\end{proposition}
+\begin{proof}
+各 $x\in U$ に対して
+補題\ref{lem:germs}によって
+$x$ の開近傍 $W_x\subset U$ が存在して
+$s|_{W_x}=t|_{W_x}$ となる．
+$\{W_x:x\in U\}$ は $U$ の開被覆である．
+局所性公理から $s=t$ が従う．
+\end{proof}
+
+\section{エタール空間の構成}
+
+\begin{definition}
+前層 $\mathcal F$ の全ての茎の非交和
+\[
+ E(\mathcal F)=\bigsqcup_{x\in X}\mathcal F_x
+\]
+を考える．
+射影
+$p:E(\mathcal F)\to X$ を
+$p(s_x)=x$ と定める．
+$U\subset X$ が開，$s\in\mathcal F(U)$ のとき
+\[
+ \widetilde s(U)=\{s_x:x\in U\}\subset E(\mathcal F)
+\]
+と置く．
+\end{definition}
+
+\begin{lemma}[エタール位相]\label{lem:etale-basis}
+$\widetilde s(U)$ の形の集合族は
+$E(\mathcal F)$ の位相の基となる．
+この位相を入れると $p:E(\mathcal F)\to X$ は
+局所同相写像である．
+\end{lemma}
+\begin{proof}
+任意の芽 $s_x\in E(\mathcal F)$ は，
+その代表元 $s\in\mathcal F(U)$ に対し
+$\widetilde s(U)$ に属する．
+次に芽 $a_x$ が
+$\widetilde s(U)\cap\widetilde t(V)$ に属するとする．
+このとき $s_x=t_x$ なので
+補題\ref{lem:germs}により，
+$x$ の開近傍 $W\subset U\cap V$ が存在して
+$s|_W=t|_W$ となる．
+従って
+\[
+ a_x\in\widetilde{s|_W}(W)
+ \subset\widetilde s(U)\cap\widetilde t(V).
+\]
+よって位相の基の公理が成り立つ．
+
+$p|_{\widetilde s(U)}$ は，
+$U$ の各 $x$ に対応する芽 $s_x$ が
+ただ一つだから全単射である．
+逆写像
+$\sigma_s:U\to E(\mathcal F)$，
+$\sigma_s(x)=s_x$ を考える．
+任意の基本開集合 $\widetilde t(V)$ に対し，
+\[
+ \sigma_s^{-1}(\widetilde t(V))
+ =\{x\in U\cap V:s_x=t_x\}
+\]
+である．
+$x$ がこの集合に属すれば，
+前述の局所一致の議論により
+$x$ の近傍全体がこの集合に含まれる．
+従って逆像は開であり，$\sigma_s$ は連続である．
+一方，$p$ が連続であることは
+$p^{-1}(W)$ が全ての基本開集合との交わりで
+開となることから従う：
+$\widetilde s(U)\cap p^{-1}(W)
+=\widetilde{s|_{U\cap W}}(U\cap W)$ である．
+従って
+$p|_{\widetilde s(U)}$ は同相写像であり，
+$p$ は局所同相写像である．
+\end{proof}
+
+\begin{definition}
+$U\subset X$ 上の
+\emph{エタール空間の連続切断}とは，
+連続写像 $\sigma:U\to E(\mathcal F)$ で
+$p\circ\sigma=\operatorname{id}_U$ を満たすものをいう．
+全ての連続切断の集合を
+$\Gamma(U,E(\mathcal F))$ と書く．
+\end{definition}
+
+\begin{proposition}[局所的な芽表示]\label{prop:local-representation}
+連続切断 $\sigma\in\Gamma(U,E(\mathcal F))$ と
+$x\in U$ に対し，
+ある $x$ の開近傍 $W\subset U$ と
+$s\in\mathcal F(W)$ が存在して
+\[
+ \sigma(y)=s_y\qquad(y\in W)
+\]
+となる．
+\end{proposition}
+\begin{proof}
+$\sigma(x)\in E(\mathcal F)_x$ の代表元として
+$t\in\mathcal F(V)$ を選ぶ．
+$\widetilde t(V)$ は $\sigma(x)$ を含む基本開集合である．
+$\sigma$ は連続なので
+$W_0=\sigma^{-1}(\widetilde t(V))$ は
+$x$ の開近傍である．
+$W=W_0\cap V$ とし，$s=t|_W$ と置く．
+$y\in W$ では $\sigma(y)\in\widetilde t(V)$ かつ
+$p(\sigma(y))=y$ である．
+$\widetilde t(V)$ の中で $p$ の各ファイバーに属する元は
+$t_y$ ただ一つだから $\sigma(y)=t_y=s_y$ となる．
+\end{proof}
+
+\section{層化とその普遍性}
+
+\begin{definition}
+前層 $\mathcal F$ に対して
+\[
+ \mathcal F^+(U)=\Gamma(U,E(\mathcal F))
+\]
+と置き，制限写像を連続切断の制限とする．
+これを $\mathcal F$ の\emph{層化}という．
+\end{definition}
+
+\begin{theorem}[層化の存在]\label{thm:sheafification}
+$\mathcal F^+$ は層である．
+また各 $U$ と $s\in\mathcal F(U)$ に対し
+\[
+ \eta_U(s):U\to E(\mathcal F),\qquad
+ \eta_U(s)(x)=s_x
+\]
+と定めると，
+$\eta:\mathcal F\to\mathcal F^+$ は前層の射となる．
+\end{theorem}
+\begin{proof}
+$\mathcal F^+(U)$ は集合としての連続切断全体である．
+互いに重なる開集合上で一致する連続切断は，
+通常の関数の貼り合わせによって
+一意な写像 $\sigma:U\to E(\mathcal F)$ を定める．
+その写像は局所的に連続なので連続であり，
+$p\sigma=\operatorname{id}_U$ が局所的に成立するから
+全域でも成立する．
+従って $\mathcal F^+$ は層の局所性と貼り合わせを満たす．
+
+$\eta_U(s)$ は
+補題\ref{lem:etale-basis}の証明中の
+$\sigma_s$ に等しいので連続であり，
+$p\eta_U(s)=\operatorname{id}_U$ だから切断である．
+$V\subset U$ のとき
+$\eta_U(s)|_V=\eta_V(s|_V)$ なので，
+$\eta$ は制限写像と可換な前層の射である．
+\end{proof}
+
+\begin{theorem}[層化の普遍性]\label{thm:sheafification-universal}
+$\mathcal F$ を前層，$\mathcal G$ を層とし，
+$\varphi:\mathcal F\to\mathcal G$ を前層の射とする．
+このとき唯一の層の射
+$\varphi^+:\mathcal F^+\to\mathcal G$ が存在して
+\[
+ \varphi=\varphi^+\circ\eta
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$U$ 上の連続切断 $\sigma\in\mathcal F^+(U)$ を取る．
+命題\ref{prop:local-representation}によって
+$U$ の開被覆 $\{W_i\}$ と
+$s_i\in\mathcal F(W_i)$ を選び，
+$\sigma|_{W_i}=\eta_{W_i}(s_i)$ とできる．
+$W_i\cap W_j$ の任意の点 $x$ では
+$(s_i)_x=(s_j)_x$ なので，
+$x$ のある開近傍 $V_x\subset W_i\cap W_j$ で
+$s_i|_{V_x}=s_j|_{V_x}$ となる．
+$\varphi$ が前層の射だから
+$\varphi(s_i)|_{V_x}=\varphi(s_j)|_{V_x}$ である．
+これらの $V_x$ は $W_i\cap W_j$ を覆うので，
+$\mathcal G$ の局所性により
+$\varphi(s_i)|_{W_i\cap W_j}
+ =\varphi(s_j)|_{W_i\cap W_j}$ となる．
+従って $\mathcal G$ の貼り合わせ公理によって
+ただ一つの $t\in\mathcal G(U)$ が存在して
+\[
+ t|_{W_i}=\varphi_{W_i}(s_i)
+\]
+を満たす．
+$\varphi^+_U(\sigma)=t$ と定める．
+被覆や代表元の選択を変えても，共通細分上で
+同じ芽の議論を適用し，局所性によって
+同じ $t$ を得る．従ってwell-definedである．
+制限との可換性も構成から従うので，
+$\varphi^+$ は層の射である．
+特に $\sigma=\eta_U(s)$ なら
+$U$ 一つで被覆でき，
+$\varphi^+_U(\eta_U(s))=\varphi_U(s)$ である．
+
+一意性を示す．
+$\psi:\mathcal F^+\to\mathcal G$ が
+$\psi\eta=\varphi$ を満たすとする．
+任意の $\sigma$ は上のように
+局所的に $\eta(s_i)$ の形に書けるので
+\[
+ \psi_U(\sigma)|_{W_i}
+ =\psi_{W_i}(\eta_{W_i}(s_i))
+ =\varphi_{W_i}(s_i).
+\]
+$\mathcal G$ の局所性によって
+$\psi_U(\sigma)=\varphi^+_U(\sigma)$ となる．
+従って射は一意である．
+\end{proof}
+
+\begin{theorem}[層化は茎を保存する]\label{thm:stalk-iso}
+各 $x\in X$ に対して自然写像
+\[
+ \eta_x:\mathcal F_x\longrightarrow(\mathcal F^+)_x
+\]
+は全単射である．
+\end{theorem}
+\begin{proof}
+任意の $\mathcal F^+$ の芽 $\sigma_x$ を取る．
+命題\ref{prop:local-representation}によって
+$x$ の近傍 $W$ で
+$\sigma|_W=\eta_W(s)$ となる
+$s\in\mathcal F(W)$ が存在する．
+従って $\sigma_x=\eta_x(s_x)$ なので全射である．
+次に $\eta_x(s_x)=\eta_x(t_x)$ とする．
+芽の等号の定義から，ある $x$ の開近傍 $W$ 上で
+$\eta(s)|_W=\eta(t)|_W$ が成立する．
+特に $x$ において $s_x=t_x$ なので単射である．
+\end{proof}
+
+\section{層の射と茎による判定}
+
+\begin{definition}
+層 $\mathcal F,\mathcal G$ の間の射
+$\varphi:\mathcal F\to\mathcal G$ とは，
+各開集合 $U$ について写像
+$\varphi_U:\mathcal F(U)\to\mathcal G(U)$ があり，
+全ての包含 $V\subset U$ に関して制限と可換なものをいう．
+\end{definition}
+
+\begin{theorem}[茎による同型判定]\label{thm:stalk-criterion}
+層の射 $\varphi:\mathcal F\to\mathcal G$ について，
+次は同値である．
+\begin{enumerate}
+\item $\varphi$ は層の同型射である．
+\item 任意の $x\in X$ について
+$\varphi_x:\mathcal F_x\to\mathcal G_x$ が全単射である．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) なら逆射を茎へ移せば各 $\varphi_x$ の逆写像となるので
+(2) が従う．
+(2) を仮定する．
+まず各 $\varphi_U$ が単射であることを示す．
+$\varphi_U(s)=\varphi_U(t)$ なら
+全ての $x\in U$ で
+$\varphi_x(s_x)=\varphi_x(t_x)$ となる．
+$\varphi_x$ の単射性から $s_x=t_x$ であり，
+命題\ref{prop:stalk-separated}を層 $\mathcal F$ に
+適用して $s=t$ を得る．
+
+次に全射性を示す．
+$t\in\mathcal G(U)$ を取る．
+各 $x\in U$ で $\varphi_x$ は全射だから，
+ある開近傍 $V_x\subset U$ と
+$s_x\in\mathcal F(V_x)$ が存在して
+$\varphi_x((s_x)_x)=t_x$ となる．
+芽の等号の定義によって，
+必要なら $V_x$ を縮小して
+$\varphi_{V_x}(s_x)=t|_{V_x}$ となるようにできる．
+重なり $V_x\cap V_y$ 上では
+$\varphi(s_x)=t=\varphi(s_y)$ となる．
+既に示した $\varphi_{V_x\cap V_y}$ の単射性から
+$s_x|_{V_x\cap V_y}=s_y|_{V_x\cap V_y}$ である．
+$\mathcal F$ の貼り合わせ公理によって
+唯一の $s\in\mathcal F(U)$ が存在して
+$s|_{V_x}=s_x$ となる．
+すると $\mathcal G$ の局所性から
+$\varphi_U(s)=t$ である．
+従って各 $\varphi_U$ は全単射であり，
+それらの逆写像も制限と可換なので層の同型である．
+\end{proof}
+
+\section{環の層と局所から大域への問題}
+
+\begin{definition}
+各 $\mathcal F(U)$ を可換環とし，
+全ての制限写像が環準同型である層を
+\emph{可換環の層}という．
+同様にAbel群の層，加群の層を定義する．
+\end{definition}
+
+\begin{proposition}[茎の環構造]\label{prop:ring-stalk}
+$\mathcal F$ を可換環の層とする．
+このとき各茎 $\mathcal F_x$ は自然に可換環となる．
+また制限写像と可換な環準同型の族は，
+各茎に環準同型を誘導する．
+\end{proposition}
+\begin{proof}
+$s_x,t_x\in\mathcal F_x$ を取る．
+代表元 $s\in\mathcal F(U)$，
+$t\in\mathcal F(V)$ を選び，
+$U\cap V$ 上の和・積によって
+$s_x+t_x$ と $s_xt_x$ を定める．
+代表元を変えても，より小さい $x$ の近傍上で
+それぞれが一致するため，和・積の芽も一致する．
+従って演算はwell-definedである．
+環の公理は十分小さい共通近傍上の
+$\mathcal F(W)$ で成立する公理を芽へ移せば従う．
+射についても制限との可換性から
+芽の代表元に依存しない写像が得られ，
+和・積・単位元を保存する．
+\end{proof}
+
+\begin{example}[正則関数の層]
+$X\subset\mathbb C$ を開集合とし，
+\[
+ \mathcal O_X(U)=\{f:U\to\mathbb C:f\text{ は正則}\}
+\]
+と置くと，$\mathcal O_X$ は可換環の層である．
+\end{example}
+\begin{proof}
+正則関数の和と積は正則であり，
+制限は環準同型である．
+互いに重なる開集合上で一致する正則関数を
+貼り合わせると，得られた関数は各点の近傍で正則だから
+全体で正則である．
+局所性も関数の値から従うので層となる．
+\end{proof}
+
+\begin{remark}
+層化は，前層に不足する貼り合わせの性質を
+茎を変更せずに付加する操作である．
+茎が局所情報を表す一方，大域切断の存在は
+それらの局所情報を貼り合わせられるかに依存する．
+この障害を測る理論として層コホモロジーが現れる．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{定数前層と局所定数関数の層．}
+\begin{proposition}
+位相空間 $X$ の各非空開集合 $U$ に同じ集合
+$A$ を対応させ，包含に対する制限を恒等写像とする
+定数前層は，一般に層ではない．
+\end{proposition}
+\begin{proof}
+$X=U\sqcup V$ を互いに素な非空開集合の和とし，
+$A$ に異なる元 $a,b$ があるとする．
+$U$ 上の切断 $a$ と $V$ 上の切断 $b$ は，
+交叉が空なので両立条件を満たす．
+しかし $X$ 上の一定値 $c$ が両方へ制限して
+$a,b$ になることはできない．
+従って貼り合わせ公理に反する．
+\end{proof}
+\begin{proposition}
+$U\mapsto\{U\to A\text{ の局所定数写像}\}$ は，
+$A$ を離散集合としたとき層をなす．
+\end{proposition}
+\begin{proof}
+局所定数写像の一致は各点を含む被覆上で確かめられる．
+両立する局所定数写像族は点ごとに値が一致するため
+一意な写像へ貼り合わされる．
+各点の近傍では元の局所定数写像と一致するので
+貼り合わせた写像も局所定数である．
+\end{proof}
+\noindent\textbf{到達確認．}
+連結空間上の局所定数実数値関数は定数か．
+\par\noindent\textbf{解答．}
+各値の逆像は局所定数性から開かつ閉である．
+連結性により非空逆像は空間全体なので定数である．
+\end{document}

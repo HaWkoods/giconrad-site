@@ -1,0 +1,736 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{ホモロジー代数：完全列・Ext・Tor}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，射影分解，ExtとTorの定義．
+本稿の具体的な到達課題は，具体的な巡回加群のExtとTorを射影分解から計算する．
+
+\section{鎖複体とホモロジー}
+
+本稿では $R$ を単位元を持つ可換環とし，
+加群は単位的左 $R$-加群とする．
+加群の商・直和・テンソル積とHom函手の基本事項を前提とする．
+
+\begin{definition}
+\emph{鎖複体}とは，加群族 $(C_n)_{n\in\mathbb Z}$ と
+準同型 $d_n:C_n\to C_{n-1}$ で
+$d_{n-1}d_n=0$ を満たすものをいう．
+\[
+ Z_n(C)=\ker d_n,\qquad
+ B_n(C)=\operatorname{im}d_{n+1}
+\]
+と置くと $B_n(C)\subset Z_n(C)$ なので，
+\[
+ H_n(C)=Z_n(C)/B_n(C)
+\]
+を第 $n$ ホモロジー加群という．
+\end{definition}
+
+\begin{definition}
+鎖複体 $C,D$ の間の鎖写像 $f:C\to D$ とは，
+準同型 $f_n:C_n\to D_n$ の族で
+$d^D_nf_n=f_{n-1}d^C_n$ を満たすものをいう．
+\end{definition}
+
+\begin{proposition}[ホモロジーの函手性]\label{prop:homology-functor}
+鎖写像 $f:C\to D$ は
+\[
+ H_n(f):H_n(C)\to H_n(D),\qquad
+ [z]\longmapsto[f_n(z)]
+\]
+を誘導する．
+また $H_n(gf)=H_n(g)H_n(f)$ が成り立つ．
+\end{proposition}
+\begin{proof}
+$z\in Z_n(C)$ なら
+$d^D_nf_n(z)=f_{n-1}d^C_n(z)=0$ なので
+$f_n(z)\in Z_n(D)$ である．
+$z-z'=d^C_{n+1}(w)$ なら
+$f_n(z-z')=d^D_{n+1}f_{n+1}(w)$ なので
+両者は $H_n(D)$ で同じ類を与える．
+従ってwell-definedである．
+合成に関しては
+$H_n(gf)([z])=[g_nf_n(z)]
+=H_n(g)H_n(f)([z])$ なので従う．
+\end{proof}
+
+\section{鎖ホモトピー}
+
+\begin{definition}
+鎖写像 $f,g:C\to D$ が鎖ホモトピックであるとは，
+準同型 $s_n:C_n\to D_{n+1}$ が存在して
+\[
+ f_n-g_n=d^D_{n+1}s_n+s_{n-1}d^C_n
+\]
+が全ての $n$ で成立することをいう．
+\end{definition}
+
+\begin{theorem}[鎖ホモトピー不変性]\label{thm:chain-homotopy}
+鎖ホモトピックな二つの鎖写像は
+同じホモロジー準同型を誘導する．
+\end{theorem}
+\begin{proof}
+$z\in Z_n(C)$ なら $d^C_n(z)=0$ なので
+\[
+ f_n(z)-g_n(z)=d^D_{n+1}s_n(z).
+\]
+右辺は $B_n(D)$ に属するため
+$[f_n(z)]=[g_n(z)]$ が $H_n(D)$ で成り立つ．
+従って誘導写像は一致する．
+\end{proof}
+
+\section{短完全列から長完全列へ}
+
+\begin{theorem}[ホモロジーの長完全列]
+\label{thm:long-exact}
+鎖複体の短完全列
+\[
+ 0\longrightarrow A
+ \xrightarrow{i}B\xrightarrow{p}C\longrightarrow0
+\]
+が各次数で完全であるとする．
+このとき自然な連結準同型
+$\partial:H_n(C)\to H_{n-1}(A)$ が存在して
+\[
+ \cdots\to H_n(A)\xrightarrow{i_*}H_n(B)
+ \xrightarrow{p_*}H_n(C)\xrightarrow{\partial}H_{n-1}(A)
+ \xrightarrow{i_*}H_{n-1}(B)\to\cdots
+\]
+は完全列となる．
+\end{theorem}
+\begin{proof}
+$[c]\in H_n(C)$ を取り，
+$c\in C_n$ をサイクル代表とする．
+$p_n$ は全射なので $b\in B_n$ を
+$p_n(b)=c$ となるように選べる．
+$p_{n-1}(d^B_nb)=d^C_nc=0$ だから，
+次数 $n-1$ の完全性によって
+一意な $a\in A_{n-1}$ が存在して
+$i_{n-1}(a)=d^B_nb$ となる．
+$d^B_{n-1}d^B_nb=0$ と $i$ の単射性から
+$d^A_{n-1}a=0$ である．
+従って $[a]\in H_{n-1}(A)$ が定まり，
+$\partial[c]=[a]$ と置く．
+
+選んだ $b$ を別の持ち上げ $b+i_n(u)$ に変えると，
+対応する $a$ は $a+d^A_nu$ に変わるので
+ホモロジー類は変わらない．
+サイクル代表を $c+d^C_{n+1}v$ に変えたとき，
+$v$ の持ち上げ $w\in B_{n+1}$ を選び
+$b+d^B_{n+1}w$ を新しい持ち上げとすると，
+その微分は $d^B_nb$ と同じなので
+連結像は変わらない．
+従って $\partial$ はwell-definedであり，
+線形性も構成から従う．
+
+完全性を順に示す．
+$p_*i_*=0$ は $pi=0$ による．
+$p_*[b]=0$ なら，
+$p_n(b)=d^C_{n+1}c'$ となる $c'\in C_{n+1}$ が存在する．
+$c'$ の持ち上げ $b'\in B_{n+1}$ を取り，
+$b-d^B_{n+1}b'$ は $p$ の核に属するサイクルなので
+$i_n(a)$ と書ける．
+従って $[b]=i_*[a]$ である．
+これで $\ker p_*=\operatorname{im}i_*$ を得る．
+
+$\partial p_*[b]=0$ は $b$ がサイクルなら
+持ち上げに $b$ 自身を選び，その微分が零であることによる．
+逆に $\partial[c]=0$ なら，上で構成した $a$ は
+$a=d^A_nu$ と書ける．
+$b-i_n(u)$ はサイクルであり，
+$p_n(b-i_n(u))=c$ だから
+$[c]=p_*[b-i_n(u)]$ を得る．
+従って $\ker\partial=\operatorname{im}p_*$ である．
+
+$i_*\partial[c]=0$ は
+$i(a)=d^B_nb$ が境界であることから従う．
+逆に $[a]\in H_{n-1}(A)$ が $i_*[a]=0$ を満たすなら，
+$i(a)=d^B_nb$ となる $b\in B_n$ を選べる．
+$c=p_n(b)$ はサイクルであり，
+構成により $\partial[c]=[a]$ となる．
+よって $\ker i_*=\operatorname{im}\partial$ である．
+同じ議論を全ての次数で行えば長完全列を得る．
+\end{proof}
+
+\section{蛇の補題}
+
+\begin{theorem}[蛇の補題]\label{thm:snake}
+可換図式
+\[
+ \begin{array}{ccccccccc}
+ 0&\to&A_1&\xrightarrow{\alpha_1}&B_1&
+ \xrightarrow{\beta_1}&C_1&\to&0\\
+ &&\downarrow f&&\downarrow g&&\downarrow h\\
+ 0&\to&A_2&\xrightarrow{\alpha_2}&B_2&
+ \xrightarrow{\beta_2}&C_2&\to&0
+ \end{array}
+\]
+の行が完全なら，
+\[
+ 0\to\ker f\to\ker g\to\ker h
+ \xrightarrow{\delta}\operatorname{coker}f\to
+ \operatorname{coker}g\to\operatorname{coker}h\to0
+\]
+は完全である．
+\end{theorem}
+\begin{proof}
+$c\in\ker h$ を取る．
+$\beta_1$ は全射なので
+$\beta_1(b)=c$ となる $b\in B_1$ を選ぶ．
+$\beta_2(gb)=h(\beta_1b)=h(c)=0$ なので，
+行の完全性によって
+$\alpha_2(a)=gb$ となる $a\in A_2$ を一意に取れる．
+$\delta(c)=[a]\in\operatorname{coker}f$ と定める．
+$b$ の選択を $b+\alpha_1(u)$ に変えると
+$gb$ は $gb+\alpha_2(fu)$ に変わるので
+$a$ の類は変わらない．従ってwell-definedである．
+加法性もこの構成から従う．
+
+最初の $\ker f\to\ker g$ の単射性は
+$\alpha_1$ の単射性による．
+$\ker g\to\ker h$ の核に属する $b$ は
+$\beta_1(b)=0$ だから
+$b=\alpha_1(a)$ と書ける．
+$g(b)=0$ と $\alpha_2$ の単射性から $f(a)=0$ となり，
+$\ker f$ の像に属する．
+$\ker h\to\operatorname{coker}f$ の核を考える．
+$\delta(c)=0$ なら構成で得た $a$ は $f(u)$ と書ける．
+$b-\alpha_1(u)$ は $g$ の核に入り，
+$\beta_1(b-\alpha_1u)=c$ だから
+$c$ は $\ker g$ の像に属する．
+逆に $\ker g$ から来る $c$ については
+$b$ 自身を $g(b)=0$ となるように選べるので
+$\delta(c)=0$ である．
+
+次に $\operatorname{coker}f\to\operatorname{coker}g$ の核に
+属する $[a]$ を取る．
+$\alpha_2(a)=g(b)$ となる $b\in B_1$ が存在する．
+$c=\beta_1(b)$ とすると
+$h(c)=\beta_2(gb)=0$ であり，
+$\delta(c)=[a]$ となる．
+逆に $\delta(c)=[a]$ の場合には
+$\alpha_2(a)=g(b)$ なので
+$[a]$ の像は零である．
+$\operatorname{coker}g\to\operatorname{coker}h$ の核についても，
+$[b]\in\operatorname{coker}g$ が零へ写るなら
+$\beta_2(b)=h(c)$ となる $c\in C_1$ があり，
+$\beta_1$ の全射性から $c=\beta_1(b')$ と書ける．
+すると $\beta_2(b-gb')=0$ だから
+$b-gb'=\alpha_2(a)$ となる $a\in A_2$ があり，
+$[b]$ は $\operatorname{coker}f$ からの像である．
+最後の $\operatorname{coker}h$ への全射性は
+$\beta_2$ の全射性による．
+これで全ての点で完全性を得る．
+\end{proof}
+
+\section{射影加群と射影分解}
+
+\begin{definition}
+$R$-加群 $P$ が射影的であるとは，
+任意の全射 $q:M\to N$ と準同型 $f:P\to N$ に対して，
+$q\widetilde f=f$ となる
+$\widetilde f:P\to M$ が存在することをいう．
+\end{definition}
+
+\begin{theorem}[射影加群の特徴づけ]\label{thm:projective}
+$R$-加群 $P$ について次は同値である．
+\begin{enumerate}
+\item $P$ は射影的である．
+\item 任意の短完全列 $0\to A\to B\to P\to0$ は分裂する．
+\item $P$ はある自由加群の直和因子である．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) なら $B\to P$ の全射に $1_P$ を持ち上げる
+切断が存在するので短完全列は分裂する．
+(2) から (3) を示す．
+$P$ の元全体を基底集合とする自由加群
+$F=R^{(P)}$ から $P$ への自然な全射を取る．
+その核を $K$ とすると
+$0\to K\to F\to P\to0$ が短完全列となる．
+仮定から分裂するので $F\cong K\oplus P$ である．
+(3) から (1) を示す．
+自由加群 $F$ は基底の各元の像を全射の下で
+任意に持ち上げることで射影的である．
+$F\cong P\oplus Q$ なら，
+$P\to N$ を $F\to N$ へ零として延長し，
+その持ち上げを $P$ に制限すれば
+$P$ の射影性を得る．
+\end{proof}
+
+\begin{definition}
+$R$-加群 $M$ の射影分解とは
+\[
+ \cdots\to P_2\xrightarrow{d_2}P_1
+ \xrightarrow{d_1}P_0\xrightarrow{\varepsilon}M\to0
+\]
+が完全であり，各 $P_i$ が射影的であるものをいう．
+\end{definition}
+
+\begin{proposition}[射影分解の存在]\label{prop:resolution}
+任意の $R$-加群は自由加群による射影分解を持つ．
+\end{proposition}
+\begin{proof}
+$M$ の各元を自由生成元とする自由加群 $P_0$ を取り，
+自然な全射 $\varepsilon:P_0\to M$ を定める．
+核 $K_1=\ker\varepsilon$ に対して
+自由加群 $P_1$ と全射 $P_1\to K_1$ を取る．
+これを $P_0$ に含める合成を $d_1$ とする．
+次に $K_2=\ker d_1$ に対して
+自由加群 $P_2$ からの全射を取り，
+同様に繰り返す．
+各段階で像が前段階の核に一致するように定めたので
+得られた列は完全であり，
+全ての $P_i$ は自由加群，従って射影的である．
+\end{proof}
+
+\begin{theorem}[分解の比較定理]\label{thm:comparison}
+$f:M\to N$ を準同型とし，
+$P_*\to M$，$Q_*\to N$ を射影分解とする．
+このとき $f$ を持ち上げる鎖写像
+$\widetilde f:P_*\to Q_*$ が存在し，
+そのような二つの持ち上げは鎖ホモトピックである．
+\end{theorem}
+\begin{proof}
+$\varepsilon_Q:Q_0\to N$ は全射であり，
+$P_0$ は射影的なので
+$f\varepsilon_P:P_0\to N$ を
+$\widetilde f_0:P_0\to Q_0$ に持ち上げられる．
+帰納的に $\widetilde f_j$ を $j<n$ まで構成したとする．
+$\widetilde f_{n-1}d^P_n:P_n\to Q_{n-1}$ の像は
+\[
+ d^Q_{n-1}\widetilde f_{n-1}d^P_n
+ =\widetilde f_{n-2}d^P_{n-1}d^P_n=0
+\]
+だから $\ker d^Q_{n-1}=\operatorname{im}d^Q_n$ に入る．
+$P_n$ の射影性を全射
+$Q_n\to\ker d^Q_{n-1}$ に適用すると
+$\widetilde f_n$ を選んで
+$d^Q_n\widetilde f_n=\widetilde f_{n-1}d^P_n$
+とできる．
+これにより鎖写像が存在する．
+
+二つの持ち上げ $f_*,g_*$ の差を $h_*$ とする．
+$\varepsilon_Qh_0=0$ なので
+$h_0(P_0)\subset\operatorname{im}d^Q_1$ である．
+$P_0$ の射影性から
+$s_0:P_0\to Q_1$ を
+$d^Q_1s_0=h_0$ となるように取れる．
+帰納的に
+$h_n-d^Q_{n+1}s_n-s_{n-1}d^P_n=0$
+を満たす $s_n$ を作る．
+実際 $s_{n-1}$ まで選んだとき
+$h_n-s_{n-1}d^P_n$ の像は
+$d^Q_n$ の核に含まれることが，
+鎖写像の可換性と帰納法の仮定から確認できる．
+$P_n$ の射影性によって
+$d^Q_{n+1}s_n=h_n-s_{n-1}d^P_n$ となる
+$s_n$ を選べる．
+これで $h=ds+sd$ を得て鎖ホモトピーとなる．
+\end{proof}
+
+\section{ExtとTorの定義}
+
+\begin{definition}
+$M,N$ を $R$-加群とし，
+$P_*\to M$ を射影分解とする．
+\[
+ \operatorname{Ext}_R^n(M,N)
+ =H^n(\operatorname{Hom}_R(P_*,N)),\qquad
+ \operatorname{Tor}^R_n(M,N)
+ =H_n(P_*\otimes_R N)
+\]
+と定める．
+ここで前者のコホモロジー複体は
+$d_n$ による前合成を微分とする．
+\end{definition}
+
+\begin{theorem}[分解によらない定義]\label{thm:derived-wd}
+ExtとTorは射影分解の選択によらず，
+自然同型を除いて一意に定まる．
+\end{theorem}
+\begin{proof}
+二つの射影分解 $P_*,Q_*$ を取る．
+比較定理\ref{thm:comparison}を恒等写像 $1_M$ に適用すると，
+両方向の持ち上げ
+$f:P_*\to Q_*$，$g:Q_*\to P_*$ が存在する．
+合成 $gf$ と $1_{P_*}$ は同じ $1_M$ を持ち上げるので
+鎖ホモトピックであり，$fg$ と $1_{Q_*}$ も同様である．
+Hom函手およびテンソル積函手を各次数に適用すると，
+鎖ホモトピーの等式 $gf-1=ds+sd$ は
+それぞれ対応するコホモトピー・鎖ホモトピーの等式へ移る．
+従ってホモロジー上では $H(g)H(f)=1$，
+$H(f)H(g)=1$ となる．
+よってExtとTorの計算結果は自然同型で結ばれる．
+\end{proof}
+
+\begin{proposition}[次数零]\label{prop:degree-zero}
+任意の $R$-加群 $M,N$ に対し
+\[
+ \operatorname{Ext}_R^0(M,N)\cong\operatorname{Hom}_R(M,N),
+ \qquad
+ \operatorname{Tor}^R_0(M,N)\cong M\otimes_RN
+\]
+が自然に成立する．
+\end{proposition}
+\begin{proof}
+射影分解 $P_1\to P_0\to M\to0$ の完全性から，
+$\operatorname{Hom}_R(P_0,N)$ の元が $d_1$ との合成で
+零となる条件は，$\operatorname{im}d_1=\ker(P_0\to M)$
+を零へ写す条件に等しい．
+従ってそのような写像は一意に $M\to N$ を経由し，
+$\operatorname{Ext}^0\cong\operatorname{Hom}$ を得る．
+またテンソル積は右完全なので，
+$P_1\otimes N\to P_0\otimes N\to M\otimes N\to0$
+は完全である．
+従って
+$\operatorname{Tor}_0=\operatorname{coker}(P_1\otimes N\to
+P_0\otimes N)\cong M\otimes N$ となる．
+\end{proof}
+
+\section{完全列と導来函手}
+
+\begin{theorem}[Extの長完全列]\label{thm:ext-long}
+$0\to A\to B\to C\to0$ を $R$-加群の短完全列とする．
+このとき任意の $M$ に対して
+\[
+ \begin{aligned}
+ 0&\to\operatorname{Hom}(M,A)
+   \to\operatorname{Hom}(M,B)\\
+  &\to\operatorname{Hom}(M,C)
+   \to\operatorname{Ext}^1(M,A)\\
+  &\to\operatorname{Ext}^1(M,B)\to\cdots
+ \end{aligned}
+\]
+という自然な長完全列が存在する．
+\end{theorem}
+\begin{proof}
+$M$ の射影分解 $P_*$ を一つ固定する．
+各 $P_n$ は射影的なので $\operatorname{Hom}_R(P_n,-)$ は
+短完全列を短完全列へ写す．
+実際，左完全性はHomの基本性質であり，
+右側への全射性は $P_n$ の射影性である．
+従って次数ごとに短完全なコホモロジー複体の列
+\[
+ 0\to\operatorname{Hom}(P_*,A)
+ \to\operatorname{Hom}(P_*,B)
+ \to\operatorname{Hom}(P_*,C)\to0
+\]
+が得られる．
+定理\ref{thm:long-exact}を次数反転したコホモロジー版へ
+適用すると長完全列が得られる．
+次数零の項を命題\ref{prop:degree-zero}で同一視すれば
+表示式となる．
+\end{proof}
+
+\begin{theorem}[Torの長完全列]\label{thm:tor-long}
+短完全列 $0\to A\to B\to C\to0$ と任意の $R$-加群 $M$
+について自然な長完全列
+\[
+ \cdots\to\operatorname{Tor}_1^R(M,B)
+ \to\operatorname{Tor}_1^R(M,C)\to M\otimes_R A
+ \to M\otimes_R B\to M\otimes_R C\to0
+\]
+が存在する．
+\end{theorem}
+\begin{proof}
+$M$ の射影分解 $P_*$ を取る．
+射影加群は自由加群の直和因子だから平坦である．
+実際自由加群とのテンソル積は直和の組合せとなるため
+完全性を保ち，直和因子への射影でも完全性が保たれる．
+従って
+$0\to P_n\otimes A\to P_n\otimes B\to
+P_n\otimes C\to0$ は全ての $n$ で完全である．
+これらをまとめると鎖複体の短完全列となるので，
+定理\ref{thm:long-exact}を適用する．
+次数零を命題\ref{prop:degree-zero}で同一視すれば
+表示した長完全列を得る．
+\end{proof}
+
+\section{入射加群とその存在}
+
+\begin{definition}
+加群 $E$ が入射的であるとは，
+任意の単射 $i:A\to B$ と準同型 $f:A\to E$ に対し，
+$f=\widetilde f\circ i$ となる
+$\widetilde f:B\to E$ が存在することをいう．
+\end{definition}
+
+\begin{theorem}[Baerの判定条件]\label{thm:baer}
+$R$-加群 $E$ が入射的であるための必要十分条件は，
+任意のイデアル $I\subset R$ と準同型 $f:I\to E$ が
+$R$ 全体へ延長できることである．
+\end{theorem}
+\begin{proof}
+$E$ が入射的なら $I\hookrightarrow R$ への延長性は
+定義から従う．
+逆にイデアルからの写像を延長できるとする．
+単射 $A\hookrightarrow B$ と $f:A\to E$ を取る．
+$A$ を $B$ の部分加群と同一視する．
+$A\subset C\subset B$ の部分加群 $C$ 上への
+$f$ の延長全体を包含順序で考える．
+鎖の上限は写像の和集合によって与えられるため，
+Zornの補題から極大な延長 $g:C\to E$ が存在する．
+もし $C\ne B$ なら $b\in B\setminus C$ を選ぶ．
+\[
+ I=\{r\in R:rb\in C\}
+\]
+は $R$ のイデアルであり，
+$\psi:I\to E$，$\psi(r)=g(rb)$ は $R$-準同型である．
+仮定から $\psi$ は $R\to E$ へ延長されるので，
+その1での値を $e\in E$ と書けば
+$\psi(r)=re$ である．
+そこで
+\[
+ \widetilde g:C+Rb\to E,\qquad
+ \widetilde g(c+rb)=g(c)+re
+\]
+と置く．
+もし $c+rb=c'+r'b$ なら
+$(r-r')b=c'-c\in C$ だから
+$r-r'\in I$ であり，
+$(r-r')e=g((r-r')b)=g(c'-c)$ となる．
+従って上の式はwell-definedである．
+$\widetilde g$ は $g$ を延長し，
+$C+Rb$ は $C$ より大きいので極大性に矛盾する．
+よって $C=B$ であり，$E$ は入射的である．
+\end{proof}
+
+\begin{theorem}[十分な入射加群の存在]\label{thm:enough-inj}
+任意の $R$-加群 $M$ はある入射的 $R$-加群に埋め込める．
+\end{theorem}
+\begin{proof}
+まず $\mathbb Q/\mathbb Z$ は可除Abel群なので，
+任意の整数 $n\ne0$ による乗法が全射である．
+Baerの判定条件を $R=\mathbb Z$ に適用すると，
+任意のイデアル $n\mathbb Z$ からの写像を
+生成元 $n$ の像の $n$ 乗根を選ぶことで延長できるから，
+$\mathbb Q/\mathbb Z$ は入射的なAbel群である．
+
+\[
+ E_0=\operatorname{Hom}_{\mathbb Z}(R,\mathbb Q/\mathbb Z)
+\]
+を $R$-加群とする．作用を
+$(r\cdot f)(s)=f(sr)$ で定める．
+任意の $R$-加群 $A$ について
+\[
+ \operatorname{Hom}_R(A,E_0)
+ \cong\operatorname{Hom}_{\mathbb Z}(A,\mathbb Q/\mathbb Z)
+\]
+が自然に成り立つ．
+左から右は写像 $\Phi:A\to E_0$ に
+$a\mapsto\Phi(a)(1)$ を対応させ，
+逆方向はAbel群準同型 $\phi$ に
+$\Phi(a)(r)=\phi(ra)$ を対応させればよい．
+忘却函手は短完全列をそのまま短完全列へ写し，
+$\mathbb Q/\mathbb Z$ は入射的なので，
+右辺のHomは完全函手である．
+従って左辺も完全であり，
+$E_0$ は入射的な $R$-加群である．
+
+任意のAbel群 $A$ の非零元 $a$ に対して
+$\phi:A\to\mathbb Q/\mathbb Z$ で
+$\phi(a)\ne0$ となるものが存在する．
+実際巡回部分群 $\mathbb Za$ から
+$\mathbb Q/\mathbb Z$ へ非零準同型を定め，
+その入射性によって $A$ 全体へ延長できる．
+この性質を $M$ に用いる．
+$I=\operatorname{Hom}_{\mathbb Z}(M,\mathbb Q/\mathbb Z)$ と置き，
+写像
+\[
+ j:M\to E_0^I,\qquad
+ j(m)_\phi(r)=\phi(rm)
+\]
+を定める．
+これは $R$-線形である．
+$m\ne0$ ならある $\phi\in I$ で
+$\phi(m)\ne0$ となるため
+$j(m)_\phi(1)\ne0$ であり，$j$ は単射である．
+最後に入射加群の直積は入射的である：
+単射に沿う延長を各成分で独立に取り，
+それらを直積としてまとめればよい．
+従って $E_0^I$ は入射的であり，
+$M$ は入射加群へ埋め込まれる．
+\end{proof}
+
+\section{整数環上の計算}
+
+\begin{theorem}[$\mathbb Z$ 上のExtとTor]
+\label{thm:z-example}
+自然数 $m\ge1$ とAbel群 $N$ に対して
+\[
+ \operatorname{Hom}_{\mathbb Z}(\mathbb Z/m\mathbb Z,N)
+ \cong N[m],
+\]
+\[
+ \operatorname{Ext}_{\mathbb Z}^1(\mathbb Z/m\mathbb Z,N)
+ \cong N/mN,
+ \qquad
+ \operatorname{Tor}^{\mathbb Z}_1(\mathbb Z/m\mathbb Z,N)
+ \cong N[m],
+\]
+が成り立つ．ここで $N[m]=\{x\in N:mx=0\}$ である．
+$n\ge2$ では対応するExtとTorは零となる．
+\end{theorem}
+\begin{proof}
+$\mathbb Z/m\mathbb Z$ の自由分解
+\[
+ 0\to\mathbb Z\xrightarrow{\times m}\mathbb Z
+ \to\mathbb Z/m\mathbb Z\to0
+\]
+を取る．
+$\operatorname{Hom}_{\mathbb Z}(-,N)$ を適用すると
+コホモロジー複体は
+\[
+ 0\to N\xrightarrow{\times m}N\to0
+\]
+となる．
+次数零の核は $N[m]$，
+次数1の余核は $N/mN$ である．
+またテンソル積を適用すると
+鎖複体は
+\[
+ 0\to N\xrightarrow{\times m}N\to0
+\]
+となり，次数1の核は $N[m]$ である．
+元の分解は次数1までしか非零項を持たないので，
+高次のホモロジーは零となる．
+\end{proof}
+
+\begin{corollary}\label{cor:zn-example}
+$m,n\ge1$ とし $d=\gcd(m,n)$ とすると
+\[
+ \operatorname{Ext}^1_{\mathbb Z}
+ (\mathbb Z/m\mathbb Z,\mathbb Z/n\mathbb Z)
+ \cong\mathbb Z/d\mathbb Z,
+\]
+\[
+ \operatorname{Tor}^{\mathbb Z}_1
+ (\mathbb Z/m\mathbb Z,\mathbb Z/n\mathbb Z)
+ \cong\mathbb Z/d\mathbb Z.
+\]
+\end{corollary}
+\begin{proof}
+$N=\mathbb Z/n\mathbb Z$ と置く．
+$mN$ は巡回群 $N$ の中の位数 $n/d$ の部分群なので
+$N/mN$ の位数は $d$ であり巡回群となる．
+また $N[m]$ は $mx=0$ を満たす元全体であり，
+位数 $d$ の巡回部分群である．
+定理\ref{thm:z-example}を適用して結論を得る．
+\end{proof}
+
+\begin{remark}
+ExtはHom函手の完全性の欠落を，
+Torはテンソル積函手の完全性の欠落を測る導来函手である．
+計算には適切な射影分解または入射分解を選ぶ．
+構成の独立性は分解の比較定理と鎖ホモトピー不変性から従う．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{整数上のExtとTorの計算．}
+\begin{proposition}
+正整数 $n$ とAbel群 $A$ に対して
+\[
+\operatorname{Tor}_1^{\mathbb Z}(\mathbb Z/n\mathbb Z,A)
+\cong\{a\in A:na=0\},
+\quad
+\operatorname{Ext}^1_{\mathbb Z}(\mathbb Z/n\mathbb Z,A)
+\cong A/nA
+\]
+が成立する．
+\end{proposition}
+\begin{proof}
+射影分解
+\[
+0\longrightarrow\mathbb Z
+\xrightarrow{\cdot n}\mathbb Z
+\longrightarrow\mathbb Z/n\mathbb Z
+\longrightarrow0
+\]
+を用いる．
+$-\otimes_{\mathbb Z}A$ を適用した複体は
+$A\xrightarrow{\cdot n}A$ であり，
+一次ホモロジーはこの写像の核だから
+$n$-torsionに一致する．
+一方 $\operatorname{Hom}_{\mathbb Z}(-,A)$
+を適用した共鎖複体は
+$A\xrightarrow{\cdot n}A$ となり，
+一次コホモロジーはこの写像の余核 $A/nA$ である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\operatorname{Tor}_1^{\mathbb Z}
+(\mathbb Z/6\mathbb Z,\mathbb Z/4\mathbb Z)$
+を求めよ．
+\par\noindent\textbf{解答．}
+$\mathbb Z/4\mathbb Z$ で $6a=0$ は
+$2a=0$ と同値であり，
+解は $a=0,2$ の二つ．
+従って $\mathbb Z/2\mathbb Z$ に同型である．
+\end{document}

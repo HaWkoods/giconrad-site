@@ -1,0 +1,549 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{極限・余極限と随伴函手}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，随伴函手，普遍性とHom集合の自然同型．
+本稿の具体的な到達課題は，自由函手と忘却函手の随伴を具体的な元の対応で表す．
+
+\section{図式と錐}
+
+本稿では圏・函手・自然変換の定義と，
+米田の補題の基本事項を既知とする．
+圏は特に断らない限り局所小とし，
+図式の添字圏は小圏であるとする．
+
+\begin{definition}
+小圏 $J$ と圏 $\mathcal C$ に対して，
+函手 $D:J\to\mathcal C$ を\emph{図式}という．
+対象 $L\in\mathcal C$ から図式 $D$ への
+\emph{錐}とは，各 $j\in J$ に対する射
+$\lambda_j:L\to D(j)$ の族で，
+任意の射 $u:j\to k$ に対して
+\[
+ D(u)\circ\lambda_j=\lambda_k
+\]
+を満たすものをいう．
+\end{definition}
+
+\begin{definition}
+図式 $D$ の\emph{極限}とは，
+錐 $(L,\lambda_j)$ で，
+任意の錐 $(X,\xi_j)$ に対して
+ただ一つの射 $f:X\to L$ が存在して
+\[
+ \lambda_j\circ f=\xi_j\qquad(j\in J)
+\]
+となるものをいう．
+これを $L=\varprojlim D$ と書く．
+\end{definition}
+
+\begin{theorem}[極限の一意性]\label{thm:limit-unique}
+同じ図式 $D$ の二つの極限
+$(L,\lambda_j)$，$(L',\lambda'_j)$ が存在するとき，
+射 $u:L\to L'$ で
+$\lambda'_j u=\lambda_j$ を全ての $j$ で満たすものが
+ただ一つ存在し，これは同型射である．
+\end{theorem}
+\begin{proof}
+$L'$ の普遍性を $L$ の錐に適用すると
+一意な $u:L\to L'$ が存在する．
+同様に $L$ の普遍性によって
+$v:L'\to L$ が存在する．
+全ての $j$ について
+\[
+ \lambda_j vu=\lambda'_j u=\lambda_j
+\]
+であり，$1_L$ も同じ性質を満たす．
+普遍性の一意性から $vu=1_L$ となる．
+同様に $uv=1_{L'}$ だから $u$ は同型である．
+\end{proof}
+
+\section{積と等化子}
+
+\begin{definition}
+対象 $A,B$ の\emph{積}とは，
+射 $p_A:P\to A$，$p_B:P\to B$ を持つ対象 $P$ で，
+任意の $f:X\to A$，$g:X\to B$ に対し
+唯一の $h:X\to P$ が存在して
+$p_Ah=f,p_Bh=g$ となるものをいう．
+これを $P=A\times B$ と書く．
+\end{definition}
+
+\begin{proposition}[積は離散図式の極限]\label{prop:product}
+二つの対象からなる離散圏 $J$ と
+$D:J\to\mathcal C$ に対して，
+$D$ の極限は $D$ の二対象の積に他ならない．
+\end{proposition}
+\begin{proof}
+離散圏には恒等射以外の射がないので，
+錐の可換性条件は空であり，
+錐は二本の射 $X\to A$，$X\to B$ と同じである．
+極限の普遍性をそのまま書けば
+積の普遍性に一致する．
+\end{proof}
+
+\begin{definition}
+平行な二射 $f,g:A\to B$ の\emph{等化子}とは，
+射 $e:E\to A$ で $fe=ge$ を満たし，
+$fh=gh$ となる任意の $h:X\to A$ に対して
+一意な $\bar h:X\to E$ が存在して
+$e\bar h=h$ となるものをいう．
+\end{definition}
+
+\begin{proposition}[集合の等化子]\label{prop:equalizer-set}
+$\mathbf{Set}$ において
+\[
+ E=\{a\in A:f(a)=g(a)\}
+\]
+を取り，包含写像 $e:E\hookrightarrow A$ とすると
+$(E,e)$ は $f,g$ の等化子である．
+\end{proposition}
+\begin{proof}
+定義から $fe=ge$ である．
+$h:X\to A$ が $fh=gh$ を満たせば，
+任意の $x\in X$ について
+$f(h(x))=g(h(x))$ だから $h(x)\in E$ である．
+従って $\bar h(x)=h(x)$ と置けば
+$X\to E$ の写像が得られ $e\bar h=h$ となる．
+$e$ は単射なので $\bar h$ は一意である．
+\end{proof}
+
+\begin{theorem}[集合の小図式の極限]\label{thm:set-limits}
+小圏 $J$ と函手 $D:J\to\mathbf{Set}$ に対して，
+極限 $\varprojlim D$ は常に存在する．
+\end{theorem}
+\begin{proof}
+積集合
+\[
+ P=\prod_{j\in\operatorname{Ob}(J)}D(j)
+\]
+を取る．$J$ は小圏なので対象全体は集合であり，
+選択公理を用いて積を構成できる．
+\[
+ L=\{(x_j)_j\in P:
+ D(u)(x_j)=x_k
+ \text{ for all }u:j\to k\}
+\]
+と置く．$L$ から $D(j)$ への射を座標射影 $\lambda_j$ とする．
+$L$ の定義から
+$D(u)\lambda_j=\lambda_k$ だから錐である．
+任意の錐 $(X,\xi_j)$ に対し
+\[
+ h:X\to L,\qquad h(x)=(\xi_j(x))_j
+\]
+と定めることができる．
+実際，錐の可換性から右辺は $L$ の元となる．
+$\lambda_jh=\xi_j$ が成り立つ．
+この条件を満たす写像は各座標の値によって一意なので，
+$h$ も一意である．従って $L$ は極限である．
+\end{proof}
+
+\section{余極限と押出し}
+
+\begin{definition}
+図式 $D:J\to\mathcal C$ から対象 $Q$ への
+\emph{余錐}とは，射 $\iota_j:D(j)\to Q$ の族で
+任意の $u:j\to k$ について
+$\iota_kD(u)=\iota_j$ を満たすものをいう．
+任意の余錐 $(Q',\iota'_j)$ に対して
+唯一の $h:Q\to Q'$ が存在して
+$h\iota_j=\iota'_j$ となる余錐 $(Q,\iota_j)$ を
+\emph{余極限}といい，
+$Q=\varinjlim D$ と書く．
+\end{definition}
+
+\begin{theorem}[集合の小図式の余極限]\label{thm:set-colimits}
+小圏 $J$ と函手 $D:J\to\mathbf{Set}$ に対し，
+余極限 $\varinjlim D$ は常に存在する．
+\end{theorem}
+\begin{proof}
+非交和
+$S=\bigsqcup_{j\in\operatorname{Ob}(J)}D(j)$ を取り，
+$D(j)$ の元 $x$ を $(j,x)$ と表す．
+$J$ の任意の射 $u:j\to k$ と $x\in D(j)$ に対して
+\[
+ (j,x)\sim_0(k,D(u)(x))
+\]
+という関係を考え，
+その反射・対称・推移閉包を $\sim$ とする．
+商集合 $Q=S/{\sim}$ とし，
+$\iota_j(x)=[(j,x)]$ と置く．
+定義から $\iota_kD(u)=\iota_j$ だから余錐である．
+
+別の余錐 $(Q',\iota'_j)$ を取る．
+$S$ 上の写像を $h_0(j,x)=\iota'_j(x)$ と定める．
+余錐の条件から
+\[
+ h_0(j,x)=\iota'_j(x)
+ =\iota'_k(D(u)(x))
+ =h_0(k,D(u)(x))
+\]
+だから $h_0$ は $\sim_0$ で関係づけられた点を
+同じ値へ写す．
+従って $\sim$ に関しても同じ値を持ち，
+一意な写像 $h:Q\to Q'$ を誘導する．
+$h\iota_j=\iota'_j$ となり，
+$\iota_j$ の像が $Q$ を尽くすので $h$ は一意である．
+\end{proof}
+
+\begin{definition}
+射 $f:A\to B$，$g:A\to C$ に対し，
+$B$ と $C$ からの射を持ち
+\[
+ \begin{array}{ccc}
+ A&\xrightarrow{f}&B\\
+ {\scriptstyle g}\downarrow&&\downarrow\\
+ C&\longrightarrow&P
+ \end{array}
+\]
+が可換になる余極限を\emph{押出し}と呼ぶ．
+$\mathbf{Set}$ では
+$P=(B\sqcup C)/{\sim}$，
+ただし $f(a)\sim g(a)$ で生成される同値関係である．
+\end{definition}
+
+\section{随伴函手}
+
+\begin{definition}
+$F:\mathcal C\to\mathcal D$，
+$G:\mathcal D\to\mathcal C$ を函手とする．
+各 $A\in\mathcal C$，$B\in\mathcal D$ に関して
+自然な全単射
+\[
+ \Phi_{A,B}:
+ \operatorname{Hom}_{\mathcal D}(F(A),B)
+ \longrightarrow
+ \operatorname{Hom}_{\mathcal C}(A,G(B))
+\]
+が存在するとき，$F$ は $G$ の\emph{左随伴}，
+$G$ は $F$ の\emph{右随伴}であるといい，
+$F\dashv G$ と書く．
+\end{definition}
+
+\begin{example}[自由群の随伴性]\label{ex:free-group}
+集合から自由群を作る函手
+$F:\mathbf{Set}\to\mathbf{Grp}$ と
+忘却函手 $U:\mathbf{Grp}\to\mathbf{Set}$ に対して
+\[
+ F\dashv U
+\]
+が成り立つ．
+\end{example}
+\begin{proof}
+集合 $S$ に対する自由群 $F(S)$ の普遍性は，
+任意の群 $G$ に対する全単射
+\[
+ \operatorname{Hom}_{\mathbf{Grp}}(F(S),G)
+ \cong\operatorname{Hom}_{\mathbf{Set}}(S,U(G))
+\]
+を与える．
+左から右への写像は
+自由生成元への包含 $S\to F(S)$ との合成である．
+右から左への写像は自由群の普遍性が与える
+準同型への一意な延長である．
+集合の写像 $S'\to S$ または群準同型 $G\to G'$ と
+合成しても同じ対応が得られるので，
+この全単射は両変数について自然である．
+従って随伴性が成立する．
+\end{proof}
+
+\begin{example}[対角函手と積]
+積が存在する圏 $\mathcal C$ において，
+対角函手 $\Delta:\mathcal C\to\mathcal C\times\mathcal C$ と
+二項積函手
+$\times:\mathcal C\times\mathcal C\to\mathcal C$
+に対して
+\[
+ \Delta\dashv\times
+\]
+が成り立つ．
+\end{example}
+\begin{proof}
+二項積の普遍性によって
+\[
+ \operatorname{Hom}_{\mathcal C\times\mathcal C}
+ ((X,X),(A,B))
+ \cong
+ \operatorname{Hom}_{\mathcal C}(X,A\times B)
+\]
+が成立する．
+左辺は
+$\operatorname{Hom}(X,A)\times\operatorname{Hom}(X,B)$
+なので，対応は射の対 $(f,g)$ を
+その積への一意な誘導射 $\langle f,g\rangle$ へ写す．
+積の普遍性から合成に関して自然であるため，
+随伴性を得る．
+\end{proof}
+
+\section{単位・余単位と三角恒等式}
+
+\begin{theorem}[随伴の単位と余単位]\label{thm:unit-counit}
+$F\dashv G$ とし，
+$\Phi_{A,B}$ を随伴の自然な全単射とする．
+\[
+ \eta_A=\Phi_{A,F(A)}(1_{F(A)}):
+ A\longrightarrow GF(A)
+\]
+および
+\[
+ \varepsilon_B=\Phi^{-1}_{G(B),B}(1_{G(B)}):
+ FG(B)\longrightarrow B
+\]
+と置くと，
+$\eta:1_{\mathcal C}\Rightarrow GF$ と
+$\varepsilon:FG\Rightarrow1_{\mathcal D}$
+は自然変換となり，
+\[
+ \varepsilon_{F(A)}\circ F(\eta_A)=1_{F(A)},
+ \qquad
+ G(\varepsilon_B)\circ\eta_{G(B)}=1_{G(B)}
+ \tag{T}
+\]
+を満たす．
+逆にこのような自然変換 $\eta,\varepsilon$ が
+(T) を満たせば，$F\dashv G$ である．
+\end{theorem}
+\begin{proof}
+まず随伴の全単射の自然性を用いて，
+任意の $f:F(A)\to B$ に対し
+\[
+ \Phi_{A,B}(f)=G(f)\circ\eta_A
+ \tag{1}
+\]
+を得る．
+実際 $B$ 変数に関する自然性から
+\[
+ \Phi_{A,B}(f)
+ =G(f)\circ\Phi_{A,F(A)}(1_{F(A)}).
+\]
+同様に逆写像について
+\[
+ \Phi^{-1}_{A,B}(g)=\varepsilon_B\circ F(g)
+ \qquad(g:A\to G(B))
+ \tag{2}
+\]
+が成り立つ．
+
+$\eta$ の自然性を示す．
+$u:A\to A'$ について，
+随伴の $A$ 変数に関する自然性から
+\[
+ GF(u)\circ\eta_A
+ =\Phi_{A,F(A')}(F(u))
+ =\eta_{A'}\circ u
+\]
+となる．
+$\varepsilon$ の自然性も同じ議論を逆写像に適用して
+示される．
+式 (2) を $g=\eta_A$，$B=F(A)$ に適用すると
+\[
+ 1_{F(A)}
+ =\Phi^{-1}_{A,F(A)}(\eta_A)
+ =\varepsilon_{F(A)}\circ F(\eta_A)
+\]
+を得る．
+同様に式 (1) を
+$f=\varepsilon_B$，$A=G(B)$ に適用すると
+\[
+ 1_{G(B)}
+ =\Phi_{G(B),B}(\varepsilon_B)
+ =G(\varepsilon_B)\circ\eta_{G(B)}
+\]
+を得る．これが (T) である．
+
+逆に $\eta,\varepsilon$ が与えられたとする．
+任意の $A,B$ に対し
+\[
+ \Phi(f)=G(f)\circ\eta_A,\qquad
+ \Psi(g)=\varepsilon_B\circ F(g)
+\]
+と定める．
+自然性を用いると
+\begin{align*}
+ \Psi(\Phi(f))
+ &=\varepsilon_B F(G(f)\eta_A)\\
+ &=\varepsilon_B FG(f)F(\eta_A)\\
+ &=f\varepsilon_{F(A)}F(\eta_A)=f,
+\end{align*}
+ただし三行目で $\varepsilon$ の自然性を用いた．
+同様に
+\begin{align*}
+ \Phi(\Psi(g))
+ &=G(\varepsilon_B)GF(g)\eta_A\\
+ &=G(\varepsilon_B)\eta_{G(B)}g=g
+\end{align*}
+となる．最後の二行目では $\eta$ の自然性を用いた．
+従って $\Phi$ と $\Psi$ は互いに逆な全単射である．
+定義から両変数に関する自然性も従うので
+$F\dashv G$ を得る．
+\end{proof}
+
+\section{随伴と極限・余極限の保存}
+
+\begin{theorem}[左随伴は余極限を保存する]
+\label{thm:left-preserves}
+$F:\mathcal C\to\mathcal D$ が
+$G:\mathcal D\to\mathcal C$ の左随伴であるとする．
+小図式 $D:J\to\mathcal C$ の余極限
+$(L,\iota_j)$ が存在するとき，
+$(F(L),F(\iota_j))$ は図式 $F\circ D$ の余極限となる．
+\end{theorem}
+\begin{proof}
+$B\in\mathcal D$ とし，
+$(B,\beta_j:F(D(j))\to B)$ を
+$F\circ D$ の余錐とする．
+随伴の全単射によって各 $\beta_j$ は
+射
+\[
+ \gamma_j=\Phi_{D(j),B}(\beta_j):
+ D(j)\longrightarrow G(B)
+\]
+に一意に対応する．
+$\beta_kF(D(u))=\beta_j$ という余錐条件は，
+随伴の自然性によって
+$\gamma_kD(u)=\gamma_j$ と同値である．
+従って $(G(B),\gamma_j)$ は $D$ の余錐となる．
+$L$ の普遍性から一意な射 $g:L\to G(B)$ が存在して
+$g\iota_j=\gamma_j$ となる．
+これを随伴の逆全単射で戻すと
+\[
+ f=\Phi^{-1}_{L,B}(g):F(L)\longrightarrow B
+\]
+が得られる．
+自然性から
+$fF(\iota_j)=\beta_j$ である．
+逆の対応も全単射なので，この $f$ は一意である．
+従って $(F(L),F(\iota_j))$ は余極限である．
+\end{proof}
+
+\begin{theorem}[右随伴は極限を保存する]
+\label{thm:right-preserves}
+$F\dashv G$ とし，
+小図式 $D:J\to\mathcal D$ の極限
+$(L,\lambda_j)$ が存在するとする．
+このとき
+$(G(L),G(\lambda_j))$ は
+$G\circ D$ の極限である．
+\end{theorem}
+\begin{proof}
+任意の $X\in\mathcal C$ と
+錐 $(X,\xi_j:X\to G(D(j)))$ を取る．
+随伴の逆全単射により各 $\xi_j$ は
+射
+$\beta_j:F(X)\to D(j)$ に一意に対応する．
+自然性によって錐の可換性は
+$D(u)\beta_j=\beta_k$ と同値である．
+従って $\beta_j$ は $D$ への錐となる．
+$L$ の極限の普遍性から一意な
+$h:F(X)\to L$ で
+$\lambda_jh=\beta_j$ となるものが存在する．
+$h$ を随伴で移せば一意な
+$\bar h:X\to G(L)$ が得られ，
+$G(\lambda_j)\bar h=\xi_j$ となる．
+よって $G(L)$ は極限を表す．
+\end{proof}
+
+\begin{remark}
+極限・余極限は「図式からの錐」または
+「図式への余錐」を普遍的に表す対象である．
+随伴はHom集合の自然同型によって射の向きを
+二つの圏の間で移す操作であり，
+この自然性によって極限・余極限の保存則が従う．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{自由群の随伴を具体化する．}
+\begin{proposition}
+集合 $S$ と群 $G$ について
+\[
+\operatorname{Hom}_{\mathbf{Grp}}(F(S),G)
+\cong
+\operatorname{Hom}_{\mathbf{Set}}(S,U(G))
+\]
+が自然に成立する．ここで $F(S)$ は自由群，
+$U$ は忘却函手である．
+\end{proposition}
+\begin{proof}
+左辺の準同型 $\varphi$ を生成元集合に制限し，
+$s\mapsto\varphi(s)$ とする．
+逆に写像 $f:S\to G$ が与えられれば，
+自由群の普遍性からただ一つの準同型
+$\widetilde f:F(S)\to G$ が存在する．
+制限と延長は互いに逆である．
+集合写像と群準同型の合成に関してこの対応は可換なので
+両変数で自然である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$S=\{s\}$ のとき $F(S)$ の同型類を求めよ．
+\par\noindent\textbf{解答．}
+一生成元の自由群は無限巡回群
+$\mathbb Z$ に同型である．任意の群 $G$ への
+準同型は1の像を任意に選ぶことで一意に決まる．
+\end{document}
