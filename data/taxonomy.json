@@ -1,0 +1,368 @@
+{
+  "fields": [
+    {
+      "id": "foundations",
+      "label": "基礎論",
+      "children": [
+        {
+          "id": "logic",
+          "label": "数理論理・モデル理論"
+        }
+      ]
+    },
+    {
+      "id": "combinatorics",
+      "label": "組合せ論",
+      "children": [
+        {
+          "id": "enumeration",
+          "label": "数え上げ・生成関数"
+        },
+        {
+          "id": "graph-theory",
+          "label": "グラフ理論"
+        }
+      ]
+    },
+    {
+      "id": "algebra",
+      "label": "代数学",
+      "children": [
+        {
+          "id": "field-theory",
+          "label": "体論・Galois理論"
+        },
+        {
+          "id": "commutative-algebra",
+          "label": "可換環論"
+        },
+        {
+          "id": "linear-algebra",
+          "label": "線形代数学"
+        },
+        {
+          "id": "category-theory",
+          "label": "圏論・ホモロジー代数"
+        },
+        {
+          "id": "d-modules",
+          "label": "D加群・微分作用素環"
+        }
+      ]
+    },
+    {
+      "id": "analysis",
+      "label": "解析学",
+      "children": [
+        {
+          "id": "measure-theory",
+          "label": "測度論"
+        },
+        {
+          "id": "complex-analysis",
+          "label": "複素解析"
+        },
+        {
+          "id": "functional-analysis",
+          "label": "関数解析"
+        },
+        {
+          "id": "operator-theory",
+          "label": "作用素論"
+        },
+        {
+          "id": "ode",
+          "label": "常微分方程式"
+        },
+        {
+          "id": "pde",
+          "label": "偏微分方程式"
+        },
+        {
+          "id": "fourier-analysis",
+          "label": "Fourier解析"
+        },
+        {
+          "id": "harmonic-analysis",
+          "label": "調和解析"
+        },
+        {
+          "id": "integral-transforms",
+          "label": "積分変換"
+        },
+        {
+          "id": "approximation",
+          "label": "近似理論"
+        },
+        {
+          "id": "manifold-analysis",
+          "label": "多様体上の解析"
+        },
+        {
+          "id": "dynamical-systems",
+          "label": "力学系"
+        }
+      ]
+    },
+    {
+      "id": "geometry",
+      "label": "幾何学",
+      "children": [
+        {
+          "id": "algebraic-geometry",
+          "label": "代数幾何学"
+        },
+        {
+          "id": "differential-geometry",
+          "label": "微分幾何学"
+        },
+        {
+          "id": "manifold-theory",
+          "label": "多様体論"
+        }
+      ]
+    },
+    {
+      "id": "topology",
+      "label": "位相数学",
+      "children": [
+        {
+          "id": "general-topology",
+          "label": "一般位相"
+        },
+        {
+          "id": "algebraic-topology",
+          "label": "代数的位相"
+        },
+        {
+          "id": "topological-groups",
+          "label": "位相群・Lie群"
+        },
+        {
+          "id": "manifold-topology",
+          "label": "微分位相"
+        }
+      ]
+    },
+    {
+      "id": "number-theory",
+      "label": "数論",
+      "children": [
+        {
+          "id": "elementary-number-theory",
+          "label": "初等整数論"
+        },
+        {
+          "id": "algebraic-number-theory",
+          "label": "代数的整数論"
+        },
+        {
+          "id": "analytic-number-theory",
+          "label": "解析的整数論"
+        }
+      ]
+    },
+    {
+      "id": "probability",
+      "label": "確率・統計",
+      "children": [
+        {
+          "id": "probability-theory",
+          "label": "確率論"
+        },
+        {
+          "id": "statistics",
+          "label": "統計学"
+        }
+      ]
+    },
+    {
+      "id": "computation",
+      "label": "計算・情報数学",
+      "children": [
+        {
+          "id": "numerical-analysis",
+          "label": "数値解析"
+        },
+        {
+          "id": "theoretical-cs",
+          "label": "計算理論"
+        },
+        {
+          "id": "cryptography",
+          "label": "暗号理論"
+        },
+        {
+          "id": "computational-algebra",
+          "label": "計算代数"
+        }
+      ]
+    },
+    {
+      "id": "applied",
+      "label": "応用数学",
+      "children": [
+        {
+          "id": "optimization",
+          "label": "最適化"
+        },
+        {
+          "id": "financial-math",
+          "label": "金融・保険数理"
+        },
+        {
+          "id": "biomathematics",
+          "label": "生物数理"
+        },
+        {
+          "id": "systems-modeling",
+          "label": "システム・制御・数理モデル"
+        }
+      ]
+    },
+    {
+      "id": "math-physics",
+      "label": "数理物理",
+      "children": [
+        {
+          "id": "classical-mechanics",
+          "label": "解析力学"
+        },
+        {
+          "id": "quantum-mechanics",
+          "label": "量子力学"
+        },
+        {
+          "id": "statistical-mechanics",
+          "label": "統計力学"
+        },
+        {
+          "id": "relativity",
+          "label": "相対性理論"
+        }
+      ]
+    }
+  ],
+  "topic_groups": [
+    {
+      "label": "構造と構成",
+      "items": [
+        {
+          "id": "universality",
+          "label": "普遍性"
+        },
+        {
+          "id": "duality",
+          "label": "双対性"
+        },
+        {
+          "id": "group-action",
+          "label": "群作用"
+        },
+        {
+          "id": "localization",
+          "label": "局所化"
+        },
+        {
+          "id": "sheaf",
+          "label": "層"
+        },
+        {
+          "id": "exact-sequence",
+          "label": "完全列"
+        },
+        {
+          "id": "ideal",
+          "label": "イデアル"
+        },
+        {
+          "id": "unit-group",
+          "label": "単数群"
+        }
+      ]
+    },
+    {
+      "label": "解析的概念",
+      "items": [
+        {
+          "id": "completeness",
+          "label": "完備性"
+        },
+        {
+          "id": "convergence",
+          "label": "収束"
+        },
+        {
+          "id": "fixed-point",
+          "label": "不動点"
+        },
+        {
+          "id": "integration",
+          "label": "積分"
+        },
+        {
+          "id": "absolute-continuity",
+          "label": "絶対連続性"
+        },
+        {
+          "id": "measure",
+          "label": "測度"
+        },
+        {
+          "id": "valuation",
+          "label": "付値"
+        },
+        {
+          "id": "compactness",
+          "label": "コンパクト性"
+        }
+      ]
+    },
+    {
+      "label": "方法と計算",
+      "items": [
+        {
+          "id": "iteration",
+          "label": "逐次近似"
+        },
+        {
+          "id": "algorithm",
+          "label": "アルゴリズム"
+        },
+        {
+          "id": "variational",
+          "label": "変分法"
+        },
+        {
+          "id": "fourier-transform",
+          "label": "Fourier変換"
+        },
+        {
+          "id": "cohomology",
+          "label": "コホモロジー"
+        },
+        {
+          "id": "homological-method",
+          "label": "ホモロジー的方法"
+        },
+        {
+          "id": "optimization-method",
+          "label": "最適化法"
+        }
+      ]
+    },
+    {
+      "label": "位相・幾何の概念",
+      "items": [
+        {
+          "id": "normality",
+          "label": "正規性（位相空間）"
+        },
+        {
+          "id": "conformality",
+          "label": "等角性"
+        }
+      ]
+    }
+  ]
+}

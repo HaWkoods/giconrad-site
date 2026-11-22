@@ -1,0 +1,1248 @@
+{
+  "version": 1,
+  "publication": "metadata-only",
+  "notes": [
+    {
+      "id": "03.010",
+      "title": "一階述語論理の健全性と完全性",
+      "fields": [
+        "logic"
+      ],
+      "topics": []
+    },
+    {
+      "id": "03.020",
+      "title": "コンパクト性定理とモデル理論の基礎",
+      "fields": [
+        "logic"
+      ],
+      "topics": []
+    },
+    {
+      "id": "03.030",
+      "title": "超実数の構成と超準解析の基本原理",
+      "fields": [
+        "logic"
+      ],
+      "topics": []
+    },
+    {
+      "id": "03.040",
+      "title": "Gödelの不完全性定理",
+      "fields": [
+        "logic"
+      ],
+      "topics": []
+    },
+    {
+      "id": "05.010",
+      "title": "計数法と組合せ論的反転",
+      "fields": [
+        "combinatorics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "05.020",
+      "title": "生成関数と漸化式",
+      "fields": [
+        "combinatorics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "05.030",
+      "title": "グラフ理論の基礎",
+      "fields": [
+        "combinatorics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "05.040",
+      "title": "マッチングとネットワークフロー",
+      "fields": [
+        "combinatorics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "05.050",
+      "title": "群作用と数え上げ",
+      "fields": [
+        "combinatorics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "05.060",
+      "title": "極値組合せ論と確率的方法",
+      "fields": [
+        "combinatorics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "11.010",
+      "title": "算術関数・Dirichlet畳み込みとゼータ関数",
+      "fields": [
+        "number-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "11.020",
+      "title": "平方剰余の相互法則",
+      "fields": [
+        "number-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "11.030",
+      "title": "Pell方程式と二次体の単数",
+      "fields": [
+        "number-theory",
+        "algebraic-number-theory",
+        "field-theory"
+      ],
+      "topics": [
+        "unit-group"
+      ]
+    },
+    {
+      "id": "11.040",
+      "title": "算術級数中の素数とDirichletの定理",
+      "fields": [
+        "number-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "11.050",
+      "title": "素数定理とゼータ関数の解析",
+      "fields": [
+        "number-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "12.010",
+      "title": "有限体の構造",
+      "fields": [
+        "field-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "12.020",
+      "title": "Galois理論と方程式の根号可解性",
+      "fields": [
+        "field-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "12.030",
+      "title": "三次・四次方程式の解の公式とLagrange分解式",
+      "fields": [
+        "field-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "12.040",
+      "title": "Galois理論と定規・コンパス作図",
+      "fields": [
+        "field-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "12.050",
+      "title": "位相体・付値・完備化",
+      "fields": [
+        "field-theory",
+        "general-topology",
+        "algebraic-number-theory"
+      ],
+      "topics": [
+        "completeness",
+        "valuation"
+      ]
+    },
+    {
+      "id": "12.060",
+      "title": "Picard–Vessiot拡大と微分Galois群",
+      "fields": [
+        "field-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "12.070",
+      "title": "Liouville可積分性と微分Galois理論",
+      "fields": [
+        "field-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "13.010",
+      "title": "多項式環とNoether性",
+      "fields": [
+        "commutative-algebra"
+      ],
+      "topics": []
+    },
+    {
+      "id": "13.020",
+      "title": "Krull次元とHilbert多項式",
+      "fields": [
+        "commutative-algebra"
+      ],
+      "topics": []
+    },
+    {
+      "id": "13.030",
+      "title": "Gröbner基底",
+      "fields": [
+        "commutative-algebra",
+        "algebraic-geometry",
+        "computational-algebra"
+      ],
+      "topics": [
+        "ideal",
+        "algorithm"
+      ]
+    },
+    {
+      "id": "13.040",
+      "title": "消去理論と終結式",
+      "fields": [
+        "commutative-algebra"
+      ],
+      "topics": []
+    },
+    {
+      "id": "13.050",
+      "title": "Hilbert–SerreとHilbert–Samuel多項式",
+      "fields": [
+        "commutative-algebra"
+      ],
+      "topics": []
+    },
+    {
+      "id": "13.060",
+      "title": "Artin–Rees補題とKrullの交叉定理",
+      "fields": [
+        "commutative-algebra"
+      ],
+      "topics": []
+    },
+    {
+      "id": "15.010",
+      "title": "主イデアル整域上のSmith標準形",
+      "fields": [
+        "linear-algebra"
+      ],
+      "topics": []
+    },
+    {
+      "id": "18.010",
+      "title": "圏・函手・自然変換と米田の補題",
+      "fields": [
+        "category-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "18.020",
+      "title": "自由対象と普遍性",
+      "fields": [
+        "category-theory",
+        "linear-algebra"
+      ],
+      "topics": [
+        "universality"
+      ]
+    },
+    {
+      "id": "18.030",
+      "title": "極限・余極限と随伴函手",
+      "fields": [
+        "category-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "18.040",
+      "title": "前層・層・茎と層化",
+      "fields": [
+        "category-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "18.050",
+      "title": "ホモロジー代数：完全列・Ext・Tor",
+      "fields": [
+        "category-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "18.060",
+      "title": "層コホモロジーの構成と基本定理",
+      "fields": [
+        "category-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "22.010",
+      "title": "位相群の基本構造",
+      "fields": [
+        "topological-groups"
+      ],
+      "topics": []
+    },
+    {
+      "id": "22.020",
+      "title": "Lie群とLie代数",
+      "fields": [
+        "topological-groups"
+      ],
+      "topics": []
+    },
+    {
+      "id": "22.030",
+      "title": "Haar測度と局所コンパクト群",
+      "fields": [
+        "topological-groups",
+        "measure-theory",
+        "harmonic-analysis"
+      ],
+      "topics": [
+        "measure",
+        "integration"
+      ]
+    },
+    {
+      "id": "28.010",
+      "title": "Radon–Nikodymの定理",
+      "fields": [
+        "measure-theory",
+        "functional-analysis",
+        "probability-theory"
+      ],
+      "topics": [
+        "measure",
+        "integration",
+        "absolute-continuity"
+      ]
+    },
+    {
+      "id": "30.010",
+      "title": "複素微分の幾何学",
+      "fields": [
+        "complex-analysis",
+        "differential-geometry"
+      ],
+      "topics": [
+        "conformality"
+      ]
+    },
+    {
+      "id": "30.020",
+      "title": "Cauchyの積分定理と積分公式",
+      "fields": [
+        "complex-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "30.030",
+      "title": "偏角の原理とRouchéの定理",
+      "fields": [
+        "complex-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "30.040",
+      "title": "解析接続と一価性",
+      "fields": [
+        "complex-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "32.010",
+      "title": "Weyl代数と微分作用素環",
+      "fields": [
+        "d-modules"
+      ],
+      "topics": []
+    },
+    {
+      "id": "32.020",
+      "title": "D加群の基本構造",
+      "fields": [
+        "d-modules"
+      ],
+      "topics": []
+    },
+    {
+      "id": "32.030",
+      "title": "特性多様体とホロノミー",
+      "fields": [
+        "d-modules"
+      ],
+      "topics": []
+    },
+    {
+      "id": "32.040",
+      "title": "D加群のde Rham複体と解函手",
+      "fields": [
+        "d-modules"
+      ],
+      "topics": []
+    },
+    {
+      "id": "35.010",
+      "title": "偏微分方程式の基本理論",
+      "fields": [
+        "pde"
+      ],
+      "topics": []
+    },
+    {
+      "id": "35.020",
+      "title": "Sobolev空間と楕円型方程式",
+      "fields": [
+        "pde"
+      ],
+      "topics": []
+    },
+    {
+      "id": "35.030",
+      "title": "Lipschitz領域のSobolevトレース定理",
+      "fields": [
+        "pde"
+      ],
+      "topics": []
+    },
+    {
+      "id": "35.040",
+      "title": "凹角領域における楕円型正則性の限界",
+      "fields": [
+        "pde"
+      ],
+      "topics": []
+    },
+    {
+      "id": "35.050",
+      "title": "周期波動方程式のSobolev適切性",
+      "fields": [
+        "pde"
+      ],
+      "topics": []
+    },
+    {
+      "id": "37.010",
+      "title": "力学系と安定性理論",
+      "fields": [
+        "dynamical-systems"
+      ],
+      "topics": []
+    },
+    {
+      "id": "37.020",
+      "title": "分岐理論の基礎",
+      "fields": [
+        "dynamical-systems"
+      ],
+      "topics": []
+    },
+    {
+      "id": "41.010",
+      "title": "Stone–Weierstrassの定理",
+      "fields": [
+        "approximation"
+      ],
+      "topics": []
+    },
+    {
+      "id": "42.010",
+      "title": "Fourier級数の理論",
+      "fields": [
+        "fourier-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "42.020",
+      "title": "Fourier変換とPlancherelの定理",
+      "fields": [
+        "fourier-analysis",
+        "functional-analysis"
+      ],
+      "topics": [
+        "fourier-transform",
+        "duality"
+      ]
+    },
+    {
+      "id": "43.010",
+      "title": "コンパクトAbel群上のFourier解析",
+      "fields": [
+        "harmonic-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "44.010",
+      "title": "Laplace変換と反転公式",
+      "fields": [
+        "integral-transforms"
+      ],
+      "topics": []
+    },
+    {
+      "id": "46.010",
+      "title": "Arzelà–Ascoliの定理",
+      "fields": [
+        "functional-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "46.020",
+      "title": "Baireのカテゴリー定理と一様有界性原理",
+      "fields": [
+        "functional-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "46.030",
+      "title": "Hilbert空間とRieszの表現定理",
+      "fields": [
+        "functional-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "46.040",
+      "title": "Hahn–Banachの定理と凸集合の分離",
+      "fields": [
+        "functional-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "46.050",
+      "title": "開写像・有界逆写像・閉グラフ定理",
+      "fields": [
+        "functional-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "46.060",
+      "title": "弱位相と弱*位相",
+      "fields": [
+        "functional-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "46.100",
+      "title": "分布と弱微分",
+      "fields": [
+        "functional-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "47.010",
+      "title": "Banachの不動点定理とその応用",
+      "fields": [
+        "operator-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "47.020",
+      "title": "コンパクト作用素のスペクトル理論",
+      "fields": [
+        "operator-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "53.010",
+      "title": "ベクトル束と線形接続",
+      "fields": [
+        "differential-geometry"
+      ],
+      "topics": []
+    },
+    {
+      "id": "53.020",
+      "title": "Riemann計量とLevi-Civita接続",
+      "fields": [
+        "differential-geometry"
+      ],
+      "topics": []
+    },
+    {
+      "id": "53.030",
+      "title": "測地線と指数写像",
+      "fields": [
+        "differential-geometry"
+      ],
+      "topics": []
+    },
+    {
+      "id": "53.040",
+      "title": "Hopf–Rinowの定理",
+      "fields": [
+        "differential-geometry"
+      ],
+      "topics": []
+    },
+    {
+      "id": "53.050",
+      "title": "曲率テンソルとJacobi場",
+      "fields": [
+        "differential-geometry"
+      ],
+      "topics": []
+    },
+    {
+      "id": "53.060",
+      "title": "部分多様体の外在的幾何",
+      "fields": [
+        "differential-geometry"
+      ],
+      "topics": []
+    },
+    {
+      "id": "53.070",
+      "title": "曲面論とGauss–Bonnetの定理",
+      "fields": [
+        "differential-geometry"
+      ],
+      "topics": []
+    },
+    {
+      "id": "53.100",
+      "title": "シンプレクティック幾何学入門",
+      "fields": [
+        "differential-geometry"
+      ],
+      "topics": []
+    },
+    {
+      "id": "54.010",
+      "title": "位相空間と連続写像",
+      "fields": [
+        "general-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "54.020",
+      "title": "積位相・商位相と普遍性",
+      "fields": [
+        "general-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "54.030",
+      "title": "連結性と道連結性",
+      "fields": [
+        "general-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "54.040",
+      "title": "フィルター・超フィルターと位相的収束",
+      "fields": [
+        "general-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "54.050",
+      "title": "コンパクト性とTychonoffの定理",
+      "fields": [
+        "general-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "54.060",
+      "title": "Urysohnの補題とTietzeの拡張定理",
+      "fields": [
+        "general-topology",
+        "functional-analysis"
+      ],
+      "topics": [
+        "normality"
+      ]
+    },
+    {
+      "id": "54.070",
+      "title": "分離公理と距離化定理",
+      "fields": [
+        "general-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "54.080",
+      "title": "局所コンパクト性とパラコンパクト性",
+      "fields": [
+        "general-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "55.010",
+      "title": "ホモトピーと位相空間の構成",
+      "fields": [
+        "algebraic-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "55.020",
+      "title": "被覆空間と基本群",
+      "fields": [
+        "algebraic-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "55.030",
+      "title": "Seifert–van Kampenの定理",
+      "fields": [
+        "algebraic-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "57.010",
+      "title": "滑らかな多様体・接空間・微分",
+      "fields": [
+        "manifold-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "57.020",
+      "title": "多様体の構成と商多様体",
+      "fields": [
+        "manifold-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "57.030",
+      "title": "Sardの定理と横断性",
+      "fields": [
+        "manifold-topology"
+      ],
+      "topics": []
+    },
+    {
+      "id": "58.010",
+      "title": "ベクトル場とそのフロー",
+      "fields": [
+        "manifold-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "58.020",
+      "title": "テンソル場とLie微分",
+      "fields": [
+        "manifold-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "58.030",
+      "title": "Frobeniusの定理",
+      "fields": [
+        "manifold-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "58.040",
+      "title": "微分形式とPoincaréの補題",
+      "fields": [
+        "manifold-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "58.050",
+      "title": "多様体上の微分形式とStokesの定理",
+      "fields": [
+        "manifold-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "58.060",
+      "title": "de Rhamコホモロジーと大域的位相",
+      "fields": [
+        "manifold-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "58.100",
+      "title": "Morse理論と多様体の位相",
+      "fields": [
+        "manifold-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "60.005",
+      "title": "大数の法則と中心極限定理",
+      "fields": [
+        "probability-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "60.010",
+      "title": "条件付き期待値とマルチンゲール",
+      "fields": [
+        "probability-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "60.020",
+      "title": "Brown運動の構成と基本性質",
+      "fields": [
+        "probability-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "60.030",
+      "title": "Itô積分の構成",
+      "fields": [
+        "probability-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "60.040",
+      "title": "二次変分とItôの公式",
+      "fields": [
+        "probability-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "60.050",
+      "title": "確率微分方程式の存在と一意性",
+      "fields": [
+        "probability-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "60.060",
+      "title": "Brown運動のマルチンゲール表現",
+      "fields": [
+        "probability-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "60.070",
+      "title": "Girsanovの定理",
+      "fields": [
+        "probability-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "60.080",
+      "title": "Feynman–Kacの公式とKolmogorov方程式",
+      "fields": [
+        "probability-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "60.090",
+      "title": "格子・非格子の局所中心極限定理",
+      "fields": [
+        "probability-theory"
+      ],
+      "topics": []
+    },
+    {
+      "id": "62.010",
+      "title": "統計モデルと推定理論",
+      "fields": [
+        "statistics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "62.020",
+      "title": "十分統計量と完備統計量",
+      "fields": [
+        "statistics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "62.030",
+      "title": "最尤推定と漸近理論",
+      "fields": [
+        "statistics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "62.040",
+      "title": "統計的仮説検定",
+      "fields": [
+        "statistics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "62.050",
+      "title": "Bayesian統計の数学",
+      "fields": [
+        "statistics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "62.060",
+      "title": "線形回帰の数学",
+      "fields": [
+        "statistics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "65.010",
+      "title": "数値計算の誤差と安定性",
+      "fields": [
+        "numerical-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "65.020",
+      "title": "非線形方程式の数値解法",
+      "fields": [
+        "numerical-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "65.030",
+      "title": "数値線形代数",
+      "fields": [
+        "numerical-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "65.040",
+      "title": "補間と数値積分",
+      "fields": [
+        "numerical-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "65.050",
+      "title": "常微分方程式の数値解法",
+      "fields": [
+        "numerical-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "65.060",
+      "title": "偏微分方程式の差分法",
+      "fields": [
+        "numerical-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "65.070",
+      "title": "有限要素法の数学",
+      "fields": [
+        "numerical-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "65.080",
+      "title": "二次元Sobolev補間と有限要素誤差の厳密評価",
+      "fields": [
+        "numerical-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "65.090",
+      "title": "Wolfe条件とZoutendijkの収束定理",
+      "fields": [
+        "numerical-analysis"
+      ],
+      "topics": []
+    },
+    {
+      "id": "68.010",
+      "title": "Turing機械と計算可能性",
+      "fields": [
+        "theoretical-cs"
+      ],
+      "topics": []
+    },
+    {
+      "id": "68.020",
+      "title": "決定可能性と計算不可能性",
+      "fields": [
+        "theoretical-cs"
+      ],
+      "topics": []
+    },
+    {
+      "id": "68.030",
+      "title": "計算量理論の基礎",
+      "fields": [
+        "theoretical-cs"
+      ],
+      "topics": []
+    },
+    {
+      "id": "68.040",
+      "title": "NP完全性",
+      "fields": [
+        "theoretical-cs"
+      ],
+      "topics": []
+    },
+    {
+      "id": "68.050",
+      "title": "Rice–Shapiroの定理と計算可能な性質",
+      "fields": [
+        "theoretical-cs"
+      ],
+      "topics": []
+    },
+    {
+      "id": "68.100",
+      "title": "整数と多項式の厳密計算",
+      "fields": [
+        "theoretical-cs"
+      ],
+      "topics": []
+    },
+    {
+      "id": "68.110",
+      "title": "計算線形代数",
+      "fields": [
+        "theoretical-cs"
+      ],
+      "topics": []
+    },
+    {
+      "id": "70.010",
+      "title": "変分原理とLagrange力学",
+      "fields": [
+        "classical-mechanics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "70.020",
+      "title": "Hamilton力学",
+      "fields": [
+        "classical-mechanics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "70.030",
+      "title": "Liouville–Arnoldの定理と作用角座標",
+      "fields": [
+        "classical-mechanics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "81.010",
+      "title": "量子力学の数学的基礎",
+      "fields": [
+        "quantum-mechanics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "81.020",
+      "title": "自己共役作用素のスペクトル定理とStoneの定理",
+      "fields": [
+        "quantum-mechanics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "82.010",
+      "title": "統計力学の数学",
+      "fields": [
+        "statistical-mechanics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "83.010",
+      "title": "Lorentz幾何と一般相対論",
+      "fields": [
+        "relativity"
+      ],
+      "topics": []
+    },
+    {
+      "id": "90.010",
+      "title": "凸双対性とLegendre–Fenchel変換",
+      "fields": [
+        "optimization",
+        "functional-analysis"
+      ],
+      "topics": [
+        "duality",
+        "variational"
+      ]
+    },
+    {
+      "id": "90.020",
+      "title": "凸最適化とKarush–Kuhn–Tucker条件",
+      "fields": [
+        "optimization"
+      ],
+      "topics": []
+    },
+    {
+      "id": "90.030",
+      "title": "数値最適化法と収束の定理",
+      "fields": [
+        "optimization"
+      ],
+      "topics": []
+    },
+    {
+      "id": "91.010",
+      "title": "離散時間金融市場と無裁定価格理論",
+      "fields": [
+        "financial-math"
+      ],
+      "topics": []
+    },
+    {
+      "id": "91.020",
+      "title": "Black–Scholes方程式",
+      "fields": [
+        "financial-math"
+      ],
+      "topics": []
+    },
+    {
+      "id": "91.100",
+      "title": "生命保険・年金の数理",
+      "fields": [
+        "financial-math"
+      ],
+      "topics": []
+    },
+    {
+      "id": "91.110",
+      "title": "複合Poissonリスクモデルと破産確率",
+      "fields": [
+        "financial-math"
+      ],
+      "topics": []
+    },
+    {
+      "id": "91.200",
+      "title": "社会ネットワークと集団ダイナミクス",
+      "fields": [
+        "financial-math"
+      ],
+      "topics": []
+    },
+    {
+      "id": "92.010",
+      "title": "感染症と個体群の数理モデル",
+      "fields": [
+        "biomathematics"
+      ],
+      "topics": []
+    },
+    {
+      "id": "93.010",
+      "title": "数理モデルの構築と次元解析",
+      "fields": [
+        "systems-modeling"
+      ],
+      "topics": []
+    },
+    {
+      "id": "93.020",
+      "title": "線形制御理論",
+      "fields": [
+        "systems-modeling"
+      ],
+      "topics": []
+    },
+    {
+      "id": "94.010",
+      "title": "情報量と情報源符号化定理",
+      "fields": [
+        "cryptography"
+      ],
+      "topics": []
+    },
+    {
+      "id": "94.100",
+      "title": "RSAと公開鍵暗号の数学",
+      "fields": [
+        "cryptography"
+      ],
+      "topics": []
+    },
+    {
+      "id": "94.110",
+      "title": "有限体上の楕円曲線と暗号理論",
+      "fields": [
+        "cryptography"
+      ],
+      "topics": []
+    }
+  ]
+}
