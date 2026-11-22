@@ -62,3 +62,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{o
 #noteStatus{color:var(--muted);font-size:13px}
 @media(max-width:960px){.pathGrid{grid-template-columns:1fr}.pathCurrent{order:-1}.pathColumn .relList{grid-template-columns:repeat(2,minmax(0,1fr))}.breadcrumbs{margin-bottom:32px}}
 @media(max-width:610px){.noteMain{padding-top:25px}.noteOverview{padding:21px}.pathColumn .relList,.relatedGrid{grid-template-columns:1fr}.pathSection,.alsoRead{margin-top:45px}}
+
+/* GitHub Private PDF links: the URL is public, the file is permission protected. */
+.privatePdfPanel[hidden]{display:none}
+.privatePdfPanel{margin:-20px 0 35px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.privatePdfAction{display:inline-flex;align-items:center;background:var(--accent);color:#fff;border:1px solid var(--accent);border-radius:6px;text-decoration:none;font-size:13px;font-weight:720;padding:12px 17px;line-height:1.5}
+.privatePdfAction:hover{background:#173d2e;color:#fff}
+.privatePdfHint{max-width:780px;margin:0;font-size:12px;line-height:1.7;color:var(--muted)}
+.privatePdfCardLinks{font-size:12px;margin:12px 0 0;font-weight:690}
+.privatePdfCardLinks a{color:var(--accent);text-underline-offset:3px}
