@@ -241,6 +241,11 @@
           "label": "相対性理論"
         }
       ]
+    },
+    {
+      "id": "entrance-math",
+      "label": "入試数学への大学数学の応用",
+      "children": []
     }
   ],
   "topic_groups": [
