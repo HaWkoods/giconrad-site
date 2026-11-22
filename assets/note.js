@@ -45,6 +45,11 @@ async function load(){
    if(publicRec?.pdf&&publicRec?.tex&&publicRec.pdf.startsWith("./public_notes/")&&publicRec.tex.startsWith("./public_notes/")&&!publicRec.pdf.includes("..")&&!publicRec.tex.includes("..")){
      $("#publicPdfLink").href=publicRec.pdf;
      $("#publicTexLink").href=publicRec.tex;
+     const readerHref="./viewer.html?id="+encodeURIComponent(id);
+     $("#siteReaderLink").href=readerHref;
+     $("#pdfFullscreenLink").href=readerHref;
+     $("#publicPdfFrame").src=publicRec.pdf;
+     $("#publicPdfPreview").hidden=false;
      $("#publicPdfPanel").hidden=false;
      $("#privateNotice").textContent="このノートのPDF・pLaTeX原稿は公開されていますが、初稿・数学的校閲中であり完成認定ではありません。ほかの多くのノートは引き続き非公開です。";
    }else{

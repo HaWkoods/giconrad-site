@@ -12,6 +12,7 @@
   <h1 class="noteHeading" id="noteTitle"></h1>
   <div id="noteTags" class="tags noteTags"></div>
   <div class="privatePdfPanel" id="publicPdfPanel" hidden>
+    <a id="siteReaderLink" class="privatePdfAction" href="#">サイト内で読む ↗</a>
     <a id="publicPdfLink" class="privatePdfAction" target="_blank" rel="noopener noreferrer">公開PDFを開く ↗</a>
     <a id="publicTexLink" class="privatePdfAction" target="_blank" rel="noopener noreferrer">pLaTeX原稿を開く ↗</a>
     <p class="privatePdfHint">公開初稿・数学的校閲中。公開は数学的な最終承認を意味しません。</p>
@@ -24,6 +25,11 @@
     <h2 id="overviewHeading">ノートの概要</h2>
     <p id="noteSummary"></p>
     <p id="basis" class="basis"></p>
+  </section>
+  <section class="pdfPreviewSection" id="publicPdfPreview" aria-labelledby="pdfPreviewHeading" hidden>
+    <div class="pdfPreviewHeading"><div><div class="eyebrow">PUBLIC PDF</div><h2 id="pdfPreviewHeading">ノート本文を読む</h2></div><a id="pdfFullscreenLink" href="#">大きな画面で読む ↗</a></div>
+    <iframe id="publicPdfFrame" class="sitePdfFrame" title="数学ノートPDFのプレビュー" loading="lazy"></iframe>
+    <p class="pdfPreviewHelp">PDFが表示されない場合は「大きな画面で読む」または「公開PDFを開く」から閲覧してください。ブラウザによってはPDFがダウンロードされます。</p>
   </section>
   <section class="pathSection" aria-labelledby="pathHeading">
     <h2 id="pathHeading">学習のつながり</h2>

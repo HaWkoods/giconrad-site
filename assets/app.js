@@ -33,7 +33,8 @@ const tags=dom("div","tags");for(const id of n.fields||[]){const d=S.fieldInfo.g
 const pub=S.publicPdfLinks[n.id];
 if(pub?.pdf&&pub?.tex&&pub.pdf.startsWith("./public_notes/")&&pub.tex.startsWith("./public_notes/")&&!pub.pdf.includes("..")&&!pub.tex.includes("..")){
  const links=dom("div","privatePdfCardLinks");
- addLink(links,pub.pdf,"公開PDF ↗");links.append(document.createTextNode("　"));
+ addLink(links,"./viewer.html?id="+encodeURIComponent(n.id),"サイト内で読む");links.append(document.createTextNode("　"));
+ addLink(links,pub.pdf,"PDFファイル ↗");links.append(document.createTextNode("　"));
  addLink(links,pub.tex,"pLaTeX原稿 ↗");
  box.append(links);
  box.append(dom("p","status","公開中（初稿・数学的校閲中）"));

@@ -71,3 +71,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{o
 .privatePdfHint{max-width:780px;margin:0;font-size:12px;line-height:1.7;color:var(--muted)}
 .privatePdfCardLinks{font-size:12px;margin:12px 0 0;font-weight:690}
 .privatePdfCardLinks a{color:var(--accent);text-underline-offset:3px}
+
+/* In-page public PDF preview and full-page site reader. */
+.pdfPreviewSection[hidden],.viewerDocument[hidden]{display:none}
+.pdfPreviewSection{margin:40px 0 52px;padding-top:22px;border-top:1px solid var(--line)}
+.pdfPreviewHeading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.pdfPreviewHeading h2{margin:7px 0 0;font-size:21px}
+.pdfPreviewHeading a,.pdfViewerActions a{font-size:13px;color:var(--accent);font-weight:720;text-underline-offset:4px}
+.sitePdfFrame{display:block;width:100%;height:clamp(480px,76vh,920px);border:1px solid var(--line);border-radius:6px;background:#fff}
+.pdfPreviewHelp{font-size:12px;color:var(--muted);line-height:1.8}
+.viewerMain{padding:26px 0 48px}
+.viewerHeading{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin:20px 0 16px}
+.viewerHeading h1{font-size:clamp(20px,3vw,30px);margin:6px 0 0}
+.pdfViewerActions{display:flex;flex-wrap:wrap;gap:14px}
+.viewerFrame{height:calc(100vh - 235px);min-height:460px}
+@media(max-width:700px){.pdfPreviewSection{margin:28px 0 40px}.sitePdfFrame{height:70vh;min-height:450px}.viewerFrame{height:calc(100dvh - 220px);min-height:430px}}
