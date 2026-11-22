@@ -1,0 +1,668 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル：platex main.tex（3回），dvipdfmx main.dvi
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{開写像定理・有界逆写像定理・閉グラフ定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，開写像定理，有界逆写像定理，Banach空間．
+本稿の具体的な到達課題は，完備性が必要なことを具体的な反例で確認する．
+
+\section{Banach空間とBaireのカテゴリー定理}
+
+以下，$\mathbb K$ は実数体または複素数体とする．
+ノルム空間 $X$ の開球を
+$B_X(x,r)=\{u\in X:\|u-x\|<r\}$ と書く．
+$X$ がノルムによる距離に関して完備なら
+\emph{Banach空間}という．
+
+\begin{definition}
+連続線形写像 $T:X\to Y$ が\emph{開写像}であるとは，
+$X$ の任意の開集合 $U$ に対して
+$T(U)$ が $Y$ で開であることをいう．
+\end{definition}
+
+\begin{lemma}[Baireのカテゴリー定理]\label{lem:baire}
+空でない完備距離空間 $Z$ の可算個の稠密開集合
+$U_1,U_2,\ldots$ に対し，
+$\bigcap_{n\ge1}U_n$ は稠密である．
+\end{lemma}
+\begin{proof}
+任意の空でない開集合 $V\subset Z$ を取る．
+$U_1$ が稠密開なので，
+ある $z_1\in V\cap U_1$ と $0<r_1<2^{-1}$ が存在して
+$\overline{B(z_1,r_1)}\subset V\cap U_1$ とできる．
+同様に，$z_n,r_n$ が得られているとき，
+$U_{n+1}\cap B(z_n,r_n)$ が空でない開集合であることから，
+\[
+ \overline{B(z_{n+1},r_{n+1})}
+ \subset U_{n+1}\cap B(z_n,r_n),\qquad
+ 0<r_{n+1}<2^{-(n+1)}
+\]
+となるように選べる．
+$m>n$ なら $d(z_m,z_n)<r_n<2^{-n}$ であるため
+$(z_n)$ はCauchy列となる．完備性から $z_n\to z$ を得る．
+固定した $n$ について $m>n$ の $z_m$ は
+$\overline{B(z_n,r_n)}$ に属するので，
+その閉性により
+$z\in\overline{B(z_n,r_n)}\subset U_n$ となる．
+また $z\in V$ である．従って
+$V\cap\bigcap_{n\ge1}U_n\ne\varnothing$ となり，稠密である．
+\end{proof}
+
+\begin{corollary}[閉集合被覆の補題]\label{cor:cover}
+空でない完備距離空間 $Z$ を
+閉集合 $F_1,F_2,\ldots$ で被覆するとき，
+少なくとも一つの $F_n$ は空でない内部を持つ．
+\end{corollary}
+\begin{proof}
+全ての $F_n$ の内部が空なら，
+$Z\setminus F_n$ は稠密開である．
+補題\ref{lem:baire}によって
+$\bigcap_n(Z\setminus F_n)$ は稠密であり，特に空でない．
+これは $\bigcup_nF_n=Z$ と矛盾する．
+\end{proof}
+
+\begin{lemma}[スケーリングと開写像性]\label{lem:openball}
+$T:X\to Y$ を線形写像とする．
+ある $r>0$ と $\delta>0$ に対して
+\[
+ B_Y(0,\delta)\subset T(B_X(0,r))
+\]
+が成立すれば $T$ は開写像である．
+\end{lemma}
+\begin{proof}
+任意の開集合 $U\subset X$ と $y_0=Tx_0\in T(U)$ を取る．
+ある $\varepsilon>0$ が存在して
+$x_0+B_X(0,\varepsilon)\subset U$ となる．
+線形性とスケーリングから
+\[
+ T(B_X(0,\varepsilon))
+ \supset B_Y(0,\delta\varepsilon/r).
+\]
+従って
+$y_0+B_Y(0,\delta\varepsilon/r)\subset T(U)$ となり，
+$T(U)$ は開である．
+\end{proof}
+
+\section{開写像定理の証明}
+
+\begin{lemma}[閉包の球から真の球へ]\label{lem:closureball}
+$X$ をBanach空間，$Y$ をノルム空間，
+$T\in\mathcal B(X,Y)$ とする．
+ある $\delta>0$ に対して
+\[
+ B_Y(0,\delta)
+ \subset\overline{T(B_X(0,1))}
+ \tag{$*$}
+\]
+が成立するなら，
+\[
+ B_Y(0,\delta/2)\subset T(B_X(0,1))
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$y\in B_Y(0,\delta/2)$ を固定する．
+$(*)$ を正数 $a$ 倍すると，
+\[
+ B_Y(0,a\delta)\subset
+ \overline{T(B_X(0,a))}\qquad(a>0)
+ \tag{$**$}
+\]
+が従う．
+
+まず $(**)$ を $a=1/2$ に適用し，
+$\|x_1\|<2^{-1}$ かつ
+$\|y-Tx_1\|<\delta 2^{-2}$ を満たす
+$x_1\in X$ を取る．
+帰納的に
+\[
+ \|x_j\|<2^{-j}\quad(1\le j\le n),
+ \qquad
+ \left\|y-T\sum_{j=1}^{n}x_j\right\|
+ <\delta 2^{-(n+1)}
+\]
+が成立すると仮定する．
+残差 $r_n=y-T\sum_{j=1}^nx_j$ は
+$B_Y(0,\delta2^{-(n+1)})$ に属する．
+$(**)$ を $a=2^{-(n+1)}$ に適用すれば，
+$\|x_{n+1}\|<2^{-(n+1)}$ かつ
+\[
+ \|r_n-Tx_{n+1}\|<\delta2^{-(n+2)}
+\]
+となる $x_{n+1}$ が取れる．
+このように $(x_n)$ を構成する．
+$\sum_{n=1}^\infty\|x_n\|\le\sum_{n=1}^\infty2^{-n}=1$
+だから，Banach空間 $X$ の完備性により
+$x=\sum_{n=1}^\infty x_n\in X$ が存在して $\|x\|\le1$ となる．
+また，$T$ の連続性と残差の評価から
+\[
+ Tx=\lim_{n\to\infty}T\sum_{j=1}^nx_j
+ =\lim_{n\to\infty}(y-r_n)=y
+\]
+である．
+
+最後に $\|y\|<\delta/2$ なので，
+$(1+\eta)\|y\|<\delta/2$ を満たす $\eta>0$ を取れる．
+上の構成を $y'=(1+\eta)y$ に適用すると，
+$Tx'=y'$，$\|x'\|\le1$ を満たす $x'\in X$ が得られる．
+従って $z=x'/(1+\eta)$ は $\|z\|<1$ および
+$Tz=y$ を満たす．これで結論を得る．
+\end{proof}
+
+\begin{theorem}[開写像定理]\label{thm:open}
+$X,Y$ をBanach空間とし，
+$T:X\to Y$ を全射な有界線形作用素とする．
+このとき $T$ は開写像である．
+\end{theorem}
+\begin{proof}
+$B=B_X(0,1)$ と置く．$T$ は全射なので
+\[
+ Y=\bigcup_{n=1}^\infty T(nB)
+ \subset\bigcup_{n=1}^\infty\overline{T(nB)}
+ \subset Y,
+\]
+従って
+$Y=\bigcup_{n=1}^\infty\overline{T(nB)}$ である．
+各 $\overline{T(nB)}$ は閉集合であり，
+$Y$ は完備であるから，
+系\ref{cor:cover}によって
+ある正整数 $N$ と $y_0\in Y$, $r>0$ が存在して
+\[
+ B_Y(y_0,r)\subset\overline{T(NB)}
+\]
+となる．特に $y_0\in\overline{T(NB)}$ である．
+
+任意の $v\in B_Y(0,r)$ について
+$y_0+v$ と $y_0$ はともに
+$\overline{T(NB)}$ に属するから，
+\[
+ v=(y_0+v)-y_0
+ \in\overline{T(NB)}-\overline{T(NB)}
+ \subset\overline{T(2NB)}.
+\]
+最後の包含は $NB-NB\subset2NB$ と，
+閉包における減法の連続性から従う．
+スケーリングによって
+\[
+ B_Y(0,r/(2N))
+ \subset\overline{T(B)}.
+\]
+補題\ref{lem:closureball}を
+$\delta=r/(2N)$ に適用すると
+\[
+ B_Y(0,r/(4N))\subset T(B).
+\]
+補題\ref{lem:openball}によって $T$ は開写像である．
+\end{proof}
+
+\begin{remark}
+開写像定理には定義域と値域の両方のBanach空間としての
+完備性が用いられる．
+証明で $Y$ の完備性は閉集合被覆の補題に，
+$X$ の完備性は近似解の級数の収束に使われた．
+\end{remark}
+
+\section{有界逆写像定理}
+
+\begin{theorem}[有界逆写像定理]\label{thm:inverse}
+$X,Y$ をBanach空間とし，
+$T\in\mathcal B(X,Y)$ を全単射とする．
+このとき逆写像 $T^{-1}:Y\to X$ は有界線形作用素である．
+\end{theorem}
+\begin{proof}
+$T$ が線形な全単射なので $T^{-1}$ は線形である．
+開写像定理によって $T(B_X(0,1))$ は
+$Y$ の $0$ を含む開集合である．
+従ってある $\delta>0$ に対し
+$B_Y(0,\delta)\subset T(B_X(0,1))$ となる．
+$y\ne0$ に対して
+$v=\delta y/(2\|y\|)$ と置けば
+$\|v\|<\delta$ だから
+$\|T^{-1}v\|<1$ である．線形性から
+\[
+ \|T^{-1}y\|
+ <\frac{2}{\delta}\|y\|.
+\]
+$y=0$ は自明なので $T^{-1}$ は有界である．
+\end{proof}
+
+\begin{corollary}[Banach空間のノルムの同値性]
+線形空間 $V$ に二つのノルム $\|\cdot\|_1,\|\cdot\|_2$
+が与えられ，両方がBanach空間を定めるとする．
+ある $C>0$ について
+$\|x\|_2\le C\|x\|_1$ がすべての $x\in V$ で
+成立するなら，ある $D>0$ に対し
+\[
+ \|x\|_1\le D\|x\|_2\qquad(x\in V)
+\]
+が成立する．
+\end{corollary}
+\begin{proof}
+恒等写像
+$I:(V,\|\cdot\|_1)\to(V,\|\cdot\|_2)$ は
+有界線形全単射である．定理\ref{thm:inverse}によって
+$I^{-1}$ が有界となるので結論を得る．
+\end{proof}
+
+\section{商空間と全射作用素}
+
+\begin{definition}
+ノルム空間 $X$ の閉線形部分空間 $M$ に対して
+線形商空間 $X/M$ に
+\[
+ \|x+M\|_{X/M}=\inf_{m\in M}\|x-m\|_X
+\]
+を定め，これを\emph{商ノルム}という．
+自然な商写像を $\pi:X\to X/M$ と書く．
+\end{definition}
+
+\begin{lemma}\label{lem:quotient-norm}
+上の式は $X/M$ にノルムを定め，
+$\|\pi x\|_{X/M}\le\|x\|_X$ が成立する．
+\end{lemma}
+\begin{proof}
+代表元を $x$ から $x+m_0$ に替えても，
+$\inf_{m\in M}\|x+m_0-m\|$ は同じであるから
+well-definedである．
+斉次性は $a\ne0$ に対して
+\[
+ \inf_{m\in M}\|ax-m\|
+ =|a|\inf_{m'\in M}\|x-m'\|
+\]
+から従い，$a=0$ は自明である．
+三角不等式は
+$\|x+y-(m+n)\|\le\|x-m\|+\|y-n\|$
+で $m,n\in M$ に関する下限を取ればよい．
+$\|x+M\|=0$ なら $x\in\overline M=M$ であるから，
+$X/M$ における零元となる．
+最後の不等式は $m=0$ を取ることで従う．
+\end{proof}
+
+\begin{proposition}[Banach商空間の完備性]\label{prop:quotient}
+$X$ をBanach空間，$M$ を閉線形部分空間とすると，
+商ノルムを入れた $X/M$ はBanach空間である．
+\end{proposition}
+\begin{proof}
+$(\xi_n)$ を $X/M$ のCauchy列とする．
+部分列 $(\xi_{n_k})$ を
+\[
+ \|\xi_{n_{k+1}}-\xi_{n_k}\|_{X/M}<2^{-k}
+ \qquad(k\ge1)
+\]
+となるように選ぶ．
+各差の代表元 $u_k\in X$ を
+$\pi u_k=\xi_{n_{k+1}}-\xi_{n_k}$，
+$\|u_k\|_X<2^{-k+1}$ となるように取ることができる．
+実際，商ノルムの下限の定義により，
+与えられた代表元を $M$ の元だけ調整すればよい．
+$\xi_{n_1}$ の代表元 $x_1\in X$ を選び，
+\[
+ x=x_1+\sum_{k=1}^\infty u_k
+\]
+と置く．級数はノルム絶対収束し，
+$X$ の完備性により $x\in X$ が存在する．
+自然な商写像 $\pi$ は連続なので
+\[
+ \pi x=\lim_{j\to\infty}
+ \left(\xi_{n_1}+\sum_{k=1}^{j-1}
+ (\xi_{n_{k+1}}-\xi_{n_k})\right)
+ =\lim_{j\to\infty}\xi_{n_j}.
+\]
+従って部分列は $\pi x$ に収束する．
+Cauchy列で収束部分列を持つものは全体が同じ極限に収束するので，
+$\xi_n\to\pi x$ となり完備である．
+\end{proof}
+
+\begin{theorem}[全射作用素と商空間]\label{thm:quotient-isom}
+$X,Y$ をBanach空間，$T:X\to Y$ を全射有界線形作用素とし，
+$M=\ker T$ と置く．このとき
+\[
+ \widetilde T:X/M\longrightarrow Y,\qquad
+ \widetilde T(x+M)=Tx
+\]
+は有界線形全単射であり，逆写像も有界である．
+特に，ある $C>0$ が存在して
+\[
+ \inf_{m\in\ker T}\|x-m\|
+ \le C\|Tx\|\qquad(x\in X)
+\]
+が成立する．
+\end{theorem}
+\begin{proof}
+$M$ は連続写像の核であるから閉であり，
+命題\ref{prop:quotient}によって $X/M$ はBanach空間である．
+$Tx=Tx'$ と $x-x'\in M$ は同値なので
+$\widetilde T$ はwell-definedで単射である．
+$T$ の全射性から $\widetilde T$ は全射である．
+任意の $m\in M$ について
+\[
+ \|\widetilde T(x+M)\|
+ =\|T(x-m)\|\le\|T\|\,\|x-m\|.
+\]
+下限を取って
+$\|\widetilde T(x+M)\|\le\|T\|\|x+M\|$ を得る．
+定理\ref{thm:inverse}から
+$\widetilde T^{-1}$ は有界であり，
+\[
+ \|x+M\|
+ =\|\widetilde T^{-1}(Tx)\|
+ \le\|\widetilde T^{-1}\|\,\|Tx\|
+\]
+である．
+\end{proof}
+
+\begin{remark}
+全射 $T$ に対して，$Tx=y$ を満たす $x$ は一般に一意ではない．
+上の評価は，解の集合が核の剰余類であることを踏まえたものである．
+この式は $T$ の開写像性を定量的に表している．
+\end{remark}
+
+\section{閉グラフ定理}
+
+\begin{definition}
+線形作用素 $T:D(T)\to Y$ の\emph{グラフ}を
+\[
+ G(T)=\{(x,Tx):x\in D(T)\}\subset X\times Y
+\]
+と定める．ここで $D(T)$ は $X$ の線形部分空間とする．
+$G(T)$ が $X\times Y$ の閉部分集合なら
+$T$ を\emph{閉作用素}という．
+\end{definition}
+
+\begin{lemma}[直積の完備性]\label{lem:product}
+$X,Y$ をBanach空間とし，
+$X\times Y$ に $\|(x,y)\|=\|x\|_X+\|y\|_Y$
+を定めるとBanach空間となる．
+また，Banach空間の閉線形部分空間はBanach空間である．
+\end{lemma}
+\begin{proof}
+直積のCauchy列 $((x_n,y_n))$ については，
+各成分がそれぞれCauchy列である．
+完備性から $x_n\to x$，$y_n\to y$ が成り立ち，
+定義した直積ノルムに関して
+$(x_n,y_n)\to(x,y)$ となる．
+閉線形部分空間 $M$ のCauchy列は元のBanach空間でもCauchyである．
+元の空間での極限は $M$ の閉性によって $M$ に属する．
+\end{proof}
+
+\begin{theorem}[閉グラフ定理]\label{thm:closedgraph}
+$X,Y$ をBanach空間とし，
+$T:X\to Y$ を全域で定義された線形作用素とする．
+このとき次は同値である．
+\begin{enumerate}
+\item $T$ は有界である．
+\item $G(T)$ は $X\times Y$ の閉集合である．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+$T$ が有界なら連続である．
+$(x_n,Tx_n)\to(x,y)$ とすると
+$x_n\to x$ および $Tx_n\to y$ である．
+連続性によって $Tx_n\to Tx$ でもあるから
+$y=Tx$ となり，$(x,y)\in G(T)$ である．
+距離空間では点列による閉性の特徴づけが使えるため，
+$G(T)$ は閉である．
+
+逆に $G(T)$ が閉とする．
+$G(T)$ は線形部分空間であるから，
+補題\ref{lem:product}により
+直積ノルムでBanach空間となる．
+第一射影
+\[
+ P:G(T)\to X,\qquad P(x,Tx)=x
+\]
+は連続線形作用素であり，
+$\|P(x,Tx)\|\le\|(x,Tx)\|$ となる．
+$T$ が $X$ の全域に定義されているから $P$ は全射，
+グラフの定義から単射である．
+定理\ref{thm:inverse}より
+逆写像
+$P^{-1}:X\to G(T)$ は有界である．
+第二射影 $Q:G(T)\to Y$，
+$Q(x,Tx)=Tx$ も有界である．
+従って
+$T=Q\circ P^{-1}$ は有界である．
+\end{proof}
+
+\begin{corollary}[閉グラフの判定法]
+$X,Y$ がBanach空間で，
+$T:X\to Y$ が全域で定義された線形作用素なら，
+次の条件は $T$ の有界性と同値である：
+\[
+ x_n\to x\text{ in }X,\quad
+ Tx_n\to y\text{ in }Y
+ \quad\Longrightarrow\quad Tx=y.
+\]
+\end{corollary}
+\begin{proof}
+条件は $G(T)$ が点列について閉であることと同値である．
+$X\times Y$ は距離空間なので，
+点列について閉であることと閉集合であることは同値である．
+定理\ref{thm:closedgraph}を適用する．
+\end{proof}
+
+\section{閉だが非有界な微分作用素}
+
+\begin{example}[微分作用素]\label{ex:derivative}
+$X=Y=C([0,1],\mathbb K)$ に一様ノルムを入れる．
+\[
+ D(T)=C^1([0,1],\mathbb K),\qquad Tf=f'
+\]
+と定める．
+このとき $T:D(T)\to Y$ は閉作用素であるが，
+$D(T)$ に $X$ からの一様ノルムを入れたとき有界でない．
+\end{example}
+\begin{proof}
+まず閉性を示す．
+$(f_n,f_n')\to(f,g)$ が
+$X\times Y$ の直積ノルムで成り立つとする．
+すなわち $f_n\to f$ と $f_n'\to g$ はともに一様収束する．
+微積分学の基本定理により
+\[
+ f_n(t)-f_n(0)=\int_0^t f_n'(s)\,ds
+\]
+である．両辺で $n\to\infty$ とすると
+一様収束により極限と積分を交換でき，
+\[
+ f(t)-f(0)=\int_0^t g(s)\,ds
+\]
+を得る．$g$ は連続なので右辺は $C^1$ 関数であり，
+$f\in C^1([0,1])$ かつ $f'=g$ となる．
+従って $(f,g)\in G(T)$ であり，$G(T)$ は閉である．
+
+一方 $f_n(t)=t^n$ と置けば
+$\|f_n\|_\infty=1$ であるのに
+$\|Tf_n\|_\infty=n$ である．
+従って $T$ は有界でない．
+\end{proof}
+
+\begin{remark}
+この例は閉グラフ定理に矛盾しない．
+$T$ はBanach空間 $X$ の全域に定義されておらず，
+$D(T)=C^1([0,1])$ は一様ノルムについて完備でないからである．
+たとえば $|t-\tfrac12|$ は
+$C^1$ 関数で一様近似できるが自身は $C^1$ でない．
+\end{remark}
+
+\begin{proposition}[グラフノルム]\label{prop:graphnorm}
+$X,Y$ をBanach空間，$T:D(T)\subset X\to Y$
+を線形作用素とする．
+\[
+ \|x\|_T=\|x\|_X+\|Tx\|_Y\qquad(x\in D(T))
+\]
+と置く．このとき $T$ が閉作用素であることと
+$(D(T),\|\cdot\|_T)$ がBanach空間であることは同値である．
+\end{proposition}
+\begin{proof}
+写像
+$J:D(T)\to X\times Y$，
+$Jx=(x,Tx)$ は線形であり，
+$\|Jx\|_{X\times Y}=\|x\|_T$ である．
+従って $J$ は $(D(T),\|\cdot\|_T)$ を
+直積の部分空間 $G(T)$ に等距離に写す全単射である．
+$X\times Y$ はBanach空間だから，
+$G(T)$ が閉であることと
+$G(T)$ が部分空間のノルムで完備であることが同値となる．
+実際，閉ならば閉部分空間の完備性によって完備であり，
+逆に完備部分空間内で収束する点列はCauchyなので，
+その極限が再び部分空間に属することから閉となる．
+\end{proof}
+
+\section{完備性を外した場合}
+
+\begin{example}[開写像性と逆写像の有界性の失敗]
+線形空間 $V=C^1([0,1],\mathbb K)$ に
+\[
+ \|f\|_1=\|f\|_\infty+\|f'\|_\infty,\qquad
+ \|f\|_0=\|f\|_\infty
+\]
+の二つのノルムを入れる．
+恒等写像
+\[
+ I:(V,\|\cdot\|_1)\longrightarrow(V,\|\cdot\|_0)
+\]
+は連続線形全単射だが，逆写像は有界でない．
+従って $I$ は開写像でない．
+\end{example}
+\begin{proof}
+$\|f\|_0\le\|f\|_1$ だから $I$ は有界であり，
+恒等写像なので全単射である．
+一方 $f_n(t)=t^n$ に対して
+$\|f_n\|_0=1$，$\|f_n\|_1=1+n$ なので
+$I^{-1}$ は有界でない．
+$I$ が開写像なら $I^{-1}$ は連続となるから，
+$I$ は開写像ではない．
+\end{proof}
+
+\begin{proposition}
+上の例で $(V,\|\cdot\|_1)$ はBanach空間だが，
+$(V,\|\cdot\|_0)$ はBanach空間でない．
+\end{proposition}
+\begin{proof}
+$(f_n)$ を $\|\cdot\|_1$ に関するCauchy列とすると，
+$(f_n)$ と $(f_n')$ はそれぞれ一様ノルムについて
+Cauchy列である．$C([0,1])$ の完備性により
+$f_n\to f$，$f_n'\to g$ が一様に成り立つ．
+前の微分作用素の閉性の証明と同様に
+$f\in C^1$，$f'=g$ となり，
+$\|f_n-f\|_1\to0$ が従う．
+
+他方，連続だが微分不可能な関数
+$h(t)=|t-\tfrac12|$ は，
+例えば
+\[
+ h_n(t)=\sqrt{(t-\tfrac12)^2+n^{-2}}
+\]
+によって一様近似される．実際
+$0\le h_n(t)-h(t)\le1/n$ であり，
+各 $h_n$ は $C^1$ である．
+従って $(h_n)$ は $\|\cdot\|_0$ に関する
+Cauchy列であるが，$V$ 内に極限を持たない．
+\end{proof}
+
+\begin{remark}
+定理\ref{thm:open}と定理\ref{thm:inverse}は
+Banach空間における完備性を不可欠な仮定としている．
+定理\ref{thm:closedgraph}で線形作用素が全域で
+定義されるという仮定も同様に重要である．
+\end{remark}
+
+
+\section{到達課題の完全解答}
+\noindent\textbf{逆写像定理で完備性が必要な例．}
+\begin{proposition}
+$C^1([0,1])$ にノルム
+$\|f\|_{C^1}=\|f\|_\infty+\|f'\|_\infty$ と
+$\|f\|_\infty$ をそれぞれ入れる．
+恒等写像
+\[
+I:(C^1,\|\cdot\|_{C^1})
+\longrightarrow(C^1,\|\cdot\|_\infty)
+\]
+は有界線形全単射だが，
+逆写像は有界でない．
+\end{proposition}
+\begin{proof}
+$\|If\|_\infty\le\|f\|_{C^1}$ だから有界であり，
+集合として恒等写像なので全単射である．
+$f_n(x)=\sin(nx)/n$ に対し
+$\|f_n\|_\infty\le1/n\to0$ だが，
+$\|f_n'\|_\infty=1$ なので
+$\|f_n\|_{C^1}\ge1$．
+従って逆写像は連続でない．
+値域の $\|\cdot\|_\infty$ では $C^1$ は
+完備でないため，有界逆写像定理の仮定に反しない．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\|f\|_{C^1}$ による $C^1([0,1])$ はBanach空間か．
+\par\noindent\textbf{解答．}
+$C^1$-Cauchy列では $f_n,f_n'$ が
+それぞれ一様Cauchyとなる．一様極限を $f,g$ とすると
+積分公式から $f'=g$ が従うので完備である．
+\end{document}

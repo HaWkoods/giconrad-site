@@ -1,0 +1,494 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{弱位相と弱*位相}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，ノルム空間と連続双対，Hahn--Banachの定理，初期位相と積位相，コンパクト性である．
+Banach--Alaogluの証明ではTychonoffの定理を用い，弱位相と弱*位相を本稿で定義する．
+本稿の具体的な到達課題は，弱収束とノルム収束が異なる具体例を証明する．
+
+\section{初期位相と弱位相}
+
+本稿では $X$ を実Banach空間，$X^*$ を連続双対空間とする．
+複素Banach空間の場合も，実部を取ることで同様に扱える．
+
+\begin{definition}
+集合 $S$ と位相空間族 $Y_i$，
+写像 $f_i:S\to Y_i$（$i\in I$）が与えられたとき，
+全ての $f_i$ を連続にする最弱の位相を
+\emph{初期位相}という．
+この位相の開集合の基は，
+有限個の $i_1,\dots,i_n$ と
+$Y_{i_j}$ の開集合 $U_j$ に対し
+$\bigcap_{j=1}^nf_{i_j}^{-1}(U_j)$ の形で与えられる．
+\end{definition}
+
+\begin{definition}
+$X$ 上で全ての $f\in X^*$ を連続にする最弱の位相を
+\emph{弱位相}といい，$\sigma(X,X^*)$ と書く．
+点 $x_0\in X$ における基本近傍は
+\[
+ U(x_0;f_1,\dots,f_n;\varepsilon)
+ =\{x\in X:|f_j(x-x_0)|<\varepsilon\
+  (j=1,\dots,n)\}
+\]
+の形で与えられる．
+この位相での収束を弱収束といい，
+$x_\alpha\rightharpoonup x$ と書く．
+\end{definition}
+
+\begin{proposition}[弱収束の特徴づけ]\label{prop:weak-conv}
+$X$ のネット $(x_\alpha)$ が $x$ に弱収束することと
+\[
+ f(x_\alpha)\to f(x)\qquad(f\in X^*)
+\]
+が成り立つことは同値である．
+特にノルム収束すれば弱収束する．
+\end{proposition}
+\begin{proof}
+弱位相は $f\in X^*$ による初期位相だから，
+全ての写像 $f$ を通じた像が収束することが
+初期位相での収束の必要十分条件である．
+ノルム収束の場合は
+$|f(x_\alpha-x)|\le\norm f\,\norm{x_\alpha-x}\to0$
+なので後半が従う．
+\end{proof}
+
+\begin{proposition}[弱位相のHausdorff性]\label{prop:weak-hausdorff}
+弱位相 $\sigma(X,X^*)$ はHausdorffである．
+また $X$ が無限次元なら弱位相はノルム位相より真に弱い．
+\end{proposition}
+\begin{proof}
+$x\ne y$ ならHahn--Banachの定理によって
+$f\in X^*$ で $f(x-y)\ne0$ となるものが存在する．
+$f(x)$ と $f(y)$ の互いに交わらない開近傍を
+$\mathbb R$ に取って逆像を考えれば，
+$x$ と $y$ は弱開集合で分離される．
+
+$X$ が無限次元とする．任意の弱基本近傍
+$U(0;f_1,\dots,f_n;\varepsilon)$ に対して
+\[
+ M=\bigcap_{j=1}^n\ker f_j
+\]
+は有限余次元部分空間なので $M\ne\{0\}$ である．
+従って非零の $v\in M$ を取ると
+全ての $tv$（$t\in\mathbb R$）が
+この近傍に属する．
+ゆえに弱基本近傍はいずれもノルムについて非有界であり，
+ノルム単位球に含まれる弱近傍は存在しない．
+従って弱位相とノルム位相は一致しない．
+\end{proof}
+
+\section{弱*位相}
+
+\begin{definition}
+双対空間 $X^*$ 上で
+\[
+ \operatorname{ev}_x:X^*\to\mathbb R,\qquad
+ \operatorname{ev}_x(f)=f(x)
+ \quad(x\in X)
+\]
+を全て連続にする最弱の位相を
+\emph{弱*位相}といい，$\sigma(X^*,X)$ と書く．
+\end{definition}
+
+\begin{proposition}\label{prop:weak-star}
+$X^*$ のネット $f_\alpha$ が $f$ に弱*収束することと
+\[
+ f_\alpha(x)\to f(x)\qquad(x\in X)
+\]
+が成り立つことは同値である．
+また弱*位相はHausdorffであり，
+$X^*$ のノルム位相より弱い．
+\end{proposition}
+\begin{proof}
+収束の特徴づけは初期位相の定義による．
+$f\ne g$ ならある $x\in X$ で $f(x)\ne g(x)$ なので，
+評価写像の逆像によって二点を分離できる．
+また
+$|f_\alpha(x)-f(x)|\le\norm{f_\alpha-f}\norm x$
+なのでノルム収束は弱*収束を導く．
+\end{proof}
+
+\begin{remark}
+$X^*$ には，弱位相 $\sigma(X^*,X^{**})$ と
+弱*位相 $\sigma(X^*,X)$ の二つが存在する．
+後者では $X$ を自然に $X^{**}$ へ埋め込んで
+評価汎関数を指定している．
+一般に両位相は一致しない．
+\end{remark}
+
+\section{凸集合と弱閉集合}
+
+\begin{theorem}[閉凸集合の弱閉性]\label{thm:weak-closed}
+$C\subset X$ を凸集合とする．
+このとき $C$ がノルム閉であることと，
+弱位相 $\sigma(X,X^*)$ で閉であることは同値である．
+\end{theorem}
+\begin{proof}
+弱位相はノルム位相より弱いので，
+弱閉集合はノルム閉である．
+逆に $C$ をノルム閉凸集合とする．
+空集合の場合は自明である．$x_0\notin C$ を取ると
+閉凸集合と外点の強分離定理によって
+$f\in X^*$ と $\alpha\in\mathbb R$ が存在して
+\[
+ f(c)\le\alpha<f(x_0)\qquad(c\in C)
+\]
+となる．
+従って
+$V=\{x\in X:f(x)>\alpha\}$ は
+$x_0$ を含む弱開集合であり，$C$ と交わらない．
+$x_0\notin C$ は任意なので $X\setminus C$ は弱開，
+すなわち $C$ は弱閉である．
+\end{proof}
+
+\begin{corollary}\label{cor:weak-closure}
+任意の凸集合 $C\subset X$ について，
+その弱閉包とノルム閉包は一致する．
+\end{corollary}
+\begin{proof}
+ノルム閉包 $\overline C^{\norm{\cdot}}$ は凸かつノルム閉なので，
+定理\ref{thm:weak-closed}から弱閉である．
+従って弱閉包はノルム閉包に含まれる．
+逆に弱位相はノルム位相より弱いので，
+ノルム閉包は弱閉包に含まれる．
+よって一致する．
+\end{proof}
+
+\section{Banach--Alaogluの定理}
+
+\begin{theorem}[Banach--Alaoglu]\label{thm:alaoglu}
+$X$ を実ノルム空間とする．
+双対空間の閉単位球
+\[
+ B_{X^*}=\{f\in X^*:\norm f\le1\}
+\]
+は弱*位相 $\sigma(X^*,X)$ に関してコンパクトである．
+\end{theorem}
+\begin{proof}
+各 $x\in X$ に対して閉区間
+$I_x=[-\norm x,\norm x]$ を取る．
+積空間
+\[
+ K=\prod_{x\in X}I_x
+\]
+は，各 $I_x$ がコンパクトであるから，
+Tychonoffの積定理によって積位相に関してコンパクトである．
+写像
+\[
+ J:B_{X^*}\to K,\qquad J(f)=(f(x))_{x\in X}
+\]
+を考える．$J$ は単射である．
+また $B_{X^*}$ の弱*位相は評価写像の初期位相なので，
+$J$ はその像への同相写像である．
+
+$J(B_{X^*})$ が $K$ の閉部分集合であることを示す．
+$K$ の点 $u=(u_x)_{x\in X}$ が $J(B_{X^*})$ に属することは，
+\[
+ u_{x+y}=u_x+u_y,\qquad
+ u_{ax}=a\,u_x
+ \quad(x,y\in X,\ a\in\mathbb R)
+ \tag{$*$}
+\]
+が成立することと同値である．
+実際 $(*)$ が成り立つなら $f_u(x)=u_x$ は線形であり，
+$u_x\in I_x$ だから
+$|f_u(x)|\le\norm x$ を満たして $\norm{f_u}\le1$ である．
+逆に $\norm f\le1$ の線形汎関数は $(*)$ を満たす．
+$(*)$ は座標射影の有限個の連続演算による
+閉条件であり，その全体は閉集合の共通部分なので
+$J(B_{X^*})$ は閉である．
+コンパクト空間 $K$ の閉部分集合はコンパクトなので，
+$J(B_{X^*})$ はコンパクトである．
+同相写像 $J$ によって $B_{X^*}$ も弱*コンパクトとなる．
+\end{proof}
+
+\begin{remark}
+この証明ではTychonoffの積定理を用いた．
+これは任意個のコンパクト空間の積がコンパクトであるという
+一般位相空間論の定理であり，選択公理と関係する．
+Banach--Alaogluの定理の証明が
+有限次元のHeine--Borelの定理だけで済むわけではない．
+\end{remark}
+
+\section{可分空間の場合の距離化}
+
+\begin{theorem}[弱*単位球の距離化]\label{thm:metrizable}
+$X$ を可分ノルム空間とする．
+このとき $B_{X^*}$ の弱*位相は距離化可能である．
+従って任意の有界列 $(f_n)\subset X^*$ は，
+弱*収束する部分列を持つ．
+\end{theorem}
+\begin{proof}
+$X$ の稠密な可算集合を
+$\{x_1,x_2,\dots\}$ とする．
+$B_{X^*}$ 上で
+\[
+ d(f,g)=\sum_{j=1}^\infty2^{-j}
+ \frac{|f(x_j)-g(x_j)|}{1+|f(x_j)-g(x_j)|}
+\]
+と定める．各項は非負で1以下なので級数は収束する．
+また $d(f,g)=0$ なら
+$f(x_j)=g(x_j)$ が全ての $j$ で成り立ち，
+連続性と稠密性から $f=g$ である．
+$\rho(a,b)=|a-b|/(1+|a-b|)$ は
+三角不等式を満たす（実数に対する
+$t\mapsto t/(1+t)$ の劣加法性を用いる）ので，
+$d$ は距離である．
+
+弱*収束 $f_\alpha\to f$ なら
+各 $x_j$ で収束するから，級数の尾部を先に小さく取って
+有限個の初項で収束を確認することで
+$d(f_\alpha,f)\to0$ を得る．
+逆に $d(f_\alpha,f)\to0$ なら
+全ての $j$ に対して
+$f_\alpha(x_j)\to f(x_j)$ となる．
+任意の $x\in X$ と $\varepsilon>0$ に対し
+$\norm{x-x_j}<\varepsilon$ となる $x_j$ を取ると，
+単位球上で
+\[
+ |f_\alpha(x)-f(x)|
+ \le2\varepsilon+|f_\alpha(x_j)-f(x_j)|
+\]
+となる．$\varepsilon\downarrow0$ により
+全ての $x$ について収束し，弱*収束を得る．
+
+Banach--Alaogluの定理から $B_{X^*}$ は弱*コンパクトであり，
+距離化可能なコンパクト空間は点列コンパクトなので
+単位球内の任意の列は弱*収束部分列を持つ．
+一般の有界列はある $R B_{X^*}$ に含まれるので，
+スカラー倍の同相性を使えば結論が従う．
+\end{proof}
+
+\section{Goldstineの定理と反射性}
+
+\begin{definition}
+自然な写像
+\[
+ \iota:X\to X^{**},\qquad \iota(x)(f)=f(x)
+\]
+を\emph{標準埋め込み}という．
+$\iota$ が全射であるとき $X$ を\emph{反射的}という．
+\end{definition}
+
+\begin{lemma}\label{lem:canonical-isometry}
+$\iota$ は線形等距離埋め込みである．
+\end{lemma}
+\begin{proof}
+線形性は定義から従う．
+$\norm{\iota(x)}
+ =\sup_{\norm f\le1}|f(x)|\le\norm x$ である．
+$x\ne0$ ならHahn--Banachの定理から
+$\norm f=1$ かつ $f(x)=\norm x$ を満たす
+$f\in X^*$ が存在する．
+これを代入すると逆向きの不等式が従い，
+$\norm{\iota(x)}=\norm x$ となる．
+$x=0$ の場合も明らかである．
+\end{proof}
+
+\begin{theorem}[Goldstineの定理]\label{thm:goldstine}
+$\iota(B_X)$ は $B_{X^{**}}$ において
+弱*稠密である．ここで $X^{**}$ には
+$\sigma(X^{**},X^*)$ を入れる．
+\end{theorem}
+\begin{proof}
+$\Phi\in B_{X^{**}}$ を取り，
+有限個の $f_1,\dots,f_n\in X^*$ と $\varepsilon>0$ を固定する．
+$\Phi$ の弱*基本近傍を考えるため，
+\[
+ T:X\to\mathbb R^n,\qquad
+ T(x)=(f_1(x),\dots,f_n(x))
+\]
+と置く．
+$v=(\Phi(f_1),\dots,\Phi(f_n))$ が
+$T(B_X)$ の閉包に属することを示す．
+もし属さなければ，
+有限次元空間の閉凸集合と外点の強分離定理によって
+係数 $a_1,\dots,a_n$ が存在して
+\[
+ \sum_{j=1}^na_j\Phi(f_j)
+ >\sup_{\norm x\le1}\sum_{j=1}^na_j f_j(x).
+\]
+右辺は
+$\norm{\sum_ja_jf_j}$ である．
+一方，$\norm\Phi\le1$ なので
+\[
+ \sum_ja_j\Phi(f_j)
+ =\Phi\left(\sum_ja_jf_j\right)
+ \le\norm{\sum_ja_jf_j},
+\]
+矛盾する．
+従って $v\in\overline{T(B_X)}$ であり，
+ある $x\in B_X$ を選んで
+$|f_j(x)-\Phi(f_j)|<\varepsilon$（全ての $j$）
+とできる．
+これは任意の弱*基本近傍が $\iota(B_X)$ と交わることを意味する．
+ゆえに弱*稠密である．
+\end{proof}
+
+\begin{theorem}[弱コンパクト性と反射性]\label{thm:reflexive}
+Banach空間 $X$ について，次は同値である．
+\begin{enumerate}
+\item $X$ は反射的である．
+\item $B_X$ は弱位相 $\sigma(X,X^*)$ でコンパクトである．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) とする．標準埋め込み $\iota$ は
+$X$ と $X^{**}$ の間の線形等距離全単射となる．
+従って $\iota(B_X)=B_{X^{**}}$ である．
+$B_{X^{**}}$ は
+$X^*$ の双対の閉単位球なので，
+Banach--Alaogluの定理によって
+$\sigma(X^{**},X^*)$ に関してコンパクトである．
+$\iota$ は弱位相と弱*位相の間の同相写像なので，
+$B_X$ は弱コンパクトとなる．
+
+逆に (2) とする．
+$\iota:B_X\to B_{X^{**}}$ は
+弱位相から弱*位相への連続写像である．
+従って $\iota(B_X)$ は
+弱*コンパクト空間 $B_{X^{**}}$ のコンパクト部分集合となる．
+弱*位相はHausdorffなので，
+コンパクト部分集合 $\iota(B_X)$ は閉である．
+一方 Goldstineの定理から
+$\iota(B_X)$ は $B_{X^{**}}$ に弱*稠密である．
+閉かつ稠密なので
+$\iota(B_X)=B_{X^{**}}$ となる．
+任意の $\Phi\in X^{**}$ をノルムで割って単位球へ移せば
+$\Phi$ は $\iota(X)$ に属するので $\iota$ は全射であり，
+$X$ は反射的である．
+\end{proof}
+
+\section{具体例}
+
+\begin{example}[$\ell^2$ の標準基底の弱収束]
+$\ell^2$ の標準基底 $e_n$ は零に弱収束するが，
+ノルム収束しない．
+\end{example}
+\begin{proof}
+Rieszの表現定理から
+$\ell^2$ 上の任意の連続線形汎関数は
+$f_y(x)=\sum_kx_k\overline{y_k}$，
+$y\in\ell^2$ の形に表される．
+$f_y(e_n)=\overline{y_n}\to0$ は
+$\ell^2$ 数列が零に収束することから従う．
+従って $e_n\rightharpoonup0$ である．
+一方 $\norm{e_n}=1$ なのでノルム収束しない．
+\end{proof}
+
+\begin{example}[$\ell^1$ と $\ell^\infty$ の対比]
+$\ell^1$ の標準基底 $e_n$ は零に弱収束しない．
+一方，$\ell^\infty=(\ell^1)^*$ とみなしたとき，
+$\ell^\infty$ の標準基底 $e_n$ は零に弱*収束する．
+\end{example}
+\begin{proof}
+$\ell^1$ 上の汎関数
+$f(x)=\sum_kx_k$ は
+$|f(x)|\le\norm x_1$ なので連続であり，
+$f(e_n)=1$ は零へ収束しない．
+従って $\ell^1$ の $e_n$ は零に弱収束しない．
+
+次に $\ell^\infty$ の元としての $e_n$ を考える．
+任意の $x=(x_k)\in\ell^1$ に対して
+$\langle e_n,x\rangle=x_n\to0$ となる．
+これは弱*収束の定義なので，
+$\ell^\infty$ の $e_n$ は零に弱*収束する．
+\end{proof}
+
+\begin{remark}
+弱収束は全ての連続線形汎関数による評価の収束であり，
+弱*収束は双対空間の評価写像だけによる収束である．
+Banach--Alaogluの定理は弱*コンパクト性を保証するが，
+一般のBanach空間の単位球の弱コンパクト性は
+反射性と同値であり，別の性質である．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{標準直交基底の弱収束．}
+\begin{proposition}
+Hilbert空間 $\ell^2$ の標準単位ベクトル $e_n$ は
+弱く零に収束するが，ノルムでは零に収束しない．
+\end{proposition}
+\begin{proof}
+任意の $y=(y_k)\in\ell^2$ に対し
+$\langle e_n,y\rangle=\overline{y_n}$ である．
+$\sum_k|y_k|^2<\infty$ だから $y_n\to0$ であり，
+$\langle e_n,y\rangle\to0$．
+Hilbert空間のRiesz表現定理により
+任意の連続線形汎関数は内積で表されるので
+$e_n\rightharpoonup0$ である．
+一方 $\|e_n-0\|_2=1$ は一定である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$e_n/n$ はノルム収束するか．
+\par\noindent\textbf{解答．}
+$\|e_n/n\|_2=1/n\to0$ だからノルムで零へ収束する．
+\end{document}

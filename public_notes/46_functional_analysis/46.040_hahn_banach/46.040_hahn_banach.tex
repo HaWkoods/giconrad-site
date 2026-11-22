@@ -1,0 +1,757 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル：platex main.tex（3回），dvipdfmx main.dvi
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{Hahn--Banachの定理と凸集合の分離}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，線形汎関数，作用素ノルム，Hahn--Banachの定理．
+本稿の具体的な到達課題は，部分空間の汎関数をノルムを保って延長する．
+
+\section{線形汎関数の拡張問題}
+
+本稿では $\mathbb K=\mathbb R$ または $\mathbb C$ とする．
+線形空間の部分空間 $M\subset X$ 上に定義された線形汎関数を，
+定められた評価を保ちつつ $X$ 全体へ拡張する問題を考える．
+実数体の場合には劣線形汎関数が基本的な役割を果たす．
+
+\begin{definition}
+実線形空間 $X$ 上の関数 $p:X\to\mathbb R$ が
+\emph{劣線形}であるとは
+\begin{align*}
+ p(x+y)&\le p(x)+p(y)\quad(x,y\in X),\\
+ p(tx)&=t\,p(x)\quad(x\in X,\ t\ge0)
+\end{align*}
+を満たすことをいう．
+正値性 $p(x)\ge0$ は要求しない．
+\end{definition}
+
+\begin{lemma}\label{lem:sublinear}
+劣線形汎関数 $p$ は $p(0)=0$ と
+$-p(-x)\le p(x)$ を満たす．
+また実線形汎関数 $f:X\to\mathbb R$ が
+$f\le p$ を満たすなら
+\[
+ -p(-x)\le f(x)\le p(x)\qquad(x\in X)
+\]
+である．
+\end{lemma}
+\begin{proof}
+正斉次性に $t=0$ を代入すれば $p(0)=0$ である．
+劣加法性により
+$0=p(0)=p(x+(-x))\le p(x)+p(-x)$ となる．
+$f\le p$ なら $f(-x)\le p(-x)$ であり，
+$f(-x)=-f(x)$ を用いて左側の不等式を得る．
+\end{proof}
+
+\begin{example}
+ノルム空間のノルム $p(x)=\|x\|$ は実線形空間上の
+劣線形汎関数である．また任意の実線形汎関数
+$\varphi:X\to\mathbb R$ それ自体も劣線形である．
+\end{example}
+\begin{proof}
+ノルムの場合は三角不等式と正の斉次性を用いればよい．
+線形汎関数の場合は
+$\varphi(x+y)=\varphi(x)+\varphi(y)$，
+$\varphi(tx)=t\varphi(x)$ が成り立つから
+劣線形の両条件を満たす．
+\end{proof}
+
+\section{実Hahn--Banachの定理}
+
+\begin{lemma}[1次元拡張補題]\label{lem:onedim}
+$X$ を実線形空間，$p:X\to\mathbb R$ を劣線形汎関数，
+$M\subset X$ を線形部分空間とする．
+$f:M\to\mathbb R$ が線形で $f(m)\le p(m)$
+をすべての $m\in M$ について満たすとする．
+$v\in X\setminus M$ を取るとき，
+$f$ を $M+\mathbb Rv$ 上の線形汎関数 $F$ に拡張して
+$F\le p$ を保つことができる．
+\end{lemma}
+\begin{proof}
+$M+\mathbb Rv$ の各元は一意に $m+tv$ と書ける．
+$F(m+tv)=f(m)+tc$ と置くことを考える．
+$t>0$ のときに $F(m+tv)\le p(m+tv)$ となるためには
+\[
+ c\le p(m+v)-f(m)\qquad(m\in M)
+\]
+が必要十分であり，$t<0$ のときの条件は
+\[
+ f(m)-p(m-v)\le c\qquad(m\in M)
+\]
+と同値である．従って
+\[
+ \sup_{m\in M}\{f(m)-p(m-v)\}
+ \le c\le
+ \inf_{n\in M}\{p(n+v)-f(n)\}
+ \tag{$*$}
+\]
+を満たす実数 $c$ を選べばよい．
+
+任意の $m,n\in M$ について
+\[
+ f(m)+f(n)=f(m+n)\le p(m+n)
+ \le p(m-v)+p(n+v)
+\]
+だから
+\[
+ f(m)-p(m-v)\le p(n+v)-f(n).
+\]
+従って $(*)$ の左端は右端以下である．
+しかも $n=0$ を固定すると左端は
+$p(v)$ 以下であり，$m=0$ を固定すると右端は
+$-p(-v)$ 以上である．両端は有限な実数であるため，
+$(*)$ を満たす $c\in\mathbb R$ が存在する．
+この $c$ によって定めた $F$ は線形であり，
+上記の $t>0,t<0$ の議論から $F\le p$ となる．
+$t=0$ ではもとの仮定による．
+\end{proof}
+
+\begin{theorem}[実Hahn--Banachの定理]\label{thm:hb-real}
+$X$ を実線形空間，$M$ を線形部分空間，
+$p:X\to\mathbb R$ を劣線形汎関数とする．
+線形汎関数 $f:M\to\mathbb R$ が
+$f(m)\le p(m)$（$m\in M$）を満たすなら，
+ある線形汎関数 $F:X\to\mathbb R$ が存在して
+\[
+ F|_M=f,\qquad F(x)\le p(x)\quad(x\in X)
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$M$ を含む部分空間 $N\subset X$ と，
+$N$ 上の線形汎関数 $g$ の組で
+$g|_M=f$，$g\le p|_N$ を満たすもの全体を
+$\mathcal P$ とする．
+$(N_1,g_1)\preceq(N_2,g_2)$ を
+$N_1\subset N_2$ かつ $g_2|_{N_1}=g_1$
+によって定めると，$\mathcal P$ は順序集合となり，
+$(M,f)$ を含むため空でない．
+
+$\mathcal C\subset\mathcal P$ を全順序部分集合とする．
+$\mathcal C=\varnothing$ なら $(M,f)$ が上界である．
+空でない場合には
+\[
+ N_\mathcal C=\bigcup_{(N,g)\in\mathcal C}N
+\]
+は線形部分空間である．実際，
+$x\in N_1$, $y\in N_2$ のとき，
+全順序性により $N_1\subset N_2$ または
+$N_2\subset N_1$ であるから，
+$x+y$ とスカラー倍は共に $N_\mathcal C$ に属する．
+$G(x)=g(x)$（$x\in N$）と定めると，
+全順序性と拡張条件によって $G$ は矛盾なく定義され，
+線形であり，$G|_M=f$ かつ $G\le p$ を満たす．
+従って $(N_\mathcal C,G)$ は $\mathcal C$ の上界である．
+
+Zornの補題から $\mathcal P$ には極大元 $(N_0,g_0)$ が存在する．
+$N_0\ne X$ なら $v\in X\setminus N_0$ を取れる．
+補題\ref{lem:onedim}により $g_0$ は
+$N_0+\mathbb Rv$ に条件を保って拡張され，
+極大性に矛盾する．
+よって $N_0=X$ であり，$F=g_0$ が求める拡張である．
+\end{proof}
+
+\begin{remark}
+定理\ref{thm:hb-real}には $X$ の位相もノルムも必要ない．
+全空間への拡張の段階でZornの補題を使用する．
+後述するノルム空間上の定理では，
+劣線形汎関数としてノルムの定数倍を選ぶ．
+\end{remark}
+
+\section{ノルムを保存する拡張}
+
+\begin{theorem}[実ノルム空間のHahn--Banachの定理]
+$X$ を実ノルム空間，$M\subset X$ を線形部分空間，
+$f\in M^*$ とする．
+このとき $F\in X^*$ で
+\[
+ F|_M=f,\qquad \|F\|_{X^*}=\|f\|_{M^*}
+\]
+を満たすものが存在する．
+\end{theorem}
+\begin{proof}
+$p(x)=\|f\|\|x\|$ と置くと $p$ は劣線形であり，
+$f(m)\le|f(m)|\le p(m)$ を満たす．
+定理\ref{thm:hb-real}から
+$F:X\to\mathbb R$ で $F|_M=f$，
+$F(x)\le\|f\|\|x\|$ を満たすものが存在する．
+$-x$ にも適用すると
+$-F(x)\le\|f\|\|x\|$ であるから
+$|F(x)|\le\|f\|\|x\|$ となる．
+従って $\|F\|\le\|f\|$ である．
+一方 $F$ は $f$ の拡張なので
+$\|F\|\ge\|f\|$ が従い，等号となる．
+\end{proof}
+
+\section{複素Hahn--Banachの定理}
+
+\begin{lemma}\label{lem:realpart}
+$X$ を複素線形空間とし，$f:X\to\mathbb C$
+を複素線形汎関数とする．
+$u=\operatorname{Re}f$ と置けば，
+$u$ は $X$ を実線形空間とみたときの実線形汎関数であり，
+\[
+ f(x)=u(x)-i\,u(ix)\qquad(x\in X)
+\]
+が成り立つ．
+逆に任意の実線形汎関数 $u:X\to\mathbb R$ に対し，
+この式で定義した $f$ は複素線形で
+$\operatorname{Re}f=u$ を満たす．
+\end{lemma}
+\begin{proof}
+$f(ix)=if(x)$ なので
+$u(ix)=\operatorname{Re}(if(x))=-\operatorname{Im}f(x)$ となり，
+最初の式を得る．
+逆に $f(x)=u(x)-iu(ix)$ と定義すると
+実数についての線形性は明らかであり，
+\[
+ f(ix)=u(ix)-iu(i^2x)
+ =u(ix)+iu(x)=if(x)
+\]
+となる．従って実線形性と $f(ix)=if(x)$ により
+複素線形性が従う．実部は定義から $u$ である．
+\end{proof}
+
+\begin{theorem}[複素ノルム空間のHahn--Banachの定理]\label{thm:hb-complex}
+$X$ を複素ノルム空間，$M\subset X$ を
+複素線形部分空間，$f\in M^*$ とする．
+このとき $F\in X^*$ が存在して
+\[
+ F|_M=f,\qquad \|F\|=\|f\|
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$X$ を実ノルム空間とみなし，
+$u=\operatorname{Re}f$ を $M$ 上の実線形汎関数とする．
+$u(m)\le|f(m)|\le\|f\|\|m\|$ だから
+実Hahn--Banachの定理により
+実線形汎関数 $U:X\to\mathbb R$ が存在して
+$U|_M=u$ かつ
+$U(x)\le\|f\|\|x\|$ となる．
+\[
+ F(x)=U(x)-iU(ix)
+\]
+と置くと，補題\ref{lem:realpart}から $F$ は複素線形であり，
+$M$ 上では $f$ に一致する．
+
+$F(x)\ne0$ とし，
+$|\zeta|=1$ かつ $\zeta F(x)=|F(x)|$ を満たす
+複素数 $\zeta$ を取る．複素線形性から
+\[
+ |F(x)|=F(\zeta x)=\operatorname{Re}F(\zeta x)
+ =U(\zeta x)\le\|f\|\,\|\zeta x\|
+ =\|f\|\,\|x\|.
+\]
+$F(x)=0$ のときも同じ評価は自明である．
+従って $\|F\|\le\|f\|$ となり，
+拡張であることから逆向きの不等式も得る．
+\end{proof}
+
+\begin{remark}
+実数体・複素数体のいずれでも，ノルムを保存する
+Hahn--Banachの拡張に完備性は必要ない．
+一方，複素数体の証明では実部を用いて実の場合へ帰着するため，
+内積空間における複素共役の規約に依存しない．
+\end{remark}
+
+\section{双対空間が点を分離すること}
+
+\begin{theorem}[ノルムを与える汎関数]\label{thm:norming}
+$X$ を $\mathbb K$ 上のノルム空間，
+$x_0\in X\setminus\{0\}$ とする．
+このときある $f\in X^*$ が存在して
+\[
+ \|f\|=1,\qquad f(x_0)=\|x_0\|
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$M=\mathbb Kx_0$ とし，
+$f_0(ax_0)=a\|x_0\|$ と定める．
+$x_0\ne0$ なのでこれはwell-definedな
+$\mathbb K$ 線形汎関数であり，
+$|f_0(ax_0)|=|a|\|x_0\|=\|ax_0\|$ により
+$\|f_0\|=1$ である．
+実数体の場合には実ノルム空間の拡張定理を，
+複素数体の場合には定理\ref{thm:hb-complex}を適用し，
+$\|f\|=1$ を保つ拡張 $f$ を得る．
+\end{proof}
+
+\begin{corollary}[ノルムの双対表示]\label{cor:dualnorm}
+任意のノルム空間 $X$ と $x\in X$ に対し
+\[
+ \|x\|=
+ \sup\{|f(x)|:f\in X^*,\ \|f\|\le1\}
+\]
+が成り立つ．
+特に $x\ne y$ なら $f(x)\ne f(y)$ を満たす
+$f\in X^*$ が存在する．
+\end{corollary}
+\begin{proof}
+任意の $\|f\|\le1$ に対して
+$|f(x)|\le\|x\|$ なので右辺は $\|x\|$ 以下である．
+$x\ne0$ なら定理\ref{thm:norming}により
+$f(x)=\|x\|$ となる $\|f\|=1$ の汎関数が存在する．
+$x=0$ は自明である．
+最後に $x-y\ne0$ に定理\ref{thm:norming}を適用する．
+\end{proof}
+
+\begin{proposition}[第二双対への埋め込み]\label{prop:bidual}
+ノルム空間 $X$ に対し，
+\[
+ J:X\to X^{**},\qquad (Jx)(f)=f(x)
+\]
+と定めると，$J$ は線形な等距離埋め込みである．
+\end{proposition}
+\begin{proof}
+各 $x\in X$ について
+$|Jx(f)|=|f(x)|\le\|f\|\|x\|$ だから
+$Jx\in X^{**}$ で $\|Jx\|\le\|x\|$ である．
+$J$ の線形性は $f$ の線形性から従う．
+系\ref{cor:dualnorm}によって
+$\|Jx\|=\sup_{\|f\|\le1}|f(x)|=\|x\|$ となる．
+従って $J$ は等距離であり，特に単射である．
+\end{proof}
+
+\begin{remark}
+$J:X\to X^{**}$ が全射であるとは限らない．
+全射となるとき $X$ は反射的であるという．
+Hilbert空間の反射性はRieszの表現定理から導けるが，
+一般のBanach空間に対しては成立しない．
+\end{remark}
+
+\section{閉部分空間と距離の双対表示}
+
+\begin{lemma}[商ノルム]
+$X$ をノルム空間，$M\subset X$ を閉線形部分空間とする．
+商空間 $X/M$ に
+\[
+ \|x+M\|_{X/M}=\inf_{m\in M}\|x-m\|
+\]
+を定めると，これはノルムになる．
+\end{lemma}
+\begin{proof}
+代表元を $x$ から $x+m_0$ に替えても
+下限は変わらない．
+斉次性は $M$ の線形性から従い，
+三角不等式は
+\[
+ \|x+y-(m+n)\|\le\|x-m\|+\|y-n\|
+\]
+で $m,n\in M$ に関する下限を取れば得られる．
+またノルムが $0$ なら $x\in\overline M=M$ である．
+逆に $x\in M$ なら下限は $0$ である．
+\end{proof}
+
+\begin{theorem}[閉部分空間からの分離]\label{thm:subspace-separate}
+$M$ をノルム空間 $X$ の閉線形部分空間とし，
+$x_0\in X\setminus M$ とする．
+このとき $f\in X^*$ で
+\[
+ \|f\|=1,\qquad f|_M=0,\qquad
+ f(x_0)=d(x_0,M)>0
+\]
+を満たすものが存在する．
+\end{theorem}
+\begin{proof}
+商空間 $X/M$ はノルム空間であり，
+$x_0+M\ne0$ である．
+定理\ref{thm:norming}を $x_0+M$ に適用し，
+$g\in(X/M)^*$ で
+\[
+ \|g\|=1,\qquad
+ g(x_0+M)=\|x_0+M\|=d(x_0,M)
+\]
+を満たすものを取る．
+自然な商写像 $\pi:X\to X/M$ を用いて
+$f=g\circ\pi$ と置くと $f$ は線形，
+$f|_M=0$ であり，
+\[
+ |f(x)|\le\|g\|\|\pi x\|
+ \le\|x\|
+\]
+なので $\|f\|\le1$ となる．
+一方 $f(x_0)=d(x_0,M)$ だから
+任意の $m\in M$ に対して
+\[
+ d(x_0,M)=|f(x_0-m)|
+ \le\|f\|\,\|x_0-m\|.
+\]
+$m$ に関する下限を取ると
+$d(x_0,M)\le\|f\|\,d(x_0,M)$ を得る．
+$M$ は閉で $x_0\notin M$ だから距離は正であり，
+$\|f\|\ge1$ である．従って $\|f\|=1$ となる．
+\end{proof}
+
+\begin{corollary}[距離の双対表示]\label{cor:distance}
+$M\subset X$ を閉線形部分空間とする．
+任意の $x\in X$ に対して
+\[
+ d(x,M)=
+ \sup\{|f(x)|:f\in X^*,\
+           \|f\|\le1,\ f|_M=0\}
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+$M$ 上で $0$ となる $\|f\|\le1$ の汎関数について
+任意の $m\in M$ に対して
+$|f(x)|=|f(x-m)|\le\|x-m\|$ である．
+下限を取ると右辺は $d(x,M)$ 以下となる．
+$x\in M$ なら両辺は $0$ である．
+$x\notin M$ なら定理\ref{thm:subspace-separate}の
+$f$ が等号を実現する．
+\end{proof}
+
+\section{Minkowski汎関数}
+
+\begin{definition}
+実ノルム空間 $X$ の部分集合 $C$ が\emph{吸収的}であるとは，
+任意の $x\in X$ に対してある $t>0$ が存在して
+$x\in tC$ となることをいう．
+$C$ が空でない凸集合で $0\in C$ かつ吸収的なら，
+\[
+ p_C(x)=\inf\{t>0:x\in tC\}
+\]
+を $C$ の\emph{Minkowski汎関数}という．
+\end{definition}
+
+\begin{lemma}\label{lem:gauge}
+$C$ を実ノルム空間 $X$ の開凸集合で $0\in C$ とする．
+このとき $C$ は吸収的であり，
+$p_C:X\to[0,\infty)$ は劣線形である．
+さらに
+\[
+ C=\{x\in X:p_C(x)<1\}
+\]
+が成り立ち，ある $r>0$ に対して
+\[
+ p_C(x)\le\frac{\|x\|}{r}\qquad(x\in X)
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$C$ は $0$ の開近傍であるから
+$B_X(0,r)\subset C$ となる $r>0$ が存在する．
+$x\ne0$ なら $t>\|x\|/r$ に対して
+$x/t\in B_X(0,r)\subset C$ であり，
+$x\in tC$ となる．よって吸収的であり，
+$p_C(x)\le\|x\|/r$ が成り立つ．$x=0$ も明らかである．
+
+$s>0$ に対して
+\[
+ p_C(sx)=\inf\{t>0:sx\in tC\}
+ =s\inf\{u>0:x\in uC\}=s\,p_C(x).
+\]
+$s=0$ のときも $p_C(0)=0$ なので成立する．
+劣加法性について，$a>p_C(x)$，$b>p_C(y)$ を取る．
+$0\in C$ と凸性により，
+$x\in aC$，$y\in bC$ が成り立つ．
+実際，下限の定義から $x\in a'C$ となる $a'<a$ を取り，
+$(a'/a)C\subset C$ を用いる．
+従って
+\[
+ \frac{x+y}{a+b}
+ =\frac a{a+b}\frac xa+\frac b{a+b}\frac yb\in C,
+\]
+ゆえに $p_C(x+y)\le a+b$ となる．
+$a\downarrow p_C(x)$，$b\downarrow p_C(y)$ として
+劣加法性を得る．
+
+$x\in C$ なら $C$ が開であるから，
+ある $\varepsilon>0$ に対して
+$(1+\varepsilon)x\in C$ となる．
+従って $p_C(x)\le1/(1+\varepsilon)<1$ である．
+逆に $p_C(x)<1$ なら，
+ある $t<1$ で $x\in tC$ となり，
+$0\in C$ と凸性から $tC\subset C$ なので $x\in C$ である．
+\end{proof}
+
+\section{凸集合の分離}
+
+\begin{theorem}[開凸集合とその外点の分離]\label{thm:open-sep}
+$X$ を実ノルム空間，$C\subset X$ を空でない開凸集合，
+$x_0\in X\setminus C$ とする．
+このとき $0$ でない $f\in X^*$ が存在して
+\[
+ f(c)<f(x_0)\qquad(c\in C)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$c_0\in C$ を固定し，
+$U=C-c_0$ と $v=x_0-c_0$ を置く．
+$U$ は $0$ を含む開凸集合，$v\notin U$ である．
+$U$ のMinkowski汎関数を $p=p_U$ と書く．
+補題\ref{lem:gauge}から $p(v)\ge1$ である．
+$M=\mathbb Rv$ 上で
+$g(tv)=t\,p(v)$ と定める．
+$v\ne0$ なのでwell-definedで線形である．
+$t\ge0$ なら
+$g(tv)=p(tv)$，$t<0$ なら
+$g(tv)=t\,p(v)\le0\le p(tv)$ である．
+従って $g\le p|_M$ である．
+
+実Hahn--Banachの定理により $g$ を
+$F:X\to\mathbb R$ に拡張して $F\le p$ とできる．
+$U$ が $B_X(0,r)$ を含むとすると
+\[
+ F(x)\le p(x)\le\frac{\|x\|}{r},
+ \qquad
+ -F(x)=F(-x)\le p(-x)\le\frac{\|x\|}{r}.
+\]
+よって $F$ は有界な実線形汎関数である．
+$c\in C$ なら $c-c_0\in U$ なので
+\[
+ F(c-c_0)\le p(c-c_0)<1
+ \le p(v)=F(v).
+\]
+従って $F(c)<F(x_0)$ となる．
+また $F(v)=p(v)\ge1$ なので $F\ne0$ である．
+$f=F$ として結論を得る．
+\end{proof}
+
+\begin{corollary}[開凸集合の相互分離]
+実ノルム空間 $X$ において，
+$A,B$ を互いに交わらない空でない凸集合とし，
+$A$ は開であるとする．
+このとき $0$ でない $f\in X^*$ が存在して
+\[
+ f(a)<f(b)\qquad(a\in A,\ b\in B)
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+$U=A-B=\{a-b:a\in A,\ b\in B\}$ と置く．
+$U$ は空でない凸集合であり，
+$A$ が開であるから $U$ は開である．
+また $A\cap B=\varnothing$ なので $0\notin U$ である．
+定理\ref{thm:open-sep}を $U$ と $x_0=0$ に適用すると
+ある $0\ne f\in X^*$ が存在して
+$f(u)<f(0)=0$（$u\in U$）となる．
+$u=a-b$ を代入すれば $f(a)<f(b)$ を得る．
+\end{proof}
+
+\begin{theorem}[閉凸集合と外点の強分離]\label{thm:strong-sep}
+$X$ を実ノルム空間，
+$C\subset X$ を空でない閉凸集合とし，
+$x_0\notin C$ とする．
+このとき $0\ne f\in X^*$ と実数 $\alpha$ が存在して
+\[
+ f(c)\le\alpha<f(x_0)\qquad(c\in C)
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$C$ は閉で $x_0\notin C$ だから
+$d=d(x_0,C)>0$ である．
+$0<\varepsilon<d$ を取り，
+\[
+ U=C+B_X(0,\varepsilon)
+\]
+と置く．$U$ は空でない開凸集合であり，
+$\|x_0-c\|\ge d>\varepsilon$（$c\in C$）なので
+$x_0\notin U$ である．
+定理\ref{thm:open-sep}によって
+$0\ne f\in X^*$ が存在して
+\[
+ f(c+b)<f(x_0)\qquad
+ (c\in C,\ \|b\|<\varepsilon)
+\]
+となる．
+固定した $c$ に対して $b$ に関する上限を取ると
+\[
+ f(c)+\varepsilon\|f\|\le f(x_0)
+\]
+を得る．実際，
+$\sup_{\|b\|<\varepsilon}f(b)=\varepsilon\|f\|$ は，
+実線形汎関数のノルムの定義と $b$ の符号の変更から従う．
+従って
+$\alpha=f(x_0)-\varepsilon\|f\|$
+と置けば
+$f(c)\le\alpha<f(x_0)$ が成り立つ．
+\end{proof}
+
+\begin{corollary}[閉凸集合の半空間表示]\label{cor:halfspaces}
+実ノルム空間 $X$ の空でない閉凸集合 $C$ は，
+$C$ を含む閉半空間の共通部分と一致する．
+具体的には
+\[
+ C=\bigcap_{\substack{f\in X^*\\
+       \sup_{c\in C}f(c)<\infty}}
+ \left\{x\in X:
+ f(x)\le \sup_{c\in C}f(c)\right\}
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+右辺の各閉半空間は $C$ を含むから，
+$C$ は右辺に含まれる．
+逆に $x\notin C$ なら定理\ref{thm:strong-sep}から
+ある $f\in X^*$ で
+$\sup_{c\in C}f(c)<f(x)$ を満たすものが存在する．
+特に $\sup_Cf$ は有限であり，
+$x$ は対応する半空間に含まれない．
+従って右辺は $C$ に含まれる．
+\end{proof}
+
+\begin{remark}
+ここでの分離定理は実線形汎関数によって定式化した．
+複素ノルム空間上では連続複素線形汎関数の実部を用いて
+同様の分離を記述する．
+すなわち不等式に現れる $f$ を
+$\operatorname{Re}F$ と置き換える．
+\end{remark}
+
+\section{具体例とRieszの表現定理との比較}
+
+\begin{example}[$\ell^1$ におけるノルムを与える汎関数]
+$x=(x_n)\in\ell^1(\mathbb K)$，$x\ne0$ とする．
+\[
+ u_n=
+ \begin{cases}
+ \overline{x_n}/|x_n|& (x_n\ne0),\\
+ 0&(x_n=0)
+ \end{cases}
+\]
+と置けば
+$f_u(z)=\sum_{n=1}^\infty z_nu_n$ は
+$\ell^1$ 上の連続線形汎関数であり，
+$\|f_u\|=1$ および $f_u(x)=\|x\|_1$ を満たす．
+\end{example}
+\begin{proof}
+$|u_n|\le1$ なので
+$|f_u(z)|\le\sum_n|z_n|\le\|z\|_1$ となり，
+$\|f_u\|\le1$ である．
+定義から
+$f_u(x)=\sum_n|x_n|=\|x\|_1$ なので，
+$f_u$ のノルムは $1$ 以上である．
+よって $\|f_u\|=1$ である．
+\end{proof}
+
+\begin{example}[評価汎関数]
+$X=C([0,1],\mathbb K)$ に一様ノルムを入れる．
+任意の $t_0\in[0,1]$ について
+$\delta_{t_0}(f)=f(t_0)$ は
+$\|\delta_{t_0}\|=1$ を満たす連続線形汎関数である．
+\end{example}
+\begin{proof}
+$|\delta_{t_0}(f)|\le\|f\|_\infty$ なので
+$\|\delta_{t_0}\|\le1$ である．
+定数関数 $f\equiv1$ に対して
+$\|f\|_\infty=1$，$|\delta_{t_0}(f)|=1$ だから
+逆向きの不等式も成り立つ．
+\end{proof}
+
+\begin{remark}[Hahn--BanachとRieszの相違]
+Hahn--Banachの定理は一般のノルム空間で有界線形汎関数の
+\emph{拡張}を保証する．
+他方，Hilbert空間のRieszの表現定理は
+全ての有界線形汎関数が一つの内積
+$x\mapsto\langle x,y\rangle$ により\emph{表現}されることを保証する．
+後者はHilbert空間の内積構造を用いる別種の定理である．
+\end{remark}
+
+\section{結語}
+Hahn--Banachの定理は，劣線形汎関数による支配条件を
+保った線形汎関数の全空間への拡張を保証する．
+この結果は，点を分離する連続線形汎関数の存在，
+ノルムと距離の双対表示，
+および凸集合の分離定理へと展開される．
+これらは凸解析，最適化理論，弱位相の基礎をなす．
+
+\section{到達課題の完全解答}
+\noindent\textbf{Hahn--Banachの具体的な延長．}
+\begin{proposition}
+$X=\mathbb R^2$ にEuclidノルムを入れ，
+$M=\{(x,0):x\in\mathbb R\}$ とし，
+$f(x,0)=x$ と置く．
+$f$ はノルム1であり，
+$F(x,y)=x$ は $X$ へのノルム保存延長である．
+\end{proposition}
+\begin{proof}
+$|f(x,0)|=|x|=\|(x,0)\|$ だから $\|f\|=1$．
+$F|_M=f$ は明らかである．
+任意の $(x,y)$ に対して
+$|F(x,y)|=|x|\le\sqrt{x^2+y^2}$ だから
+$\|F\|\le1$．$M$ 上でノルム1を達成するため
+$\|F\|=1$ である．
+\end{proof}
+\begin{remark}
+この例はHahn--Banachの存在定理を
+具体的な公式で実現するが，一般のノルム空間で
+延長が一意であることを主張しない．
+\end{remark}
+\noindent\textbf{到達確認．}
+$M=\{(0,y)\}$，$f(0,y)=3y$ の
+ノルム保存延長を一つ作れ．
+\par\noindent\textbf{解答．}
+$F(x,y)=3y$ であり，
+$\|F\|=\|f\|=3$ となる．
+\end{document}

@@ -1,0 +1,707 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{分布と弱微分}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，試験関数，分布，弱微分の定義．
+本稿の具体的な到達課題は，不連続関数の分布微分を積分によって計算する．
+
+\section{試験関数の空間}
+
+$U\subset\mathbb R^d$ を空でない開集合とする．
+
+\begin{definition}
+\[
+ \mathcal D(U)=C_c^\infty(U)
+\]
+を $U$ 上の\emph{試験関数空間}という．
+試験関数列 $\varphi_n$ が
+$\varphi\in\mathcal D(U)$ へ収束するとは，
+あるコンパクト集合 $K\subset U$ が存在して，
+十分大きい $n$ に対して
+$\operatorname{supp}\varphi_n\subset K$，
+$\operatorname{supp}\varphi\subset K$ を満たし，
+全ての多重指数 $\alpha$ について
+\[
+ \sup_{x\in K}|\partial^\alpha(\varphi_n-\varphi)(x)|
+ \longrightarrow0
+\]
+が成り立つことをいう．
+\end{definition}
+
+\begin{lemma}\label{lem:test-mult}
+$\varphi,\psi\in\mathcal D(U)$ なら
+$\varphi+\psi\in\mathcal D(U)$ である．
+また $a\in C^\infty(U)$，
+$\varphi\in\mathcal D(U)$ に対し
+$a\varphi\in\mathcal D(U)$ である．
+\end{lemma}
+\begin{proof}
+二つのコンパクト集合の和集合はコンパクトであるため，
+$\operatorname{supp}(\varphi+\psi)$ はコンパクトである．
+また $\operatorname{supp}(a\varphi)\subset
+\operatorname{supp}\varphi$ だから後者もコンパクト台を持つ．
+滑らかさは和および積の微分法から従う．
+\end{proof}
+
+\section{分布の定義}
+
+\begin{definition}
+$\mathcal D(U)$ 上の線形汎関数
+$T:\mathcal D(U)\to\mathbb R$ または $\mathbb C$ が
+\emph{分布}であるとは，
+任意のコンパクト集合 $K\subset U$ に対して
+ある定数 $C_K>0$ と非負整数 $m_K$ が存在して
+\[
+ |T(\varphi)|\le C_K
+ \sum_{|\alpha|\le m_K}
+ \sup_{x\in K}|\partial^\alpha\varphi(x)|
+ \qquad(\varphi\in\mathcal D(U),\
+   \operatorname{supp}\varphi\subset K)
+\]
+が成り立つことをいう．
+分布全体を $\mathcal D'(U)$ と書き，
+$T(\varphi)=\langle T,\varphi\rangle$ とも表す．
+\end{definition}
+
+\begin{proposition}[局所可積分関数の分布への埋め込み]\label{prop:regular}
+$f\in L_{\mathrm{loc}}^1(U)$ に対し
+\[
+ \langle T_f,\varphi\rangle
+ =\int_U f(x)\varphi(x)\,dx
+\]
+と定めると $T_f\in\mathcal D'(U)$ である．
+\end{proposition}
+\begin{proof}
+線形性は積分の線形性による．
+任意のコンパクト集合 $K\subset U$ と
+$\operatorname{supp}\varphi\subset K$ に対して
+\[
+ |\langle T_f,\varphi\rangle|
+ \le\int_K|f(x)|\,|\varphi(x)|\,dx
+ \le\left(\int_K|f|\right)\sup_{x\in K}|\varphi(x)|
+\]
+となる．$f$ は局所可積分なので $\int_K|f|<\infty$ であり，
+定義の条件を $m_K=0$ で満たす．
+\end{proof}
+
+\begin{example}[Dirac分布]
+$a\in U$ に対して
+\[
+ \langle\delta_a,\varphi\rangle=\varphi(a)
+\]
+と定めると $\delta_a\in\mathcal D'(U)$ である．
+\end{example}
+\begin{proof}
+線形性は明らかである．
+$\operatorname{supp}\varphi\subset K$ のとき
+$a\in K$ なら $|\varphi(a)|\le\sup_K|\varphi|$，
+$a\notin K$ なら $\varphi(a)=0$ なので，
+いずれの場合も定義の評価を満たす．
+\end{proof}
+
+\section{分布微分}
+
+\begin{definition}
+$T\in\mathcal D'(U)$ と多重指数 $\alpha$ に対し，
+その\emph{分布微分} $\partial^\alpha T$ を
+\[
+ \langle\partial^\alpha T,\varphi\rangle
+ =(-1)^{|\alpha|}
+ \langle T,\partial^\alpha\varphi\rangle
+ \qquad(\varphi\in\mathcal D(U))
+\]
+と定める．
+\end{definition}
+
+\begin{proposition}[分布微分の存在と可換性]\label{prop:dist-derivative}
+$T\in\mathcal D'(U)$ に対し
+$\partial^\alpha T$ は分布であり，
+\[
+ \partial^\alpha\partial^\beta T
+ =\partial^{\alpha+\beta}T
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+試験関数の微分 $\partial^\alpha\varphi$ も
+同じコンパクト集合内に台を持つ．
+$T$ の定義における評価を $\partial^\alpha\varphi$ に
+適用すると
+\[
+ |\langle\partial^\alpha T,\varphi\rangle|
+ \le C_K\sum_{|\gamma|\le m_K}
+ \sup_K|\partial^{\alpha+\gamma}\varphi|
+\]
+となるので，
+$\partial^\alpha T$ は分布である．
+二つの微分を順に適用すると
+\[
+ \langle\partial^\alpha\partial^\beta T,\varphi\rangle
+ =(-1)^{|\alpha|+|\beta|}
+ \langle T,\partial^{\alpha+\beta}\varphi\rangle
+\]
+となるから結論が従う．
+\end{proof}
+
+\begin{proposition}[滑らかな関数との積]\label{prop:product}
+$a\in C^\infty(U)$，$T\in\mathcal D'(U)$ に対して
+\[
+ \langle aT,\varphi\rangle=\langle T,a\varphi\rangle
+\]
+と置けば $aT\in\mathcal D'(U)$ であり，
+\[
+ \partial_j(aT)=(\partial_ja)T+a\,\partial_jT
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+Leibnizの公式によって
+$\partial^\alpha(a\varphi)$ は
+$\partial^\gamma a\,\partial^{\alpha-\gamma}\varphi$
+の有限線形結合となる．
+$a$ の全ての導関数はコンパクト集合 $K$ 上で有界なので，
+$T$ の連続性評価を $a\varphi$ に適用すれば
+$aT$ も分布である．
+次に
+\begin{align*}
+ \langle\partial_j(aT),\varphi\rangle
+ &=-\langle T,a\,\partial_j\varphi\rangle\\
+ &=-\langle T,\partial_j(a\varphi)
+                   -(\partial_ja)\varphi\rangle\\
+ &=\langle\partial_jT,a\varphi\rangle
+   +\langle(\partial_ja)T,\varphi\rangle\\
+ &=\langle a\,\partial_jT+(\partial_ja)T,\varphi\rangle.
+\end{align*}
+任意の $\varphi$ について一致するから等式が従う．
+\end{proof}
+
+\section{具体的な分布微分}
+
+\begin{example}[Heaviside関数]
+$\mathbb R$ 上の
+\[
+ H(x)=\begin{cases}0&(x<0),\\1&(x\ge0)\end{cases}
+\]
+を考えると，
+分布の意味で
+\[
+ \frac{d}{dx}T_H=\delta_0
+\]
+が成り立つ．
+\end{example}
+\begin{proof}
+任意の $\varphi\in C_c^\infty(\mathbb R)$ に対して
+\[
+ \left\langle\frac{d}{dx}T_H,\varphi\right\rangle
+ =-\int_\mathbb RH(x)\varphi'(x)\,dx
+ =-\int_0^\infty\varphi'(x)\,dx
+ =\varphi(0)
+ =\langle\delta_0,\varphi\rangle
+\]
+である．
+\end{proof}
+
+\begin{example}[絶対値関数]
+$\mathbb R$ 上で
+\[
+ \frac{d}{dx}T_{|x|}=T_{\operatorname{sgn}x},
+ \qquad
+ \frac{d^2}{dx^2}T_{|x|}=2\delta_0
+\]
+が成立する．
+\end{example}
+\begin{proof}
+任意の試験関数 $\varphi$ に対し
+\begin{align*}
+ -\int_\mathbb R|x|\varphi'(x)\,dx
+ &=-\int_{-\infty}^0(-x)\varphi'(x)\,dx
+   -\int_0^\infty x\varphi'(x)\,dx\\
+ &=\int_{-\infty}^0(-1)\varphi(x)\,dx
+   +\int_0^\infty\varphi(x)\,dx\\
+ &=\int_\mathbb R\operatorname{sgn}(x)\varphi(x)\,dx.
+\end{align*}
+従って第一式を得る．
+また $\operatorname{sgn}x=2H(x)-1$ が
+ほとんど至る所成り立つので，
+Heaviside関数の分布微分の計算から
+$\frac d{dx}T_{\operatorname{sgn}x}=2\delta_0$ を得る．
+\end{proof}
+
+\begin{example}[Dirac分布の導関数]
+$\delta_0$ の微分は
+\[
+ \langle\delta_0',\varphi\rangle=-\varphi'(0)
+\]
+で与えられる．
+これは局所可積分関数が定める分布ではない．
+\end{example}
+\begin{proof}
+第一式は分布微分の定義による．
+もし $\delta_0'=T_f$ となる
+$f\in L^1_{\mathrm{loc}}$ が存在すれば，
+$0$ を含まない任意の区間上の試験関数に対して
+$\int f\varphi=0$ となる．
+従ってその区間上で $f=0$ がほとんど至る所成立し，
+$f=0$ が $\mathbb R\setminus\{0\}$ 上で
+ほとんど至る所成立する．
+一点集合は測度零なので $f=0$ が $\mathbb R$ 上で
+ほとんど至る所成立する．
+すると $T_f=0$ だが，
+$\varphi'(0)\ne0$ となる試験関数を取れば
+$\delta_0'(\varphi)\ne0$ なので矛盾する．
+\end{proof}
+
+\section{Mollifierと正則化}
+
+\begin{definition}
+$\rho\in C_c^\infty(\mathbb R^d)$ で
+$\rho\ge0$，$\operatorname{supp}\rho\subset\overline{B(0,1)}$，
+$\int\rho=1$ を満たすものをMollifierという．
+$\varepsilon>0$ に対して
+\[
+ \rho_\varepsilon(x)=\varepsilon^{-d}\rho(x/\varepsilon)
+\]
+と置く．
+\end{definition}
+
+\begin{lemma}[Mollifierの存在]\label{lem:mollifier}
+Mollifierは存在する．
+\end{lemma}
+\begin{proof}
+\[
+ \theta(x)=
+ \begin{cases}
+ \exp\!\left(-\dfrac1{1-|x|^2}\right)&(|x|<1),\\
+ 0&(|x|\ge1)
+ \end{cases}
+\]
+と定める．$|x|\to1$ では指数関数が
+任意の負冪より速く零へ向かうので，
+$\theta$ は全ての階数の導関数が境界で零へ延長でき，
+$C_c^\infty$ 級である．
+$\theta\ge0$ かつ
+$0<\int\theta<\infty$ だから
+$\rho=\theta/\int\theta$ と置けばよい．
+\end{proof}
+
+\begin{theorem}[分布の正則化]\label{thm:regularization}
+$T\in\mathcal D'(\mathbb R^d)$ とし，
+\[
+ (T*\rho_\varepsilon)(x)
+ =\langle T_y,\rho_\varepsilon(x-y)\rangle
+\]
+と定める．このとき
+$T*\rho_\varepsilon\in C^\infty(\mathbb R^d)$ であり，
+\[
+ \partial^\alpha(T*\rho_\varepsilon)
+ =T*(\partial^\alpha\rho_\varepsilon)
+ =(\partial^\alpha T)*\rho_\varepsilon.
+\]
+さらに $\varepsilon\downarrow0$ で
+$T*\rho_\varepsilon\to T$ が分布の意味で成り立つ．
+\end{theorem}
+\begin{proof}
+$x$ をコンパクト集合 $K$ 内で動かすとき，
+$\rho_\varepsilon(x-\cdot)$ の台は
+$K+\overline{B(0,\varepsilon)}$ に含まれる．
+$T$ の連続性評価を用いれば，
+試験関数のパラメータ $x$ に関する微分を
+$T$ の作用の内側へ移せる．
+従って
+\[
+ \partial_x^\alpha(T*\rho_\varepsilon)(x)
+ =\langle T_y,\partial_x^\alpha\rho_\varepsilon(x-y)\rangle
+\]
+となり，滑らかさと最初の微分公式が従う．
+また
+$\partial_x^\alpha\rho_\varepsilon(x-y)
+ =(-1)^{|\alpha|}\partial_y^\alpha\rho_\varepsilon(x-y)$ なので，
+分布微分の定義から第二の微分公式を得る．
+
+任意の $\varphi\in C_c^\infty$ に対して
+\[
+ \int_{\mathbb R^d}(T*\rho_\varepsilon)(x)\varphi(x)\,dx
+ =\left\langle T_y,
+     \int_{\mathbb R^d}
+      \rho_\varepsilon(x-y)\varphi(x)\,dx
+   \right\rangle.
+\]
+この等式は試験関数の台が共通コンパクト集合に含まれることと
+$T$ の連続性によって積分と分布の作用を交換して得られる．
+右辺の内側の関数は
+$\widetilde\rho_\varepsilon*\varphi$，
+$\widetilde\rho(x)=\rho(-x)$ である．
+近似恒等作用素の性質から
+$\widetilde\rho_\varepsilon*\varphi\to\varphi$
+は $\mathcal D$ の意味で成立する．
+実際，台は一つのコンパクト集合に含まれ，
+任意階の導関数について一様連続性から
+一様収束する．
+分布 $T$ の連続性を適用すると
+\[
+ \int(T*\rho_\varepsilon)(x)\varphi(x)\,dx
+ \longrightarrow\langle T,\varphi\rangle
+\]
+となる．
+\end{proof}
+
+\begin{proposition}[正則分布の一意性]\label{prop:inject}
+$f\in L_{\mathrm{loc}}^1(U)$ が
+$T_f=0$ を満たすなら，$f=0$ がほとんど至る所成立する．
+\end{proposition}
+\begin{proof}
+任意のコンパクト部分集合 $K\subset U$ を取り，
+その十分小さい近傍が $U$ に含まれるようにする．
+$\rho_\varepsilon$ を用いると，
+$x\in K$ では
+$(f*\rho_\varepsilon)(x)
+ =\langle T_f,\rho_\varepsilon(x-\cdot)\rangle=0$
+となる．
+一方，局所可積分関数の近似恒等作用素によって
+$f*\rho_\varepsilon\to f$ は $L^1(K)$ で成立する．
+従って $f=0$ が $K$ 上ほとんど至る所成立する．
+$U$ は可算個のコンパクト部分集合で尽くせるので，
+$f=0$ が $U$ 上ほとんど至る所成立する．
+\end{proof}
+
+\section{弱微分}
+
+\begin{definition}
+$u\in L^1_{\mathrm{loc}}(U)$ と多重指数 $\alpha$ に対し，
+$v\in L^1_{\mathrm{loc}}(U)$ が $u$ の\emph{弱微分}
+$\partial^\alpha u$ であるとは，
+任意の $\varphi\in C_c^\infty(U)$ に対して
+\[
+ \int_Uu(x)\partial^\alpha\varphi(x)\,dx
+ =(-1)^{|\alpha|}\int_Uv(x)\varphi(x)\,dx
+\]
+が成り立つことをいう．
+\end{definition}
+
+\begin{proposition}[弱微分の一意性]\label{prop:weak-unique}
+弱微分は存在すればほとんど至る所で一意である．
+また古典的な偏微分が存在し，十分な局所可積分性を持ち
+部分積分が適用できる場合，弱微分は古典的偏微分と一致する．
+\end{proposition}
+\begin{proof}
+$v,w$ が同じ弱微分なら
+$\int(v-w)\varphi=0$ が任意の試験関数について成り立つ．
+すなわち $T_{v-w}=0$ なので，
+命題\ref{prop:inject}から $v=w$ がほとんど至る所成立する．
+古典的偏微分がある場合は，
+試験関数がコンパクト台を持つため境界項が消えることを用いて
+部分積分を行えば弱微分の定義式を得る．
+\end{proof}
+
+\section{Sobolev空間}
+
+\begin{definition}
+$1\le p\le\infty$，非負整数 $k$ に対し
+\[
+ W^{k,p}(U)=
+ \{u\in L^p(U):
+ \partial^\alpha u\in L^p(U)\text{（弱微分），}
+ |\alpha|\le k\}
+\]
+と定める．$p<\infty$ のとき
+\[
+ \norm u_{W^{k,p}}
+ =\left(\sum_{|\alpha|\le k}
+      \norm{\partial^\alpha u}_{L^p}^p\right)^{1/p},
+\]
+$p=\infty$ のとき
+$\norm u_{W^{k,\infty}}
+ =\max_{|\alpha|\le k}\norm{\partial^\alpha u}_{L^\infty}$
+と置く．
+\end{definition}
+
+\begin{theorem}[Sobolev空間の完備性]\label{thm:sobolev-banach}
+任意の開集合 $U\subset\mathbb R^d$，
+$1\le p\le\infty$，$k\ge0$ について
+$W^{k,p}(U)$ はBanach空間である．
+\end{theorem}
+\begin{proof}
+$(u_n)$ を $W^{k,p}(U)$ のCauchy列とする．
+任意の $|\alpha|\le k$ について
+$(\partial^\alpha u_n)$ は $L^p(U)$ のCauchy列である．
+$L^p$ の完備性から
+\[
+ \partial^\alpha u_n\to v_\alpha\in L^p(U)
+\]
+が $L^p$ で成り立つ．特に $u_n\to v_0$ である．
+任意の試験関数 $\varphi\in C_c^\infty(U)$ に対して
+弱微分の定義より
+\[
+ \int_Uu_n\,\partial^\alpha\varphi
+ =(-1)^{|\alpha|}\int_U(\partial^\alpha u_n)\varphi.
+\]
+H\"olderの不等式を用いると，
+$L^p$ 収束と $\varphi,\partial^\alpha\varphi$ の
+$L^{p'}$ 可積分性から両辺で極限を取れる．
+$p=\infty$ の場合も試験関数は $L^1$ に属するので
+同じ結論を得る．従って
+\[
+ \int_Uv_0\,\partial^\alpha\varphi
+ =(-1)^{|\alpha|}\int_Uv_\alpha\varphi.
+\]
+これは $v_\alpha$ が $v_0$ の弱微分であることを意味する．
+従って $v_0\in W^{k,p}(U)$ であり，
+各導関数の $L^p$ 収束から
+$\norm{u_n-v_0}_{W^{k,p}}\to0$ を得る．
+\end{proof}
+
+\section{滑らかな関数による近似}
+
+\begin{lemma}[全空間上のMollifier近似]\label{lem:lp-mollifier}
+$1\le p<\infty$ とし，
+$u\in L^p(\mathbb R^d)$ とする．
+このとき
+\[
+ \norm{\rho_\varepsilon*u-u}_{L^p}\to0
+ \qquad(\varepsilon\downarrow0).
+\]
+\end{lemma}
+\begin{proof}
+Minkowskiの積分不等式により
+\[
+ \norm{\rho_\varepsilon*u-u}_p
+ \le\int\rho_\varepsilon(y)
+       \norm{u(\cdot-y)-u}_p\,dy.
+\]
+$L^p$ で平行移動が連続であることから，
+任意の $\eta>0$ に対して
+$|y|<\delta$ なら
+$\norm{u(\cdot-y)-u}_p<\eta$ となる．
+$\rho_\varepsilon$ の台は
+$|y|\le\varepsilon$ に含まれるので
+$\varepsilon<\delta$ なら右辺は $\eta$ 以下となる．
+従って零に収束する．
+平行移動の連続性は $C_c^\infty$ の
+$L^p$ 稠密性から従う：
+滑らかなコンパクト台関数では一様連続性と台の有界性から成立し，
+一般の $u$ へは三角不等式と
+平行移動の等距離性によって拡張できる．
+\end{proof}
+
+\begin{theorem}[全空間上の滑らかな稠密性]\label{thm:smooth-dense}
+$1\le p<\infty$，$k\ge0$ とする．
+このとき $C_c^\infty(\mathbb R^d)$ は
+$W^{k,p}(\mathbb R^d)$ で稠密である．
+\end{theorem}
+\begin{proof}
+まず $u\in W^{k,p}(\mathbb R^d)$ を取る．
+$\chi\in C_c^\infty$ を
+$\chi=1$ on $B(0,1)$，
+$\operatorname{supp}\chi\subset B(0,2)$ となるように選び，
+$\chi_R(x)=\chi(x/R)$ と置く．
+Leibnizの公式により
+\[
+ \partial^\alpha(\chi_Ru)
+ =\sum_{\beta\le\alpha}{\alpha\choose\beta}
+   (\partial^\beta\chi_R)\partial^{\alpha-\beta}u.
+\]
+$\beta=0$ の項は
+$(\chi_R-1)\partial^\alpha u\to0$ が $L^p$ で成り立つ．
+$\beta\ne0$ の項は
+$\norm{\partial^\beta\chi_R}_\infty
+ \le C_\beta R^{-|\beta|}$ なので，
+$\norm{\partial^\beta\chi_R\,
+       \partial^{\alpha-\beta}u}_p\to0$ となる．
+従って $\chi_Ru\to u$ が $W^{k,p}$ で成り立つ．
+
+各 $\chi_Ru$ はコンパクト台を持つ．
+これを $\rho_\varepsilon$ と畳み込むと
+$u_{R,\varepsilon}=\rho_\varepsilon*(\chi_Ru)$ は
+$C_c^\infty$ に属する．
+分布微分と畳み込みの可換性から
+\[
+ \partial^\alpha u_{R,\varepsilon}
+ =\rho_\varepsilon*\partial^\alpha(\chi_Ru).
+\]
+補題\ref{lem:lp-mollifier}を各導関数に適用すると，
+$\varepsilon\downarrow0$ で
+$u_{R,\varepsilon}\to\chi_Ru$ が
+$W^{k,p}$ で成立する．
+最初に $R$ を十分大きく，
+次に $\varepsilon$ を十分小さく選び，
+三角不等式によって任意の $u$ を
+$C_c^\infty$ 関数で近似できる．
+\end{proof}
+
+\section{1次元の弱微分と絶対連続性}
+
+\begin{theorem}[1次元Sobolev関数の基本定理]\label{thm:w11-ac}
+有限な開区間 $I=(a,b)$ において
+$u\in W^{1,1}(I)$ とする．
+このとき絶対連続関数 $\widetilde u:[a,b]\to\mathbb R$ が存在して
+$u=\widetilde u$ がほとんど至る所成り立ち，
+\[
+ \widetilde u(x)-\widetilde u(y)
+ =\int_y^xu'(t)\,dt
+ \qquad(x,y\in[a,b])
+\]
+を満たす．
+逆に絶対連続関数で導関数が $L^1$ に属するものは
+$W^{1,1}(I)$ に属し，弱微分と古典的導関数は一致する．
+\end{theorem}
+\begin{proof}
+$u$ の弱微分を $v\in L^1(I)$ とする．
+$F(x)=\int_a^xv(t)\,dt$ と置けば，
+Lebesgue積分の基本定理から $F$ は絶対連続であり，
+$F'=v$ がほとんど至る所成立する．
+従って $h=u-F$ は弱微分が零の
+$L^1$ 関数である．
+$h$ がほとんど至る所定数であることを示す．
+$I$ のコンパクト部分区間 $J$ を取り，
+$\rho_\varepsilon*h$ を $J$ 上で定義する．
+分布微分と畳み込みの可換性から
+$(\rho_\varepsilon*h)'=\rho_\varepsilon*h'=0$
+である．よって $\rho_\varepsilon*h$ は
+$J$ 上定数である．
+$\rho_\varepsilon*h\to h$ が $L^1(J)$ で成り立つから，
+$h$ は $J$ 上ほとんど至る所定数となる．
+区間を重なり合うように尽くせば，
+全体 $I$ で同一の定数 $c$ が得られる．
+従って $\widetilde u=F+c$ と置けば
+$u=\widetilde u$ がほとんど至る所成立し，
+積分表示を満たす．
+
+逆に $\widetilde u$ が絶対連続で
+$\widetilde u'\in L^1$ なら，
+積分の基本定理と試験関数に対する部分積分から
+\[
+ \int_I\widetilde u\,\varphi'
+ =-\int_I\widetilde u'\,\varphi
+\]
+となる．従って弱微分は $\widetilde u'$ に等しい．
+\end{proof}
+
+\begin{corollary}[1次元Poincar\'e不等式]\label{cor:poincare-1d}
+$1\le p\le\infty$，$I=(a,b)$ とし，
+$u\in W^{1,p}(I)$ とする．
+平均値 $u_I=(b-a)^{-1}\int_Iu$ に対して
+\[
+ \norm{u-u_I}_{L^p(I)}
+ \le(b-a)\norm{u'}_{L^p(I)}
+\]
+が成り立つ．
+\end{corollary}
+\begin{proof}
+$I$ は有限区間なので $u,u'\in L^1$ であり，
+定理\ref{thm:w11-ac}によって絶対連続な代表元を取れる．
+任意の $x,y\in I$ に対して
+\[
+ |u(x)-u(y)|
+ \le\int_I|u'(t)|\,dt
+ \le(b-a)^{1-1/p}\norm{u'}_{L^p}
+\]
+である．ここで $p=\infty$ では指数 $1-1/p=1$
+と解釈する．
+$y$ について平均すると
+$|u(x)-u_I|
+ \le(b-a)^{1-1/p}\norm{u'}_p$ となる．
+さらに $x$ について $L^p$ ノルムを取れば
+$\norm{u-u_I}_p\le(b-a)\norm{u'}_p$ を得る．
+\end{proof}
+
+\begin{remark}
+分布微分は局所可積分関数に限られず，
+Dirac分布の微分のような特異な対象も扱える．
+Sobolev空間は，分布微分が再び $L^p$ 関数として
+表現されるという条件を課した関数空間である．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{Heaviside関数の分布微分．}
+\begin{proposition}
+$H(x)=1$（$x>0$），$H(x)=0$（$x<0$）
+を局所可積分関数とし分布とみなす．
+その分布微分はDirac分布 $\delta_0$ である．
+\end{proposition}
+\begin{proof}
+任意の試験関数
+$\varphi\in C_c^\infty(\mathbb R)$ に対し
+\[
+\langle H',\varphi\rangle
+=-\langle H,\varphi'\rangle
+=-\int_0^\infty\varphi'(x)\,dx
+=\varphi(0)
+=\langle\delta_0,\varphi\rangle.
+\]
+よって分布として等しい．
+\end{proof}
+\noindent\textbf{到達確認．}
+$u(x)=|x|$ の二階分布微分を求めよ．
+\par\noindent\textbf{解答．}
+一次分布微分は
+$\operatorname{sgn}(x)=2H(x)-1$ と一致する．
+その分布微分は $2\delta_0$ なので
+$u''=2\delta_0$ である．
+\end{document}
