@@ -1,0 +1,733 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{被覆空間と基本群}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，被覆空間，持ち上げ，基本群．
+本稿の具体的な到達課題は，円周の被覆とデッキ変換群を明示する．
+
+\section{被覆写像}
+
+本稿では位相空間はHausdorffであるとし，
+特に断らない限り底空間 $X$ は道連結かつ局所道連結とする．
+
+\begin{definition}
+連続な全射 $p:E\to X$ が\emph{被覆写像}であるとは，
+任意の $x\in X$ に対して開近傍 $U$ が存在し，
+\[
+ p^{-1}(U)=\bigsqcup_{\lambda\in\Lambda}V_\lambda
+\]
+と開集合の互いに交わらない和に分解でき，
+各制限 $p|_{V_\lambda}:V_\lambda\to U$ が
+同相写像になることをいう．
+$U$ を\emph{均等被覆近傍}，
+$V_\lambda$ をその\emph{シート}という．
+\end{definition}
+
+\begin{example}[円周の普遍被覆]
+$p:\mathbb R\to S^1$ を $p(t)=e^{2\pi it}$ と定める．
+これは被覆写像であり，
+$p^{-1}(1)=\mathbb Z$ である．
+\end{example}
+\begin{proof}
+$z=e^{2\pi it_0}\in S^1$ を取る．
+$0<\delta<1/2$ として
+$U=\{e^{2\pi it}:t_0-\delta<t<t_0+\delta\}$
+と置く．
+\[
+ p^{-1}(U)=
+ \bigsqcup_{n\in\mathbb Z}
+ (t_0+n-\delta,t_0+n+\delta)
+\]
+であり，
+各区間への $p$ の制限は $U$ への同相写像となる．
+最後の主張は $e^{2\pi it}=1$ と $t\in\mathbb Z$ が
+同値であることによる．
+\end{proof}
+
+\begin{proposition}\label{prop:local-homeo}
+被覆写像 $p:E\to X$ は局所同相写像である．
+従って $p$ は開写像であり，
+各ファイバー $p^{-1}(x)$ は離散部分空間である．
+\end{proposition}
+\begin{proof}
+任意の $e\in E$ について $p(e)$ の均等被覆近傍 $U$ を取り，
+$e$ を含むシート $V$ を選ぶと，
+$p|_V:V\to U$ は同相写像である．
+従って局所同相写像である．
+任意の開集合 $W\subset E$ は局所同相写像の
+開近傍の和に分解でき，その像は開だから $p$ は開写像である．
+各 $e\in p^{-1}(x)$ はシート $V$ とファイバーの交わりが
+$\{e\}$ となるので，ファイバーは離散である．
+\end{proof}
+
+\section{道の持ち上げ}
+
+\begin{theorem}[道の持ち上げ]\label{thm:path-lift}
+$p:E\to X$ を被覆写像，
+$\gamma:[0,1]\to X$ を連続な道とする．
+$e_0\in p^{-1}(\gamma(0))$ に対し，
+ただ一つの連続な道
+$\widetilde\gamma:[0,1]\to E$ が存在して
+\[
+ \widetilde\gamma(0)=e_0,\qquad
+ p\circ\widetilde\gamma=\gamma
+\]
+を満たす．
+\end{theorem}
+\begin{proof}
+$\gamma([0,1])$ はコンパクトなので，
+その各点を含む均等被覆近傍の有限部分被覆を取れる．
+区間 $[0,1]$ のLebesgue数の補題により，
+分割
+$0=t_0<\cdots<t_N=1$ を十分細かく取れば，
+各 $\gamma([t_{j-1},t_j])$ は
+ある均等被覆近傍 $U_j$ に含まれる．
+$t_0$ で $e_0$ が与えられている．
+$e_0$ を含む $p^{-1}(U_1)$ のシートを $V_1$ とすれば，
+\[
+ \widetilde\gamma(t)
+ =(p|_{V_1})^{-1}(\gamma(t))
+ \qquad(t\in[t_0,t_1])
+\]
+と定められる．
+次に $\widetilde\gamma(t_1)$ を含む
+$p^{-1}(U_2)$ のシート $V_2$ を取り，
+同様に逆写像を用いて
+$[t_1,t_2]$ へ延長する．
+この操作を有限回繰り返せば，
+分割点で値が一致する連続な持ち上げが得られる．
+
+一意性を示す．二つの持ち上げ
+$\widetilde\gamma_1,\widetilde\gamma_2$ が
+同じ始点を持つとする．
+一致する時刻の集合 $A\subset[0,1]$ は，
+$E$ がHausdorffなので閉である．
+$t\in A$ なら，共通の点
+$\widetilde\gamma_1(t)=\widetilde\gamma_2(t)$ を含む
+被覆のシート $V$ を取れる．
+連続性から $t$ の近傍では両持ち上げが $V$ に入り，
+$p|_V$ の単射性から一致する．
+従って $A$ は開でもある．
+$0\in A$ かつ $[0,1]$ は連結なので
+$A=[0,1]$ となる．
+\end{proof}
+
+\begin{corollary}\label{cor:closed-lift}
+道 $\gamma$ が閉曲線であり，その持ち上げが
+$\widetilde\gamma(0)=\widetilde\gamma(1)$ を満たすとき，
+$\widetilde\gamma$ は $E$ の閉曲線である．
+ただし一般の閉曲線の持ち上げは閉曲線とは限らない．
+\end{corollary}
+\begin{proof}
+前半は閉曲線の定義による．
+後半は $p:\mathbb R\to S^1$ と
+$\gamma(t)=e^{2\pi it}$ を考えると，
+$0$ から始まる持ち上げは
+$\widetilde\gamma(t)=t$ となり，
+終点は $1\ne0$ であることから分かる．
+\end{proof}
+
+\section{ホモトピーの持ち上げ}
+
+\begin{theorem}[ホモトピー持ち上げ定理]\label{thm:homotopy-lift}
+$p:E\to X$ を被覆写像，
+$H:[0,1]\times[0,1]\to X$ を連続写像とする．
+下辺の道 $H(0,t)$ の持ち上げ
+$\widetilde h_0:[0,1]\to E$ が与えられたとき，
+ただ一つの連続写像
+$\widetilde H:[0,1]^2\to E$ が存在して
+\[
+ p\circ\widetilde H=H,\qquad
+ \widetilde H(0,t)=\widetilde h_0(t)
+\]
+となる．
+\end{theorem}
+\begin{proof}
+まず $[0,1]^2$ の各点について
+$H$ の像が入る均等被覆近傍を取る．
+$H$ はコンパクトな定義域上で一様連続なので，
+$[0,1]^2$ を十分細かい格子へ分割し，
+各閉小正方形の像が一つの均等被覆近傍に含まれるようにする．
+以下，格子の下段から順に持ち上げを構成する．
+
+最下段の下辺では $\widetilde h_0$ が与えられている．
+各小正方形 $Q$ の下辺または左辺の持ち上げが既に得られていて，
+その一つの点 $e$ が指定されているとする．
+$H(Q)\subset U$ となる均等被覆近傍 $U$ を取り，
+$e$ を含むシート $V$ を選ぶ．
+\[
+ \widetilde H|_Q=(p|_V)^{-1}\circ H|_Q
+\]
+と置くと，既に定めた辺の持ち上げと
+道の持ち上げの一意性によって一致する．
+格子を左から右，次に下から上へ進めれば，
+有限回で全ての小正方形上に持ち上げを定められる．
+隣接する小正方形の共通辺では一意性によって値が一致するので，
+貼り合わせの補題から全体の持ち上げは連続である．
+
+一意性については，任意の $t$ に対し
+$s\mapsto H(s,t)$ の持ち上げは
+$s=0$ における値 $\widetilde h_0(t)$ で一意に決まる．
+従って二つの持ち上げは全ての $(s,t)$ で一致する．
+\end{proof}
+
+\begin{corollary}[端点固定ホモトピーの持ち上げ]\label{cor:homotopy-end}
+始点と終点を固定した二つの道
+$\gamma_0,\gamma_1$ が端点固定ホモトピーで結ばれ，
+それらの持ち上げが同じ点から始まるなら，
+二つの持ち上げの終点は一致する．
+\end{corollary}
+\begin{proof}
+定理\ref{thm:homotopy-lift}によって
+ホモトピー $H$ を持ち上げる．
+$H(s,0)$ は一定なので，その持ち上げ
+$\widetilde H(s,0)$ も道の持ち上げの一意性から一定である．
+同様に $H(s,1)$ は一定だから
+$\widetilde H(s,1)$ は一定である．
+特に $s=0,1$ における終点が一致する．
+\end{proof}
+
+\section{被覆と基本群}
+
+\begin{theorem}[被覆が誘導する基本群の単射]
+\label{thm:pi1-inj}
+$p:(E,e_0)\to(X,x_0)$ を被覆写像とする．
+このとき誘導準同型
+\[
+ p_*:\pi_1(E,e_0)\to\pi_1(X,x_0)
+\]
+は単射である．
+\end{theorem}
+\begin{proof}
+$[\alpha]\in\pi_1(E,e_0)$ が $p_*[\alpha]=1$ を満たすとする．
+$\gamma=p\circ\alpha$ は $X$ で定数曲線へ端点固定ホモトピーで
+縮められる．
+そのホモトピーを $\alpha$ の初期持ち上げから
+定理\ref{thm:homotopy-lift}によって持ち上げる．
+端点を固定したホモトピーの持ち上げでは
+左右端の像も一定であり，
+最後の曲線は $e_0$ における定数曲線の持ち上げとなる．
+よって $\alpha$ は $E$ 内で定数曲線へ
+端点固定ホモトピーで縮められる．
+従って $[\alpha]=1$ であり，$p_*$ は単射である．
+\end{proof}
+
+\begin{proposition}[閉曲線への持ち上げ条件]\label{prop:loop-lift}
+$p:(E,e_0)\to(X,x_0)$ を被覆写像とし，
+$E$ は道連結であるとする．
+基点 $x_0$ の閉曲線 $\gamma$ を
+$e_0$ から持ち上げた曲線が閉じることと，
+\[
+ [\gamma]\in p_*(\pi_1(E,e_0))
+\]
+とは同値である．
+\end{proposition}
+\begin{proof}
+$\gamma$ の持ち上げ $\widetilde\gamma$ が閉じるなら
+$[\gamma]=p_*[\widetilde\gamma]$ である．
+逆に $[\gamma]=p_*[\alpha]$ となる
+$E$ の基点付き閉曲線 $\alpha$ があれば，
+$\gamma$ と $p\circ\alpha$ は端点固定ホモトピーで結ばれる．
+$e_0$ からの持ち上げの終点は
+系\ref{cor:homotopy-end}により等しい．
+$p\circ\alpha$ の持ち上げは $\alpha$ なので，
+その終点は $e_0$ であり，$\gamma$ の持ち上げも閉じる．
+\end{proof}
+
+\section{普遍被覆の構成}
+
+\begin{definition}
+$X$ が\emph{半局所単連結}であるとは，
+任意の $x\in X$ に対して開近傍 $U$ が存在し，
+包含 $U\hookrightarrow X$ が誘導する
+$\pi_1(U,x)\to\pi_1(X,x)$ が零準同型となることをいう．
+\end{definition}
+
+以下，$X$ は道連結・局所道連結・半局所単連結とする．
+局所道連結性によって，各点は
+$X$ で零ホモトピーとなる全ての閉曲線しか持たない
+道連結な開近傍を持つ．
+そのような開集合を\emph{小さい開集合}と呼ぶ．
+
+\begin{definition}
+基点 $x_0\in X$ を固定する．
+$x_0$ から始まる道 $\gamma$ の端点固定ホモトピー類を
+$[\gamma]$ と書き，
+\[
+ \widetilde X=
+ \{[\gamma]:\gamma(0)=x_0\}
+\]
+と置く．
+$p:\widetilde X\to X$ を
+$p([\gamma])=\gamma(1)$ と定める．
+\end{definition}
+
+\begin{lemma}[普遍被覆の局所座標]\label{lem:universal-local}
+$U\subset X$ を小さい開集合，
+$[\gamma]\in\widetilde X$ を終点 $x\in U$ の元とする．
+\[
+ B([\gamma],U)=
+ \{[\gamma*\eta]:
+  \eta\text{ は }U\text{ 内の }x\text{ からの道}\}
+\]
+と置く．このとき
+\[
+ p|_{B([\gamma],U)}:B([\gamma],U)\to U
+\]
+は全単射である．
+また $p^{-1}(U)$ はこの形の集合の互いに交わらない和に
+分解される．
+\end{lemma}
+\begin{proof}
+$U$ は道連結なので，任意の $y\in U$ に対して
+$x$ から $y$ への道 $\eta$ が存在する．
+従って $p|_B$ は全射である．
+$\eta_1,\eta_2$ がともに $x$ から $y$ への
+$U$ 内の道なら
+$\eta_1*\eta_2^{-1}$ は $U$ 内の閉曲線である．
+$U$ が小さいので，この閉曲線は $X$ 内で
+零ホモトピーである．
+従って $[\gamma*\eta_1]=[\gamma*\eta_2]$ となり，
+$p|_B$ は単射である．
+同じ $U$ について
+$B([\gamma],U)$ と $B([\delta],U)$ が一点で交われば，
+両者の基準となる経路の差が $U$ 内の道を介して
+$X$ 内で零ホモトピーとなるため二つの集合は一致する．
+交わらなければ互いに素である．
+任意の $[\eta]\in p^{-1}(U)$ は
+$B([\eta],U)$ に属するので，
+$p^{-1}(U)$ はこのような集合の互いに交わらない和となる．
+\end{proof}
+
+\begin{theorem}[普遍被覆の存在]\label{thm:universal-cover}
+$X$ を道連結・局所道連結・半局所単連結なHausdorff空間とする．
+このとき $X$ は道連結かつ単連結な被覆空間
+$p:\widetilde X\to X$ を持つ．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:universal-local}の集合
+$B([\gamma],U)$ を開集合の基として
+$\widetilde X$ に位相を定める．
+この集合族が基になることを確認する．
+任意の $[\gamma]\in\widetilde X$ は
+終点の小さい開近傍 $U$ に対して
+$B([\gamma],U)$ に属する．
+二つの基本集合の共通部分に属する
+$[\delta]$ を取れば，その終点に含まれる
+十分小さい道連結な小さい開集合
+$W\subset U\cap V$ が存在する．
+$B([\delta],W)$ は二つの基本集合の共通部分に含まれる．
+従って位相の基の公理が成立する．
+また $p|_{B([\gamma],U)}$ は全単射であり，
+基本集合の定義からその逆写像は
+$U$ の十分小さい道連結開集合上で連続である．
+実際，$W\subset U$ が道連結で小さければ
+$p^{-1}(W)\cap B([\gamma],U)$ は
+同じ形式の基本集合になる．
+従って $p|_B$ は同相写像である．
+補題\ref{lem:universal-local}から
+$p^{-1}(U)$ は互いに交わらないシートの和となるので
+$p$ は被覆写像である．
+
+道連結性を示す．任意の $[\gamma]\in\widetilde X$ に対し
+\[
+ \widetilde\gamma(t)=
+ [\gamma|_{[0,t]}]
+\]
+と置く．
+局所座標の定義から $\widetilde\gamma$ は連続であり，
+空の道の類 $[\mathrm{const}_{x_0}]$ と
+$[\gamma]$ を結ぶ．
+従って $\widetilde X$ は道連結である．
+
+最後に単連結性を示す．
+$\widetilde x_0=[\mathrm{const}_{x_0}]$ とする．
+$\widetilde X$ 内の基点付き閉曲線 $\alpha$ を取り，
+$\gamma=p\circ\alpha$ と置く．
+$\alpha$ は $\gamma$ の $\widetilde x_0$ からの
+持ち上げなので，経路の持ち上げの一意性から
+\[
+ \alpha(t)=[\gamma|_{[0,t]}]
+\]
+である．
+$\alpha(1)=\widetilde x_0$ だから
+$[\gamma]=[\mathrm{const}_{x_0}]$ となり，
+$\gamma$ は $X$ 内で零ホモトピーである．
+定理\ref{thm:pi1-inj}により
+$p_*:\pi_1(\widetilde X,\widetilde x_0)\to\pi_1(X,x_0)$
+は単射であり，$p_*[\alpha]=[\gamma]=1$ だから
+$[\alpha]=1$ である．
+ゆえに $\widetilde X$ は単連結である．
+\end{proof}
+
+\section{被覆空間の分類}
+
+以下，$G=\pi_1(X,x_0)$ とする．
+
+\begin{definition}
+$H\le G$ を部分群とする．
+$x_0$ から始まる二つの道 $\gamma,\delta$ に対し
+\[
+ \gamma\sim_H\delta
+ \quad\Longleftrightarrow\quad
+ \gamma(1)=\delta(1),\
+ [\gamma*\delta^{-1}]\in H
+\]
+と定める．
+この同値類を $[\gamma]_H$ と書き，
+$X_H$ をその全体とする．
+$p_H:X_H\to X$ を
+$p_H([\gamma]_H)=\gamma(1)$ と定める．
+\end{definition}
+
+\begin{lemma}\label{lem:h-cover}
+$\sim_H$ は同値関係である．
+$X_H$ に，普遍被覆と同じく小さい開集合 $U$ に対する
+\[
+ B_H([\gamma]_H,U)
+ =\{[\gamma*\eta]_H:
+ \eta\text{ は }\gamma(1)\text{ からの }U\text{ 内の道}\}
+\]
+を基とする位相を入れると，
+$p_H:X_H\to X$ は道連結な被覆写像になる．
+\end{lemma}
+\begin{proof}
+反射律は定数曲線の類が $H$ に属すること，
+対称律は群の逆元に対する閉性，
+推移律は閉曲線類の積に対する閉性から従う．
+具体的に
+$[\gamma*\delta^{-1}]\in H$，
+$[\delta*\eta^{-1}]\in H$ なら，
+その積は $[\gamma*\eta^{-1}]$ に等しいので推移律を得る．
+
+$U$ 内の二つの道が同じ始点と終点を持つなら，
+その差は $X$ 内で零ホモトピーとなるため
+$\sim_H$ に関して同値である．
+従って $p_H|_{B_H([\gamma]_H,U)}$ は全単射である．
+基本集合の交わりと局所的な逆写像の連続性は
+補題\ref{lem:universal-local}および
+定理\ref{thm:universal-cover}の証明と同様の
+小さい開集合の議論で従う．
+よって $p_H$ は被覆写像である．
+また各 $[\gamma]_H$ は始点を空の道の類とする
+部分道の列 $t\mapsto[\gamma|_{[0,t]}]_H$ によって
+結ばれるため $X_H$ は道連結である．
+\end{proof}
+
+\begin{theorem}[基点付き被覆の分類]\label{thm:cover-class}
+$X$ を道連結・局所道連結・半局所単連結なHausdorff空間とする．
+基点付きの道連結被覆
+$p:(E,e_0)\to(X,x_0)$ の同型類と，
+$\pi_1(X,x_0)$ の部分群全体の間には自然な全単射がある．
+対応は
+\[
+ (E,e_0)\longmapsto
+ p_*(\pi_1(E,e_0))
+\]
+で与えられる．
+\end{theorem}
+\begin{proof}
+まず $H\le G$ から補題\ref{lem:h-cover}で
+被覆 $p_H:X_H\to X$ を構成する．
+基点を $[\mathrm{const}_{x_0}]_H$ とする．
+基点付き閉曲線 $\gamma$ の持ち上げが閉じることは
+$[\gamma]_H=[\mathrm{const}_{x_0}]_H$ と同値であり，
+これは $[\gamma]\in H$ と同値である．
+命題\ref{prop:loop-lift}から
+$(p_H)_*\pi_1(X_H)=H$ となる．
+
+逆に基点付き道連結被覆
+$p:(E,e_0)\to(X,x_0)$ を取る．
+$H=p_*\pi_1(E,e_0)$ と置く．
+各 $[\gamma]_H\in X_H$ に対し，
+$\gamma$ の $e_0$ からの唯一の持ち上げを
+$\widetilde\gamma$ とし
+\[
+ \Phi([\gamma]_H)=\widetilde\gamma(1)
+\]
+と定める．
+これがwell-definedであることを示す．
+$\gamma\sim_H\delta$ なら
+$\gamma*\delta^{-1}$ の基点 $e_0$ からの持ち上げは
+命題\ref{prop:loop-lift}によって閉じる．
+従って $\gamma$ と $\delta$ の持ち上げの終点は一致する．
+逆に持ち上げの終点が一致するなら，
+$\gamma*\delta^{-1}$ の持ち上げは閉じるので
+$[\gamma*\delta^{-1}]\in H$ となる．
+従って $\Phi$ は単射である．
+$E$ は道連結なので，任意の $e\in E$ は
+$e_0$ からの道 $\widetilde\gamma$ の終点であり，
+$\Phi([\gamma]_H)=e$ となるから全射である．
+
+最後に $\Phi$ が同相であることを示す．
+任意の $[\gamma]_H$ の終点 $x$ に，
+$E$ について均等被覆され，かつ
+$X$ の小さい道連結開集合である近傍 $U$ を取る．
+$\Phi$ は $B_H([\gamma]_H,U)$ を，
+$\widetilde\gamma(1)$ を含む $p^{-1}(U)$ のシートへ写す．
+この対応は両方の空間で $U$ への被覆射影と可換であり，
+両射影の制限は同相なので $\Phi$ も局所的に同相となる．
+$\Phi$ は全単射なので全体でも同相である．
+また $p\circ\Phi=p_H$ を満たし，基点を保つ．
+従って被覆は $X_H$ と基点付き同型である．
+以上から全単射を得る．
+\end{proof}
+
+\begin{corollary}[基点を忘れた分類]\label{cor:unbased}
+基点を指定しない道連結被覆の同型類は，
+$\pi_1(X,x_0)$ の部分群の共役類に対応する．
+\end{corollary}
+\begin{proof}
+同じ被覆 $p:E\to X$ のファイバー $p^{-1}(x_0)$ に属する
+二点 $e_0,e_1$ を取る．
+$E$ は道連結なので $e_0$ から $e_1$ への道 $\alpha$ がある．
+$p\circ\alpha$ は $x_0$ における閉曲線であり，
+基点変更の標準同型によって
+\[
+ p_*(\pi_1(E,e_1))
+ =[p\circ\alpha]^{-1}
+ p_*(\pi_1(E,e_0))
+ [p\circ\alpha]
+\]
+となる．
+従って基点を変えると部分群は共役に変わる．
+逆に任意の $g\in\pi_1(X,x_0)$ を表す閉曲線を
+$e_0$ から持ち上げ，その終点を $e_1$ とすれば，
+対応する部分群は $g$ による共役となる．
+基点付き分類定理を適用すれば結論が従う．
+\end{proof}
+
+\section{被覆変換群}
+
+\begin{definition}
+被覆 $p:E\to X$ の\emph{被覆変換}とは，
+同相写像 $\varphi:E\to E$ で
+$p\circ\varphi=p$ を満たすものをいう．
+全ての被覆変換は合成に関して群をなし，
+$\operatorname{Deck}(E/X)$ と書く．
+\end{definition}
+
+\begin{lemma}[被覆変換の一意性]\label{lem:deck-unique}
+$E$ が道連結であるとき，
+二つの被覆変換が一点で一致すれば全体で一致する．
+従って被覆変換のファイバーへの作用は自由である．
+\end{lemma}
+\begin{proof}
+$\varphi,\psi$ が $e_0$ で一致するとする．
+任意の $e\in E$ を取り，
+$e_0$ から $e$ への道 $\gamma$ を選ぶ．
+$p\circ\varphi\circ\gamma
+=p\circ\gamma
+=p\circ\psi\circ\gamma$
+であり，二つの道は始点で一致する．
+道の持ち上げの一意性によって
+$\varphi\circ\gamma=\psi\circ\gamma$ となる．
+終点で $\varphi(e)=\psi(e)$ が従う．
+\end{proof}
+
+\begin{theorem}[被覆変換群と正規化群]\label{thm:deck-normalizer}
+$H=p_*\pi_1(E,e_0)\le G=\pi_1(X,x_0)$ とする．
+このとき
+\[
+ \operatorname{Deck}(E/X)\cong N_G(H)/H
+\]
+が成り立つ．ただし $N_G(H)=\{g\in G:gHg^{-1}=H\}$ とする．
+特に $H$ が正規部分群なら被覆変換群は $G/H$ と同型である．
+\end{theorem}
+\begin{proof}
+分類定理によって $E$ を $X_H$ と同一視する．
+$g=[\alpha]\in G$ に対し，
+\[
+ \Phi_g([\gamma]_H)=[\alpha*\gamma]_H
+\]
+と定めることを考える．
+$\gamma\sim_H\delta$ なら
+$[\gamma*\delta^{-1}]\in H$ である．
+従って $\alpha*\gamma$ と $\alpha*\delta$ が
+$\sim_H$ に関して同値である条件は
+$g[\gamma*\delta^{-1}]g^{-1}\in H$ である．
+よって $\Phi_g$ がwell-definedとなり，
+かつ逆写像 $\Phi_{g^{-1}}$ もwell-definedとなるための
+必要十分条件は $gHg^{-1}=H$，すなわち $g\in N_G(H)$ である．
+このとき $\Phi_g$ は被覆変換である．
+また $\Phi_g$ が恒等写像となることは
+$\Phi_g([\mathrm{const}]_H)=[\mathrm{const}]_H$ と同値であり，
+$g\in H$ と同値である．
+
+逆に任意の被覆変換 $\Phi$ を取る．
+$\Phi([\mathrm{const}]_H)$ は $x_0$ 上のファイバーの元なので，
+ある基点付き閉曲線 $\alpha$ に対して
+$[\alpha]_H$ と書ける．
+補題\ref{lem:deck-unique}から
+$\Phi$ はファイバーの一点での値によって一意に決まる．
+この $\alpha$ による写像 $\Phi_g$ が
+被覆変換として定まるためには，
+被覆変換が基本群の部分群を保つことから
+$gHg^{-1}=H$ が必要である．
+従って $\Phi=\Phi_g$ であり，
+準同型 $N_G(H)\to\operatorname{Deck}(E/X)$ は全射で核が $H$ となる．
+第一同型定理から結論を得る．
+\end{proof}
+
+\section{基本的な例}
+
+\begin{example}[円周の連結被覆の分類]\label{ex:circle}
+$\pi_1(S^1,1)\cong\mathbb Z$ なので，
+$S^1$ の道連結な被覆は，
+各 $n\ge1$ に対する $z\mapsto z^n:S^1\to S^1$ と
+普遍被覆 $\mathbb R\to S^1$ に分類される．
+\end{example}
+\begin{proof}
+$\mathbb Z$ の部分群は $n\mathbb Z$（$n\ge0$）に限る．
+$n\ge1$ のとき $z\mapsto z^n$ の誘導準同型は
+$\pi_1(S^1)\cong\mathbb Z$ 上で整数の $n$ 倍となるので
+像は $n\mathbb Z$ である．
+$n=0$ に対応する零部分群を持つ被覆は
+$\mathbb R\to S^1$ である．
+分類定理によってこれら以外の連結被覆はない．
+\end{proof}
+
+\begin{example}[トーラスの被覆]\label{ex:torus}
+$T^2=S^1\times S^1$ について
+$\pi_1(T^2)\cong\mathbb Z^2$ である．
+従って連結被覆は $\mathbb Z^2$ の部分群に対応する．
+特に普遍被覆は $\mathbb R^2\to T^2$ である．
+\end{example}
+\begin{proof}
+直積空間の基本群の公式から
+$\pi_1(T^2)\cong\pi_1(S^1)\times\pi_1(S^1)
+\cong\mathbb Z^2$ である．
+$\mathbb R^2\to T^2$，
+$(s,t)\mapsto(e^{2\pi is},e^{2\pi it})$ は
+二つの円周被覆の直積であり，均等被覆近傍は
+各因子の均等被覆近傍の積として取れる．
+$\mathbb R^2$ は単連結なのでこれは普遍被覆である．
+\end{proof}
+
+\begin{example}[実射影空間]\label{ex:projective}
+$n\ge2$ のとき，
+\[
+ S^n\to\mathbb RP^n,\qquad x\mapsto\{\pm x\}
+\]
+は二枚被覆であり，
+$\pi_1(\mathbb RP^n)\cong\mathbb Z/2\mathbb Z$ である．
+\end{example}
+\begin{proof}
+各 $x\in S^n$ の小さい開球を
+$x$ と $-x$ の互いに交わらない近傍として選べば，
+それらの射影は同じ開集合へ同相に写るため被覆写像である．
+$n\ge2$ では $S^n$ は単連結なので普遍被覆である．
+被覆変換群は恒等写像と対蹠写像 $x\mapsto-x$ の
+二元からなる．
+普遍被覆の場合は定理\ref{thm:deck-normalizer}において
+$H=\{1\}$ なので
+$\pi_1(\mathbb RP^n)\cong\operatorname{Deck}(S^n/\mathbb RP^n)
+\cong\mathbb Z/2\mathbb Z$ となる．
+\end{proof}
+
+\begin{remark}
+被覆空間の分類は，
+局所的には同相である空間の大域的な違いを
+基本群の部分群によって記述する定理である．
+半局所単連結性を外すと普遍被覆が存在しない場合があり，
+一般にはこの分類の形式はそのまま成立しない．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{実直線から円周への普遍被覆．}
+\begin{proposition}
+$p:\mathbb R\to S^1$，
+$p(t)=e^{2\pi it}$ は被覆写像であり，
+デッキ変換群は
+\[
+\operatorname{Deck}(p)
+=\{t\mapsto t+n:n\in\mathbb Z\}
+\cong\mathbb Z
+\]
+である．
+\end{proposition}
+\begin{proof}
+円周の各点を含む十分短い開弧 $U$ の逆像は
+互いに素な開区間の和であり，
+各区間上の $p$ は $U$ への同相写像である．
+従って被覆写像となる．
+$p(h(t))=p(t)$ を満たすデッキ変換 $h$ について
+$h(t)-t\in\mathbb Z$ である．
+連続関数 $h(t)-t$ は連結空間 $\mathbb R$ から
+離散空間 $\mathbb Z$ への写像なので定数である．
+逆に各整数だけの平行移動は被覆を保存する同相写像である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$p(t)=e^{2\pi it}$ における経路
+$\gamma(s)=e^{2\pi i3s}$ の0からの持ち上げを求めよ．
+\par\noindent\textbf{解答．}
+$\widetilde\gamma(s)=3s$ であり，
+終点の値3が巻き数を表す．
+\end{document}

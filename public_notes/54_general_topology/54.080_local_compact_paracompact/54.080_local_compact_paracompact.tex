@@ -1,0 +1,253 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{局所コンパクト性とパラコンパクト性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，局所コンパクト性，開被覆，単位の分割．
+本稿の具体的な到達課題は，具体的な空間が局所コンパクトか判定し，局所有限な構造を使う．
+
+
+\section{局所コンパクト性と正則性}
+\begin{definition}
+Hausdorff空間 $X$ が局所コンパクトであるとは，
+各点がコンパクトな閉包を持つ近傍を持つことをいう．
+開被覆 $\mathcal U$ の開細分とは，
+各元が $\mathcal U$ のある元に含まれる開被覆をいう．
+開細分が局所有限であるとは，
+各点がそのうち有限個としか交わらない近傍を持つことをいう．
+全ての開被覆が局所有限な開細分を持つ空間を
+パラコンパクトという．
+\end{definition}
+\begin{lemma}[相対コンパクトな開近傍]\label{lem:relcompact}
+$X$ が局所コンパクトHausdorffで
+$x\in U$（$U$ 開）なら
+$x\in V\subset\overline V\subset U$ で
+$\overline V$ がコンパクトとなる開集合 $V$ がある．
+\end{lemma}
+\begin{proof}
+$x$ の相対コンパクトな開近傍 $W$ を取る．
+$\overline W$ はコンパクトHausdorffなので正規であり，
+$x\in W\cap U$ の開近傍 $V$ を
+$\overline V\subset W\cap U$ となるように
+$\overline W$ 内で選べる．
+$V$ を $X$ の開集合へ必要に応じ縮めれば
+$\overline V$ は $\overline W$ の閉集合でありコンパクトである．
+\end{proof}
+\section{コンパクトな尽くし}
+\begin{theorem}[可算コンパクト尽くし]\label{thm:exhaust}
+局所コンパクトHausdorff第二可算空間 $X$ には，
+コンパクト集合列 $(K_n)$ で
+\[
+ K_n\subset\operatorname{int}K_{n+1},\qquad
+ X=\bigcup_{n=1}^\infty\operatorname{int}K_n
+\]
+を満たすものが存在する．
+\end{theorem}
+\begin{proof}
+補題\ref{lem:relcompact}によって
+相対コンパクトな開集合は $X$ の基底をなす．
+第二可算性からそのうち可算個
+$W_1,W_2,\dots$ で $X$ を覆うものを選べる．
+帰納的に
+$\overline{W_1}\cup\cdots\cup\overline{W_n}
+ \cup K_{n-1}$
+を内部に含む相対コンパクトな開集合の有限和を $V_n$ とする．
+これはコンパクト集合の各点について補題を適用し，
+有限部分被覆を取れば可能である．
+$K_n=\overline{V_n}$ と置けばコンパクトで，
+$K_{n-1}\subset V_n=\operatorname{int}K_n$ を満たし，
+$\bigcup\operatorname{int}K_n$ は全ての $W_n$ を含む．
+\end{proof}
+\section{パラコンパクト性}
+\begin{theorem}[局所コンパクト第二可算空間のパラコンパクト性]
+\label{thm:para}
+局所コンパクトHausdorff第二可算空間はパラコンパクトである．
+\end{theorem}
+\begin{proof}
+定理\ref{thm:exhaust}のコンパクト尽くしを取り，
+$K_0=K_{-1}=\varnothing$ とする．
+\[
+ A_n=K_n\setminus\operatorname{int}K_{n-1},
+ \qquad W_n=\operatorname{int}K_{n+1}\setminus K_{n-2}
+\]
+と置く．$A_n$ はコンパクトで $A_n\subset W_n$ である．
+与えられた開被覆 $\mathcal U$ に対し，
+各 $A_n$ の点の周りで，
+$\mathcal U$ のある元と $W_n$ の双方に閉包まで含まれる
+相対コンパクト開近傍を取り，有限個で $A_n$ を覆う．
+それらの全体を $\mathcal V$ とする．
+各 $A_n$ が覆われ，$\bigcup_nA_n=X$ なので
+$\mathcal V$ は開細分である．
+$W_n$ は局所有限である：
+$x\in\operatorname{int}K_N$ なら，
+$n\ge N+2$ では $x\in K_{n-2}$ となり
+$x\notin W_n$ である．
+より小さい $\operatorname{int}K_N$ を近傍として取れば
+$W_n$ の十分大きい添字の元とは交わらない．
+各 $W_n$ に属する選択近傍は有限個なので
+$\mathcal V$ も局所有限となる．
+\end{proof}
+\section{単位の分割}
+\begin{lemma}[コンパクト集合の切断関数]
+局所コンパクトHausdorff空間のコンパクト集合 $K\subset U$
+（$U$ 開）に対し，
+$f\in C_c(X,[0,1])$ で $f=1$ on $K$，
+$\operatorname{supp}f\subset U$ となるものがある．
+\end{lemma}
+\begin{proof}
+各 $x\in K$ について補題\ref{lem:relcompact}により
+$x\in V_x\subset\overline{V_x}\subset U$ で
+$\overline{V_x}$ がコンパクトとなるものを取る．
+有限個の $V_x$ が $K$ を覆う．
+それらの閉包の和を $L$ とすれば $L$ は
+コンパクトHausdorffゆえ正規である．
+$K$ と $L\setminus\bigcup V_x$ は互いに素な閉集合であり，
+Urysohnの補題によって $L$ 上の連続関数で
+$K$ 上1，$L\setminus\bigcup V_x$ 上0となるものが存在する．
+この関数を $L$ の外で0に延長すれば連続で，
+台は $U$ のコンパクト部分集合に含まれる．
+\end{proof}
+\begin{theorem}[連続な単位の分割]\label{thm:partition}
+$X$ を局所コンパクトHausdorff第二可算空間とする．
+任意の開被覆 $\mathcal U$ に対して，
+局所有限な非負連続関数族 $(\varphi_i)$ で
+\[
+ \sum_i\varphi_i=1,\qquad
+ \operatorname{supp}\varphi_i\subset U_i
+ \quad(U_i\in\mathcal U)
+\]
+を満たすものが存在する．
+\end{theorem}
+\begin{proof}
+定理\ref{thm:para}の証明で構成したコンパクト集合
+$A_n$ と局所有限開集合 $W_n$ を用いる．
+各 $A_n$ の点に対し，$\mathcal U$ のある元に含まれ
+かつ $W_n$ に閉包まで含まれる相対コンパクト開近傍
+$V_{n,j}$ を選び，有限個で $A_n$ を覆う．
+各 $V_{n,j}$ の中に閉包まで含まれる開集合 $O_{n,j}$ を
+補題\ref{lem:relcompact}で選び，
+有限個の $O_{n,j}$ でも $A_n$ を覆うようにしてよい．
+$K_{n,j}=\overline{O_{n,j}}$ は
+$V_{n,j}$ に含まれるコンパクト集合である．
+前補題を $K_{n,j}\subset V_{n,j}$ に適用して
+$f_{n,j}\in C_c(X,[0,1])$ を選び，
+$f_{n,j}=1$ on $K_{n,j}$，
+$\operatorname{supp}f_{n,j}\subset V_{n,j}$ とする．
+各 $n$ に対して関数は有限個であり，
+$V_{n,j}\subset W_n$，$(W_n)$ は局所有限なので，
+関数族 $(f_{n,j})$ も局所有限である．
+各 $A_n$ は $(O_{n,j})_j$ で覆われ，
+$X=\bigcup_nA_n$ なので全ての点で少なくとも一つの
+$f_{n,j}$ が1となる．
+局所有限性から $F=\sum_{n,j} f_{n,j}$ は連続であり，
+全点で少なくとも一つの $f_{n,j}=1$ なので $F\ge1$．
+$\varphi_{n,j}=f_{n,j}/F$ と置くと連続・非負であり，
+局所有限性，台の包含および和が1であることが成立する．
+\end{proof}
+\begin{remark}
+滑らかな多様体上の滑らかな単位の分割は，
+局所的に滑らかなbump関数を用いて同じ正規化を行うことで得られる．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{局所コンパクト性の具体的な判定．}
+\begin{proposition}[Euclid空間の開集合]
+$U\subset\mathbb R^n$ を開集合とすると，
+$U$ は局所コンパクトである．
+\end{proposition}
+\begin{proof}
+任意の $x\in U$ に対して
+$\overline{B(x,r)}\subset U$ となる $r>0$ を取れる．
+$\overline{B(x,r/2)}$ は $\mathbb R^n$ の有界閉集合なので
+Heine--Borelの定理によりコンパクトである．
+$B(x,r/2)$ はそのコンパクトな閉包を持つ開近傍である．
+\end{proof}
+\begin{proposition}[有理数の非局所コンパクト性]
+$\mathbb Q$ に $\mathbb R$ からの相対位相を入れると
+$\mathbb Q$ は局所コンパクトでない．
+\end{proposition}
+\begin{proof}
+任意の $q\in\mathbb Q$ の近傍には
+$J=(q-\varepsilon,q+\varepsilon)\cap\mathbb Q$
+を含むものを取れる．
+もし $q$ にコンパクトな近傍 $K\subset\mathbb Q$
+があれば，ある $\varepsilon>0$ で $J\subset K$．
+包含 $\mathbb Q\hookrightarrow\mathbb R$ は連続なので
+$K$ は $\mathbb R$ でコンパクト，したがって閉集合である．
+すると $\overline J^{\,\mathbb R}$ が $K$ に含まれるが，
+この閉包には無理数が含まれ矛盾する．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\mathbb R^n$ の閉部分集合は局所コンパクトか．
+\par\noindent\textbf{解答．}
+閉集合 $F$ の任意の点 $x$ について
+$F\cap\overline{B(x,1)}$ はコンパクトであり，
+$F\cap B(x,1)$ は $F$ の開近傍である．
+よって局所コンパクトである．
+\end{document}

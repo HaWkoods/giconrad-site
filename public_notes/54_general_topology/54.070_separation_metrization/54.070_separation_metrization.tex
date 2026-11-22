@@ -1,0 +1,245 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{分離公理と距離化定理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，分離公理，可算基，Urysohnの補題．
+本稿の具体的な到達課題は，空間の分離性を実際に判定し，距離化に必要な条件を検証する．
+
+
+\section{分離公理}
+\begin{definition}
+位相空間 $X$ が $T_0$ であるとは，
+異なる二点を開集合によって少なくとも一方向に区別できることをいう．
+$T_1$ であるとは各一点集合が閉であることをいう．
+Hausdorff（$T_2$）であるとは
+異なる二点が互いに交わらない開近傍を持つことをいう．
+正則とは点 $x$ とそれを含まない閉集合 $F$ を
+互いに素な開集合で分離できることをいう．
+正規とは互いに素な二つの閉集合を
+互いに素な開集合で分離できることをいう．
+\end{definition}
+\begin{proposition}
+Hausdorff空間は $T_1$ であり，$T_1$ 空間は $T_0$ である．
+\end{proposition}
+\begin{proof}
+$x\ne y$ ならHausdorff性から $y$ を含み $x$ を含まない
+開近傍が存在する．そのような近傍を全ての $y\ne x$ で集めると
+$X\setminus\{x\}$ は開となり $\{x\}$ は閉．
+$T_1$ なら $X\setminus\{x\}$ が $y$ を含み $x$ を含まない
+開集合であるから $T_0$ となる．
+\end{proof}
+\begin{lemma}[正則性の縮小形]\label{lem:shrink}
+正則空間において $x\in U$（$U$ 開）なら，
+$x\in V\subset\overline V\subset U$ を満たす開集合 $V$ が存在する．
+\end{lemma}
+\begin{proof}
+閉集合 $F=X\setminus U$ と点 $x$ を正則性で分離し，
+互いに素な開集合 $V$（$x\in V$），$W$（$F\subset W$）を取る．
+$\overline V\subset X\setminus W\subset U$ である．
+\end{proof}
+\section{可算性条件}
+\begin{definition}
+開集合の可算基底を持つ空間を第二可算という．
+各点が可算な近傍基底を持つ空間を第一可算という．
+\end{definition}
+\begin{proposition}
+第二可算空間は第一可算である．
+また第二可算空間の任意の部分空間は第二可算である．
+\end{proposition}
+\begin{proof}
+可算基底 $\mathcal B$ について
+$\{B\in\mathcal B:x\in B\}$ は $x$ の可算近傍基底である．
+$A\subset X$ なら
+$\{A\cap B:B\in\mathcal B\}$ は相対位相の可算基底となる．
+\end{proof}
+\section{Urysohnの距離化定理}
+\begin{theorem}[Urysohnの距離化定理]\label{thm:urysohn-metric}
+正則かつ $T_1$ で第二可算な空間 $X$ は距離化可能である．
+\end{theorem}
+\begin{proof}
+$\mathcal B=\{B_1,B_2,\dots\}$ を可算基底とする．
+添字の組 $(i,j)$ で
+$\overline{B_i}\subset B_j$ を満たすもの全体は可算である．
+このような各組について，
+Urysohnの補題により連続関数
+$f_{ij}:X\to[0,1]$ で
+\[
+ f_{ij}|_{\overline{B_i}}=1,\qquad
+ f_{ij}|_{X\setminus B_j}=0
+\]
+を取る．
+ここで第二可算・正則・$T_1$ 空間が正規であることを示す．
+互いに素な閉集合 $F,H$ を取る．
+正則性と可算基底から，開集合の列 $(U_n)_{n\ge1}$，
+$(V_n)_{n\ge1}$ で
+\[
+ F\subset\bigcup_{n\ge1}U_n,\quad
+ H\subset\bigcup_{n\ge1}V_n,\qquad
+ \overline{U_n}\cap H=\varnothing,\quad
+ \overline{V_n}\cap F=\varnothing
+\]
+を満たすものが得られる．
+実際，各点について補題\ref{lem:shrink}を適用し，
+得られた近傍の中に含まれる基底元をすべて集めればよい．
+\[
+ U=\bigcup_{n\ge1}\left(U_n\setminus\bigcup_{j=1}^{n}
+       \overline{V_j}\right),\qquad
+ V=\bigcup_{n\ge1}\left(V_n\setminus\bigcup_{j=1}^{n}
+       \overline{U_j}\right)
+\]
+と置くと，$U,V$ は開集合である．
+各 $x\in F$ はある $U_n$ に属し，どの $\overline{V_j}$ にも
+属さないから $F\subset U$．同様に $H\subset V$ である．
+もし $x\in U\cap V$ なら，ある $n,m$ について
+$x\in U_n\cap V_m$ であり，
+$n\ge m$ なら $x\notin\overline{V_m}$，
+$m\ge n$ なら $x\notin\overline{U_n}$ となって，
+いずれも矛盾する．従って $U\cap V=\varnothing$ であり，
+$X$ は正規である．よってUrysohnの補題を適用できる．
+
+これらの $f_{ij}$ を列 $(f_n)$ に並べる．
+\[
+ d(x,y)=\sum_{n=1}^\infty2^{-n}|f_n(x)-f_n(y)|
+\]
+と定める．級数は一様収束し，各項が擬距離なので
+$d$ は擬距離である．
+$x\ne y$ に対し $T_1$ 性から
+$x\in U$，$y\notin U$ となる開集合 $U$ がある．
+補題\ref{lem:shrink}を二度使い，
+$x\in B_i\subset\overline{B_i}\subset B_j\subset U$
+を満たす基底元の組を取れる．
+すると $f_{ij}(x)=1$，$f_{ij}(y)=0$ であり $d(x,y)>0$．
+従って $d$ は距離である．
+
+各 $f_n$ は元の位相で連続であり，
+級数が一様収束するので $d$ の開球は元の位相で開である．
+逆に $x\in U$（$U$ は元の開集合）とすると，
+上の縮小によって
+$x\in B_i\subset\overline{B_i}\subset B_j\subset U$
+を取れる．
+対応する $f_n$ について
+$f_n(x)=1$ かつ $f_n|_{X\setminus U}=0$ なので，
+$y\notin U$ なら $d(x,y)\ge2^{-n}$ である．
+従って半径 $2^{-n-1}$ の $d$-開球は $U$ に含まれる．
+両位相は一致し，距離化可能となる．
+\end{proof}
+\section{距離化の必要条件}
+\begin{proposition}
+任意の距離空間は正則かつ $T_1$ である．
+\end{proposition}
+\begin{proof}
+一点集合は閉なので $T_1$．
+$F=\varnothing$ の場合は $X$ と空集合で分離できる．
+以下，$F$ を空でない閉集合とする．
+その外の点 $x$ に対して $r=d(x,F)>0$ を取る．
+$B(x,r/3)$ と $\bigcup_{y\in F}B(y,r/3)$ は
+互いに交わらない開集合であり，$x$ と $F$ を分離する．
+\end{proof}
+\begin{remark}
+距離化定理に第二可算性を要求したのは十分条件であり，
+距離空間が常に第二可算という意味ではない．
+例えば非可算集合上の離散距離は距離化可能だが第二可算でない．
+\end{remark}
+
+\section{到達課題の完全解答}
+\noindent\textbf{分離公理と距離化可能性の判定．}
+\begin{proposition}[距離空間の正規性]
+任意の距離空間 $(X,d)$ は正規空間である．
+\end{proposition}
+\begin{proof}
+互いに素な閉集合 $A,B$ に対し，
+$f(x)=d(x,A)$，$g(x)=d(x,B)$ と置く
+（一方が空なら分離は自明である）．
+各点では $f(x)+g(x)>0$ であり，
+\[
+h(x)=\frac{f(x)}{f(x)+g(x)}
+\]
+は連続で，$A$ 上で零，$B$ 上で1である．
+したがって
+$U=\{h<1/3\}$ と $V=\{h>2/3\}$ は互いに素な
+開集合であり $A\subset U,B\subset V$ を満たす．
+\end{proof}
+\begin{proposition}[第一可算性]
+距離空間は第一可算である．
+\end{proposition}
+\begin{proof}
+任意の $x$ に対し
+$\{B(x,1/n):n\ge1\}$ は可算な近傍基である．
+任意の開近傍 $U$ には $B(x,\varepsilon)\subset U$
+となる $\varepsilon>0$ があり，
+$1/n<\varepsilon$ なる $n$ を選べばよい．
+\end{proof}
+\noindent\textbf{到達確認．}
+無限集合の補有限位相は距離化可能か．
+\par\noindent\textbf{解答．}
+異なる点の非空開近傍は必ず交わるから
+Hausdorffでない．
+距離空間はHausdorffなので距離化不可能である．
+\end{document}

@@ -1,0 +1,236 @@
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{ホモトピーと位相空間の構成}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section*{読了後にできること}
+本稿を読むための前提は，ホモトピーの定義，積位相と商位相．
+本稿の具体的な到達課題は，与えられた空間のホモトピー同値を具体的に構成する．
+
+
+\section{ホモトピーとその基本性質}
+\begin{definition}
+連続写像 $f,g:X\to Y$ がホモトピックであるとは，
+連続写像 $H:X\times[0,1]\to Y$ で
+$H(x,0)=f(x)$，$H(x,1)=g(x)$ を満たすものがあることをいう．
+$f\simeq g$ と書く．
+\end{definition}
+\begin{proposition}[ホモトピーは同値関係]
+固定した $X,Y$ の連続写像の間のホモトピー関係は
+反射的，対称的，推移的である．
+\end{proposition}
+\begin{proof}
+反射律は $H(x,t)=f(x)$，対称律は
+$H'(x,t)=H(x,1-t)$ による．
+$f\simeq g$ を $H$，$g\simeq h$ を $K$ で表すと
+\[
+ L(x,t)=\begin{cases}H(x,2t)&(0\le t\le1/2),\\
+ K(x,2t-1)&(1/2\le t\le1)\end{cases}
+\]
+は $t=1/2$ で一致する二つの連続写像を
+有限閉被覆で貼り合わせたものなので連続である．
+従って $f\simeq h$ となる．
+\end{proof}
+\begin{definition}
+$f:X\to Y$ がホモトピー同値とは，
+ある $g:Y\to X$ が存在して
+$g\circ f\simeq\mathrm{id}_X$，
+$f\circ g\simeq\mathrm{id}_Y$ となることをいう．
+$X$ が一点空間とホモトピー同値なら可縮という．
+\end{definition}
+\begin{lemma}[合成の安定性]
+$f_0\simeq f_1:X\to Y$，$g:Y\to Z$ なら
+$g\circ f_0\simeq g\circ f_1$．
+また $h:W\to X$ なら
+$f_0\circ h\simeq f_1\circ h$ である．
+\end{lemma}
+\begin{proof}
+$H$ をホモトピーとし，
+それぞれ $(x,t)\mapsto g(H(x,t))$ と
+$(w,t)\mapsto H(h(w),t)$ を使う．
+\end{proof}
+\section{変形レトラクト}
+\begin{definition}
+$A\subset X$ に対し連続写像 $r:X\to A$ で
+$r|_A=\mathrm{id}_A$ となるものをレトラクションという．
+$H:X\times I\to X$ で
+$H(x,0)=x$，$H(x,1)\in A$，
+$H(a,t)=a$（$a\in A$）を満たすとき，
+$A$ を $X$ の強変形レトラクトという．
+\end{definition}
+\begin{theorem}[変形レトラクトとホモトピー同値]
+$A$ が $X$ の強変形レトラクトなら包含
+$i:A\hookrightarrow X$ はホモトピー同値である．
+\end{theorem}
+\begin{proof}
+$r(x)=H(x,1)$ と置くと $r\circ i=\mathrm{id}_A$ であり，
+$i\circ r=H(-,1)\simeq H(-,0)=\mathrm{id}_X$．
+よって $r$ は包含のホモトピー逆である．
+\end{proof}
+\begin{example}[穿孔Euclid空間の球面への変形]
+$\mathbb R^n\setminus\{0\}$ の単位球面 $S^{n-1}$ は
+強変形レトラクトである．
+\end{example}
+\begin{proof}
+\[
+ H(x,t)=\left((1-t)+\frac{t}{\norm x}\right)x
+\]
+と置く．係数は正なので像は穿孔空間に含まれ，
+$t=0$ で恒等，$t=1$ で正規化 $x/\norm x$，
+$\norm x=1$ なら全ての $t$ で固定される．
+\end{proof}
+\section{写像柱・円錐・懸垂}
+\begin{definition}
+$f:X\to Y$ に対し
+\[
+ M_f=(X\times I)\amalg Y\big/\bigl((x,1)\sim f(x)\bigr)
+\]
+を写像柱という．
+$CX=(X\times I)/(X\times\{1\})$ を円錐，
+$\Sigma X=(X\times I)/
+ (X\times\{0\},X\times\{1\}\text{をそれぞれ一点に潰す})$
+を懸垂という．
+\end{definition}
+\begin{proposition}[写像柱の変形レトラクト]\label{prop:cylinder}
+任意の $f:X\to Y$ に対し，
+自然な包含 $Y\hookrightarrow M_f$ はホモトピー同値である．
+\end{proposition}
+\begin{proof}
+$[x,s]\in M_f$ について
+$H([x,s],t)=[x,(1-t)s+t]$，
+$H(y,t)=y$ と置く．
+$s=1$ では $[x,1]=f(x)\in Y$ なので
+二つの公式は一致し，商位相の普遍性から連続である．
+$t=1$ で全点が $Y$ に入り，$Y$ は固定される．
+従って強変形レトラクトである．
+\end{proof}
+\begin{proposition}[円錐は可縮]
+空でない位相空間 $X$ の円錐 $CX$ は可縮である．
+\end{proposition}
+\begin{proof}
+商点を $v$ とし
+$H([x,s],t)=[x,(1-t)s+t]$ と置く．
+$s=1$ なら常に $v$ であり，商への降下が可能である．
+$H(-,0)=\mathrm{id}$，$H(-,1)=v$ なので可縮である．
+\end{proof}
+\section{基本群への帰結}
+\begin{theorem}[ホモトピー同値による基本群の不変性]
+道連結空間 $X,Y$ がホモトピー同値なら，
+$\pi_1(X)$ と $\pi_1(Y)$ は同型である
+（基点の選択による内部自己同型の不定性を除く）．
+\end{theorem}
+\begin{proof}
+$H:f_0\simeq f_1$ と $x_0\in X$ に対し，
+$\alpha(t)=H(x_0,t)$ と置く．
+任意の基点ループ $\gamma$ に対して，
+正方形 $(s,t)\mapsto H(\gamma(s),t)$ の四辺を辿ると，
+$f_0\circ\gamma$ と
+$\alpha*(f_1\circ\gamma)*\overline\alpha$
+は端点固定ホモトピックである．
+従って $f_{0*}$ と $f_{1*}$ は基点移動同型を介して一致する．
+ホモトピー逆 $g$ に対し，
+$(gf)_*$ と $(fg)_*$ はそれぞれ基点移動後の恒等となる．
+基点移動は可逆なので $f_*$ は同型である．
+\end{proof}
+
+\section{到達課題の完全解答}
+\noindent\textbf{円環の変形レトラクションを作る．}
+\begin{proposition}[円環は円周に変形レトラクトする]
+$A=\{x\in\mathbb R^2:1\le |x|\le2\}$ と
+$S^1=\{x:|x|=1\}$ に対し
+\[
+H:A\times[0,1]\to A,\qquad
+H(x,t)=\left((1-t)+\frac t{|x|}\right)x
+\]
+は $S^1$ への強変形レトラクションである．
+\end{proposition}
+\begin{proof}
+$|x|\ge1$ だから式は連続である．
+$H(x,0)=x$，$H(x,1)=x/|x|\in S^1$．
+$|H(x,t)|=(1-t)|x|+t$ は1以上2以下なので
+像は $A$ に含まれる．
+$|x|=1$ なら $H(x,t)=x$ であり，
+$S^1$ の点は変形中固定される．
+以上は強変形レトラクションの条件そのものである．
+\end{proof}
+\begin{corollary}[基本群の計算]
+$\pi_1(A)\cong\pi_1(S^1)\cong\mathbb Z$．
+\end{corollary}
+\begin{proof}
+変形レトラクションから包含 $S^1\hookrightarrow A$ は
+ホモトピー同値となり，基本群の同型を誘導する．
+円周の基本群は整数群である．
+\end{proof}
+\noindent\textbf{到達確認．}
+$\{x\in\mathbb R^2:2\le |x|\le3\}$ は
+$S^1$ とホモトピー同値か．
+\par\noindent\textbf{解答．}
+$x\mapsto2x/|x|$ と恒等写像の線形補間は
+半径2の円周への強変形レトラクションを与える．
+半径2の円周は $S^1$ と同相である．
+\end{document}
