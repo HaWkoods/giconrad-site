@@ -4496,7 +4496,7 @@
       "subtype": null,
       "explanation": "Burnsideの補題を約数の対の反転作用に適用し、整数問題の解の個数を求める。",
       "related_concepts": [
-        "burnside-enumeration"
+        "burnside-lemma"
       ],
       "evidence": [
         {
