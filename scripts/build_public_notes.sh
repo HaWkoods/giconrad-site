@@ -31,7 +31,15 @@ elif [[ -n "${BEFORE_SHA:-}" ]] && git cat-file -e "${BEFORE_SHA}^{commit}" 2>/d
   if [[ -n "$(git diff --name-only "$BEFORE_SHA" HEAD -- scripts/notation_build_queue.txt)" ]]; then
     # Rebuild exactly the audited batch, including sources from intermediate
     # commits whose automatically queued workflow runs were superseded.
-    mapfile -t files < <(grep -E '^public_notes/[A-Za-z0-9_./-]+\\.tex
+    mapfile -t files < scripts/notation_build_queue.txt
+    for source in "${files[@]}"; do
+      if [[ "$source" != public_notes/*.tex || ! -f "$source" ]]; then
+        echo "Invalid or missing queued source: $source" >&2
+        exit 1
+      fi
+    done
+  elif [[ -n "$(git diff --name-only "$BEFORE_SHA" HEAD -- scripts/build_public_notes.sh .github/workflows/build_public_notes.yml)" ]]; then
+    all_notes
   else
     mapfile -t files < <(git diff --name-only --diff-filter=AMR "$BEFORE_SHA" HEAD -- "$root" | grep -E '^public_notes/.*\.tex$' | LC_ALL=C sort || true)
   fi
