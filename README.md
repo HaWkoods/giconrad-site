@@ -31,3 +31,7 @@
 **今後の原稿更新をまとめて同期する場合の初回設定（今回の公開自体には不要）:** 公開サイトリポジトリの Settings → Secrets and variables → Actions に、Fine-grained personal access token を `GICONRAD_SOURCE_TOKEN` という名前で登録してください。トークンは非公開リポジトリ `HaWkoods/giconrad` の Contents: Read-only 権限を持つものとし、公開サイトへの書き込み権限は必要ありません（公開サイトへの書き込みには Actions の `GITHUB_TOKEN` を使います）。登録後に Actions → Publish all catalogued note PDFs and sources → Run workflow を実行します。
 
 トークン未登録時は将来の一括同期ワークフローが実行できません。既に公開済みの157冊の閲覧には影響しません。
+
+## 主要定理ロードマップ
+
+[`roadmap.html`](roadmap.html) から、12の大分野→小分野→主要定理・主題→公開ノートという階層で学習できます。既存 `data/notes.json`、`data/details.json`、`data/taxonomy.json` を参照し、前提・次のノートは推奨読書順で示します。主題は全157冊を網羅し、主要定理名は代表的なものに付与しています。論理的な定理間依存関係の完全な表現ではありません。
