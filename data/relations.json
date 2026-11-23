@@ -34,7 +34,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -44,8 +44,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "03.010",
@@ -54,7 +54,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -64,8 +64,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "05.010",
@@ -114,7 +114,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -124,8 +124,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "05.010",
@@ -194,7 +194,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -204,8 +204,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "11.010",
@@ -214,7 +214,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -224,8 +224,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "11.010",
@@ -234,7 +234,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -244,8 +244,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "12.060",
@@ -254,7 +254,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -264,8 +264,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "13.010",
@@ -274,7 +274,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -284,8 +284,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "13.010",
@@ -294,7 +294,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -304,8 +304,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "13.030",
@@ -314,7 +314,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -324,8 +324,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "13.010",
@@ -334,7 +334,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -344,8 +344,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "13.020",
@@ -354,7 +354,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -364,8 +364,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "13.010",
@@ -374,7 +374,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -384,8 +384,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "13.020",
@@ -414,7 +414,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -424,8 +424,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "18.010",
@@ -434,7 +434,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -444,8 +444,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "18.040",
@@ -454,7 +454,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -464,8 +464,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "18.050",
@@ -474,7 +474,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -484,8 +484,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "22.010",
@@ -494,7 +494,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -504,8 +504,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "57.010",
@@ -514,7 +514,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -524,8 +524,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.010",
@@ -534,7 +534,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -544,8 +544,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "22.010",
@@ -554,7 +554,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -564,8 +564,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "30.010",
@@ -574,7 +574,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -584,8 +584,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "30.020",
@@ -594,7 +594,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -604,8 +604,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "30.020",
@@ -614,7 +614,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -624,8 +624,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "30.030",
@@ -654,7 +654,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -664,8 +664,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "32.010",
@@ -674,7 +674,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -684,8 +684,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "13.020",
@@ -694,7 +694,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -704,8 +704,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "32.020",
@@ -714,7 +714,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -724,8 +724,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "18.040",
@@ -754,7 +754,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -764,8 +764,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "42.020",
@@ -774,7 +774,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -784,8 +784,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "35.010",
@@ -834,7 +834,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -844,8 +844,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "35.020",
@@ -854,7 +854,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -864,8 +864,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "42.020",
@@ -894,7 +894,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -904,8 +904,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "35.030",
@@ -914,7 +914,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -924,8 +924,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "35.010",
@@ -954,7 +954,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -964,8 +964,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "47.010",
@@ -994,7 +994,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1004,8 +1004,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "46.020",
@@ -1034,7 +1034,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1044,8 +1044,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "46.020",
@@ -1054,7 +1054,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1064,8 +1064,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "46.040",
@@ -1094,7 +1094,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1104,8 +1104,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "46.060",
@@ -1134,7 +1134,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1144,8 +1144,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.020",
@@ -1154,7 +1154,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1164,8 +1164,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "53.010",
@@ -1174,7 +1174,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1184,8 +1184,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "53.020",
@@ -1194,7 +1194,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1204,8 +1204,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.010",
@@ -1214,7 +1214,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1224,8 +1224,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "53.030",
@@ -1234,7 +1234,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1244,8 +1244,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.050",
@@ -1274,7 +1274,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1284,8 +1284,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "53.030",
@@ -1294,7 +1294,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1304,8 +1304,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "53.050",
@@ -1314,7 +1314,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1324,8 +1324,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "53.050",
@@ -1334,7 +1334,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1344,8 +1344,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "53.060",
@@ -1354,7 +1354,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1364,8 +1364,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.050",
@@ -1374,7 +1374,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1384,8 +1384,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.010",
@@ -1434,7 +1434,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1444,8 +1444,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.010",
@@ -1454,7 +1454,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1464,8 +1464,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.010",
@@ -1474,7 +1474,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1484,8 +1484,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.020",
@@ -1494,7 +1494,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1504,8 +1504,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.020",
@@ -1514,7 +1514,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1524,8 +1524,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.010",
@@ -1534,7 +1534,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1544,8 +1544,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.020",
@@ -1554,7 +1554,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1564,8 +1564,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.040",
@@ -1574,7 +1574,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1584,8 +1584,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.050",
@@ -1614,7 +1614,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1624,8 +1624,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.060",
@@ -1634,7 +1634,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1644,8 +1644,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.050",
@@ -1654,7 +1654,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1664,8 +1664,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.070",
@@ -1674,7 +1674,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1684,8 +1684,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.010",
@@ -1694,7 +1694,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1704,8 +1704,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.020",
@@ -1714,7 +1714,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1724,8 +1724,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.030",
@@ -1754,7 +1754,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1764,8 +1764,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "18.020",
@@ -1794,7 +1794,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1804,8 +1804,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.080",
@@ -1814,7 +1814,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1824,8 +1824,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "54.020",
@@ -1834,7 +1834,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1844,8 +1844,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "57.010",
@@ -1854,7 +1854,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1864,8 +1864,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "57.010",
@@ -1874,7 +1874,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1884,8 +1884,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "57.020",
@@ -1934,7 +1934,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1944,8 +1944,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "57.010",
@@ -1954,7 +1954,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1964,8 +1964,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.010",
@@ -1974,7 +1974,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -1984,8 +1984,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "57.020",
@@ -2014,7 +2014,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2024,8 +2024,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.020",
@@ -2034,7 +2034,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2044,8 +2044,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.020",
@@ -2054,7 +2054,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2064,8 +2064,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "57.010",
@@ -2074,7 +2074,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2084,8 +2084,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.040",
@@ -2094,7 +2094,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2104,8 +2104,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.050",
@@ -2114,7 +2114,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2124,8 +2124,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "53.030",
@@ -2154,7 +2154,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2164,8 +2164,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "57.020",
@@ -2194,7 +2194,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2204,8 +2204,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "28.010",
@@ -2254,7 +2254,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2264,8 +2264,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.020",
@@ -2274,7 +2274,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2284,8 +2284,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.030",
@@ -2294,7 +2294,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2304,8 +2304,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "47.010",
@@ -2334,7 +2334,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2344,8 +2344,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.010",
@@ -2354,7 +2354,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2364,8 +2364,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.020",
@@ -2374,7 +2374,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2384,8 +2384,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.030",
@@ -2394,7 +2394,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2404,8 +2404,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.030",
@@ -2414,7 +2414,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2424,8 +2424,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.040",
@@ -2434,7 +2434,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2444,8 +2444,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "35.010",
@@ -2454,7 +2454,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2464,8 +2464,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.040",
@@ -2474,7 +2474,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2484,8 +2484,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.050",
@@ -2494,7 +2494,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2504,8 +2504,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "42.020",
@@ -2514,7 +2514,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2524,8 +2524,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.005",
@@ -2534,7 +2534,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2544,8 +2544,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.005",
@@ -2574,7 +2574,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2584,8 +2584,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.005",
@@ -2594,7 +2594,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2604,8 +2604,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "62.010",
@@ -2614,7 +2614,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2624,8 +2624,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "62.010",
@@ -2634,7 +2634,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2644,8 +2644,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "62.020",
@@ -2674,7 +2674,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2684,8 +2684,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "62.010",
@@ -2694,7 +2694,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2704,8 +2704,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "46.030",
@@ -2734,7 +2734,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2744,8 +2744,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "62.030",
@@ -2794,7 +2794,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2804,8 +2804,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "65.010",
@@ -2814,7 +2814,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2824,8 +2824,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "65.010",
@@ -2834,7 +2834,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2844,8 +2844,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "47.010",
@@ -2874,7 +2874,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2884,8 +2884,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "35.010",
@@ -2894,7 +2894,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2904,8 +2904,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "65.030",
@@ -2974,7 +2974,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -2984,8 +2984,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "65.030",
@@ -2994,7 +2994,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3004,8 +3004,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "65.040",
@@ -3014,7 +3014,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3024,8 +3024,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "35.020",
@@ -3034,7 +3034,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3044,8 +3044,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "35.030",
@@ -3074,7 +3074,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3084,8 +3084,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "65.020",
@@ -3154,7 +3154,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3164,8 +3164,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "05.010",
@@ -3194,7 +3194,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3204,8 +3204,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "68.030",
@@ -3214,7 +3214,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3224,8 +3224,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "68.010",
@@ -3234,7 +3234,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3244,8 +3244,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "68.020",
@@ -3254,7 +3254,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3264,8 +3264,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "68.010",
@@ -3294,7 +3294,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3304,8 +3304,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "68.100",
@@ -3314,7 +3314,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3324,8 +3324,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "57.010",
@@ -3374,7 +3374,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3384,8 +3384,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "53.100",
@@ -3394,7 +3394,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3404,8 +3404,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "70.020",
@@ -3414,7 +3414,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3424,8 +3424,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "46.030",
@@ -3434,7 +3434,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3444,8 +3444,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "47.020",
@@ -3494,7 +3494,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3504,8 +3504,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "47.020",
@@ -3554,7 +3554,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3564,8 +3564,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "58.050",
@@ -3594,7 +3594,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3604,8 +3604,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "90.020",
@@ -3634,7 +3634,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3644,8 +3644,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "60.060",
@@ -3694,7 +3694,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3704,8 +3704,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "05.030",
@@ -3714,7 +3714,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3724,8 +3724,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "37.010",
@@ -3734,7 +3734,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3744,8 +3744,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "37.010",
@@ -3754,7 +3754,7 @@
       "direction": "source_to_target",
       "symmetric": false,
       "subtype": "core_concept",
-      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "explanation": "既存索引では推奨読書順に登録されているが、具体的な定理・証明箇所による依存の検証は未了。対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
       "related_concepts": [],
       "evidence": [
         {
@@ -3764,8 +3764,8 @@
           "source_section": null
         }
       ],
-      "verification_status": "数学的に推論可能",
-      "relevance": "中"
+      "verification_status": "要確認",
+      "relevance": "低"
     },
     {
       "source_id": "93.010",
