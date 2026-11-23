@@ -231,7 +231,7 @@ function renderLearningRoute(id){
  actions.append(copy);section.append(actions);
  return section;
 }
-function selectNote(id){
+function selectNote(id,scrollToMap=true){
  const n=notes.get(id);if(!n)return;selectedId=id;
  if(typeof radialSelectTarget==="function")radialSelectTarget(id);
  const info=details.get(id)||{};
@@ -255,7 +255,7 @@ function selectNote(id){
  box.append(foot);
  $("#roadmapActive").textContent="選択中： "+id;
  renderTree();
- if(matchMedia("(max-width:850px)").matches)box.scrollIntoView({behavior:"smooth",block:"start"});
+ if(scrollToMap)document.querySelector("#radialSection")?.scrollIntoView({behavior:"smooth",block:"start"});
 }
 async function init(){
  try{
@@ -271,7 +271,7 @@ async function init(){
   $("#roadmapCollapse").addEventListener("click",()=>{query="";$("#roadmapSearch").value="";openNodes.clear();renderTree();});
   renderTree();
   const initial=new URLSearchParams(location.search).get("note");
-  if(initial&&notes.has(initial))selectNote(initial);
+  selectNote(initial&&notes.has(initial)?initial:"54.050",false);
   $("#roadmapStatus").textContent="";
  }catch(error){$("#roadmapStatus").textContent="ロードマップの読み込みに失敗しました。再読み込みしてください。";}
 }
