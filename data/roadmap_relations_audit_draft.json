@@ -1,0 +1,1922 @@
+{
+  "version": 1,
+  "status": "audit_draft_not_used_by_site",
+  "as_of": "2026-11-23",
+  "scope": {
+    "catalogue_notes": 157,
+    "existing_relations": 202,
+    "proposal_counts": {
+      "core_concept": 64,
+      "supporting_only": 24,
+      "requires_further_proof_review": 104,
+      "not_supported": 10
+    },
+    "suggested_additions": 8
+  },
+  "definitions": {
+    "core_concept": "当該ノートを読む際に先行ノートが扱う中心概念・結果を直接使う。先行ノート全体の読了や証明の論理的必要性とは同義でない。",
+    "supporting_only": "直接の前提ではなく理解を助ける補助資料。",
+    "not_supported": "先行ノート固有の内容への依存が原稿から確認できないため、学習必須の辺としては除外提案。",
+    "requires_further_proof_review": "定理単位での適用関係をまだ確証できない。",
+    "review_basis": "source_preamble_sections_and_selected_arguments は関連する原稿の前提・章構成・一部証明の目視検査。完全な行単位数学査読ではない。"
+  },
+  "existing_edges": [
+    {
+      "from": "note:03.010",
+      "to": "note:03.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/03_logic_foundations/03.020_compactness_model_theory/03.020_compactness_model_theory.tex",
+      "rationale": "完全性定理を原稿で既知として明示（冒頭導入）。"
+    },
+    {
+      "from": "note:54.040",
+      "to": "note:03.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/03_logic_foundations/03.030_hyperreals_nonstandard/03.030_hyperreals_nonstandard.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:03.010",
+      "to": "note:03.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/03_logic_foundations/03.040_godel_incompleteness/03.040_godel_incompleteness.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:05.010",
+      "to": "note:05.020",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/05_combinatorics/05.020_generating_functions_recurrences/05.020_generating_functions_recurrences.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:05.010",
+      "to": "note:05.030",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/05_combinatorics/05.030_graph_theory_foundations/05.030_graph_theory_foundations.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:05.030",
+      "to": "note:05.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/05_combinatorics/05.040_matching_network_flows/05.040_matching_network_flows.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:05.010",
+      "to": "note:05.050",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/05_combinatorics/05.050_group_actions_enumeration/05.050_group_actions_enumeration.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:05.020",
+      "to": "note:05.050",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/05_combinatorics/05.050_group_actions_enumeration/05.050_group_actions_enumeration.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:05.010",
+      "to": "note:05.060",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/05_combinatorics/05.060_extremal_probabilistic_methods/05.060_extremal_probabilistic_methods.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:05.030",
+      "to": "note:05.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/05_combinatorics/05.060_extremal_probabilistic_methods/05.060_extremal_probabilistic_methods.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:11.010",
+      "to": "note:11.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/11_number_theory/11.040_dirichlet_primes/11.040_dirichlet_primes.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:11.010",
+      "to": "note:11.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/11_number_theory/11.050_prime_number_theorem/11.050_prime_number_theorem.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:12.060",
+      "to": "note:12.070",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/12_fields_galois/12.070_liouvillian_integrability/12.070_liouvillian_integrability.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:13.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/13_commutative_algebra/13.020_krull_dimension_hilbert_polynomial/13.020_krull_dimension_hilbert_polynomial.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:13.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/13_commutative_algebra/13.030_groebner_bases/13.030_groebner_bases.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:13.030",
+      "to": "note:13.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/13_commutative_algebra/13.040_elimination_resultants/13.040_elimination_resultants.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:15.010",
+      "to": "note:13.040",
+      "old_strength": "unassessed",
+      "proposal": "not_supported",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/13_commutative_algebra/13.040_elimination_resultants/13.040_elimination_resultants.tex",
+      "rationale": "原稿は辞書式Gröbner基底とSylvester行列の行列式を使用するが、Smith標準形は使用していない。"
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:13.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/13_commutative_algebra/13.050_hilbert_serre_samuel/13.050_hilbert_serre_samuel.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:13.020",
+      "to": "note:13.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/13_commutative_algebra/13.050_hilbert_serre_samuel/13.050_hilbert_serre_samuel.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:13.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/13_commutative_algebra/13.060_artin_rees_krull/13.060_artin_rees_krull.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:13.020",
+      "to": "note:13.060",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/13_commutative_algebra/13.060_artin_rees_krull/13.060_artin_rees_krull.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:18.010",
+      "to": "note:18.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/18_category_homological/18.030_limits_adjunctions/18.030_limits_adjunctions.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:18.010",
+      "to": "note:18.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/18_category_homological/18.040_sheaves_stalks_sheafification/18.040_sheaves_stalks_sheafification.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:18.040",
+      "to": "note:18.060",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/18_category_homological/18.060_sheaf_cohomology/18.060_sheaf_cohomology.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:18.050",
+      "to": "note:18.060",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/18_category_homological/18.060_sheaf_cohomology/18.060_sheaf_cohomology.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:22.010",
+      "to": "note:22.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/22_topological_lie_groups/22.020_lie_groups_algebras/22.020_lie_groups_algebras.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:22.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/22_topological_lie_groups/22.020_lie_groups_algebras/22.020_lie_groups_algebras.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:58.010",
+      "to": "note:22.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/22_topological_lie_groups/22.020_lie_groups_algebras/22.020_lie_groups_algebras.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:22.010",
+      "to": "note:22.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/22_topological_lie_groups/22.030_haar_measure/22.030_haar_measure.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:30.010",
+      "to": "note:30.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/30_complex_analysis/30.020_cauchy_integral_theorem/30.020_cauchy_integral_theorem.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:30.020",
+      "to": "note:30.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/30_complex_analysis/30.030_argument_principle_rouche/30.030_argument_principle_rouche.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:30.020",
+      "to": "note:30.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/30_complex_analysis/30.040_analytic_continuation_monodromy/30.040_analytic_continuation_monodromy.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:30.030",
+      "to": "note:30.040",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/30_complex_analysis/30.040_analytic_continuation_monodromy/30.040_analytic_continuation_monodromy.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:32.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/32_d_modules/32.010_weyl_algebras_differential_operators/32.010_weyl_algebras_differential_operators.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:13.030",
+      "to": "note:32.020",
+      "old_strength": "unassessed",
+      "proposal": "not_supported",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/32_d_modules/32.020_d_module_basics/32.020_d_module_basics.tex",
+      "rationale": "D加群の原稿はWeyl代数の正規形と左加群を扱い、Gröbner基底の定理を用いていない。"
+    },
+    {
+      "from": "note:32.010",
+      "to": "note:32.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/32_d_modules/32.020_d_module_basics/32.020_d_module_basics.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:13.020",
+      "to": "note:32.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/32_d_modules/32.030_characteristic_variety_holonomicity/32.030_characteristic_variety_holonomicity.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:32.020",
+      "to": "note:32.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/32_d_modules/32.030_characteristic_variety_holonomicity/32.030_characteristic_variety_holonomicity.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:18.040",
+      "to": "note:32.040",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/32_d_modules/32.040_d_module_derham_solutions/32.040_d_module_derham_solutions.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:18.050",
+      "to": "note:32.040",
+      "old_strength": "unassessed",
+      "proposal": "not_supported",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/32_d_modules/32.040_d_module_derham_solutions/32.040_d_module_derham_solutions.tex",
+      "rationale": "代数的de Rham複体の原稿にはExt・Torの適用箇所を認めず、必要な複体は直接定義している。"
+    },
+    {
+      "from": "note:32.020",
+      "to": "note:32.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/32_d_modules/32.040_d_module_derham_solutions/32.040_d_module_derham_solutions.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:32.030",
+      "to": "note:32.040",
+      "old_strength": "unassessed",
+      "proposal": "not_supported",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/32_d_modules/32.040_d_module_derham_solutions/32.040_d_module_derham_solutions.tex",
+      "rationale": "de Rham複体・解函手の原稿は特性多様体やホロノミーを前提にしておらず、既存の関係は当該主題には過大。"
+    },
+    {
+      "from": "note:42.020",
+      "to": "note:35.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/35_partial_differential_equations/35.010_pde_heat_wave/35.010_pde_heat_wave.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:35.010",
+      "to": "note:35.020",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:35.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex",
+      "rationale": "Lax–Milgramの定理の証明でHilbert空間のRiesz表現を使用する（原稿105行付近）。"
+    },
+    {
+      "from": "note:46.100",
+      "to": "note:35.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:35.020",
+      "to": "note:35.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/35_partial_differential_equations/35.030_lipschitz_trace/35.030_lipschitz_trace.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:42.020",
+      "to": "note:35.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/35_partial_differential_equations/35.030_lipschitz_trace/35.030_lipschitz_trace.tex",
+      "rationale": "Sobolevトレース定理の証明はPlancherel等式を明示的に使用する。"
+    },
+    {
+      "from": "note:35.020",
+      "to": "note:35.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/35_partial_differential_equations/35.040_reentrant_corner_elliptic/35.040_reentrant_corner_elliptic.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:35.030",
+      "to": "note:35.040",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/35_partial_differential_equations/35.040_reentrant_corner_elliptic/35.040_reentrant_corner_elliptic.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:35.010",
+      "to": "note:35.050",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/35_partial_differential_equations/35.050_periodic_wave_wellposedness/35.050_periodic_wave_wellposedness.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:42.010",
+      "to": "note:35.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/35_partial_differential_equations/35.050_periodic_wave_wellposedness/35.050_periodic_wave_wellposedness.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:37.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/37_dynamical_systems/37.010_dynamics_stability/37.010_dynamics_stability.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:37.010",
+      "to": "note:37.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/37_dynamical_systems/37.020_bifurcation_basics/37.020_bifurcation_basics.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:46.020",
+      "to": "note:42.010",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/42_fourier_analysis/42.010_fourier_series/42.010_fourier_series.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:22.030",
+      "to": "note:43.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/43_abstract_harmonic_analysis/43.010_compact_abelian_fourier/43.010_compact_abelian_fourier.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:46.020",
+      "to": "note:46.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/46_functional_analysis/46.050_open_mapping_closed_graph/46.050_open_mapping_closed_graph.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:46.040",
+      "to": "note:46.060",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/46_functional_analysis/46.060_weak_weakstar_topology/46.060_weak_weakstar_topology.tex",
+      "rationale": "弱位相のHausdorff性でHahn–Banachを直接使う（原稿128行付近）。"
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:47.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/47_operator_theory/47.020_compact_operator_spectrum/47.020_compact_operator_spectrum.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:46.060",
+      "to": "note:47.020",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/47_operator_theory/47.020_compact_operator_spectrum/47.020_compact_operator_spectrum.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:53.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/53_differential_geometry/53.010_vector_bundles_connections/53.010_vector_bundles_connections.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:58.020",
+      "to": "note:53.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/53_differential_geometry/53.010_vector_bundles_connections/53.010_vector_bundles_connections.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:53.010",
+      "to": "note:53.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/53_differential_geometry/53.020_riemannian_metric_levi_civita/53.020_riemannian_metric_levi_civita.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:53.020",
+      "to": "note:53.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/53_differential_geometry/53.030_geodesics_exponential_map/53.030_geodesics_exponential_map.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:58.010",
+      "to": "note:53.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/53_differential_geometry/53.030_geodesics_exponential_map/53.030_geodesics_exponential_map.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:53.030",
+      "to": "note:53.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:54.050",
+      "to": "note:53.040",
+      "old_strength": "weak",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex",
+      "rationale": "Hopf–Rinowの証明は有限次元Euclid閉球のコンパクト性を使うが、Tychonoffの積コンパクト性定理は使用しない。"
+    },
+    {
+      "from": "note:53.020",
+      "to": "note:53.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/53_differential_geometry/53.050_curvature_jacobi/53.050_curvature_jacobi.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:53.030",
+      "to": "note:53.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/53_differential_geometry/53.050_curvature_jacobi/53.050_curvature_jacobi.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:53.050",
+      "to": "note:53.060",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/53_differential_geometry/53.060_submanifold_extrinsic_geometry/53.060_submanifold_extrinsic_geometry.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:53.050",
+      "to": "note:53.070",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/53_differential_geometry/53.070_gauss_bonnet/53.070_gauss_bonnet.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:53.060",
+      "to": "note:53.070",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/53_differential_geometry/53.070_gauss_bonnet/53.070_gauss_bonnet.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:58.050",
+      "to": "note:53.070",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/53_differential_geometry/53.070_gauss_bonnet/53.070_gauss_bonnet.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:58.010",
+      "to": "note:53.100",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/53_differential_geometry/53.100_symplectic_geometry/53.100_symplectic_geometry.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:58.020",
+      "to": "note:53.100",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/53_differential_geometry/53.100_symplectic_geometry/53.100_symplectic_geometry.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:58.040",
+      "to": "note:53.100",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/53_differential_geometry/53.100_symplectic_geometry/53.100_symplectic_geometry.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:54.010",
+      "to": "note:54.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/54_general_topology/54.020_product_quotient_topology/54.020_product_quotient_topology.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:54.010",
+      "to": "note:54.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/54_general_topology/54.030_connectedness/54.030_connectedness.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:54.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/54_general_topology/54.030_connectedness/54.030_connectedness.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:54.040",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/54_general_topology/54.040_filters_ultrafilters/54.040_filters_ultrafilters.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:54.010",
+      "to": "note:54.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:54.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:54.040",
+      "to": "note:54.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:54.050",
+      "to": "note:54.060",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/54_general_topology/54.060_urysohn_tietze/54.060_urysohn_tietze.tex",
+      "rationale": "Urysohnの補題・Tietze拡張は正規空間を仮定し証明しており、Tychonoff定理は直接使用しない。"
+    },
+    {
+      "from": "note:54.010",
+      "to": "note:54.070",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/54_general_topology/54.070_separation_metrization/54.070_separation_metrization.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:54.060",
+      "to": "note:54.070",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/54_general_topology/54.070_separation_metrization/54.070_separation_metrization.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:54.050",
+      "to": "note:54.080",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/54_general_topology/54.080_local_compact_paracompact/54.080_local_compact_paracompact.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:54.070",
+      "to": "note:54.080",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/54_general_topology/54.080_local_compact_paracompact/54.080_local_compact_paracompact.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:54.010",
+      "to": "note:55.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/55_algebraic_topology/55.010_homotopy_topological_constructions/55.010_homotopy_topological_constructions.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:55.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/55_algebraic_topology/55.010_homotopy_topological_constructions/55.010_homotopy_topological_constructions.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:54.030",
+      "to": "note:55.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/55_algebraic_topology/55.010_homotopy_topological_constructions/55.010_homotopy_topological_constructions.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:55.010",
+      "to": "note:55.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/55_algebraic_topology/55.020_covering_spaces_fundamental_group/55.020_covering_spaces_fundamental_group.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:18.020",
+      "to": "note:55.030",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/55_algebraic_topology/55.030_seifert_van_kampen/55.030_seifert_van_kampen.tex",
+      "rationale": "自由積の普遍性を原稿内で定義・証明している。一般的な自由対象の議論は参考になるが、先行ノートの定理を引用する必要はない。"
+    },
+    {
+      "from": "note:55.010",
+      "to": "note:55.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/55_algebraic_topology/55.030_seifert_van_kampen/55.030_seifert_van_kampen.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:54.080",
+      "to": "note:57.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/57_manifold_topology/57.010_smooth_manifolds/57.010_smooth_manifolds.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:57.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/57_manifold_topology/57.020_quotient_manifolds/57.020_quotient_manifolds.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:57.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/57_manifold_topology/57.020_quotient_manifolds/57.020_quotient_manifolds.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:57.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/57_manifold_topology/57.030_sard_transversality/57.030_sard_transversality.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:57.020",
+      "to": "note:57.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/57_manifold_topology/57.030_sard_transversality/57.030_sard_transversality.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:58.010",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.010_vector_fields_flows/58.010_vector_fields_flows.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:58.010",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.010_vector_fields_flows/58.010_vector_fields_flows.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:58.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.020_tensor_fields_lie_derivative/58.020_tensor_fields_lie_derivative.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:58.010",
+      "to": "note:58.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.020_tensor_fields_lie_derivative/58.020_tensor_fields_lie_derivative.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:57.020",
+      "to": "note:58.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.030_frobenius_theorem/58.030_frobenius_theorem.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:58.010",
+      "to": "note:58.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.030_frobenius_theorem/58.030_frobenius_theorem.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:58.020",
+      "to": "note:58.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.030_frobenius_theorem/58.030_frobenius_theorem.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:58.020",
+      "to": "note:58.040",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.040_poincare_lemma_forms/58.040_poincare_lemma_forms.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:58.050",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.050_stokes_manifolds/58.050_stokes_manifolds.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:58.040",
+      "to": "note:58.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.050_stokes_manifolds/58.050_stokes_manifolds.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:58.050",
+      "to": "note:58.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.060_de_rham_cohomology/58.060_de_rham_cohomology.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:53.030",
+      "to": "note:58.100",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:55.010",
+      "to": "note:58.100",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:57.020",
+      "to": "note:58.100",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:57.030",
+      "to": "note:58.100",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:28.010",
+      "to": "note:60.005",
+      "old_strength": "unassessed",
+      "proposal": "not_supported",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/60_probability_stochastic/60.005_laws_large_numbers_clt/60.005_laws_large_numbers_clt.tex",
+      "rationale": "大数の法則・中心極限定理の原稿では期待値・分散・Chebyshev不等式・特性関数を前提とし、Radon–Nikodym定理を必要としない。"
+    },
+    {
+      "from": "note:28.010",
+      "to": "note:60.010",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/60_probability_stochastic/60.010_conditional_expectation_martingales/60.010_conditional_expectation_martingales.tex",
+      "rationale": "条件付き期待値の存在証明でRadon–Nikodymの定理を明示的に適用する（原稿105行付近）。"
+    },
+    {
+      "from": "note:60.005",
+      "to": "note:60.010",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/60_probability_stochastic/60.010_conditional_expectation_martingales/60.010_conditional_expectation_martingales.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:60.010",
+      "to": "note:60.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.030_ito_integral/60.030_ito_integral.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.020",
+      "to": "note:60.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.030_ito_integral/60.030_ito_integral.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.030",
+      "to": "note:60.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/60_probability_stochastic/60.040_ito_formula/60.040_ito_formula.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:60.050",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.050_sde_existence_uniqueness/60.050_sde_existence_uniqueness.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.040",
+      "to": "note:60.050",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/60_probability_stochastic/60.050_sde_existence_uniqueness/60.050_sde_existence_uniqueness.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:60.010",
+      "to": "note:60.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.060_martingale_representation/60.060_martingale_representation.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.020",
+      "to": "note:60.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.060_martingale_representation/60.060_martingale_representation.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.030",
+      "to": "note:60.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.060_martingale_representation/60.060_martingale_representation.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.030",
+      "to": "note:60.070",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/60_probability_stochastic/60.070_girsanov/60.070_girsanov.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:60.040",
+      "to": "note:60.070",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.070_girsanov/60.070_girsanov.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:35.010",
+      "to": "note:60.080",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.080_feynman_kac_kolmogorov/60.080_feynman_kac_kolmogorov.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.040",
+      "to": "note:60.080",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.080_feynman_kac_kolmogorov/60.080_feynman_kac_kolmogorov.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.050",
+      "to": "note:60.080",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.080_feynman_kac_kolmogorov/60.080_feynman_kac_kolmogorov.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:42.020",
+      "to": "note:60.090",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/60_probability_stochastic/60.090_local_limit_theorems/60.090_local_limit_theorems.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:60.005",
+      "to": "note:60.090",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/60_probability_stochastic/60.090_local_limit_theorems/60.090_local_limit_theorems.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.005",
+      "to": "note:62.010",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/62_mathematical_statistics/62.010_statistical_models_estimators/62.010_statistical_models_estimators.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:62.010",
+      "to": "note:62.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/62_mathematical_statistics/62.020_sufficiency_completeness/62.020_sufficiency_completeness.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.005",
+      "to": "note:62.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/62_mathematical_statistics/62.030_mle_asymptotics/62.030_mle_asymptotics.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:62.010",
+      "to": "note:62.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/62_mathematical_statistics/62.030_mle_asymptotics/62.030_mle_asymptotics.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:62.010",
+      "to": "note:62.040",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/62_mathematical_statistics/62.040_hypothesis_testing/62.040_hypothesis_testing.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:62.020",
+      "to": "note:62.040",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/62_mathematical_statistics/62.040_hypothesis_testing/62.040_hypothesis_testing.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:62.030",
+      "to": "note:62.040",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/62_mathematical_statistics/62.040_hypothesis_testing/62.040_hypothesis_testing.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:62.010",
+      "to": "note:62.050",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/62_mathematical_statistics/62.050_bayesian_statistics/62.050_bayesian_statistics.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:62.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/62_mathematical_statistics/62.060_linear_regression/62.060_linear_regression.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:62.010",
+      "to": "note:62.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/62_mathematical_statistics/62.060_linear_regression/62.060_linear_regression.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:62.030",
+      "to": "note:62.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/62_mathematical_statistics/62.060_linear_regression/62.060_linear_regression.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:65.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/65_numerical_analysis/65.020_nonlinear_numerical_methods/65.020_nonlinear_numerical_methods.tex",
+      "rationale": "Newton法の局所収束保証でBanachの不動点定理を明示的に使う（原稿147行付近）。"
+    },
+    {
+      "from": "note:65.010",
+      "to": "note:65.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.020_nonlinear_numerical_methods/65.020_nonlinear_numerical_methods.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:15.010",
+      "to": "note:65.030",
+      "old_strength": "unassessed",
+      "proposal": "not_supported",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/65_numerical_analysis/65.030_numerical_linear_algebra/65.030_numerical_linear_algebra.tex",
+      "rationale": "原稿の到達目標・前提はQR分解、内積、直交射影、通常の行列計算であり、Smith標準形とは別問題。"
+    },
+    {
+      "from": "note:65.010",
+      "to": "note:65.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.030_numerical_linear_algebra/65.030_numerical_linear_algebra.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:65.010",
+      "to": "note:65.040",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.040_interpolation_quadrature/65.040_interpolation_quadrature.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:65.050",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.050_numerical_odes/65.050_numerical_odes.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:65.010",
+      "to": "note:65.050",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.050_numerical_odes/65.050_numerical_odes.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:35.010",
+      "to": "note:65.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.060_finite_difference_pde/65.060_finite_difference_pde.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:65.030",
+      "to": "note:65.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.060_finite_difference_pde/65.060_finite_difference_pde.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:65.040",
+      "to": "note:65.060",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.060_finite_difference_pde/65.060_finite_difference_pde.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:65.050",
+      "to": "note:65.060",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/65_numerical_analysis/65.060_finite_difference_pde/65.060_finite_difference_pde.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:35.020",
+      "to": "note:65.070",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/65_numerical_analysis/65.070_finite_element_methods/65.070_finite_element_methods.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:65.030",
+      "to": "note:65.070",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.070_finite_element_methods/65.070_finite_element_methods.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:65.040",
+      "to": "note:65.070",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.070_finite_element_methods/65.070_finite_element_methods.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:35.020",
+      "to": "note:65.080",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.080_sobolev_fem_interpolation/65.080_sobolev_fem_interpolation.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:35.030",
+      "to": "note:65.080",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.080_sobolev_fem_interpolation/65.080_sobolev_fem_interpolation.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:65.070",
+      "to": "note:65.080",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/65_numerical_analysis/65.080_sobolev_fem_interpolation/65.080_sobolev_fem_interpolation.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:65.020",
+      "to": "note:65.090",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/65_numerical_analysis/65.090_wolfe_zoutendijk/65.090_wolfe_zoutendijk.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:90.010",
+      "to": "note:65.090",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/65_numerical_analysis/65.090_wolfe_zoutendijk/65.090_wolfe_zoutendijk.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:03.010",
+      "to": "note:68.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.010_turing_computability/68.010_turing_computability.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:68.010",
+      "to": "note:68.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.020_decidability_undecidability/68.020_decidability_undecidability.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:05.010",
+      "to": "note:68.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.030_complexity_basics/68.030_complexity_basics.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:68.010",
+      "to": "note:68.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.030_complexity_basics/68.030_complexity_basics.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:68.030",
+      "to": "note:68.040",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.040_np_completeness/68.040_np_completeness.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:68.010",
+      "to": "note:68.050",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.050_rice_shapiro/68.050_rice_shapiro.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:68.020",
+      "to": "note:68.050",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.050_rice_shapiro/68.050_rice_shapiro.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:68.100",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.100_exact_integer_polynomial/68.100_exact_integer_polynomial.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:13.030",
+      "to": "note:68.100",
+      "old_strength": "unassessed",
+      "proposal": "not_supported",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.100_exact_integer_polynomial/68.100_exact_integer_polynomial.tex",
+      "rationale": "整数・多項式のEuclid算法はGröbner基底を必要としない。"
+    },
+    {
+      "from": "note:68.010",
+      "to": "note:68.100",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.100_exact_integer_polynomial/68.100_exact_integer_polynomial.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:15.010",
+      "to": "note:68.110",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.110_exact_computational_linear_algebra/68.110_exact_computational_linear_algebra.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:68.100",
+      "to": "note:68.110",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/68_theoretical_computer_science/68.110_exact_computational_linear_algebra/68.110_exact_computational_linear_algebra.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:70.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/70_mechanics/70.010_variational_principle_lagrangian_mechanics/70.010_variational_principle_lagrangian_mechanics.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:53.100",
+      "to": "note:70.020",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/70_mechanics/70.020_hamiltonian_mechanics/70.020_hamiltonian_mechanics.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:70.010",
+      "to": "note:70.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/70_mechanics/70.020_hamiltonian_mechanics/70.020_hamiltonian_mechanics.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:53.100",
+      "to": "note:70.030",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/70_mechanics/70.030_liouville_arnold/70.030_liouville_arnold.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:70.020",
+      "to": "note:70.030",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/70_mechanics/70.030_liouville_arnold/70.030_liouville_arnold.tex",
+      "rationale": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。"
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:81.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/81_quantum_mechanics/81.010_quantum_math_foundations/81.010_quantum_math_foundations.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:47.020",
+      "to": "note:81.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/81_quantum_mechanics/81.010_quantum_math_foundations/81.010_quantum_math_foundations.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:70.020",
+      "to": "note:81.010",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/81_quantum_mechanics/81.010_quantum_math_foundations/81.010_quantum_math_foundations.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:81.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/81_quantum_mechanics/81.020_spectral_stone/81.020_spectral_stone.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:47.020",
+      "to": "note:81.020",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/81_quantum_mechanics/81.020_spectral_stone/81.020_spectral_stone.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:60.005",
+      "to": "note:82.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/82_statistical_mechanics/82.010_statistical_mechanics/82.010_statistical_mechanics.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:90.010",
+      "to": "note:82.010",
+      "old_strength": "unassessed",
+      "proposal": "not_supported",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/82_statistical_mechanics/82.010_statistical_mechanics/82.010_statistical_mechanics.tex",
+      "rationale": "有限状態Gibbs分布の変分原理を直接証明し、Fenchel双対性の定理を用いていない。"
+    },
+    {
+      "from": "note:53.050",
+      "to": "note:83.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/83_relativity/83.010_lorentz_geometry_relativity/83.010_lorentz_geometry_relativity.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:58.050",
+      "to": "note:83.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/83_relativity/83.010_lorentz_geometry_relativity/83.010_lorentz_geometry_relativity.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:46.040",
+      "to": "note:90.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/90_optimization/90.010_convex_duality_fenchel/90.010_convex_duality_fenchel.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:90.020",
+      "to": "note:90.030",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/90_optimization/90.030_numerical_optimization/90.030_numerical_optimization.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:60.050",
+      "to": "note:91.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/91_financial_actuarial/91.020_black_scholes/91.020_black_scholes.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:60.060",
+      "to": "note:91.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/91_financial_actuarial/91.020_black_scholes/91.020_black_scholes.tex",
+      "rationale": "複製戦略の証明でBrown運動のマルチンゲール表現定理を引用する（原稿253行付近）。"
+    },
+    {
+      "from": "note:60.070",
+      "to": "note:91.020",
+      "old_strength": "unassessed",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/91_financial_actuarial/91.020_black_scholes/91.020_black_scholes.tex",
+      "rationale": "リスク中立測度の構成でGirsanovの定理を適用する（原稿168行付近）。"
+    },
+    {
+      "from": "note:60.080",
+      "to": "note:91.020",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/91_financial_actuarial/91.020_black_scholes/91.020_black_scholes.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:05.030",
+      "to": "note:91.200",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/91_financial_actuarial/91.200_social_networks_dynamics/91.200_social_networks_dynamics.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:37.010",
+      "to": "note:91.200",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/91_financial_actuarial/91.200_social_networks_dynamics/91.200_social_networks_dynamics.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:37.010",
+      "to": "note:92.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/92_biology_modeling/92.010_epidemic_population_models/92.010_epidemic_population_models.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:93.010",
+      "to": "note:92.010",
+      "old_strength": "unassessed",
+      "proposal": "requires_further_proof_review",
+      "review_basis": "catalogue_only",
+      "target_tex": "public_notes/92_biology_modeling/92.010_epidemic_population_models/92.010_epidemic_population_models.tex",
+      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+    },
+    {
+      "from": "note:15.010",
+      "to": "note:93.010",
+      "old_strength": "unassessed",
+      "proposal": "not_supported",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/93_systems_control_modeling/93.010_dimensional_analysis_model_identifiability/93.010_dimensional_analysis_model_identifiability.tex",
+      "rationale": "次元解析の原稿は核・階数・単位系を前提と明示し、Smith標準形に依存しない（導入部）。"
+    },
+    {
+      "from": "note:15.010",
+      "to": "note:93.020",
+      "old_strength": "unassessed",
+      "proposal": "not_supported",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/93_systems_control_modeling/93.020_linear_control/93.020_linear_control.tex",
+      "rationale": "実数上の線形制御の可制御性・可観測性に、PID上のSmith標準形は用いられていない。"
+    },
+    {
+      "from": "note:37.010",
+      "to": "note:93.020",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/93_systems_control_modeling/93.020_linear_control/93.020_linear_control.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    },
+    {
+      "from": "note:93.010",
+      "to": "note:93.020",
+      "old_strength": "unassessed",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/93_systems_control_modeling/93.020_linear_control/93.020_linear_control.tex",
+      "rationale": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。"
+    }
+  ],
+  "proposed_new_edges": [
+    {
+      "from": "note:54.050",
+      "to": "note:46.060",
+      "relation": "recommended_reading",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/46_functional_analysis/46.060_weak_weakstar_topology/46.060_weak_weakstar_topology.tex",
+      "rationale": "weak*コンパクト性のBanach–Alaoglu証明でTychonoff定理を使用する（原稿73行付近）。"
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:46.060",
+      "relation": "recommended_reading",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/46_functional_analysis/46.060_weak_weakstar_topology/46.060_weak_weakstar_topology.tex",
+      "rationale": "弱位相の構成には始位相と積位相の理解を直接要する（原稿冒頭）。"
+    },
+    {
+      "from": "note:55.020",
+      "to": "note:55.030",
+      "relation": "recommended_reading",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/55_algebraic_topology/55.030_seifert_van_kampen/55.030_seifert_van_kampen.tex",
+      "rationale": "van Kampenの定理には基本群の定義・計算法を要する。先行の被覆と基本群ノートが最も直接的。"
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:28.010",
+      "relation": "recommended_reading",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.tex",
+      "rationale": "有限測度に対する存在定理においてL²のRiesz表現定理を明示的に使用（原稿148行付近）。"
+    },
+    {
+      "from": "note:42.020",
+      "to": "note:35.020",
+      "relation": "recommended_reading",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex",
+      "rationale": "Sobolev埋め込みやトレースの評価にPlancherelの定理を明示使用（原稿213行付近等）。"
+    },
+    {
+      "from": "note:55.010",
+      "to": "note:30.040",
+      "relation": "recommended_reading",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/30_complex_analysis/30.040_analytic_continuation_monodromy/30.040_analytic_continuation_monodromy.tex",
+      "rationale": "解析接続の一価性には経路のホモトピーの理解が必要（原稿冒頭）。"
+    },
+    {
+      "from": "note:46.040",
+      "to": "note:47.020",
+      "relation": "recommended_reading",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/47_operator_theory/47.020_compact_operator_spectrum/47.020_compact_operator_spectrum.tex",
+      "rationale": "コンパクト作用素のレゾルベントに関する議論でHahn–Banachの定理を引用（原稿237行付近）。"
+    },
+    {
+      "from": "note:60.010",
+      "to": "note:62.020",
+      "relation": "recommended_reading",
+      "proposal": "core_concept",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
+      "target_tex": "public_notes/62_mathematical_statistics/62.020_sufficiency_completeness/62.020_sufficiency_completeness.tex",
+      "rationale": "Rao–Blackwellによる推定量の改善で条件付き期待値を直接利用（原稿105行以降）。"
+    }
+  ],
+  "warnings": [
+    "原稿の『前提』欄に本稿自身が証明する定理名を掲げる例があるため、欄の文字列だけで前提に分類しない。",
+    "根拠が弱い辺は一律に削除せず、ここでは候補として分離。",
+    "本ファイルは表示用 data/roadmap_graph.json から参照されず、サイト表示に影響しない。"
+  ]
+}
