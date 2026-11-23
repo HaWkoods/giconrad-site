@@ -69,7 +69,7 @@ async function load(){
    if(detail.related?.length){$("#relatedSection").hidden=false;renderLinks($("#relatedList"),detail.related,index,details);}
    const labels={prerequisite:"実質的な前提",generalization:"一般化",special_case:"特殊化",application:"応用",alternative_method:"異なる証明・計算法",shared_concept:"共有する概念",theoretical_connection:"理論的接続",recommended_next:"推奨読書順"};
    const all=(relationData.relations||[]).filter(r=>r.source_id===id||r.target_id===id).sort((a,b)=>(a.relevance==="高"?0:a.relevance==="中"?1:2)-(b.relevance==="高"?0:b.relevance==="中"?1:2));
-   const container=$("#evidenceRelations");container.replaceChildren();
+   const container=$("#evidenceRelations"),candidates=$("#proposedRelations");container.replaceChildren();candidates.replaceChildren();
    for(const r of all){
      const other=r.source_id===id?r.target_id:r.source_id,otherInfo=index.get(other);if(!otherInfo)continue;
      const article=elt("article","evidenceCard"),title=elt("h3","evidenceTitle");
@@ -79,9 +79,11 @@ async function load(){
      article.append(tag,title,state,elt("p","evidenceExplanation",r.explanation));
      const e=(r.evidence||[]).map(x=>x.section||x.source_section||(x.review_basis?"出典：既存の原稿構造・前提調査":"")).filter(Boolean);
      if(e.length)article.append(elt("p","evidenceSource","根拠： "+[...new Set(e)].join(" / ")));
-     container.append(article);
+     (r.verification_status==="要確認"?candidates:container).append(article);
    }
-   if(!all.length)container.append(elt("p","emptyRelation","根拠付きの関連性は現在登録されていません。"));
+   $("#candidateCount").textContent="（"+candidates.childElementCount+"件）";
+   $("#candidateRelations").hidden=!candidates.childElementCount;
+   if(!container.childElementCount)container.append(elt("p","emptyRelation","本文根拠を伴う確認済み・推論可能な関連性はまだ登録されていません。"));
    if(!info.publicly_available){$("#privateNotice").textContent="このノートは検索情報のみ公開中です。PDF・pLaTeX原稿は公開サイトにはありません。";}
    
    $("#noteContent").hidden=false;$("#noteStatus").textContent="";
