@@ -105,3 +105,23 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{o
 .roadmapPromo a{white-space:nowrap;text-decoration:none;background:var(--accent);color:white;padding:12px 14px;border-radius:6px;font-weight:720;font-size:12px}
 .roadmapPromo a:hover{background:#173d2e}
 @media(max-width:650px){.roadmapPromo{flex-direction:column;align-items:flex-start;padding:16px}.roadmapPromo a{white-space:normal}}
+
+/* Source-aware search summaries, concept index and evidence-backed relations. */
+.indexSummary{margin:11px 0 5px;color:var(--ink);font-size:13px;line-height:1.75}
+.indexResult{margin:4px 0 10px;font-size:11px;color:var(--muted);line-height:1.6}
+.noteDetailedDescription{font-size:14px;line-height:1.9;color:var(--ink);margin:12px 0}
+.contentIndex,.evidenceRelationsSection{margin:30px 0;padding-top:20px;border-top:1px solid var(--line)}
+.contentIndex h2,.evidenceRelationsSection h2{font-size:21px;margin:0 0 12px}
+.contentIndex h3{font-size:14px;margin:18px 0 8px}
+.mainResultList{line-height:1.9;padding-left:1.3em;font-size:13px}
+.indexedConcepts{display:flex;flex-wrap:wrap;gap:8px}
+.conceptLink{font-size:12px;padding:8px 10px;background:#f3f7f3;border:1px solid #dce7df;border-radius:5px;text-decoration:none;color:var(--accent);line-height:1.5}
+.conceptLink:hover,.evidenceTitle a:hover{text-decoration:underline}
+.evidenceRelations{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:13px}
+.evidenceCard{min-width:0;border:1px solid var(--line);padding:14px;border-radius:6px;background:#fff;line-height:1.7}
+.evidenceTitle{font-size:14px;margin:8px 0 5px}
+.evidenceTitle a{color:var(--accent);text-decoration:none}
+.evidenceLabel,.evidenceState{font-size:11px;color:var(--muted);display:inline-block;margin-right:8px}
+.evidenceExplanation{font-size:12px;line-height:1.8;margin:9px 0 0}
+.evidenceSource{font-size:11px;line-height:1.6;color:var(--muted);border-top:1px dotted var(--line);padding-top:7px;margin:10px 0 0}
+@media(max-width:650px){.evidenceRelations{grid-template-columns:1fr}}
