@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "identity": {
+    "note_id": "Keep legacy NN.NNN; P5.010 and P5.020 are stable non-filename IDs",
+    "concept_id": "Controlled kebab-case English key"
+  },
+  "files": {
+    "notes.json": {
+      "shape": "{version, notes: Note[]}",
+      "fields": [
+        "id",
+        "title",
+        "summary",
+        "description",
+        "primary_field",
+        "secondary_fields",
+        "fields",
+        "topics",
+        "tags",
+        "keywords",
+        "prerequisites",
+        "recommended_prior",
+        "main_concepts",
+        "main_results",
+        "methods",
+        "outline_sections",
+        "github_url",
+        "pdf_url",
+        "source_url",
+        "publicly_available",
+        "content_basis",
+        "mathematical_review_status",
+        "legacy_title"
+      ],
+      "publication": "New three notes metadata only; no private TeX/PDF"
+    },
+    "details.json": {
+      "shape": "{version, notes: {id,summary,summary_basis,prerequisites,successors,related}[]}"
+    },
+    "concepts.json": {
+      "shape": "{version, concepts: {id,name_ja,name_en,aliases,description,fields,related_note_ids,related_concept_ids,index_status}[]}"
+    },
+    "relations.json": {
+      "shape": "{version, relations: {source_id,target_id,relation_type,direction,symmetric,subtype,explanation,related_concepts,evidence,verification_status,relevance}[]}"
+    },
+    "taxonomy.json": {
+      "shape": "Existing fields and topic_groups; unchanged"
+    }
+  },
+  "relation_types": [
+    "prerequisite",
+    "generalization",
+    "special_case",
+    "application",
+    "alternative_method",
+    "shared_concept",
+    "theoretical_connection",
+    "recommended_next"
+  ],
+  "evidence_statuses": {
+    "確認済み": "Directly supported by inspected note sections; not a certification of theorem proof correctness",
+    "数学的に推論可能": "Mathematically justified by inspected content; not explicitly stated as a relation",
+    "要確認": "Proposed or insufficiently inspected"
+  },
+  "relevance": [
+    "高",
+    "中",
+    "低"
+  ],
+  "symmetric_types": [
+    "alternative_method",
+    "shared_concept",
+    "theoretical_connection"
+  ],
+  "direction": "source_id to target_id unless symmetric=true"
+}
