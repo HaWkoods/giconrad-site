@@ -11,8 +11,15 @@ CATALOG = ROOT / "data" / "notes.json"
 MANIFEST = ROOT / "data" / "public_pdf_links.json"
 
 catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-ids = {n["id"] for n in catalog["notes"]}
-assert len(ids) == 157, f"Unexpected catalog size: {len(ids)}"
+# Only previously approved documents are allowed to be published.
+# Index registration alone does not authorize PDF/TeX publication.
+manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+ids = set(manifest["notes"])
+catalog_ids = {n["id"] for n in catalog["notes"]}
+assert len(ids) == 157, f"Unexpected public allowlist size: {len(ids)}"
+assert ids <= catalog_ids, f"Published note missing in catalog: {sorted(ids - catalog_ids)}"
+assert all(n.get("publicly_available", False) == (n["id"] in ids)
+           for n in catalog["notes"]), "Publication allowlist and catalog disagree"
 assert SOURCE.is_dir(), "Private source checkout missing"
 paths = {}
 for path in SOURCE.rglob("*"):
