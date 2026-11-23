@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "notes": [
     {
       "id": "03.010",
@@ -845,7 +845,9 @@
         "58.010",
         "60.050",
         "65.020",
-        "65.050"
+        "65.050",
+        "34.010",
+        "P5.010"
       ],
       "related": []
     },
@@ -2023,6 +2025,37 @@
       "related": [
         "97.170"
       ]
+    },
+    {
+      "id": "34.010",
+      "summary": "常微分方程式の初期値問題を積分方程式に帰着し、Grönwallの不等式、Picard–Lindelöfの存在・一意性定理、Peanoの存在定理、初期値への連続依存性を扱う。",
+      "summary_basis": "source_outline",
+      "prerequisites": [
+        "47.010"
+      ],
+      "successors": [
+        "P5.010"
+      ],
+      "related": []
+    },
+    {
+      "id": "P5.010",
+      "summary": "反復写像の周期点、行列冪の収束、縮小写像、Volterra型積分方程式、常微分方程式について、解答付きの12題を通じて仮定と結論を検討する。",
+      "summary_basis": "source_outline",
+      "prerequisites": [
+        "47.010",
+        "34.010"
+      ],
+      "successors": [],
+      "related": []
+    },
+    {
+      "id": "P5.020",
+      "summary": "線形写像の階数、固有値、対角化、Jordan標準形、内積空間、正規行列を中心とする20題の演習と解答を通じて計算と証明を整理する。",
+      "summary_basis": "source_outline",
+      "prerequisites": [],
+      "successors": [],
+      "related": []
     }
   ]
 }
