@@ -24,14 +24,20 @@ const focal={
 "70.030":"Liouville–Arnoldの定理","81.020":"スペクトル定理・Stoneの定理","90.010":"Fenchelの双対性","90.020":"Karush–Kuhn–Tucker条件","91.020":"Black–Scholes方程式",
 "93.020":"可制御性・可観測性","94.010":"情報源符号化定理"
 };
+const specialSubfields={
+ "05.010":"enumeration","05.020":"enumeration","05.050":"enumeration","05.030":"graph-theory","05.040":"graph-theory","05.060":"graph-theory",
+ "11.010":"analytic-number-theory","11.020":"elementary-number-theory","11.030":"algebraic-number-theory","11.040":"analytic-number-theory","11.050":"analytic-number-theory",
+ "97.030":"entrance-math","97.050":"entrance-math","97.120":"entrance-math","97.130":"entrance-math","97.170":"entrance-math","97.200":"entrance-math"
+};
+function hasField(n,id){return (n.fields||[]).includes(id)||specialSubfields[n.id]===id;}
 const noteUrl=id=>"./note.html?id="+encodeURIComponent(id);
 const viewerUrl=id=>"./viewer.html?id="+encodeURIComponent(id);
 let notes=new Map(),details=new Map(),domains=[],allFields=new Map(),selectedId=null,openNodes=new Set(),query="";
 function fieldIds(n){return n.fields||[];}
 function matches(n,q){return !q||(n.id+" "+n.title+" "+(focal[n.id]||"")).toLocaleLowerCase().includes(q);}
-function relevantCount(field,q){return [...notes.values()].filter(n=>fieldIds(n).includes(field)&&matches(n,q)).length;}
+function relevantCount(field,q){return [...notes.values()].filter(n=>hasField(n,field)&&matches(n,q)).length;}
 function childrenFor(domain,field){
- const matching=[...notes.values()].filter(n=>matches(n,query)&&fieldIds(n).includes(field.id));
+ const matching=[...notes.values()].filter(n=>matches(n,query)&&hasField(n,field.id));
  return matching.sort((a,b)=>a.id.localeCompare(b.id,"ja"));
 }
 function nodeButton(title,count,level,expanded,click){
@@ -45,7 +51,7 @@ function toggle(key){if(openNodes.has(key))openNodes.delete(key);else openNodes.
 function renderTree(){
  const tree=$("#roadmapTree");tree.replaceChildren();let shown=0;
  for(const group of domains){
-  const members=[...notes.values()].filter(n=>matches(n,query)&&(fieldIds(n).includes(group.id)||(group.children||[]).some(f=>fieldIds(n).includes(f.id))));
+  const members=[...notes.values()].filter(n=>matches(n,query)&&(hasField(n,group.id)||(group.children||[]).some(f=>hasField(n,f.id))));
   if(!members.length)continue;shown++;
   const domainKey="d:"+group.id,force=!!query,expanded=force||openNodes.has(domainKey);
   const block=make("section","mapDomain");block.append(nodeButton(group.label,new Set(members.map(n=>n.id)).size,0,expanded,()=>toggle(domainKey)));
