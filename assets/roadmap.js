@@ -205,7 +205,7 @@ function renderLearningRoute(id){
   const controls=make("div","learningRouteLinks");
   const detailLink=make("a","","概要");detailLink.href=noteUrl(stepId);
   const readLink=make("a","","本文を読む");readLink.href=viewerUrl(stepId);
-  controls.append(detailLink,readLink);
+  controls.append(detailLink);if(n.publicly_available)controls.append(readLink);
   checkbox.addEventListener("change",()=>{if(checkbox.checked)checked.add(stepId);else checked.delete(stepId);saveProgress(checked);refresh();});
   li.append(checkbox,label,controls);steps.append(li);
  }
@@ -248,6 +248,7 @@ function selectNote(id,scrollToMap=true){
  box.append(related("次に読むとよいノート",info.successors));
  const links=make("div","mapDetailActions");
  for(const [label,url] of [["ノートの概要",noteUrl(id)],["本文を画像で読む",viewerUrl(id)]]){
+  if(label==="本文を画像で読む"&&!n.publicly_available)continue;
   const a=make("a","mapAction",label);a.href=url;links.append(a);
  }
  box.append(links);
