@@ -1,0 +1,92 @@
+name: One-time conservative notation review and PDF build
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/notation_revision.py'
+      - '.github/workflows/notation_revision.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: public-notes-main
+  cancel-in-progress: false
+
+jobs:
+  revision:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install pLaTeX
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends texlive-lang-japanese texlive-latex-extra texlive-latex-recommended texlive-fonts-recommended poppler-utils
+      - name: Clarify unambiguous notations
+        run: python3 scripts/notation_revision.py --root public_notes --report docs/notation_revision_report.json
+      - name: Rebuild changed PDFs and revert broken changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only -- public_notes | grep -E '^public_notes/.*\.tex > /tmp/notation-files || true
+          : > /tmp/notation-results
+          while IFS= read -r source; do
+            dir="$(dirname "$source")"
+            stem="$(basename "$source" .tex)"
+            work="$RUNNER_TEMP/notation-build/$stem"
+            mkdir -p "$work"
+            if (cd "$dir" &&
+                platex -interaction=nonstopmode -halt-on-error -file-line-error -output-directory="$work" "$stem.tex" &&
+                platex -interaction=nonstopmode -halt-on-error -file-line-error -output-directory="$work" "$stem.tex") &&
+               dvipdfmx -o "$GITHUB_WORKSPACE/$dir/$stem.pdf" "$work/$stem.dvi" &&
+               pdfinfo "$dir/$stem.pdf" >/dev/null &&
+               ! grep -Eq 'Overfull \\hbox|LaTeX Warning: There were undefined references' "$work/$stem.log"; then
+              echo "BUILT $source" | tee -a /tmp/notation-results
+            else
+              git restore -- "$source" "$dir/$stem.pdf"
+              echo "REVERTED $source (check failed)" | tee -a /tmp/notation-results
+            fi
+          done < /tmp/notation-files
+          cp /tmp/notation-results docs/notation_revision_build_results.txt
+      - name: Commit pLaTeX sources, PDFs, and audit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public_notes docs/notation_revision_report.json docs/notation_revision_build_results.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "Clarify notation in classified notes and rebuild PDFs"
+            git push origin HEAD:main
+          fi
+ > /tmp/notation-files || true
+          : > /tmp/notation-results
+          while IFS= read -r source; do
+            dir="$(dirname "$source")"
+            stem="$(basename "$source" .tex)"
+            work="$RUNNER_TEMP/notation-build/$stem"
+            mkdir -p "$work"
+            if (cd "$dir" &&
+                platex -interaction=nonstopmode -halt-on-error -file-line-error -output-directory="$work" "$stem.tex" &&
+                platex -interaction=nonstopmode -halt-on-error -file-line-error -output-directory="$work" "$stem.tex") &&
+               dvipdfmx -o "$GITHUB_WORKSPACE/$dir/$stem.pdf" "$work/$stem.dvi" &&
+               pdfinfo "$dir/$stem.pdf" >/dev/null &&
+               ! grep -Eq 'Overfull \\hbox|LaTeX Warning: There were undefined references' "$work/$stem.log"; then
+              echo "BUILT $source" | tee -a /tmp/notation-results
+            else
+              git restore -- "$source" "$dir/$stem.pdf"
+              echo "REVERTED $source (check failed)" | tee -a /tmp/notation-results
+            fi
+          done < /tmp/notation-files
+          cp /tmp/notation-results docs/notation_revision_build_results.txt
+      - name: Commit pLaTeX sources, PDFs, and audit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add notes docs/notation_revision_report.json docs/notation_revision_build_results.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "Clarify notation in classified notes and rebuild PDFs"
+            git push origin HEAD:main
+          fi
