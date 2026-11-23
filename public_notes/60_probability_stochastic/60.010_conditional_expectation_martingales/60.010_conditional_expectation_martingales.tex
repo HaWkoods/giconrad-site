@@ -69,7 +69,7 @@
 
 \begin{document}
 \section*{読了後にできること}
-本稿を読むための前提は，条件付き期待値，$sigma$-代数と積分の定義．
+本稿を読むための前提は，条件付き期待値，$\sigma$-加法族と積分の定義．
 本稿の具体的な到達課題は，有限分割に関する条件付き期待値を自分で計算する．
 
 \section{確率空間と可積分確率変数}
@@ -77,8 +77,13 @@
 $(\Omega,\mathcal F,P)$ を確率空間とし，
 $\mathcal G\subset\mathcal F$ を部分 $\sigma$-加法族とする．
 以下，確率変数は実数値とする．
-$L^p(\mathcal F)$ は $P$ に関する同値類の空間を表し，
+$L^p(\mathcal F)$（$1\le p<\infty$）は
+$\mathcal F$-可測な $p$ 乗可積分関数を $P$-ほとんど至る所の
+一致で同一視した空間とし，$L^p(\mathcal G)$ も
+制限測度 $P|_{\mathcal G}$ に対して同様に定める．
 $E[X]=\int_\Omega X\,dP$ と書く．
+以下，$1_A$ は集合 $A$ の指示関数とし，等号を「概至る所」
+の意味で用いるときは $P$-零集合上の違いを無視する．
 
 \begin{definition}
 $X\in L^1(\mathcal F)$ に対し，
