@@ -233,6 +233,7 @@ function renderLearningRoute(id){
 }
 function selectNote(id){
  const n=notes.get(id);if(!n)return;selectedId=id;
+ if(typeof radialSelectTarget==="function")radialSelectTarget(id);
  const info=details.get(id)||{};
  const box=$("#roadmapDetail");box.replaceChildren();box.classList.remove("mapDetailEmpty");
  const top=make("div","mapDetailTop");top.append(make("span","mapEyebrow","THEOREM / TOPIC · "+id));
@@ -258,12 +259,13 @@ function selectNote(id){
 }
 async function init(){
  try{
-  const responses=await Promise.all(["./data/notes.json","./data/details.json","./data/taxonomy.json"].map(x=>fetch(x)));
+  const responses=await Promise.all(["./data/notes.json","./data/details.json","./data/taxonomy.json","./data/roadmap_graph.json"].map(x=>fetch(x)));
   if(responses.some(r=>!r.ok))throw Error("取得に失敗しました");
-  const [catalog,descriptions,taxonomy]=await Promise.all(responses.map(r=>r.json()));
+  const [catalog,descriptions,taxonomy,graph]=await Promise.all(responses.map(r=>r.json()));
   notes=new Map(catalog.notes.map(n=>[n.id,n]));details=new Map(descriptions.notes.map(n=>[n.id,n]));
   domains=taxonomy.fields;
   for(const d of domains){allFields.set(d.id,d);for(const c of d.children||[])allFields.set(c.id,c);}
+ radialSetup(graph);
   $("#roadmapSearch").addEventListener("input",e=>{query=e.target.value.trim().toLocaleLowerCase();renderTree();});
   $("#roadmapExpand").addEventListener("click",()=>{openNodes=new Set(domains.flatMap(d=>["d:"+d.id,...(d.children||[]).map(c=>"s:"+d.id+":"+c.id),"s:"+d.id+":"+d.id]));renderTree();});
   $("#roadmapCollapse").addEventListener("click",()=>{query="";$("#roadmapSearch").value="";openNodes.clear();renderTree();});
