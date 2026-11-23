@@ -1,0 +1,62 @@
+/* Theorem roadmap: interactive nested tree and contextual detail panel */
+.roadmapMain{padding:28px 0 76px}
+.roadmapMain .breadcrumbs{margin-bottom:35px}
+.mapHero{max-width:840px;margin:0 0 32px}
+.mapHero h1{font-size:clamp(34px,4.8vw,58px);letter-spacing:-.045em;line-height:1.35;margin:12px 0 20px}
+.mapHero h1 em{font-style:normal;color:var(--accent)}
+.mapHero>p{color:var(--muted);line-height:1.95;max-width:760px;font-size:14px}
+.mapHero .mapFine{font-size:11px}
+.mapToolbar{padding:18px 22px 20px;background:#fff;border:1px solid var(--line);border-radius:10px;margin-bottom:18px}
+.mapToolbar label{font-size:12px;font-weight:750;display:block;margin-bottom:9px}
+.mapSearchRow{display:flex;align-items:stretch;gap:9px}
+.mapSearchRow input{flex:1;min-width:160px;border:1px solid var(--line);padding:11px 12px;border-radius:6px;font-size:13px;color:var(--ink)}
+.mapSearchRow button{font-size:12px;font-weight:700;border:1px solid #ccdcd1;border-radius:6px;padding:9px 12px;color:var(--accent);background:var(--pale)}
+.mapWorkspace{display:grid;grid-template-columns:minmax(340px,1.12fr) minmax(320px,.88fr);gap:22px;align-items:start}
+.mapExplorer,.mapDetail{min-width:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px}
+.mapPanelHead{display:flex;align-items:baseline;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line);padding-bottom:16px}
+.mapPanelHead h2{font-size:17px;margin:0}.mapPanelHead span{font-size:11px;color:var(--muted)}
+.mapTree{padding-top:7px}
+.mapDomain{border-bottom:1px solid #e6ebe6;padding:5px 0}
+.mapDomain:last-child{border-bottom:0}
+.mapNode{display:flex;align-items:center;gap:10px;text-align:left;width:100%;border:0;background:transparent;color:var(--ink);padding:12px 8px;border-radius:6px}
+.mapNode:hover,.mapLeaf:hover{background:var(--pale)}
+.mapNode.level0 .mapNodeTitle{font-weight:760;font-size:15px}
+.mapNode.level1{padding:9px 5px}
+.mapNode.level1 .mapNodeTitle{font-weight:700;font-size:13px}
+.mapChevron{display:inline-grid;place-items:center;flex:0 0 23px;width:23px;height:23px;color:var(--accent);background:#e5efe8;border-radius:5px;font-weight:bold}
+.mapNodeTitle{flex:1}
+.mapCount{font-size:11px;color:var(--muted);white-space:nowrap}
+.mapBranch{margin-left:19px;padding-left:13px;border-left:1px solid #cddcd2}
+.mapSubfield{padding:3px 0}
+.mapLeaves{padding-left:15px;margin-left:12px;border-left:1px solid #dce8e0}
+.mapLeaf{display:flex;text-align:left;align-items:flex-start;width:100%;gap:9px;background:transparent;border:0;border-radius:6px;padding:10px 8px;color:var(--ink)}
+.mapLeaf.selected{background:#deeee3;outline:1px solid #bad5c2}
+.mapLeafDot{color:var(--accent);font-size:18px;line-height:1}
+.mapLeafText{flex:1;min-width:0}
+.mapLeafHeading{display:block;font-size:12px;font-weight:720;line-height:1.6}
+.mapLeafNote{display:block;color:var(--muted);font-size:10px;line-height:1.6;margin-top:2px}
+.mapLeafId{font-size:10px;color:#87938a;white-space:nowrap;margin-top:2px}
+.mapEmpty{color:var(--muted);font-size:13px}
+.mapDetail{position:sticky;top:18px;max-height:calc(100vh - 36px);overflow-y:auto}
+.mapPlaceholder{text-align:center;padding:75px 14px}
+.mapPlaceholderGlyph{font-family:Georgia,serif;font-size:55px;color:#b0c4b6}
+.mapPlaceholder h2{font-size:19px;margin:10px 0}.mapPlaceholder p{font-size:12px;color:var(--muted);line-height:1.9}
+.mapEyebrow{font-size:10px;color:var(--accent);font-weight:750;letter-spacing:.11em}
+.mapDetailHeading{font-size:clamp(20px,2.4vw,28px);line-height:1.5;margin:11px 0 15px}
+.mapFine{font-size:11px;color:var(--muted);line-height:1.9}
+.mapDetailTop{border-bottom:1px solid var(--line);padding-bottom:12px}
+.mapDescription{padding-top:17px}
+.mapDescription h3,.mapRelated h3{font-size:13px;margin:0 0 10px}
+.mapDescription p{line-height:1.9;font-size:13px;margin:0}
+.mapDetailTags{display:flex;gap:5px;flex-wrap:wrap;margin:18px 0 24px}
+.mapTag{font-size:10px;color:#416151;background:var(--pale);border-radius:4px;padding:5px 8px}
+.mapRelated{border-top:1px solid var(--line);padding:16px 0}
+.mapRelatedGrid{display:flex;flex-wrap:wrap;gap:7px}
+.mapRelatedLink{text-align:left;border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:11px;line-height:1.6;color:var(--accent);background:#fff}
+.mapRelatedLink:hover{background:var(--pale)}
+.mapDetailActions{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0}
+.mapAction{background:var(--accent);color:#fff;text-decoration:none;padding:11px 13px;font-size:12px;font-weight:700;border-radius:6px}
+.mapAction:hover{background:#173d2e}
+.mapActive{font-size:11px;color:var(--muted)}
+@media(max-width:850px){.mapWorkspace{grid-template-columns:minmax(0,1fr)}.mapDetail{position:static;max-height:none}.mapSearchRow{flex-wrap:wrap}.mapSearchRow input{flex-basis:100%}.mapPlaceholder{padding:30px 10px}}
+@media(max-width:560px){.mapExplorer,.mapDetail{padding:14px}.mapToolbar{padding:13px}.mapHero h1{font-size:33px}.mapLeaf{gap:5px}.mapLeafId{font-size:9px}}
