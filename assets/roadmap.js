@@ -128,11 +128,62 @@ function readProgress(){
 function saveProgress(checked){
  try{localStorage.setItem(progressKey,JSON.stringify([...checked]));}catch{/* storage disabled */}
 }
+// Editorial foundational checkpoints: useful preparation, not verified proof dependencies.
+const conceptGuides={
+ "46.040":["実線形空間・線形汎関数・部分空間","半ノルムと劣線形汎関数","線形汎関数の延長と順序による極大化"],
+ "53.040":["距離空間の完備性とコンパクト性","滑らかな多様体・接空間・Riemann計量","測地線・指数写像と測地的完備性"],
+ "28.010":["σ-加法族と測度","Lebesgue積分と収束定理","絶対連続な測度と符号付き測度"],
+ "81.020":["Hilbert空間・有界線形作用素","非有界作用素の定義域と自己共役性","強連続ユニタリ群と生成作用素"],
+ "30.020":["複素微分・正則性","曲線に沿う複素積分","単連結性と原始関数"],
+ "54.050":["位相空間・開被覆によるコンパクト性","積位相と射影","有限交叉性と超フィルター"],
+ "11.050":["素数計数関数とDirichlet級数","複素正則関数と解析接続","ゼータ関数とTauber型議論"],
+ "12.020":["体の拡大と最小多項式","分離拡大・正規拡大","自己同型群・中間体"],
+ "13.030":["多項式環とイデアル","単項式順序・割り算アルゴリズム","S多項式と停止性"],
+ "58.050":["滑らかな多様体と接ベクトル","外積代数と微分形式","向き・境界・局所座標での積分"]
+};
+const fieldConcepts={
+ "logic":["集合・写像・述語論理の記法","形式的証明と数学的意味論"],
+ "combinatorics":["集合と写像の数え上げ","漸化式・数学的帰納法"],
+ "number-theory":["整除性・合同式","群・環・体の基本概念"],
+ "field-theory":["群・環・体の定義","多項式と体の拡大"],
+ "commutative-algebra":["イデアルと商環","加群・準同型"],
+ "linear-algebra":["行列・線形写像","基底・次元・線形独立"],
+ "category-theory":["写像と合成・普遍性","群・環・加群の具体例"],
+ "functional-analysis":["線形代数とノルム空間","距離空間の完備性"],
+ "operator-theory":["Banach空間・Hilbert空間","有界線形作用素"],
+ "measure-theory":["測度と可測関数","Lebesgue積分と収束定理"],
+ "complex-analysis":["複素数と複素微分","実解析の基本定理"],
+ "general-topology":["集合・写像","位相空間と連続性"],
+ "differential-geometry":["多変数微分積分","滑らかな多様体と接空間"],
+ "manifold-analysis":["多変数微分積分と線形代数","滑らかな多様体"],
+ "algebraic-topology":["位相空間と連続写像","ホモトピーと基本群"],
+ "probability-theory":["測度論的確率と積分","確率変数と期待値"],
+ "statistics":["確率変数と確率分布","推定と確率収束"],
+ "pde":["多変数微積分と積分","関数空間と弱微分"],
+ "optimization":["微分積分と線形代数","凸集合・凸関数"],
+ "numerical-analysis":["微積分と線形代数","誤差と極限"],
+ "theoretical-cs":["離散数学と論理","アルゴリズムと数学的帰納法"]
+};
+function showFoundationChecks(id){
+ const n=notes.get(id),topics=conceptGuides[id]||
+  [...new Set((n.fields||[]).flatMap(f=>fieldConcepts[f]||[]))].slice(0,4);
+ const section=make("section","learningFoundations");
+ section.append(make("h3","","学習前の基礎確認"));
+ section.append(make("p","mapFine","以下は学習を始めるための補助的なチェック項目です。ノートの正式な必要十分条件や、定理の論理的な依存関係を主張するものではありません。"));
+ if(!topics.length){
+  section.append(make("p","mapFine","この主題の基礎確認項目はまだ個別に整理されていません。対応ノートの冒頭にある前提・定義を確認してください。"));
+ }else{
+  const ul=make("ul","learningFoundationList");
+  for(const item of topics)ul.append(make("li","",item));
+  section.append(ul);
+ }
+ return section;
+}
 function renderLearningRoute(id){
  const {order,cycles,unlisted,missing}=buildLearningRoute(id);
  const section=make("section","learningRoute");section.id="learningRoute";
  section.append(make("h3","learningRouteTitle","この定理に到達する学習ルート"));
- section.append(make("p","mapFine","既存ノートの「先に読むとよいノート」を再帰的にたどり、重複を除いて基礎から並べます。各ノートの読了チェックはこの端末に保存されます。"));
+ section.append(make("p","mapFine","既存ノートの「先に読むとよいノート」を再帰的にたどり、重複を除いて基礎から並べます。各ノートの読了チェックはこの端末に保存されます。"));section.append(showFoundationChecks(id));
  const summary=make("div","learningRouteSummary"),counter=make("strong","learningRouteCounter"),bar=make("progress","learningRouteProgress");
  bar.max=order.length;const checked=readProgress();
  const steps=make("ol","learningRouteSteps");
