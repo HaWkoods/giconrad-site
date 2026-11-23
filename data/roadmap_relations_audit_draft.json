@@ -7,13 +7,12 @@
     "existing_relations": 202,
     "proposal_counts": {
       "core_concept": 140,
-      "supporting_only": 50,
-      "not_supported": 11,
-      "requires_further_proof_review": 1
+      "supporting_only": 51,
+      "not_supported": 11
     },
     "suggested_additions": 8,
     "review_stage": "source outline and selected argument screening, not exhaustive theorem-level proof checking",
-    "screened_edges": 201
+    "screened_edges": 202
   },
   "definitions": {
     "core_concept": "当該ノートを読む際に先行ノートが扱う中心概念・結果を直接使う。先行ノート全体の読了や証明の論理的必要性とは同義でない。",
@@ -1107,10 +1106,10 @@
       "from": "note:47.010",
       "to": "note:60.050",
       "old_strength": "unassessed",
-      "proposal": "requires_further_proof_review",
-      "review_basis": "catalogue_only",
+      "proposal": "supporting_only",
+      "review_basis": "source_preamble_sections_and_selected_arguments",
       "target_tex": "public_notes/60_probability_stochastic/60.050_sde_existence_uniqueness/60.050_sde_existence_uniqueness.tex",
-      "rationale": "従来の推奨読書順。定理単位の前提使用について未判定。"
+      "rationale": "存在・一意性証明はBanach空間の完備性とPicard反復の階乗型評価を利用する。原稿は有限区間で縮小写像を構成する方法ではないと明言（原稿284–285行）。Banachの不動点定理の事前習得は直接の必須条件ではない。"
     },
     {
       "from": "note:60.040",
