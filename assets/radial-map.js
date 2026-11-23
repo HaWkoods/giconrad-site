@@ -6,7 +6,7 @@ const RADIAL_NS="http://www.w3.org/2000/svg";
 let radialGraph=null,radialNodes=new Map(),radialIncoming=new Map();
 let radialRoot=null,radialExpanded=new Set(),radialView={x:0,y:0,scale:1};
 const radialLimits={maxNodes:85,maxDepth:7};
-const radialNodeWidth=176,radialNodeHeight=68;
+const radialNodeWidth=206,radialNodeHeight=206;
 let radialScene=null,radialDragging=null,radialSuppressClick=false,radialBounds=null;
 function radialEl(tag,attrs={}){
  const el=document.createElementNS(RADIAL_NS,tag);
@@ -180,8 +180,8 @@ function radialDraw(fit=true){
    const edge=child.edge,dx=child.x-n.x,dy=child.y-n.y,len=Math.hypot(dx,dy)||1;
    const ux=dx/len,uy=dy/len;
    const line=radialEl("line",{
-    x1:n.x+ux*52,y1:n.y+uy*35,
-    x2:child.x-ux*58,y2:child.y-uy*35,
+    x1:n.x+ux*(n.level===0?98:81),y1:n.y+uy*(n.level===0?98:81),
+    x2:child.x-ux*81,y2:child.y-uy*81,
     class:"radialEdge "+edge.strength,
     "data-relation":edge.relation
    });
@@ -216,7 +216,6 @@ function radialSetup(graph){
  }
  const viewport=document.querySelector("#radialViewport");
  if(!viewport)return;
- const dragState={};
  viewport.addEventListener("pointerdown",e=>{
   if(e.button!==0||e.target.closest("button,a"))return;
   radialDragging={id:e.pointerId,startX:e.clientX,startY:e.clientY,x:radialView.x,y:radialView.y};
