@@ -28,7 +28,7 @@ if [[ "${GITHUB_EVENT_NAME:-}" == workflow_dispatch ]]; then
     exit 1
   fi
 elif [[ -n "${BEFORE_SHA:-}" ]] && git cat-file -e "${BEFORE_SHA}^{commit}" 2>/dev/null; then
-  if [[ -n "$(git diff --name-only "$BEFORE_SHA" HEAD -- scripts/notation_build_queue.txt)" ]]; then
+  if [[ -f scripts/notation_build_queue.txt ]] && { [[ -n "$(git diff --name-only "$BEFORE_SHA" HEAD -- scripts/notation_build_queue.txt)" ]] || [[ -n "$(git diff --name-only "$BEFORE_SHA" HEAD -- scripts/build_public_notes.sh)" ]]; }; then
     # Rebuild exactly the audited batch, including sources from intermediate
     # commits whose automatically queued workflow runs were superseded.
     mapfile -t files < scripts/notation_build_queue.txt
