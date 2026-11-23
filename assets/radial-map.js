@@ -128,7 +128,7 @@ function radialShowInfo(nodeId,edge){
   center.addEventListener("click",()=>selectNote(id));
   const link=document.createElement("a");link.href=noteUrl(id);link.textContent="ノート詳細";
   const read=document.createElement("a");read.href=viewerUrl(id);read.textContent="本文を読む";
-  actions.append(center,link,read);
+  actions.append(center,link);if(notes.get(id)?.publicly_available)actions.append(read);
  }
  panel.append(actions);
 }
