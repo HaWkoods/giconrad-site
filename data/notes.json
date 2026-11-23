@@ -2853,8 +2853,7 @@
       ],
       "topics": [
         "measure",
-        "integration",
-        "differential-geometry"
+        "integration"
       ],
       "summary": "一変数Lebesgue積分の変数変換から出発し、Tonelliの定理、座標ごとの局所分解と可算分割を用いて、多変数のC¹微分同相写像に対する変数変換公式を証明する。極座標・球面座標への応用を含む。",
       "description": "Lebesgue積分の変数変換公式を主題とする独立した数学ノート。一変数Lebesgue積分の変数変換から出発し、Tonelliの定理、座標ごとの局所分解と可算分割を用いて、多変数のC¹微分同相写像に対する変数変換公式を証明する。極座標・球面座標への応用を含む。 原稿にはを扱う節があり、主要な結果の応用へ論述を進める。各定理の証明の完全性は別途の数学的査読を要する。",
@@ -2864,8 +2863,7 @@
       ],
       "tags": [
         "measure",
-        "integration",
-        "differential-geometry"
+        "integration"
       ],
       "keywords": [
         "Lebesgue積分の変数変換公式",
