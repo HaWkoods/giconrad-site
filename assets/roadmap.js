@@ -101,6 +101,85 @@ function related(title,ids){
  }
  section.append(grid);return section;
 }
+
+// Construct a stable topological learning order from the catalogue's recommended
+// prerequisite edges. They are recommendations, not formally proved dependencies.
+function buildLearningRoute(target){
+ const done=new Set(),active=new Set(),order=[],cycles=[],unlisted=new Set(),missing=new Set();
+ function walk(id){
+  if(active.has(id)){cycles.push(id);return;}
+  if(done.has(id))return;
+  if(!notes.has(id)){missing.add(id);return;}
+  active.add(id);
+  const prereqs=details.get(id)?.prerequisites;
+  if(!Array.isArray(prereqs)||prereqs.length===0)unlisted.add(id);
+  for(const parent of prereqs||[])walk(parent);
+  active.delete(id);
+  done.add(id);order.push(id);
+ }
+ walk(target);
+ return {order,cycles,unlisted,missing};
+}
+const progressKey="giconrad-roadmap-checked-v1";
+function readProgress(){
+ try{const obj=JSON.parse(localStorage.getItem(progressKey)||"[]");return new Set(Array.isArray(obj)?obj.filter(x=>typeof x==="string"):[]);}
+ catch{return new Set();}
+}
+function saveProgress(checked){
+ try{localStorage.setItem(progressKey,JSON.stringify([...checked]));}catch{/* storage disabled */}
+}
+function renderLearningRoute(id){
+ const {order,cycles,unlisted,missing}=buildLearningRoute(id);
+ const section=make("section","learningRoute");section.id="learningRoute";
+ section.append(make("h3","learningRouteTitle","この定理に到達する学習ルート"));
+ section.append(make("p","mapFine","既存ノートの「先に読むとよいノート」を再帰的にたどり、重複を除いて基礎から並べます。各ノートの読了チェックはこの端末に保存されます。"));
+ const summary=make("div","learningRouteSummary"),counter=make("strong","learningRouteCounter"),bar=make("progress","learningRouteProgress");
+ bar.max=order.length;const checked=readProgress();
+ const steps=make("ol","learningRouteSteps");
+ function refresh(){
+  const count=order.filter(x=>checked.has(x)).length;
+  counter.textContent=count+" / "+order.length+" ノート完了";
+  bar.value=count;
+ }
+ summary.append(counter,bar);section.append(summary);
+ for(const [i,stepId] of order.entries()){
+  const n=notes.get(stepId),final=stepId===id;
+  const li=make("li","learningRouteStep"+(final?" learningRouteGoal":""));
+  const checkbox=make("input","learningRouteCheck");
+  checkbox.type="checkbox";checkbox.id="learningStep-"+stepId;checkbox.checked=checked.has(stepId);
+  const label=make("label","learningRouteLabel");label.htmlFor=checkbox.id;
+  label.append(make("span","learningRouteStepNumber",final?"GOAL":"STEP "+(i+1)));
+  label.append(make("strong","learningRouteName",focal[stepId]||n.title));
+  if(focal[stepId])label.append(make("span","mapFine",n.title));
+  const controls=make("div","learningRouteLinks");
+  const detailLink=make("a","","概要");detailLink.href=noteUrl(stepId);
+  const readLink=make("a","","本文を読む");readLink.href=viewerUrl(stepId);
+  controls.append(detailLink,readLink);
+  checkbox.addEventListener("change",()=>{if(checkbox.checked)checked.add(stepId);else checked.delete(stepId);saveProgress(checked);refresh();});
+  li.append(checkbox,label,controls);steps.append(li);
+ }
+ section.append(steps);refresh();
+ if(unlisted.size){
+  const p=make("p","learningRouteCaution",
+   "前提ノートが登録されていない項目："+[...unlisted].map(x=>x+" "+notes.get(x)?.title).join("、")+
+   "。これらは前提知識不要という意味ではありません。特に大学数学の基礎（線形代数・解析・集合と位相など）は必要に応じて補ってください。");
+  section.append(p);
+ }
+ if(missing.size||cycles.length){
+  section.append(make("p","learningRouteCaution",
+    "索引の前提関係に要確認の項目があります。未登録："+[...missing].join("、")+" ／ 循環："+cycles.join("、")));
+ }
+ const actions=make("div","learningRouteActions");
+ const copy=make("button","learningRouteCopy","ルートをコピー");
+ copy.type="button";
+ copy.addEventListener("click",async()=>{
+  const content=order.map((x,i)=>(i+1)+". "+x+" "+notes.get(x).title).join("\n");
+  try{await navigator.clipboard.writeText("目標："+notes.get(id).title+"\n"+content);copy.textContent="コピーしました";}
+  catch{copy.textContent="コピーできませんでした";}
+ });
+ actions.append(copy);section.append(actions);
+ return section;
+}
 function selectNote(id){
  const n=notes.get(id);if(!n)return;selectedId=id;
  const info=details.get(id)||{};
@@ -112,7 +191,8 @@ function selectNote(id){
  const desc=make("section","mapDescription");desc.append(make("h3","","学習内容"));
  desc.append(make("p","",info.summary||"ノートの内容と証明を確認できます。"));box.append(desc);
  const tags=make("div","mapDetailTags");for(const f of n.fields||[]){const meta=allFields.get(f);if(meta)tags.append(make("span","mapTag",meta.label));}box.append(tags);
- box.append(related("先に読むとよいノート",info.prerequisites));
+ box.append(renderLearningRoute(id));
+ box.append(related("直前の推奨ノート",info.prerequisites));
  box.append(related("次に読むとよいノート",info.successors));
  const links=make("div","mapDetailActions");
  for(const [label,url] of [["ノートの概要",noteUrl(id)],["本文を画像で読む",viewerUrl(id)]]){
