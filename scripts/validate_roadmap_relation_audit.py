@@ -15,7 +15,13 @@ IDs = {"note:" + note["id"] for note in catalog["notes"]}
 original_relations = {(e["from"], e["to"]) for e in original["edges"]
                       if e["relation"] == "recommended_reading"}
 reviewed = audit["existing_edges"]
-assert len(IDs) == 157
+# Historical audit covers the 157 originally published notes only.
+public = load("data/public_pdf_links.json")
+legacy = {"note:" + note_id for note_id in public["notes"]}
+original_relations = {(e["from"], e["to"]) for e in original["edges"]
+                      if e["relation"] == "recommended_reading"
+                      and e["from"] in legacy and e["to"] in legacy}
+assert len(legacy) == 157
 assert len(reviewed) == len(original_relations) == 202
 reviewed_relations = {(e["from"], e["to"]) for e in reviewed}
 assert reviewed_relations == original_relations
