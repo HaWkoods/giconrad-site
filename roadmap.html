@@ -3,7 +3,7 @@
 <meta name="description" content="数学の主要定理と157冊のノートを分野から段階的にたどる学習ロードマップ。">
 <title>主要定理ロードマップ | 擬コンラット</title>
 <link rel="stylesheet" href="./assets/style.css"><link rel="stylesheet" href="./assets/roadmap.css">
-<script defer src="./assets/roadmap.js"></script></head>
+<script defer src="./assets/radial-map.js"></script><script defer src="./assets/roadmap.js"></script></head>
 <body><div class="shell">
 <header><a class="brand" href="./"><span>∈</span> 擬コンラット</a><small>MATHEMATICAL NOTES · THEOREM ROADMAP</small></header>
 <main class="roadmapMain">
@@ -13,6 +13,30 @@
 <p>大分野から小分野へ、さらに定理・主題へ。枝を開いて学びたい場所を選ぶと、対応するノート、前提知識、次の学習先が表示されます。</p>
 <p class="mapFine">既存の157冊を基盤とした学習案内です。全数学の定理を網羅するものではなく、各ノートの数学的完成認定でもありません。</p></div>
 <div class="mapToolbar"><label for="roadmapSearch">定理・主題を検索</label><div class="mapSearchRow"><input id="roadmapSearch" type="search" placeholder="例：Hahn–Banach、コンパクト、Galois、28.010"><button id="roadmapExpand" type="button">すべて展開</button><button id="roadmapCollapse" type="button">折りたたむ</button></div></div>
+<section id="radialSection" class="radialSection" hidden aria-labelledby="radialHeading">
+<div class="radialTop">
+  <div><div class="eyebrow">PREREQUISITE MAP</div><h2 id="radialHeading">定理の前提マップ</h2>
+  <p>中央が目標です。ノードをクリックすると前提の枝を展開・折りたためます。ノートの「ここを中心にする」から目標を変更できます。</p></div>
+  <div class="radialControls">
+    <button type="button" id="radialZoomOut" aria-label="縮小">−</button><span id="radialZoomValue" aria-live="polite">100%</span>
+    <button type="button" id="radialZoomIn" aria-label="拡大">＋</button>
+    <button type="button" id="radialFit">全体を表示</button>
+    <button type="button" id="radialExpandAll">前提を全展開</button>
+    <button type="button" id="radialReset">1階層に戻す</button>
+  </div>
+</div>
+<div class="radialLegend" aria-label="関係の凡例">
+ <span><i class="radialLegendLine strong"></i>強い前提（確認した原稿に直接使用）</span>
+ <span><i class="radialLegendLine weak"></i>弱い前提（補助的な推奨）</span>
+ <span><i class="radialLegendLine unassessed"></i>未判定（推奨読書順）</span>
+ <span><i class="radialLegendDot concept"></i>概念</span>
+ <span><i class="radialLegendDot note"></i>ノート</span>
+</div>
+<div id="radialViewport" class="radialViewport" aria-label="前提ノードの放射状マップ" tabindex="0"></div>
+<div class="radialFoot"><div id="radialNodeInfo" class="radialNodeInfo" aria-live="polite"></div>
+<p id="radialSummary" class="mapFine"></p></div>
+<p class="mapFine">線は前提関係を表します。未判定の線を「弱い前提」と読み替えないでください。これは現在のノート・概念データから作る学習案内であり、定理ごとの完全な証明依存図ではありません。</p>
+</section>
 <div class="mapWorkspace">
 <section class="mapExplorer" aria-label="数学分野の階層ツリー"><div class="mapPanelHead"><h2>分野と定理</h2><span id="roadmapCount"></span></div><div id="roadmapTree" class="mapTree"></div><p id="roadmapStatus" role="status">ロードマップを読み込んでいます…</p></section>
 <aside class="mapDetail mapDetailEmpty" id="roadmapDetail" aria-live="polite">
