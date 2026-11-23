@@ -1,0 +1,4047 @@
+{
+  "version": 1,
+  "metadata": {
+    "source": "data/notes.json and data/details.json",
+    "purpose": "Prerequisite graph data; not a proof correctness certification",
+    "strength_values": [
+      "strong",
+      "weak",
+      "unassessed"
+    ],
+    "review_values": [
+      "source_inspected",
+      "catalogue_only"
+    ],
+    "relation_values": [
+      "recommended_reading",
+      "concept_prerequisite"
+    ],
+    "direction": "from prerequisite to learning target",
+    "edge_count_note": 202,
+    "edge_count_curated": 17
+  },
+  "nodes": [
+    {
+      "id": "note:03.010",
+      "kind": "note",
+      "label": "一階述語論理の健全性と完全性",
+      "fields": [
+        "logic"
+      ]
+    },
+    {
+      "id": "note:03.020",
+      "kind": "note",
+      "label": "コンパクト性定理とモデル理論の基礎",
+      "fields": [
+        "logic"
+      ]
+    },
+    {
+      "id": "note:03.030",
+      "kind": "note",
+      "label": "超実数の構成と超準解析の基本原理",
+      "fields": [
+        "logic",
+        "analysis"
+      ]
+    },
+    {
+      "id": "note:03.040",
+      "kind": "note",
+      "label": "Gödelの不完全性定理",
+      "fields": [
+        "logic",
+        "theoretical-cs"
+      ]
+    },
+    {
+      "id": "note:05.010",
+      "kind": "note",
+      "label": "計数法と組合せ論的反転",
+      "fields": [
+        "combinatorics"
+      ]
+    },
+    {
+      "id": "note:05.020",
+      "kind": "note",
+      "label": "生成関数と漸化式",
+      "fields": [
+        "combinatorics"
+      ]
+    },
+    {
+      "id": "note:05.030",
+      "kind": "note",
+      "label": "グラフ理論の基礎",
+      "fields": [
+        "combinatorics",
+        "theoretical-cs"
+      ]
+    },
+    {
+      "id": "note:05.040",
+      "kind": "note",
+      "label": "マッチングとネットワークフロー",
+      "fields": [
+        "combinatorics",
+        "optimization"
+      ]
+    },
+    {
+      "id": "note:05.050",
+      "kind": "note",
+      "label": "群作用と数え上げ",
+      "fields": [
+        "combinatorics",
+        "algebra"
+      ]
+    },
+    {
+      "id": "note:05.060",
+      "kind": "note",
+      "label": "極値組合せ論と確率的方法",
+      "fields": [
+        "combinatorics",
+        "probability-theory"
+      ]
+    },
+    {
+      "id": "note:11.010",
+      "kind": "note",
+      "label": "算術関数・Dirichlet畳み込みとゼータ関数",
+      "fields": [
+        "number-theory",
+        "analytic-number-theory"
+      ]
+    },
+    {
+      "id": "note:11.020",
+      "kind": "note",
+      "label": "平方剰余の相互法則",
+      "fields": [
+        "number-theory",
+        "elementary-number-theory"
+      ]
+    },
+    {
+      "id": "note:11.030",
+      "kind": "note",
+      "label": "Pell方程式と二次体の単数",
+      "fields": [
+        "number-theory",
+        "algebraic-number-theory",
+        "field-theory"
+      ]
+    },
+    {
+      "id": "note:11.040",
+      "kind": "note",
+      "label": "算術級数中の素数とDirichletの定理",
+      "fields": [
+        "number-theory",
+        "analytic-number-theory"
+      ]
+    },
+    {
+      "id": "note:11.050",
+      "kind": "note",
+      "label": "素数定理とゼータ関数の解析",
+      "fields": [
+        "number-theory",
+        "analytic-number-theory",
+        "complex-analysis"
+      ]
+    },
+    {
+      "id": "note:12.010",
+      "kind": "note",
+      "label": "有限体の構造",
+      "fields": [
+        "field-theory"
+      ]
+    },
+    {
+      "id": "note:12.020",
+      "kind": "note",
+      "label": "Galois理論と方程式の根号可解性",
+      "fields": [
+        "field-theory"
+      ]
+    },
+    {
+      "id": "note:12.030",
+      "kind": "note",
+      "label": "三次・四次方程式の解の公式とLagrange分解式",
+      "fields": [
+        "field-theory"
+      ]
+    },
+    {
+      "id": "note:12.040",
+      "kind": "note",
+      "label": "Galois理論と定規・コンパス作図",
+      "fields": [
+        "field-theory",
+        "geometry"
+      ]
+    },
+    {
+      "id": "note:12.050",
+      "kind": "note",
+      "label": "位相体・付値・完備化",
+      "fields": [
+        "field-theory",
+        "general-topology",
+        "algebraic-number-theory"
+      ]
+    },
+    {
+      "id": "note:12.060",
+      "kind": "note",
+      "label": "Picard–Vessiot拡大と微分Galois群",
+      "fields": [
+        "field-theory",
+        "ode"
+      ]
+    },
+    {
+      "id": "note:12.070",
+      "kind": "note",
+      "label": "Liouville可積分性と微分Galois理論",
+      "fields": [
+        "field-theory",
+        "ode"
+      ]
+    },
+    {
+      "id": "note:13.010",
+      "kind": "note",
+      "label": "多項式環とNoether性",
+      "fields": [
+        "commutative-algebra",
+        "algebraic-geometry"
+      ]
+    },
+    {
+      "id": "note:13.020",
+      "kind": "note",
+      "label": "Krull次元とHilbert多項式",
+      "fields": [
+        "commutative-algebra",
+        "algebraic-geometry"
+      ]
+    },
+    {
+      "id": "note:13.030",
+      "kind": "note",
+      "label": "Gröbner基底",
+      "fields": [
+        "commutative-algebra",
+        "algebraic-geometry",
+        "computational-algebra"
+      ]
+    },
+    {
+      "id": "note:13.040",
+      "kind": "note",
+      "label": "消去理論と終結式",
+      "fields": [
+        "commutative-algebra",
+        "algebraic-geometry",
+        "computational-algebra",
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "note:13.050",
+      "kind": "note",
+      "label": "Hilbert–SerreとHilbert–Samuel多項式",
+      "fields": [
+        "commutative-algebra",
+        "algebraic-geometry"
+      ]
+    },
+    {
+      "id": "note:13.060",
+      "kind": "note",
+      "label": "Artin–Rees補題とKrullの交叉定理",
+      "fields": [
+        "commutative-algebra"
+      ]
+    },
+    {
+      "id": "note:15.010",
+      "kind": "note",
+      "label": "主イデアル整域上のSmith標準形",
+      "fields": [
+        "linear-algebra",
+        "commutative-algebra"
+      ]
+    },
+    {
+      "id": "note:18.010",
+      "kind": "note",
+      "label": "圏・函手・自然変換と米田の補題",
+      "fields": [
+        "category-theory"
+      ]
+    },
+    {
+      "id": "note:18.020",
+      "kind": "note",
+      "label": "自由対象と普遍性",
+      "fields": [
+        "category-theory",
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "note:18.030",
+      "kind": "note",
+      "label": "極限・余極限と随伴函手",
+      "fields": [
+        "category-theory"
+      ]
+    },
+    {
+      "id": "note:18.040",
+      "kind": "note",
+      "label": "前層・層・茎と層化",
+      "fields": [
+        "category-theory",
+        "general-topology"
+      ]
+    },
+    {
+      "id": "note:18.050",
+      "kind": "note",
+      "label": "ホモロジー代数：完全列・Ext・Tor",
+      "fields": [
+        "category-theory",
+        "commutative-algebra"
+      ]
+    },
+    {
+      "id": "note:18.060",
+      "kind": "note",
+      "label": "層コホモロジーの構成と基本定理",
+      "fields": [
+        "category-theory",
+        "algebraic-geometry"
+      ]
+    },
+    {
+      "id": "note:22.010",
+      "kind": "note",
+      "label": "位相群の基本構造",
+      "fields": [
+        "topological-groups",
+        "general-topology",
+        "algebra"
+      ]
+    },
+    {
+      "id": "note:22.020",
+      "kind": "note",
+      "label": "Lie群とLie代数",
+      "fields": [
+        "topological-groups",
+        "differential-geometry",
+        "linear-algebra",
+        "manifold-theory"
+      ]
+    },
+    {
+      "id": "note:22.030",
+      "kind": "note",
+      "label": "Haar測度と局所コンパクト群",
+      "fields": [
+        "topological-groups",
+        "measure-theory",
+        "harmonic-analysis"
+      ]
+    },
+    {
+      "id": "note:28.010",
+      "kind": "note",
+      "label": "Radon–Nikodymの定理",
+      "fields": [
+        "measure-theory",
+        "functional-analysis",
+        "probability-theory"
+      ]
+    },
+    {
+      "id": "note:28.020",
+      "kind": "note",
+      "label": "Lebesgue積分の変数変換公式",
+      "fields": [
+        "measure-theory",
+        "manifold-analysis"
+      ]
+    },
+    {
+      "id": "note:30.010",
+      "kind": "note",
+      "label": "複素微分の幾何学",
+      "fields": [
+        "complex-analysis",
+        "differential-geometry"
+      ]
+    },
+    {
+      "id": "note:30.020",
+      "kind": "note",
+      "label": "Cauchyの積分定理と積分公式",
+      "fields": [
+        "complex-analysis",
+        "manifold-analysis"
+      ]
+    },
+    {
+      "id": "note:30.030",
+      "kind": "note",
+      "label": "偏角の原理とRouchéの定理",
+      "fields": [
+        "complex-analysis",
+        "general-topology"
+      ]
+    },
+    {
+      "id": "note:30.040",
+      "kind": "note",
+      "label": "解析接続と一価性",
+      "fields": [
+        "complex-analysis",
+        "general-topology",
+        "algebraic-topology"
+      ]
+    },
+    {
+      "id": "note:32.010",
+      "kind": "note",
+      "label": "Weyl代数と微分作用素環",
+      "fields": [
+        "d-modules"
+      ]
+    },
+    {
+      "id": "note:32.020",
+      "kind": "note",
+      "label": "D加群の基本構造",
+      "fields": [
+        "d-modules"
+      ]
+    },
+    {
+      "id": "note:32.030",
+      "kind": "note",
+      "label": "特性多様体とホロノミー",
+      "fields": [
+        "d-modules",
+        "algebraic-geometry"
+      ]
+    },
+    {
+      "id": "note:32.040",
+      "kind": "note",
+      "label": "D加群のde Rham複体と解函手",
+      "fields": [
+        "d-modules",
+        "manifold-analysis"
+      ]
+    },
+    {
+      "id": "note:35.010",
+      "kind": "note",
+      "label": "偏微分方程式の基本理論",
+      "fields": [
+        "pde",
+        "fourier-analysis"
+      ]
+    },
+    {
+      "id": "note:35.020",
+      "kind": "note",
+      "label": "Sobolev空間と楕円型方程式",
+      "fields": [
+        "pde",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:35.030",
+      "kind": "note",
+      "label": "Lipschitz領域のSobolevトレース定理",
+      "fields": [
+        "pde",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:35.040",
+      "kind": "note",
+      "label": "凹角領域における楕円型正則性の限界",
+      "fields": [
+        "pde",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:35.050",
+      "kind": "note",
+      "label": "周期波動方程式のSobolev適切性",
+      "fields": [
+        "pde",
+        "fourier-analysis",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:37.010",
+      "kind": "note",
+      "label": "力学系と安定性理論",
+      "fields": [
+        "dynamical-systems",
+        "ode"
+      ]
+    },
+    {
+      "id": "note:37.020",
+      "kind": "note",
+      "label": "分岐理論の基礎",
+      "fields": [
+        "dynamical-systems",
+        "ode",
+        "systems-modeling"
+      ]
+    },
+    {
+      "id": "note:41.010",
+      "kind": "note",
+      "label": "Stone–Weierstrassの定理",
+      "fields": [
+        "approximation",
+        "functional-analysis",
+        "general-topology"
+      ]
+    },
+    {
+      "id": "note:42.010",
+      "kind": "note",
+      "label": "Fourier級数の理論",
+      "fields": [
+        "fourier-analysis",
+        "approximation",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:42.020",
+      "kind": "note",
+      "label": "Fourier変換とPlancherelの定理",
+      "fields": [
+        "fourier-analysis",
+        "functional-analysis",
+        "integral-transforms"
+      ]
+    },
+    {
+      "id": "note:43.010",
+      "kind": "note",
+      "label": "コンパクトAbel群上のFourier解析",
+      "fields": [
+        "harmonic-analysis",
+        "topological-groups",
+        "fourier-analysis",
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "note:44.010",
+      "kind": "note",
+      "label": "Laplace変換と反転公式",
+      "fields": [
+        "integral-transforms",
+        "ode",
+        "complex-analysis"
+      ]
+    },
+    {
+      "id": "note:46.010",
+      "kind": "note",
+      "label": "Arzelà–Ascoliの定理",
+      "fields": [
+        "functional-analysis",
+        "general-topology",
+        "approximation"
+      ]
+    },
+    {
+      "id": "note:46.020",
+      "kind": "note",
+      "label": "Baireのカテゴリー定理と一様有界性原理",
+      "fields": [
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:46.030",
+      "kind": "note",
+      "label": "Hilbert空間とRieszの表現定理",
+      "fields": [
+        "functional-analysis",
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "note:46.040",
+      "kind": "note",
+      "label": "Hahn–Banachの定理と凸集合の分離",
+      "fields": [
+        "functional-analysis",
+        "optimization"
+      ]
+    },
+    {
+      "id": "note:46.050",
+      "kind": "note",
+      "label": "開写像・有界逆写像・閉グラフ定理",
+      "fields": [
+        "functional-analysis",
+        "operator-theory"
+      ]
+    },
+    {
+      "id": "note:46.060",
+      "kind": "note",
+      "label": "弱位相と弱*位相",
+      "fields": [
+        "functional-analysis",
+        "general-topology"
+      ]
+    },
+    {
+      "id": "note:46.100",
+      "kind": "note",
+      "label": "分布と弱微分",
+      "fields": [
+        "functional-analysis",
+        "pde"
+      ]
+    },
+    {
+      "id": "note:47.010",
+      "kind": "note",
+      "label": "Banachの不動点定理とその応用",
+      "fields": [
+        "operator-theory",
+        "ode",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:47.020",
+      "kind": "note",
+      "label": "コンパクト作用素のスペクトル理論",
+      "fields": [
+        "operator-theory",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:53.010",
+      "kind": "note",
+      "label": "ベクトル束と線形接続",
+      "fields": [
+        "differential-geometry",
+        "manifold-topology",
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "note:53.020",
+      "kind": "note",
+      "label": "Riemann計量とLevi-Civita接続",
+      "fields": [
+        "differential-geometry",
+        "manifold-analysis"
+      ]
+    },
+    {
+      "id": "note:53.030",
+      "kind": "note",
+      "label": "測地線と指数写像",
+      "fields": [
+        "differential-geometry",
+        "ode",
+        "classical-mechanics"
+      ]
+    },
+    {
+      "id": "note:53.040",
+      "kind": "note",
+      "label": "Hopf–Rinowの定理",
+      "fields": [
+        "differential-geometry",
+        "general-topology",
+        "manifold-analysis"
+      ]
+    },
+    {
+      "id": "note:53.050",
+      "kind": "note",
+      "label": "曲率テンソルとJacobi場",
+      "fields": [
+        "differential-geometry",
+        "ode"
+      ]
+    },
+    {
+      "id": "note:53.060",
+      "kind": "note",
+      "label": "部分多様体の外在的幾何",
+      "fields": [
+        "differential-geometry",
+        "manifold-topology"
+      ]
+    },
+    {
+      "id": "note:53.070",
+      "kind": "note",
+      "label": "曲面論とGauss–Bonnetの定理",
+      "fields": [
+        "differential-geometry",
+        "manifold-analysis",
+        "algebraic-topology"
+      ]
+    },
+    {
+      "id": "note:53.100",
+      "kind": "note",
+      "label": "シンプレクティック幾何学入門",
+      "fields": [
+        "differential-geometry",
+        "classical-mechanics"
+      ]
+    },
+    {
+      "id": "note:54.010",
+      "kind": "note",
+      "label": "位相空間と連続写像",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "note:54.020",
+      "kind": "note",
+      "label": "積位相・商位相と普遍性",
+      "fields": [
+        "general-topology",
+        "category-theory"
+      ]
+    },
+    {
+      "id": "note:54.030",
+      "kind": "note",
+      "label": "連結性と道連結性",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "note:54.040",
+      "kind": "note",
+      "label": "フィルター・超フィルターと位相的収束",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "note:54.050",
+      "kind": "note",
+      "label": "コンパクト性とTychonoffの定理",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "note:54.060",
+      "kind": "note",
+      "label": "Urysohnの補題とTietzeの拡張定理",
+      "fields": [
+        "general-topology",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:54.070",
+      "kind": "note",
+      "label": "分離公理と距離化定理",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "note:54.080",
+      "kind": "note",
+      "label": "局所コンパクト性とパラコンパクト性",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "note:55.010",
+      "kind": "note",
+      "label": "ホモトピーと位相空間の構成",
+      "fields": [
+        "algebraic-topology"
+      ]
+    },
+    {
+      "id": "note:55.020",
+      "kind": "note",
+      "label": "被覆空間と基本群",
+      "fields": [
+        "algebraic-topology"
+      ]
+    },
+    {
+      "id": "note:55.030",
+      "kind": "note",
+      "label": "Seifert–van Kampenの定理",
+      "fields": [
+        "algebraic-topology",
+        "category-theory"
+      ]
+    },
+    {
+      "id": "note:57.010",
+      "kind": "note",
+      "label": "滑らかな多様体・接空間・微分",
+      "fields": [
+        "manifold-topology",
+        "differential-geometry",
+        "manifold-analysis"
+      ]
+    },
+    {
+      "id": "note:57.020",
+      "kind": "note",
+      "label": "多様体の構成と商多様体",
+      "fields": [
+        "manifold-topology",
+        "general-topology",
+        "differential-geometry"
+      ]
+    },
+    {
+      "id": "note:57.030",
+      "kind": "note",
+      "label": "Sardの定理と横断性",
+      "fields": [
+        "manifold-topology",
+        "differential-geometry",
+        "manifold-analysis"
+      ]
+    },
+    {
+      "id": "note:58.010",
+      "kind": "note",
+      "label": "ベクトル場とそのフロー",
+      "fields": [
+        "manifold-analysis",
+        "ode",
+        "dynamical-systems"
+      ]
+    },
+    {
+      "id": "note:58.020",
+      "kind": "note",
+      "label": "テンソル場とLie微分",
+      "fields": [
+        "manifold-analysis",
+        "differential-geometry",
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "note:58.030",
+      "kind": "note",
+      "label": "Frobeniusの定理",
+      "fields": [
+        "manifold-analysis",
+        "differential-geometry",
+        "ode"
+      ]
+    },
+    {
+      "id": "note:58.040",
+      "kind": "note",
+      "label": "微分形式とPoincaréの補題",
+      "fields": [
+        "manifold-analysis",
+        "differential-geometry"
+      ]
+    },
+    {
+      "id": "note:58.050",
+      "kind": "note",
+      "label": "多様体上の微分形式とStokesの定理",
+      "fields": [
+        "manifold-analysis",
+        "differential-geometry",
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "note:58.060",
+      "kind": "note",
+      "label": "de Rhamコホモロジーと大域的位相",
+      "fields": [
+        "manifold-analysis",
+        "algebraic-topology"
+      ]
+    },
+    {
+      "id": "note:58.100",
+      "kind": "note",
+      "label": "Morse理論と多様体の位相",
+      "fields": [
+        "manifold-analysis",
+        "manifold-topology",
+        "differential-geometry"
+      ]
+    },
+    {
+      "id": "note:60.005",
+      "kind": "note",
+      "label": "大数の法則と中心極限定理",
+      "fields": [
+        "probability-theory",
+        "statistics"
+      ]
+    },
+    {
+      "id": "note:60.010",
+      "kind": "note",
+      "label": "条件付き期待値とマルチンゲール",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "note:60.020",
+      "kind": "note",
+      "label": "Brown運動の構成と基本性質",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "note:60.030",
+      "kind": "note",
+      "label": "Itô積分の構成",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "note:60.040",
+      "kind": "note",
+      "label": "二次変分とItôの公式",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "note:60.050",
+      "kind": "note",
+      "label": "確率微分方程式の存在と一意性",
+      "fields": [
+        "probability-theory",
+        "ode"
+      ]
+    },
+    {
+      "id": "note:60.060",
+      "kind": "note",
+      "label": "Brown運動のマルチンゲール表現",
+      "fields": [
+        "probability-theory"
+      ]
+    },
+    {
+      "id": "note:60.070",
+      "kind": "note",
+      "label": "Girsanovの定理",
+      "fields": [
+        "probability-theory",
+        "measure-theory",
+        "financial-math"
+      ]
+    },
+    {
+      "id": "note:60.080",
+      "kind": "note",
+      "label": "Feynman–Kacの公式とKolmogorov方程式",
+      "fields": [
+        "probability-theory",
+        "pde"
+      ]
+    },
+    {
+      "id": "note:60.090",
+      "kind": "note",
+      "label": "格子・非格子の局所中心極限定理",
+      "fields": [
+        "probability-theory",
+        "fourier-analysis",
+        "statistics"
+      ]
+    },
+    {
+      "id": "note:62.010",
+      "kind": "note",
+      "label": "統計モデルと推定理論",
+      "fields": [
+        "statistics",
+        "probability-theory",
+        "optimization"
+      ]
+    },
+    {
+      "id": "note:62.020",
+      "kind": "note",
+      "label": "十分統計量と完備統計量",
+      "fields": [
+        "statistics",
+        "probability-theory"
+      ]
+    },
+    {
+      "id": "note:62.030",
+      "kind": "note",
+      "label": "最尤推定と漸近理論",
+      "fields": [
+        "statistics",
+        "optimization",
+        "probability-theory"
+      ]
+    },
+    {
+      "id": "note:62.040",
+      "kind": "note",
+      "label": "統計的仮説検定",
+      "fields": [
+        "statistics",
+        "probability-theory"
+      ]
+    },
+    {
+      "id": "note:62.050",
+      "kind": "note",
+      "label": "Bayesian統計の数学",
+      "fields": [
+        "statistics",
+        "probability-theory"
+      ]
+    },
+    {
+      "id": "note:62.060",
+      "kind": "note",
+      "label": "線形回帰の数学",
+      "fields": [
+        "statistics",
+        "linear-algebra",
+        "optimization"
+      ]
+    },
+    {
+      "id": "note:65.010",
+      "kind": "note",
+      "label": "数値計算の誤差と安定性",
+      "fields": [
+        "numerical-analysis"
+      ]
+    },
+    {
+      "id": "note:65.020",
+      "kind": "note",
+      "label": "非線形方程式の数値解法",
+      "fields": [
+        "numerical-analysis"
+      ]
+    },
+    {
+      "id": "note:65.030",
+      "kind": "note",
+      "label": "数値線形代数",
+      "fields": [
+        "numerical-analysis",
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "note:65.040",
+      "kind": "note",
+      "label": "補間と数値積分",
+      "fields": [
+        "numerical-analysis",
+        "approximation"
+      ]
+    },
+    {
+      "id": "note:65.050",
+      "kind": "note",
+      "label": "常微分方程式の数値解法",
+      "fields": [
+        "numerical-analysis",
+        "ode"
+      ]
+    },
+    {
+      "id": "note:65.060",
+      "kind": "note",
+      "label": "偏微分方程式の差分法",
+      "fields": [
+        "numerical-analysis",
+        "pde"
+      ]
+    },
+    {
+      "id": "note:65.070",
+      "kind": "note",
+      "label": "有限要素法の数学",
+      "fields": [
+        "numerical-analysis",
+        "pde",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:65.080",
+      "kind": "note",
+      "label": "二次元Sobolev補間と有限要素誤差の厳密評価",
+      "fields": [
+        "numerical-analysis",
+        "pde",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:65.090",
+      "kind": "note",
+      "label": "Wolfe条件とZoutendijkの収束定理",
+      "fields": [
+        "numerical-analysis",
+        "optimization"
+      ]
+    },
+    {
+      "id": "note:68.010",
+      "kind": "note",
+      "label": "Turing機械と計算可能性",
+      "fields": [
+        "theoretical-cs",
+        "logic"
+      ]
+    },
+    {
+      "id": "note:68.020",
+      "kind": "note",
+      "label": "決定可能性と計算不可能性",
+      "fields": [
+        "theoretical-cs",
+        "logic"
+      ]
+    },
+    {
+      "id": "note:68.030",
+      "kind": "note",
+      "label": "計算量理論の基礎",
+      "fields": [
+        "theoretical-cs"
+      ]
+    },
+    {
+      "id": "note:68.040",
+      "kind": "note",
+      "label": "NP完全性",
+      "fields": [
+        "theoretical-cs",
+        "combinatorics"
+      ]
+    },
+    {
+      "id": "note:68.050",
+      "kind": "note",
+      "label": "Rice–Shapiroの定理と計算可能な性質",
+      "fields": [
+        "theoretical-cs",
+        "logic"
+      ]
+    },
+    {
+      "id": "note:68.100",
+      "kind": "note",
+      "label": "整数と多項式の厳密計算",
+      "fields": [
+        "theoretical-cs",
+        "computational-algebra",
+        "number-theory"
+      ]
+    },
+    {
+      "id": "note:68.110",
+      "kind": "note",
+      "label": "計算線形代数",
+      "fields": [
+        "theoretical-cs",
+        "linear-algebra",
+        "computational-algebra"
+      ]
+    },
+    {
+      "id": "note:70.010",
+      "kind": "note",
+      "label": "変分原理とLagrange力学",
+      "fields": [
+        "classical-mechanics",
+        "manifold-analysis",
+        "dynamical-systems"
+      ]
+    },
+    {
+      "id": "note:70.020",
+      "kind": "note",
+      "label": "Hamilton力学",
+      "fields": [
+        "classical-mechanics",
+        "differential-geometry",
+        "dynamical-systems"
+      ]
+    },
+    {
+      "id": "note:70.030",
+      "kind": "note",
+      "label": "Liouville–Arnoldの定理と作用角座標",
+      "fields": [
+        "classical-mechanics",
+        "dynamical-systems",
+        "differential-geometry"
+      ]
+    },
+    {
+      "id": "note:81.010",
+      "kind": "note",
+      "label": "量子力学の数学的基礎",
+      "fields": [
+        "quantum-mechanics",
+        "functional-analysis",
+        "operator-theory"
+      ]
+    },
+    {
+      "id": "note:81.020",
+      "kind": "note",
+      "label": "自己共役作用素のスペクトル定理とStoneの定理",
+      "fields": [
+        "quantum-mechanics",
+        "functional-analysis",
+        "operator-theory"
+      ]
+    },
+    {
+      "id": "note:82.010",
+      "kind": "note",
+      "label": "統計力学の数学",
+      "fields": [
+        "statistical-mechanics",
+        "probability-theory",
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "note:83.010",
+      "kind": "note",
+      "label": "Lorentz幾何と一般相対論",
+      "fields": [
+        "relativity",
+        "differential-geometry",
+        "manifold-analysis"
+      ]
+    },
+    {
+      "id": "note:90.010",
+      "kind": "note",
+      "label": "凸双対性とLegendre–Fenchel変換",
+      "fields": [
+        "optimization",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:90.020",
+      "kind": "note",
+      "label": "凸最適化とKarush–Kuhn–Tucker条件",
+      "fields": [
+        "optimization",
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "note:90.030",
+      "kind": "note",
+      "label": "数値最適化法と収束の定理",
+      "fields": [
+        "optimization",
+        "numerical-analysis"
+      ]
+    },
+    {
+      "id": "note:91.010",
+      "kind": "note",
+      "label": "離散時間金融市場と無裁定価格理論",
+      "fields": [
+        "financial-math",
+        "probability-theory",
+        "optimization"
+      ]
+    },
+    {
+      "id": "note:91.020",
+      "kind": "note",
+      "label": "Black–Scholes方程式",
+      "fields": [
+        "financial-math",
+        "pde",
+        "probability-theory"
+      ]
+    },
+    {
+      "id": "note:91.100",
+      "kind": "note",
+      "label": "生命保険・年金の数理",
+      "fields": [
+        "financial-math",
+        "probability-theory",
+        "statistics"
+      ]
+    },
+    {
+      "id": "note:91.110",
+      "kind": "note",
+      "label": "複合Poissonリスクモデルと破産確率",
+      "fields": [
+        "financial-math",
+        "probability-theory"
+      ]
+    },
+    {
+      "id": "note:91.200",
+      "kind": "note",
+      "label": "社会ネットワークと集団ダイナミクス",
+      "fields": [
+        "financial-math",
+        "graph-theory",
+        "probability-theory",
+        "systems-modeling"
+      ]
+    },
+    {
+      "id": "note:92.010",
+      "kind": "note",
+      "label": "感染症と個体群の数理モデル",
+      "fields": [
+        "biomathematics",
+        "ode",
+        "dynamical-systems",
+        "systems-modeling"
+      ]
+    },
+    {
+      "id": "note:93.010",
+      "kind": "note",
+      "label": "数理モデルの構築と次元解析",
+      "fields": [
+        "systems-modeling",
+        "statistics"
+      ]
+    },
+    {
+      "id": "note:93.020",
+      "kind": "note",
+      "label": "線形制御理論",
+      "fields": [
+        "systems-modeling",
+        "ode",
+        "optimization"
+      ]
+    },
+    {
+      "id": "note:94.010",
+      "kind": "note",
+      "label": "情報量と情報源符号化定理",
+      "fields": [
+        "cryptography",
+        "probability-theory",
+        "combinatorics"
+      ]
+    },
+    {
+      "id": "note:94.100",
+      "kind": "note",
+      "label": "RSAと公開鍵暗号の数学",
+      "fields": [
+        "cryptography",
+        "number-theory",
+        "theoretical-cs"
+      ]
+    },
+    {
+      "id": "note:94.110",
+      "kind": "note",
+      "label": "有限体上の楕円曲線と暗号理論",
+      "fields": [
+        "cryptography",
+        "field-theory",
+        "algebraic-geometry",
+        "number-theory"
+      ]
+    },
+    {
+      "id": "note:97.030",
+      "kind": "note",
+      "label": "積分と極限の大学解析的解法",
+      "fields": [
+        "entrance-math",
+        "analysis",
+        "optimization"
+      ]
+    },
+    {
+      "id": "note:97.050",
+      "kind": "note",
+      "label": "二次形式と図形の極値",
+      "fields": [
+        "entrance-math",
+        "linear-algebra",
+        "optimization"
+      ]
+    },
+    {
+      "id": "note:97.120",
+      "kind": "note",
+      "label": "約数と群作用による整数問題",
+      "fields": [
+        "entrance-math",
+        "elementary-number-theory",
+        "enumeration"
+      ]
+    },
+    {
+      "id": "note:97.130",
+      "kind": "note",
+      "label": "円とMöbius変換",
+      "fields": [
+        "entrance-math",
+        "complex-analysis",
+        "differential-geometry"
+      ]
+    },
+    {
+      "id": "note:97.170",
+      "kind": "note",
+      "label": "二項係数と有限Fourier解析",
+      "fields": [
+        "entrance-math",
+        "fourier-analysis",
+        "enumeration"
+      ]
+    },
+    {
+      "id": "note:97.200",
+      "kind": "note",
+      "label": "交換操作と0-Heckeモノイド",
+      "fields": [
+        "entrance-math",
+        "enumeration",
+        "algebra"
+      ]
+    },
+    {
+      "id": "concept:measurable-space",
+      "kind": "concept",
+      "label": "可測空間と測度",
+      "fields": [
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "concept:absolute-continuity",
+      "kind": "concept",
+      "label": "測度の絶対連続性",
+      "fields": [
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "concept:measurable-integral",
+      "kind": "concept",
+      "label": "可測関数とLebesgue積分",
+      "fields": [
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "concept:l2-riesz",
+      "kind": "concept",
+      "label": "Hilbert空間 L² におけるRiesz表現",
+      "fields": [
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "concept:sigma-finite",
+      "kind": "concept",
+      "label": "σ有限性と可測分割",
+      "fields": [
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "concept:vector-space-functional",
+      "kind": "concept",
+      "label": "線形空間と線形汎関数",
+      "fields": [
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "concept:sublinear",
+      "kind": "concept",
+      "label": "劣線形汎関数",
+      "fields": [
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "concept:one-dimensional-extension",
+      "kind": "concept",
+      "label": "線形汎関数の1次元拡張補題",
+      "fields": [
+        "functional-analysis"
+      ]
+    },
+    {
+      "id": "concept:zorn",
+      "kind": "concept",
+      "label": "Zornの補題",
+      "fields": [
+        "logic"
+      ]
+    },
+    {
+      "id": "concept:riemannian-metric",
+      "kind": "concept",
+      "label": "Riemann計量と距離",
+      "fields": [
+        "differential-geometry"
+      ]
+    },
+    {
+      "id": "concept:geodesic",
+      "kind": "concept",
+      "label": "測地線と指数写像",
+      "fields": [
+        "differential-geometry"
+      ]
+    },
+    {
+      "id": "concept:metric-completeness",
+      "kind": "concept",
+      "label": "距離の完備性",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "concept:finite-dimensional-compactness",
+      "kind": "concept",
+      "label": "有限次元Euclid空間の閉有界集合のコンパクト性",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "concept:compactness",
+      "kind": "concept",
+      "label": "開被覆によるコンパクト性",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "concept:product-topology",
+      "kind": "concept",
+      "label": "積位相と基本近傍",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "concept:ultrafilter",
+      "kind": "concept",
+      "label": "超フィルターとその収束",
+      "fields": [
+        "general-topology"
+      ]
+    },
+    {
+      "id": "concept:choice",
+      "kind": "concept",
+      "label": "選択公理",
+      "fields": [
+        "logic"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "note:03.010",
+      "to": "note:03.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "03.020"
+      }
+    },
+    {
+      "from": "note:54.040",
+      "to": "note:03.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "03.030"
+      }
+    },
+    {
+      "from": "note:03.010",
+      "to": "note:03.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "03.040"
+      }
+    },
+    {
+      "from": "note:05.010",
+      "to": "note:05.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "05.020"
+      }
+    },
+    {
+      "from": "note:05.010",
+      "to": "note:05.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "05.030"
+      }
+    },
+    {
+      "from": "note:05.030",
+      "to": "note:05.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "05.040"
+      }
+    },
+    {
+      "from": "note:05.010",
+      "to": "note:05.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "05.050"
+      }
+    },
+    {
+      "from": "note:05.020",
+      "to": "note:05.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "05.050"
+      }
+    },
+    {
+      "from": "note:05.010",
+      "to": "note:05.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "05.060"
+      }
+    },
+    {
+      "from": "note:05.030",
+      "to": "note:05.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "05.060"
+      }
+    },
+    {
+      "from": "note:11.010",
+      "to": "note:11.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "11.040"
+      }
+    },
+    {
+      "from": "note:11.010",
+      "to": "note:11.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "11.050"
+      }
+    },
+    {
+      "from": "note:12.060",
+      "to": "note:12.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "12.070"
+      }
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:13.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "13.020"
+      }
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:13.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "13.030"
+      }
+    },
+    {
+      "from": "note:13.030",
+      "to": "note:13.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "13.040"
+      }
+    },
+    {
+      "from": "note:15.010",
+      "to": "note:13.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "13.040"
+      }
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:13.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "13.050"
+      }
+    },
+    {
+      "from": "note:13.020",
+      "to": "note:13.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "13.050"
+      }
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:13.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "13.060"
+      }
+    },
+    {
+      "from": "note:13.020",
+      "to": "note:13.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "13.060"
+      }
+    },
+    {
+      "from": "note:18.010",
+      "to": "note:18.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "18.030"
+      }
+    },
+    {
+      "from": "note:18.010",
+      "to": "note:18.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "18.040"
+      }
+    },
+    {
+      "from": "note:18.040",
+      "to": "note:18.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "18.060"
+      }
+    },
+    {
+      "from": "note:18.050",
+      "to": "note:18.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "18.060"
+      }
+    },
+    {
+      "from": "note:22.010",
+      "to": "note:22.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "22.020"
+      }
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:22.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "22.020"
+      }
+    },
+    {
+      "from": "note:58.010",
+      "to": "note:22.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "22.020"
+      }
+    },
+    {
+      "from": "note:22.010",
+      "to": "note:22.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "22.030"
+      }
+    },
+    {
+      "from": "note:30.010",
+      "to": "note:30.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "30.020"
+      }
+    },
+    {
+      "from": "note:30.020",
+      "to": "note:30.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "30.030"
+      }
+    },
+    {
+      "from": "note:30.020",
+      "to": "note:30.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "30.040"
+      }
+    },
+    {
+      "from": "note:30.030",
+      "to": "note:30.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "30.040"
+      }
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:32.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "32.010"
+      }
+    },
+    {
+      "from": "note:13.030",
+      "to": "note:32.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "32.020"
+      }
+    },
+    {
+      "from": "note:32.010",
+      "to": "note:32.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "32.020"
+      }
+    },
+    {
+      "from": "note:13.020",
+      "to": "note:32.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "32.030"
+      }
+    },
+    {
+      "from": "note:32.020",
+      "to": "note:32.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "32.030"
+      }
+    },
+    {
+      "from": "note:18.040",
+      "to": "note:32.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "32.040"
+      }
+    },
+    {
+      "from": "note:18.050",
+      "to": "note:32.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "32.040"
+      }
+    },
+    {
+      "from": "note:32.020",
+      "to": "note:32.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "32.040"
+      }
+    },
+    {
+      "from": "note:32.030",
+      "to": "note:32.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "32.040"
+      }
+    },
+    {
+      "from": "note:42.020",
+      "to": "note:35.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "35.010"
+      }
+    },
+    {
+      "from": "note:35.010",
+      "to": "note:35.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "35.020"
+      }
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:35.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "35.020"
+      }
+    },
+    {
+      "from": "note:46.100",
+      "to": "note:35.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "35.020"
+      }
+    },
+    {
+      "from": "note:35.020",
+      "to": "note:35.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "35.030"
+      }
+    },
+    {
+      "from": "note:42.020",
+      "to": "note:35.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "35.030"
+      }
+    },
+    {
+      "from": "note:35.020",
+      "to": "note:35.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "35.040"
+      }
+    },
+    {
+      "from": "note:35.030",
+      "to": "note:35.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "35.040"
+      }
+    },
+    {
+      "from": "note:35.010",
+      "to": "note:35.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "35.050"
+      }
+    },
+    {
+      "from": "note:42.010",
+      "to": "note:35.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "35.050"
+      }
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:37.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "37.010"
+      }
+    },
+    {
+      "from": "note:37.010",
+      "to": "note:37.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "37.020"
+      }
+    },
+    {
+      "from": "note:46.020",
+      "to": "note:42.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "42.010"
+      }
+    },
+    {
+      "from": "note:22.030",
+      "to": "note:43.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "43.010"
+      }
+    },
+    {
+      "from": "note:46.020",
+      "to": "note:46.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "46.050"
+      }
+    },
+    {
+      "from": "note:46.040",
+      "to": "note:46.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "46.060"
+      }
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:47.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "47.020"
+      }
+    },
+    {
+      "from": "note:46.060",
+      "to": "note:47.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "47.020"
+      }
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:53.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.010"
+      }
+    },
+    {
+      "from": "note:58.020",
+      "to": "note:53.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.010"
+      }
+    },
+    {
+      "from": "note:53.010",
+      "to": "note:53.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.020"
+      }
+    },
+    {
+      "from": "note:53.020",
+      "to": "note:53.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.030"
+      }
+    },
+    {
+      "from": "note:58.010",
+      "to": "note:53.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.030"
+      }
+    },
+    {
+      "from": "note:53.030",
+      "to": "note:53.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.040"
+      }
+    },
+    {
+      "from": "note:54.050",
+      "to": "note:53.040",
+      "relation": "recommended_reading",
+      "strength": "weak",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex",
+        "section": "Hopf–Rinowの定理",
+        "comment": "The proof uses elementary compactness, not the product compactness theorem."
+      },
+      "rationale": "位相的なコンパクト性の学習には有益だが、Tychonoffの定理自体は当該証明の直接の前提ではない。"
+    },
+    {
+      "from": "note:53.020",
+      "to": "note:53.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.050"
+      }
+    },
+    {
+      "from": "note:53.030",
+      "to": "note:53.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.050"
+      }
+    },
+    {
+      "from": "note:53.050",
+      "to": "note:53.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.060"
+      }
+    },
+    {
+      "from": "note:53.050",
+      "to": "note:53.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.070"
+      }
+    },
+    {
+      "from": "note:53.060",
+      "to": "note:53.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.070"
+      }
+    },
+    {
+      "from": "note:58.050",
+      "to": "note:53.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.070"
+      }
+    },
+    {
+      "from": "note:58.010",
+      "to": "note:53.100",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.100"
+      }
+    },
+    {
+      "from": "note:58.020",
+      "to": "note:53.100",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.100"
+      }
+    },
+    {
+      "from": "note:58.040",
+      "to": "note:53.100",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "53.100"
+      }
+    },
+    {
+      "from": "note:54.010",
+      "to": "note:54.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.020"
+      }
+    },
+    {
+      "from": "note:54.010",
+      "to": "note:54.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.030"
+      }
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:54.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.030"
+      }
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:54.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.040"
+      }
+    },
+    {
+      "from": "note:54.010",
+      "to": "note:54.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.050"
+      }
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:54.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.050"
+      }
+    },
+    {
+      "from": "note:54.040",
+      "to": "note:54.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.050"
+      }
+    },
+    {
+      "from": "note:54.050",
+      "to": "note:54.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.060"
+      }
+    },
+    {
+      "from": "note:54.010",
+      "to": "note:54.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.070"
+      }
+    },
+    {
+      "from": "note:54.060",
+      "to": "note:54.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.070"
+      }
+    },
+    {
+      "from": "note:54.050",
+      "to": "note:54.080",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.080"
+      }
+    },
+    {
+      "from": "note:54.070",
+      "to": "note:54.080",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "54.080"
+      }
+    },
+    {
+      "from": "note:54.010",
+      "to": "note:55.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "55.010"
+      }
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:55.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "55.010"
+      }
+    },
+    {
+      "from": "note:54.030",
+      "to": "note:55.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "55.010"
+      }
+    },
+    {
+      "from": "note:55.010",
+      "to": "note:55.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "55.020"
+      }
+    },
+    {
+      "from": "note:18.020",
+      "to": "note:55.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "55.030"
+      }
+    },
+    {
+      "from": "note:55.010",
+      "to": "note:55.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "55.030"
+      }
+    },
+    {
+      "from": "note:54.080",
+      "to": "note:57.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "57.010"
+      }
+    },
+    {
+      "from": "note:54.020",
+      "to": "note:57.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "57.020"
+      }
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:57.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "57.020"
+      }
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:57.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "57.030"
+      }
+    },
+    {
+      "from": "note:57.020",
+      "to": "note:57.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "57.030"
+      }
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:58.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.010"
+      }
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:58.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.010"
+      }
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:58.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.020"
+      }
+    },
+    {
+      "from": "note:58.010",
+      "to": "note:58.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.020"
+      }
+    },
+    {
+      "from": "note:57.020",
+      "to": "note:58.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.030"
+      }
+    },
+    {
+      "from": "note:58.010",
+      "to": "note:58.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.030"
+      }
+    },
+    {
+      "from": "note:58.020",
+      "to": "note:58.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.030"
+      }
+    },
+    {
+      "from": "note:58.020",
+      "to": "note:58.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.040"
+      }
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:58.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.050"
+      }
+    },
+    {
+      "from": "note:58.040",
+      "to": "note:58.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.050"
+      }
+    },
+    {
+      "from": "note:58.050",
+      "to": "note:58.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.060"
+      }
+    },
+    {
+      "from": "note:53.030",
+      "to": "note:58.100",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.100"
+      }
+    },
+    {
+      "from": "note:55.010",
+      "to": "note:58.100",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.100"
+      }
+    },
+    {
+      "from": "note:57.020",
+      "to": "note:58.100",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.100"
+      }
+    },
+    {
+      "from": "note:57.030",
+      "to": "note:58.100",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "58.100"
+      }
+    },
+    {
+      "from": "note:28.010",
+      "to": "note:60.005",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.005"
+      }
+    },
+    {
+      "from": "note:28.010",
+      "to": "note:60.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.010"
+      }
+    },
+    {
+      "from": "note:60.005",
+      "to": "note:60.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.010"
+      }
+    },
+    {
+      "from": "note:60.010",
+      "to": "note:60.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.030"
+      }
+    },
+    {
+      "from": "note:60.020",
+      "to": "note:60.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.030"
+      }
+    },
+    {
+      "from": "note:60.030",
+      "to": "note:60.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.040"
+      }
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:60.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.050"
+      }
+    },
+    {
+      "from": "note:60.040",
+      "to": "note:60.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.050"
+      }
+    },
+    {
+      "from": "note:60.010",
+      "to": "note:60.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.060"
+      }
+    },
+    {
+      "from": "note:60.020",
+      "to": "note:60.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.060"
+      }
+    },
+    {
+      "from": "note:60.030",
+      "to": "note:60.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.060"
+      }
+    },
+    {
+      "from": "note:60.030",
+      "to": "note:60.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.070"
+      }
+    },
+    {
+      "from": "note:60.040",
+      "to": "note:60.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.070"
+      }
+    },
+    {
+      "from": "note:35.010",
+      "to": "note:60.080",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.080"
+      }
+    },
+    {
+      "from": "note:60.040",
+      "to": "note:60.080",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.080"
+      }
+    },
+    {
+      "from": "note:60.050",
+      "to": "note:60.080",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.080"
+      }
+    },
+    {
+      "from": "note:42.020",
+      "to": "note:60.090",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.090"
+      }
+    },
+    {
+      "from": "note:60.005",
+      "to": "note:60.090",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.090"
+      }
+    },
+    {
+      "from": "note:60.005",
+      "to": "note:62.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.010"
+      }
+    },
+    {
+      "from": "note:62.010",
+      "to": "note:62.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.020"
+      }
+    },
+    {
+      "from": "note:60.005",
+      "to": "note:62.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.030"
+      }
+    },
+    {
+      "from": "note:62.010",
+      "to": "note:62.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.030"
+      }
+    },
+    {
+      "from": "note:62.010",
+      "to": "note:62.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.040"
+      }
+    },
+    {
+      "from": "note:62.020",
+      "to": "note:62.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.040"
+      }
+    },
+    {
+      "from": "note:62.030",
+      "to": "note:62.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.040"
+      }
+    },
+    {
+      "from": "note:62.010",
+      "to": "note:62.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.050"
+      }
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:62.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.060"
+      }
+    },
+    {
+      "from": "note:62.010",
+      "to": "note:62.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.060"
+      }
+    },
+    {
+      "from": "note:62.030",
+      "to": "note:62.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.060"
+      }
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:65.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.020"
+      }
+    },
+    {
+      "from": "note:65.010",
+      "to": "note:65.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.020"
+      }
+    },
+    {
+      "from": "note:15.010",
+      "to": "note:65.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.030"
+      }
+    },
+    {
+      "from": "note:65.010",
+      "to": "note:65.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.030"
+      }
+    },
+    {
+      "from": "note:65.010",
+      "to": "note:65.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.040"
+      }
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:65.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.050"
+      }
+    },
+    {
+      "from": "note:65.010",
+      "to": "note:65.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.050"
+      }
+    },
+    {
+      "from": "note:35.010",
+      "to": "note:65.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.060"
+      }
+    },
+    {
+      "from": "note:65.030",
+      "to": "note:65.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.060"
+      }
+    },
+    {
+      "from": "note:65.040",
+      "to": "note:65.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.060"
+      }
+    },
+    {
+      "from": "note:65.050",
+      "to": "note:65.060",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.060"
+      }
+    },
+    {
+      "from": "note:35.020",
+      "to": "note:65.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.070"
+      }
+    },
+    {
+      "from": "note:65.030",
+      "to": "note:65.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.070"
+      }
+    },
+    {
+      "from": "note:65.040",
+      "to": "note:65.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.070"
+      }
+    },
+    {
+      "from": "note:35.020",
+      "to": "note:65.080",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.080"
+      }
+    },
+    {
+      "from": "note:35.030",
+      "to": "note:65.080",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.080"
+      }
+    },
+    {
+      "from": "note:65.070",
+      "to": "note:65.080",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.080"
+      }
+    },
+    {
+      "from": "note:65.020",
+      "to": "note:65.090",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.090"
+      }
+    },
+    {
+      "from": "note:90.010",
+      "to": "note:65.090",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "65.090"
+      }
+    },
+    {
+      "from": "note:03.010",
+      "to": "note:68.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.010"
+      }
+    },
+    {
+      "from": "note:68.010",
+      "to": "note:68.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.020"
+      }
+    },
+    {
+      "from": "note:05.010",
+      "to": "note:68.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.030"
+      }
+    },
+    {
+      "from": "note:68.010",
+      "to": "note:68.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.030"
+      }
+    },
+    {
+      "from": "note:68.030",
+      "to": "note:68.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.040"
+      }
+    },
+    {
+      "from": "note:68.010",
+      "to": "note:68.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.050"
+      }
+    },
+    {
+      "from": "note:68.020",
+      "to": "note:68.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.050"
+      }
+    },
+    {
+      "from": "note:13.010",
+      "to": "note:68.100",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.100"
+      }
+    },
+    {
+      "from": "note:13.030",
+      "to": "note:68.100",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.100"
+      }
+    },
+    {
+      "from": "note:68.010",
+      "to": "note:68.100",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.100"
+      }
+    },
+    {
+      "from": "note:15.010",
+      "to": "note:68.110",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.110"
+      }
+    },
+    {
+      "from": "note:68.100",
+      "to": "note:68.110",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "68.110"
+      }
+    },
+    {
+      "from": "note:57.010",
+      "to": "note:70.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "70.010"
+      }
+    },
+    {
+      "from": "note:53.100",
+      "to": "note:70.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "70.020"
+      }
+    },
+    {
+      "from": "note:70.010",
+      "to": "note:70.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "70.020"
+      }
+    },
+    {
+      "from": "note:53.100",
+      "to": "note:70.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "70.030"
+      }
+    },
+    {
+      "from": "note:70.020",
+      "to": "note:70.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "70.030"
+      }
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:81.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "81.010"
+      }
+    },
+    {
+      "from": "note:47.020",
+      "to": "note:81.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "81.010"
+      }
+    },
+    {
+      "from": "note:70.020",
+      "to": "note:81.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "81.010"
+      }
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:81.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "81.020"
+      }
+    },
+    {
+      "from": "note:47.020",
+      "to": "note:81.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "81.020"
+      }
+    },
+    {
+      "from": "note:60.005",
+      "to": "note:82.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "82.010"
+      }
+    },
+    {
+      "from": "note:90.010",
+      "to": "note:82.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "82.010"
+      }
+    },
+    {
+      "from": "note:53.050",
+      "to": "note:83.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "83.010"
+      }
+    },
+    {
+      "from": "note:58.050",
+      "to": "note:83.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "83.010"
+      }
+    },
+    {
+      "from": "note:46.040",
+      "to": "note:90.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "90.010"
+      }
+    },
+    {
+      "from": "note:90.020",
+      "to": "note:90.030",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "90.030"
+      }
+    },
+    {
+      "from": "note:60.050",
+      "to": "note:91.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "91.020"
+      }
+    },
+    {
+      "from": "note:60.060",
+      "to": "note:91.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "91.020"
+      }
+    },
+    {
+      "from": "note:60.070",
+      "to": "note:91.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "91.020"
+      }
+    },
+    {
+      "from": "note:60.080",
+      "to": "note:91.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "91.020"
+      }
+    },
+    {
+      "from": "note:05.030",
+      "to": "note:91.200",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "91.200"
+      }
+    },
+    {
+      "from": "note:37.010",
+      "to": "note:91.200",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "91.200"
+      }
+    },
+    {
+      "from": "note:37.010",
+      "to": "note:92.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "92.010"
+      }
+    },
+    {
+      "from": "note:93.010",
+      "to": "note:92.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "92.010"
+      }
+    },
+    {
+      "from": "note:15.010",
+      "to": "note:93.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "93.010"
+      }
+    },
+    {
+      "from": "note:15.010",
+      "to": "note:93.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "93.020"
+      }
+    },
+    {
+      "from": "note:37.010",
+      "to": "note:93.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "93.020"
+      }
+    },
+    {
+      "from": "note:93.010",
+      "to": "note:93.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "93.020"
+      }
+    },
+    {
+      "from": "concept:measurable-space",
+      "to": "note:28.010",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.tex",
+        "section": "絶対連続性と密度"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:absolute-continuity",
+      "to": "note:28.010",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.tex",
+        "section": "σ有限測度に対する定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:measurable-integral",
+      "to": "note:28.010",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.tex",
+        "section": "有限測度に対する存在定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:l2-riesz",
+      "to": "note:28.010",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.tex",
+        "section": "有限測度に対する存在定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:sigma-finite",
+      "to": "note:28.010",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.tex",
+        "section": "σ有限測度に対する定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:vector-space-functional",
+      "to": "note:46.040",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/46_functional_analysis/46.040_hahn_banach/46.040_hahn_banach.tex",
+        "section": "線形汎関数の拡張問題"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:sublinear",
+      "to": "note:46.040",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/46_functional_analysis/46.040_hahn_banach/46.040_hahn_banach.tex",
+        "section": "実Hahn--Banachの定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:one-dimensional-extension",
+      "to": "note:46.040",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/46_functional_analysis/46.040_hahn_banach/46.040_hahn_banach.tex",
+        "section": "実Hahn--Banachの定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:zorn",
+      "to": "note:46.040",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/46_functional_analysis/46.040_hahn_banach/46.040_hahn_banach.tex",
+        "section": "実Hahn--Banachの定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:riemannian-metric",
+      "to": "note:53.040",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex",
+        "section": "Riemann距離と完備性"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:geodesic",
+      "to": "note:53.040",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex",
+        "section": "測地線完備性"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:metric-completeness",
+      "to": "note:53.040",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex",
+        "section": "Hopf–Rinowの定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:finite-dimensional-compactness",
+      "to": "note:53.040",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex",
+        "section": "Hopf–Rinowの定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:compactness",
+      "to": "note:54.050",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex",
+        "section": "コンパクト性と有限交叉性"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:product-topology",
+      "to": "note:54.050",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex",
+        "section": "Tychonoffの定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:ultrafilter",
+      "to": "note:54.050",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex",
+        "section": "Tychonoffの定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "concept:choice",
+      "to": "note:54.050",
+      "relation": "concept_prerequisite",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex",
+        "section": "Tychonoffの定理"
+      },
+      "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    }
+  ]
+}
