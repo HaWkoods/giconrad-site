@@ -3101,9 +3101,14 @@
     {
       "id": "burnside-lemma",
       "name_ja": "Burnsideの補題",
-      "name_en": "burnside lemma",
-      "aliases": [],
-      "description": "既存の分類語「Burnsideの補題」に対応する概念・方法の検索項目。",
+      "name_en": "Burnside's lemma",
+      "aliases": [
+        "Burnsideの補題",
+        "Burnside's lemma",
+        "Cauchy–Frobenius lemma",
+        "軌道計数"
+      ],
+      "description": "有限群作用で軌道の個数を固定点数の平均で表す公式。",
       "fields": [
         "combinatorics",
         "algebra",
@@ -3115,8 +3120,11 @@
         "05.050",
         "97.120"
       ],
-      "related_concept_ids": [],
-      "index_status": "既存タグから移行"
+      "related_concept_ids": [
+        "group-action",
+        "counting"
+      ],
+      "index_status": "本文と既存タグから統合"
     },
     {
       "id": "numerical-stability",
@@ -3784,7 +3792,11 @@
         "47.010",
         "P5.010"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "fixed-point",
+        "iteration",
+        "completeness"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -3806,7 +3818,10 @@
         "28.010",
         "60.070"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "absolute-continuity",
+        "change-of-measure"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -3828,7 +3843,11 @@
         "22.030",
         "43.010"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "measure",
+        "topological-group",
+        "harmonic-analysis"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -3851,7 +3870,10 @@
         "47.010",
         "P5.010"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "banach-fixed-point",
+        "ode"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -3871,7 +3893,10 @@
         "34.010",
         "60.050"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "ode",
+        "convergence"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -3893,7 +3918,11 @@
         "65.070",
         "65.080"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "hilbert-space",
+        "elliptic-pde",
+        "finite-element"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -3915,7 +3944,11 @@
         "13.030",
         "13.040"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "groebner-basis",
+        "elimination-theory",
+        "resultant-elimination"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -3936,7 +3969,11 @@
       "related_note_ids": [
         "13.040"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "resultant",
+        "elimination-theory",
+        "groebner-elimination"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -3956,7 +3993,10 @@
         "60.030",
         "60.040"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "stochastic-integration",
+        "brownian-motion"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -3977,7 +4017,10 @@
         "28.020",
         "58.050"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "integration",
+        "differential-form"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -4005,29 +4048,6 @@
       "index_status": "本文の主題に基づく整理"
     },
     {
-      "id": "burnside-enumeration",
-      "name_ja": "Burnsideの補題",
-      "name_en": "Burnside's lemma",
-      "aliases": [
-        "Cauchy–Frobenius lemma",
-        "軌道計数"
-      ],
-      "description": "有限群作用で軌道の個数を固定点数の平均で表す公式。",
-      "fields": [
-        "combinatorics",
-        "algebra",
-        "entrance-math",
-        "elementary-number-theory",
-        "enumeration"
-      ],
-      "related_note_ids": [
-        "05.050",
-        "97.120"
-      ],
-      "related_concept_ids": [],
-      "index_status": "本文の主題に基づく整理"
-    },
-    {
       "id": "finite-fourier",
       "name_ja": "有限群上のFourier解析",
       "name_en": "Fourier analysis on finite groups",
@@ -4049,7 +4069,10 @@
         "43.010",
         "97.170"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "fourier-transform",
+        "harmonic-analysis"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -4070,7 +4093,10 @@
         "30.010",
         "97.130"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "conformality",
+        "holomorphic"
+      ],
       "index_status": "本文の主題に基づく整理"
     },
     {
@@ -4090,7 +4116,10 @@
       "related_note_ids": [
         "97.200"
       ],
-      "related_concept_ids": [],
+      "related_concept_ids": [
+        "algorithm",
+        "combinatorial-inversion"
+      ],
       "index_status": "本文の主題に基づく整理"
     }
   ]
