@@ -1,7 +1,7 @@
 {
   "version": 1,
   "metadata": {
-    "source": "data/notes.json and data/details.json",
+    "source": "data/notes.json and data/details.json (160 entries; source proof correctness not certified)",
     "purpose": "Prerequisite graph data; not a proof correctness certification",
     "strength_values": [
       "strong",
@@ -17,7 +17,7 @@
       "concept_prerequisite"
     ],
     "direction": "from prerequisite to learning target",
-    "edge_count_note": 202,
+    "edge_count_note": 205,
     "edge_count_curated": 17
   },
   "nodes": [
@@ -1611,6 +1611,32 @@
       "label": "選択公理",
       "fields": [
         "logic"
+      ]
+    },
+    {
+      "id": "note:34.010",
+      "kind": "note",
+      "label": "常微分方程式の初期値問題の基本定理",
+      "fields": [
+        "ode"
+      ]
+    },
+    {
+      "id": "note:P5.010",
+      "kind": "note",
+      "label": "不動点・反復・収束",
+      "fields": [
+        "dynamical-systems",
+        "operator-theory",
+        "ode"
+      ]
+    },
+    {
+      "id": "note:P5.020",
+      "kind": "note",
+      "label": "線形代数演習 I",
+      "fields": [
+        "linear-algebra"
       ]
     }
   ],
@@ -4042,6 +4068,39 @@
         "section": "Tychonoffの定理"
       },
       "rationale": "該当原稿の記述・証明で使用される概念。定理のあらゆる証明方法に必要と主張するものではない。"
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:34.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "34.010"
+      }
+    },
+    {
+      "from": "note:47.010",
+      "to": "note:P5.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "P5.010"
+      }
+    },
+    {
+      "from": "note:34.010",
+      "to": "note:P5.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "P5.010"
+      }
     }
   ]
 }
