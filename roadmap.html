@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="数学の主要定理と157冊のノートを分野から段階的にたどる学習ロードマップ。">
+<title>主要定理ロードマップ | 擬コンラット</title>
+<link rel="stylesheet" href="./assets/style.css"><link rel="stylesheet" href="./assets/roadmap.css">
+<script defer src="./assets/roadmap.js"></script></head>
+<body><div class="shell">
+<header><a class="brand" href="./"><span>∈</span> 擬コンラット</a><small>MATHEMATICAL NOTES · THEOREM ROADMAP</small></header>
+<main class="roadmapMain">
+<nav class="breadcrumbs" aria-label="パンくずリスト"><a href="./">横断索引</a><span aria-hidden="true">/</span>主要定理ロードマップ</nav>
+<div class="mapHero"><div class="eyebrow">EXPLORE MATHEMATICS</div>
+<h1>数学の地図を、<br><em>定理から辿る。</em></h1>
+<p>大分野から小分野へ、さらに定理・主題へ。枝を開いて学びたい場所を選ぶと、対応するノート、前提知識、次の学習先が表示されます。</p>
+<p class="mapFine">既存の157冊を基盤とした学習案内です。全数学の定理を網羅するものではなく、各ノートの数学的完成認定でもありません。</p></div>
+<div class="mapToolbar"><label for="roadmapSearch">定理・主題を検索</label><div class="mapSearchRow"><input id="roadmapSearch" type="search" placeholder="例：Hahn–Banach、コンパクト、Galois、28.010"><button id="roadmapExpand" type="button">すべて展開</button><button id="roadmapCollapse" type="button">折りたたむ</button></div></div>
+<div class="mapWorkspace">
+<section class="mapExplorer" aria-label="数学分野の階層ツリー"><div class="mapPanelHead"><h2>分野と定理</h2><span id="roadmapCount"></span></div><div id="roadmapTree" class="mapTree"></div><p id="roadmapStatus" role="status">ロードマップを読み込んでいます…</p></section>
+<aside class="mapDetail mapDetailEmpty" id="roadmapDetail" aria-live="polite">
+<div class="mapPlaceholder"><span class="mapPlaceholderGlyph" aria-hidden="true">∈</span><h2>枝を選んでみましょう</h2><p>左の大分野を開いて小分野、定理へと進みます。選んだ定理の概要と学習経路がここに現れます。</p></div></aside>
+</div>
+<p id="roadmapActive" class="mapActive" aria-live="polite"></p>
+</main><footer><span>擬コンラット · 数学の主要定理ロードマップ</span><a href="./">横断索引へ戻る</a></footer>
+</div></body></html>
