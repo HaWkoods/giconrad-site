@@ -1,0 +1,4756 @@
+{
+  "version": 1,
+  "orientation": "A to B: source used before or compared with target; symmetric edges unordered",
+  "verification_statuses": [
+    "確認済み",
+    "数学的に推論可能",
+    "要確認"
+  ],
+  "relations": [
+    {
+      "source_id": "03.010",
+      "target_id": "03.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "完全性定理を原稿で既知として明示（冒頭導入）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "03.020",
+          "source_path": "public_notes/03_logic_foundations/03.020_compactness_model_theory/03.020_compactness_model_theory.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.040",
+      "target_id": "03.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "03.030",
+          "source_path": "public_notes/03_logic_foundations/03.030_hyperreals_nonstandard/03.030_hyperreals_nonstandard.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "03.010",
+      "target_id": "03.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "03.040",
+          "source_path": "public_notes/03_logic_foundations/03.040_godel_incompleteness/03.040_godel_incompleteness.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "05.010",
+      "target_id": "05.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.020",
+          "source_path": "public_notes/05_combinatorics/05.020_generating_functions_recurrences/05.020_generating_functions_recurrences.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "05.010",
+      "target_id": "05.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.030",
+          "source_path": "public_notes/05_combinatorics/05.030_graph_theory_foundations/05.030_graph_theory_foundations.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "05.030",
+      "target_id": "05.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.040",
+          "source_path": "public_notes/05_combinatorics/05.040_matching_network_flows/05.040_matching_network_flows.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "05.010",
+      "target_id": "05.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.050",
+          "source_path": "public_notes/05_combinatorics/05.050_group_actions_enumeration/05.050_group_actions_enumeration.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "05.020",
+      "target_id": "05.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.050",
+          "source_path": "public_notes/05_combinatorics/05.050_group_actions_enumeration/05.050_group_actions_enumeration.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "05.010",
+      "target_id": "05.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.060",
+          "source_path": "public_notes/05_combinatorics/05.060_extremal_probabilistic_methods/05.060_extremal_probabilistic_methods.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "05.030",
+      "target_id": "05.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.060",
+          "source_path": "public_notes/05_combinatorics/05.060_extremal_probabilistic_methods/05.060_extremal_probabilistic_methods.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "11.010",
+      "target_id": "11.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "11.040",
+          "source_path": "public_notes/11_number_theory/11.040_dirichlet_primes/11.040_dirichlet_primes.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "11.010",
+      "target_id": "11.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "11.050",
+          "source_path": "public_notes/11_number_theory/11.050_prime_number_theorem/11.050_prime_number_theorem.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "12.060",
+      "target_id": "12.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "12.070",
+          "source_path": "public_notes/12_fields_galois/12.070_liouvillian_integrability/12.070_liouvillian_integrability.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "13.010",
+      "target_id": "13.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "13.020",
+          "source_path": "public_notes/13_commutative_algebra/13.020_krull_dimension_hilbert_polynomial/13.020_krull_dimension_hilbert_polynomial.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "13.010",
+      "target_id": "13.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "13.030",
+          "source_path": "public_notes/13_commutative_algebra/13.030_groebner_bases/13.030_groebner_bases.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "13.030",
+      "target_id": "13.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "13.040",
+          "source_path": "public_notes/13_commutative_algebra/13.040_elimination_resultants/13.040_elimination_resultants.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "13.010",
+      "target_id": "13.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "13.050",
+          "source_path": "public_notes/13_commutative_algebra/13.050_hilbert_serre_samuel/13.050_hilbert_serre_samuel.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "13.020",
+      "target_id": "13.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "13.050",
+          "source_path": "public_notes/13_commutative_algebra/13.050_hilbert_serre_samuel/13.050_hilbert_serre_samuel.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "13.010",
+      "target_id": "13.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "13.060",
+          "source_path": "public_notes/13_commutative_algebra/13.060_artin_rees_krull/13.060_artin_rees_krull.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "13.020",
+      "target_id": "13.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "13.060",
+          "source_path": "public_notes/13_commutative_algebra/13.060_artin_rees_krull/13.060_artin_rees_krull.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "18.010",
+      "target_id": "18.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "18.030",
+          "source_path": "public_notes/18_category_homological/18.030_limits_adjunctions/18.030_limits_adjunctions.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "18.010",
+      "target_id": "18.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "18.040",
+          "source_path": "public_notes/18_category_homological/18.040_sheaves_stalks_sheafification/18.040_sheaves_stalks_sheafification.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "18.040",
+      "target_id": "18.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "18.060",
+          "source_path": "public_notes/18_category_homological/18.060_sheaf_cohomology/18.060_sheaf_cohomology.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "18.050",
+      "target_id": "18.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "18.060",
+          "source_path": "public_notes/18_category_homological/18.060_sheaf_cohomology/18.060_sheaf_cohomology.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "22.010",
+      "target_id": "22.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.020",
+          "source_path": "public_notes/22_topological_lie_groups/22.020_lie_groups_algebras/22.020_lie_groups_algebras.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "57.010",
+      "target_id": "22.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.020",
+          "source_path": "public_notes/22_topological_lie_groups/22.020_lie_groups_algebras/22.020_lie_groups_algebras.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.010",
+      "target_id": "22.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.020",
+          "source_path": "public_notes/22_topological_lie_groups/22.020_lie_groups_algebras/22.020_lie_groups_algebras.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "22.010",
+      "target_id": "22.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.030",
+          "source_path": "public_notes/22_topological_lie_groups/22.030_haar_measure/22.030_haar_measure.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "30.010",
+      "target_id": "30.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "30.020",
+          "source_path": "public_notes/30_complex_analysis/30.020_cauchy_integral_theorem/30.020_cauchy_integral_theorem.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "30.020",
+      "target_id": "30.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "30.030",
+          "source_path": "public_notes/30_complex_analysis/30.030_argument_principle_rouche/30.030_argument_principle_rouche.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "30.020",
+      "target_id": "30.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "30.040",
+          "source_path": "public_notes/30_complex_analysis/30.040_analytic_continuation_monodromy/30.040_analytic_continuation_monodromy.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "30.030",
+      "target_id": "30.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "30.040",
+          "source_path": "public_notes/30_complex_analysis/30.040_analytic_continuation_monodromy/30.040_analytic_continuation_monodromy.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "13.010",
+      "target_id": "32.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "32.010",
+          "source_path": "public_notes/32_d_modules/32.010_weyl_algebras_differential_operators/32.010_weyl_algebras_differential_operators.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "32.010",
+      "target_id": "32.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "32.020",
+          "source_path": "public_notes/32_d_modules/32.020_d_module_basics/32.020_d_module_basics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "13.020",
+      "target_id": "32.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "32.030",
+          "source_path": "public_notes/32_d_modules/32.030_characteristic_variety_holonomicity/32.030_characteristic_variety_holonomicity.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "32.020",
+      "target_id": "32.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "32.030",
+          "source_path": "public_notes/32_d_modules/32.030_characteristic_variety_holonomicity/32.030_characteristic_variety_holonomicity.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "18.040",
+      "target_id": "32.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "32.040",
+          "source_path": "public_notes/32_d_modules/32.040_d_module_derham_solutions/32.040_d_module_derham_solutions.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "32.020",
+      "target_id": "32.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "32.040",
+          "source_path": "public_notes/32_d_modules/32.040_d_module_derham_solutions/32.040_d_module_derham_solutions.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "42.020",
+      "target_id": "35.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.010",
+          "source_path": "public_notes/35_partial_differential_equations/35.010_pde_heat_wave/35.010_pde_heat_wave.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "35.010",
+      "target_id": "35.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.020",
+          "source_path": "public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "46.030",
+      "target_id": "35.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "Lax–Milgramの定理の証明でHilbert空間のRiesz表現を使用する（原稿105行付近）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.020",
+          "source_path": "public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.100",
+      "target_id": "35.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.020",
+          "source_path": "public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "35.020",
+      "target_id": "35.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.030",
+          "source_path": "public_notes/35_partial_differential_equations/35.030_lipschitz_trace/35.030_lipschitz_trace.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "42.020",
+      "target_id": "35.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "Sobolevトレース定理の証明はPlancherel等式を明示的に使用する。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.030",
+          "source_path": "public_notes/35_partial_differential_equations/35.030_lipschitz_trace/35.030_lipschitz_trace.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "35.020",
+      "target_id": "35.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.040",
+          "source_path": "public_notes/35_partial_differential_equations/35.040_reentrant_corner_elliptic/35.040_reentrant_corner_elliptic.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "35.030",
+      "target_id": "35.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.040",
+          "source_path": "public_notes/35_partial_differential_equations/35.040_reentrant_corner_elliptic/35.040_reentrant_corner_elliptic.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "35.010",
+      "target_id": "35.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.050",
+          "source_path": "public_notes/35_partial_differential_equations/35.050_periodic_wave_wellposedness/35.050_periodic_wave_wellposedness.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "42.010",
+      "target_id": "35.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.050",
+          "source_path": "public_notes/35_partial_differential_equations/35.050_periodic_wave_wellposedness/35.050_periodic_wave_wellposedness.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "47.010",
+      "target_id": "37.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "37.010",
+          "source_path": "public_notes/37_dynamical_systems/37.010_dynamics_stability/37.010_dynamics_stability.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "37.010",
+      "target_id": "37.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "37.020",
+          "source_path": "public_notes/37_dynamical_systems/37.020_bifurcation_basics/37.020_bifurcation_basics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.020",
+      "target_id": "42.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "42.010",
+          "source_path": "public_notes/42_fourier_analysis/42.010_fourier_series/42.010_fourier_series.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "22.030",
+      "target_id": "43.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "43.010",
+          "source_path": "public_notes/43_abstract_harmonic_analysis/43.010_compact_abelian_fourier/43.010_compact_abelian_fourier.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.020",
+      "target_id": "46.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.050",
+          "source_path": "public_notes/46_functional_analysis/46.050_open_mapping_closed_graph/46.050_open_mapping_closed_graph.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.040",
+      "target_id": "46.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "弱位相のHausdorff性でHahn–Banachを直接使う（原稿128行付近）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.060",
+          "source_path": "public_notes/46_functional_analysis/46.060_weak_weakstar_topology/46.060_weak_weakstar_topology.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.030",
+      "target_id": "47.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "47.020",
+          "source_path": "public_notes/47_operator_theory/47.020_compact_operator_spectrum/47.020_compact_operator_spectrum.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.060",
+      "target_id": "47.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "47.020",
+          "source_path": "public_notes/47_operator_theory/47.020_compact_operator_spectrum/47.020_compact_operator_spectrum.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "57.010",
+      "target_id": "53.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.010",
+          "source_path": "public_notes/53_differential_geometry/53.010_vector_bundles_connections/53.010_vector_bundles_connections.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.020",
+      "target_id": "53.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.010",
+          "source_path": "public_notes/53_differential_geometry/53.010_vector_bundles_connections/53.010_vector_bundles_connections.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "53.010",
+      "target_id": "53.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.020",
+          "source_path": "public_notes/53_differential_geometry/53.020_riemannian_metric_levi_civita/53.020_riemannian_metric_levi_civita.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "53.020",
+      "target_id": "53.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.030",
+          "source_path": "public_notes/53_differential_geometry/53.030_geodesics_exponential_map/53.030_geodesics_exponential_map.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.010",
+      "target_id": "53.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.030",
+          "source_path": "public_notes/53_differential_geometry/53.030_geodesics_exponential_map/53.030_geodesics_exponential_map.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "53.030",
+      "target_id": "53.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.040",
+          "source_path": "public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.050",
+      "target_id": "53.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "Hopf–Rinowの証明は有限次元Euclid閉球のコンパクト性を使うが、Tychonoffの積コンパクト性定理は使用しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.040",
+          "source_path": "public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "53.020",
+      "target_id": "53.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.050",
+          "source_path": "public_notes/53_differential_geometry/53.050_curvature_jacobi/53.050_curvature_jacobi.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "53.030",
+      "target_id": "53.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.050",
+          "source_path": "public_notes/53_differential_geometry/53.050_curvature_jacobi/53.050_curvature_jacobi.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "53.050",
+      "target_id": "53.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.060",
+          "source_path": "public_notes/53_differential_geometry/53.060_submanifold_extrinsic_geometry/53.060_submanifold_extrinsic_geometry.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "53.050",
+      "target_id": "53.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.070",
+          "source_path": "public_notes/53_differential_geometry/53.070_gauss_bonnet/53.070_gauss_bonnet.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "53.060",
+      "target_id": "53.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.070",
+          "source_path": "public_notes/53_differential_geometry/53.070_gauss_bonnet/53.070_gauss_bonnet.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.050",
+      "target_id": "53.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.070",
+          "source_path": "public_notes/53_differential_geometry/53.070_gauss_bonnet/53.070_gauss_bonnet.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.010",
+      "target_id": "53.100",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.100",
+          "source_path": "public_notes/53_differential_geometry/53.100_symplectic_geometry/53.100_symplectic_geometry.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "58.020",
+      "target_id": "53.100",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.100",
+          "source_path": "public_notes/53_differential_geometry/53.100_symplectic_geometry/53.100_symplectic_geometry.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "58.040",
+      "target_id": "53.100",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "53.100",
+          "source_path": "public_notes/53_differential_geometry/53.100_symplectic_geometry/53.100_symplectic_geometry.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.010",
+      "target_id": "54.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.020",
+          "source_path": "public_notes/54_general_topology/54.020_product_quotient_topology/54.020_product_quotient_topology.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.010",
+      "target_id": "54.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.030",
+          "source_path": "public_notes/54_general_topology/54.030_connectedness/54.030_connectedness.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.020",
+      "target_id": "54.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.030",
+          "source_path": "public_notes/54_general_topology/54.030_connectedness/54.030_connectedness.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.020",
+      "target_id": "54.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.040",
+          "source_path": "public_notes/54_general_topology/54.040_filters_ultrafilters/54.040_filters_ultrafilters.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.010",
+      "target_id": "54.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.050",
+          "source_path": "public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.020",
+      "target_id": "54.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.050",
+          "source_path": "public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.040",
+      "target_id": "54.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.050",
+          "source_path": "public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.050",
+      "target_id": "54.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "Urysohnの補題・Tietze拡張は正規空間を仮定し証明しており、Tychonoff定理は直接使用しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.060",
+          "source_path": "public_notes/54_general_topology/54.060_urysohn_tietze/54.060_urysohn_tietze.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "54.010",
+      "target_id": "54.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.070",
+          "source_path": "public_notes/54_general_topology/54.070_separation_metrization/54.070_separation_metrization.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.060",
+      "target_id": "54.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.070",
+          "source_path": "public_notes/54_general_topology/54.070_separation_metrization/54.070_separation_metrization.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.050",
+      "target_id": "54.080",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.080",
+          "source_path": "public_notes/54_general_topology/54.080_local_compact_paracompact/54.080_local_compact_paracompact.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.070",
+      "target_id": "54.080",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "54.080",
+          "source_path": "public_notes/54_general_topology/54.080_local_compact_paracompact/54.080_local_compact_paracompact.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.010",
+      "target_id": "55.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "55.010",
+          "source_path": "public_notes/55_algebraic_topology/55.010_homotopy_topological_constructions/55.010_homotopy_topological_constructions.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.020",
+      "target_id": "55.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "55.010",
+          "source_path": "public_notes/55_algebraic_topology/55.010_homotopy_topological_constructions/55.010_homotopy_topological_constructions.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.030",
+      "target_id": "55.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "55.010",
+          "source_path": "public_notes/55_algebraic_topology/55.010_homotopy_topological_constructions/55.010_homotopy_topological_constructions.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "55.010",
+      "target_id": "55.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "55.020",
+          "source_path": "public_notes/55_algebraic_topology/55.020_covering_spaces_fundamental_group/55.020_covering_spaces_fundamental_group.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "18.020",
+      "target_id": "55.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "自由積の普遍性を原稿内で定義・証明している。一般的な自由対象の議論は参考になるが、先行ノートの定理を引用する必要はない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "55.030",
+          "source_path": "public_notes/55_algebraic_topology/55.030_seifert_van_kampen/55.030_seifert_van_kampen.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "55.010",
+      "target_id": "55.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "55.030",
+          "source_path": "public_notes/55_algebraic_topology/55.030_seifert_van_kampen/55.030_seifert_van_kampen.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.080",
+      "target_id": "57.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "57.010",
+          "source_path": "public_notes/57_manifold_topology/57.010_smooth_manifolds/57.010_smooth_manifolds.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.020",
+      "target_id": "57.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "57.020",
+          "source_path": "public_notes/57_manifold_topology/57.020_quotient_manifolds/57.020_quotient_manifolds.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "57.010",
+      "target_id": "57.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "57.020",
+          "source_path": "public_notes/57_manifold_topology/57.020_quotient_manifolds/57.020_quotient_manifolds.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "57.010",
+      "target_id": "57.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "57.030",
+          "source_path": "public_notes/57_manifold_topology/57.030_sard_transversality/57.030_sard_transversality.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "57.020",
+      "target_id": "57.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "57.030",
+          "source_path": "public_notes/57_manifold_topology/57.030_sard_transversality/57.030_sard_transversality.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "47.010",
+      "target_id": "58.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.010",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.010_vector_fields_flows/58.010_vector_fields_flows.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "57.010",
+      "target_id": "58.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.010",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.010_vector_fields_flows/58.010_vector_fields_flows.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "57.010",
+      "target_id": "58.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.020",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.020_tensor_fields_lie_derivative/58.020_tensor_fields_lie_derivative.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.010",
+      "target_id": "58.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.020",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.020_tensor_fields_lie_derivative/58.020_tensor_fields_lie_derivative.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "57.020",
+      "target_id": "58.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.030",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.030_frobenius_theorem/58.030_frobenius_theorem.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "58.010",
+      "target_id": "58.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.030",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.030_frobenius_theorem/58.030_frobenius_theorem.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.020",
+      "target_id": "58.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.030",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.030_frobenius_theorem/58.030_frobenius_theorem.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.020",
+      "target_id": "58.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.040",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.040_poincare_lemma_forms/58.040_poincare_lemma_forms.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "57.010",
+      "target_id": "58.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.050",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.050_stokes_manifolds/58.050_stokes_manifolds.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.040",
+      "target_id": "58.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.050",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.050_stokes_manifolds/58.050_stokes_manifolds.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.050",
+      "target_id": "58.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.060",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.060_de_rham_cohomology/58.060_de_rham_cohomology.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "53.030",
+      "target_id": "58.100",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.100",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "55.010",
+      "target_id": "58.100",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.100",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "57.020",
+      "target_id": "58.100",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.100",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "57.030",
+      "target_id": "58.100",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.100",
+          "source_path": "public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "28.010",
+      "target_id": "60.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "条件付き期待値の存在証明でRadon–Nikodymの定理を明示的に適用する（原稿105行付近）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.010",
+          "source_path": "public_notes/60_probability_stochastic/60.010_conditional_expectation_martingales/60.010_conditional_expectation_martingales.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.005",
+      "target_id": "60.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.010",
+          "source_path": "public_notes/60_probability_stochastic/60.010_conditional_expectation_martingales/60.010_conditional_expectation_martingales.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "60.010",
+      "target_id": "60.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.030",
+          "source_path": "public_notes/60_probability_stochastic/60.030_ito_integral/60.030_ito_integral.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.020",
+      "target_id": "60.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.030",
+          "source_path": "public_notes/60_probability_stochastic/60.030_ito_integral/60.030_ito_integral.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.030",
+      "target_id": "60.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.040",
+          "source_path": "public_notes/60_probability_stochastic/60.040_ito_formula/60.040_ito_formula.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "47.010",
+      "target_id": "60.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "存在・一意性証明はBanach空間の完備性とPicard反復の階乗型評価を利用する。原稿は有限区間で縮小写像を構成する方法ではないと明言（原稿284–285行）。Banachの不動点定理の事前習得は直接の必須条件ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.050",
+          "source_path": "public_notes/60_probability_stochastic/60.050_sde_existence_uniqueness/60.050_sde_existence_uniqueness.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "60.040",
+      "target_id": "60.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.050",
+          "source_path": "public_notes/60_probability_stochastic/60.050_sde_existence_uniqueness/60.050_sde_existence_uniqueness.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.010",
+      "target_id": "60.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.060",
+          "source_path": "public_notes/60_probability_stochastic/60.060_martingale_representation/60.060_martingale_representation.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.020",
+      "target_id": "60.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.060",
+          "source_path": "public_notes/60_probability_stochastic/60.060_martingale_representation/60.060_martingale_representation.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.030",
+      "target_id": "60.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.060",
+          "source_path": "public_notes/60_probability_stochastic/60.060_martingale_representation/60.060_martingale_representation.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.030",
+      "target_id": "60.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.070",
+          "source_path": "public_notes/60_probability_stochastic/60.070_girsanov/60.070_girsanov.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.040",
+      "target_id": "60.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.070",
+          "source_path": "public_notes/60_probability_stochastic/60.070_girsanov/60.070_girsanov.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "35.010",
+      "target_id": "60.080",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.080",
+          "source_path": "public_notes/60_probability_stochastic/60.080_feynman_kac_kolmogorov/60.080_feynman_kac_kolmogorov.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.040",
+      "target_id": "60.080",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.080",
+          "source_path": "public_notes/60_probability_stochastic/60.080_feynman_kac_kolmogorov/60.080_feynman_kac_kolmogorov.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.050",
+      "target_id": "60.080",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.080",
+          "source_path": "public_notes/60_probability_stochastic/60.080_feynman_kac_kolmogorov/60.080_feynman_kac_kolmogorov.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "42.020",
+      "target_id": "60.090",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.090",
+          "source_path": "public_notes/60_probability_stochastic/60.090_local_limit_theorems/60.090_local_limit_theorems.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.005",
+      "target_id": "60.090",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "60.090",
+          "source_path": "public_notes/60_probability_stochastic/60.090_local_limit_theorems/60.090_local_limit_theorems.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.005",
+      "target_id": "62.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.010",
+          "source_path": "public_notes/62_mathematical_statistics/62.010_statistical_models_estimators/62.010_statistical_models_estimators.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "62.010",
+      "target_id": "62.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.020",
+          "source_path": "public_notes/62_mathematical_statistics/62.020_sufficiency_completeness/62.020_sufficiency_completeness.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.005",
+      "target_id": "62.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.030",
+          "source_path": "public_notes/62_mathematical_statistics/62.030_mle_asymptotics/62.030_mle_asymptotics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "62.010",
+      "target_id": "62.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.030",
+          "source_path": "public_notes/62_mathematical_statistics/62.030_mle_asymptotics/62.030_mle_asymptotics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "62.010",
+      "target_id": "62.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.040",
+          "source_path": "public_notes/62_mathematical_statistics/62.040_hypothesis_testing/62.040_hypothesis_testing.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "62.020",
+      "target_id": "62.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.040",
+          "source_path": "public_notes/62_mathematical_statistics/62.040_hypothesis_testing/62.040_hypothesis_testing.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "62.030",
+      "target_id": "62.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.040",
+          "source_path": "public_notes/62_mathematical_statistics/62.040_hypothesis_testing/62.040_hypothesis_testing.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "62.010",
+      "target_id": "62.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.050",
+          "source_path": "public_notes/62_mathematical_statistics/62.050_bayesian_statistics/62.050_bayesian_statistics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.030",
+      "target_id": "62.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.060",
+          "source_path": "public_notes/62_mathematical_statistics/62.060_linear_regression/62.060_linear_regression.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "62.010",
+      "target_id": "62.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.060",
+          "source_path": "public_notes/62_mathematical_statistics/62.060_linear_regression/62.060_linear_regression.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "62.030",
+      "target_id": "62.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.060",
+          "source_path": "public_notes/62_mathematical_statistics/62.060_linear_regression/62.060_linear_regression.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "47.010",
+      "target_id": "65.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "Newton法の局所収束保証でBanachの不動点定理を明示的に使う（原稿147行付近）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.020",
+          "source_path": "public_notes/65_numerical_analysis/65.020_nonlinear_numerical_methods/65.020_nonlinear_numerical_methods.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "65.010",
+      "target_id": "65.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.020",
+          "source_path": "public_notes/65_numerical_analysis/65.020_nonlinear_numerical_methods/65.020_nonlinear_numerical_methods.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "65.010",
+      "target_id": "65.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.030",
+          "source_path": "public_notes/65_numerical_analysis/65.030_numerical_linear_algebra/65.030_numerical_linear_algebra.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "65.010",
+      "target_id": "65.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.040",
+          "source_path": "public_notes/65_numerical_analysis/65.040_interpolation_quadrature/65.040_interpolation_quadrature.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "47.010",
+      "target_id": "65.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.050",
+          "source_path": "public_notes/65_numerical_analysis/65.050_numerical_odes/65.050_numerical_odes.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "65.010",
+      "target_id": "65.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.050",
+          "source_path": "public_notes/65_numerical_analysis/65.050_numerical_odes/65.050_numerical_odes.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "35.010",
+      "target_id": "65.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.060",
+          "source_path": "public_notes/65_numerical_analysis/65.060_finite_difference_pde/65.060_finite_difference_pde.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "65.030",
+      "target_id": "65.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.060",
+          "source_path": "public_notes/65_numerical_analysis/65.060_finite_difference_pde/65.060_finite_difference_pde.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "65.040",
+      "target_id": "65.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.060",
+          "source_path": "public_notes/65_numerical_analysis/65.060_finite_difference_pde/65.060_finite_difference_pde.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "65.050",
+      "target_id": "65.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.060",
+          "source_path": "public_notes/65_numerical_analysis/65.060_finite_difference_pde/65.060_finite_difference_pde.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "35.020",
+      "target_id": "65.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.070",
+          "source_path": "public_notes/65_numerical_analysis/65.070_finite_element_methods/65.070_finite_element_methods.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "65.030",
+      "target_id": "65.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.070",
+          "source_path": "public_notes/65_numerical_analysis/65.070_finite_element_methods/65.070_finite_element_methods.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "65.040",
+      "target_id": "65.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.070",
+          "source_path": "public_notes/65_numerical_analysis/65.070_finite_element_methods/65.070_finite_element_methods.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "35.020",
+      "target_id": "65.080",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.080",
+          "source_path": "public_notes/65_numerical_analysis/65.080_sobolev_fem_interpolation/65.080_sobolev_fem_interpolation.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "35.030",
+      "target_id": "65.080",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.080",
+          "source_path": "public_notes/65_numerical_analysis/65.080_sobolev_fem_interpolation/65.080_sobolev_fem_interpolation.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "65.070",
+      "target_id": "65.080",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.080",
+          "source_path": "public_notes/65_numerical_analysis/65.080_sobolev_fem_interpolation/65.080_sobolev_fem_interpolation.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "65.020",
+      "target_id": "65.090",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.090",
+          "source_path": "public_notes/65_numerical_analysis/65.090_wolfe_zoutendijk/65.090_wolfe_zoutendijk.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "90.010",
+      "target_id": "65.090",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "65.090",
+          "source_path": "public_notes/65_numerical_analysis/65.090_wolfe_zoutendijk/65.090_wolfe_zoutendijk.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "03.010",
+      "target_id": "68.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "68.010",
+          "source_path": "public_notes/68_theoretical_computer_science/68.010_turing_computability/68.010_turing_computability.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "68.010",
+      "target_id": "68.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "68.020",
+          "source_path": "public_notes/68_theoretical_computer_science/68.020_decidability_undecidability/68.020_decidability_undecidability.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "05.010",
+      "target_id": "68.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "68.030",
+          "source_path": "public_notes/68_theoretical_computer_science/68.030_complexity_basics/68.030_complexity_basics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "68.010",
+      "target_id": "68.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "68.030",
+          "source_path": "public_notes/68_theoretical_computer_science/68.030_complexity_basics/68.030_complexity_basics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "68.030",
+      "target_id": "68.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "68.040",
+          "source_path": "public_notes/68_theoretical_computer_science/68.040_np_completeness/68.040_np_completeness.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "68.010",
+      "target_id": "68.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "68.050",
+          "source_path": "public_notes/68_theoretical_computer_science/68.050_rice_shapiro/68.050_rice_shapiro.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "68.020",
+      "target_id": "68.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "68.050",
+          "source_path": "public_notes/68_theoretical_computer_science/68.050_rice_shapiro/68.050_rice_shapiro.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "68.010",
+      "target_id": "68.100",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "68.100",
+          "source_path": "public_notes/68_theoretical_computer_science/68.100_exact_integer_polynomial/68.100_exact_integer_polynomial.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "15.010",
+      "target_id": "68.110",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "68.110",
+          "source_path": "public_notes/68_theoretical_computer_science/68.110_exact_computational_linear_algebra/68.110_exact_computational_linear_algebra.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "68.100",
+      "target_id": "68.110",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "68.110",
+          "source_path": "public_notes/68_theoretical_computer_science/68.110_exact_computational_linear_algebra/68.110_exact_computational_linear_algebra.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "57.010",
+      "target_id": "70.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "70.010",
+          "source_path": "public_notes/70_mechanics/70.010_variational_principle_lagrangian_mechanics/70.010_variational_principle_lagrangian_mechanics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "53.100",
+      "target_id": "70.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "70.020",
+          "source_path": "public_notes/70_mechanics/70.020_hamiltonian_mechanics/70.020_hamiltonian_mechanics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "70.010",
+      "target_id": "70.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "70.020",
+          "source_path": "public_notes/70_mechanics/70.020_hamiltonian_mechanics/70.020_hamiltonian_mechanics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "53.100",
+      "target_id": "70.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "70.030",
+          "source_path": "public_notes/70_mechanics/70.030_liouville_arnold/70.030_liouville_arnold.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "70.020",
+      "target_id": "70.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象ノートの前提・章構成から中心概念として関係を確認。ただしノート全体の既習が必要であるとの意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "70.030",
+          "source_path": "public_notes/70_mechanics/70.030_liouville_arnold/70.030_liouville_arnold.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.030",
+      "target_id": "81.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "81.010",
+          "source_path": "public_notes/81_quantum_mechanics/81.010_quantum_math_foundations/81.010_quantum_math_foundations.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "47.020",
+      "target_id": "81.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "81.010",
+          "source_path": "public_notes/81_quantum_mechanics/81.010_quantum_math_foundations/81.010_quantum_math_foundations.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "70.020",
+      "target_id": "81.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "81.010",
+          "source_path": "public_notes/81_quantum_mechanics/81.010_quantum_math_foundations/81.010_quantum_math_foundations.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "46.030",
+      "target_id": "81.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "81.020",
+          "source_path": "public_notes/81_quantum_mechanics/81.020_spectral_stone/81.020_spectral_stone.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "47.020",
+      "target_id": "81.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "81.020",
+          "source_path": "public_notes/81_quantum_mechanics/81.020_spectral_stone/81.020_spectral_stone.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "60.005",
+      "target_id": "82.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "82.010",
+          "source_path": "public_notes/82_statistical_mechanics/82.010_statistical_mechanics/82.010_statistical_mechanics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "53.050",
+      "target_id": "83.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "83.010",
+          "source_path": "public_notes/83_relativity/83.010_lorentz_geometry_relativity/83.010_lorentz_geometry_relativity.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "58.050",
+      "target_id": "83.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "83.010",
+          "source_path": "public_notes/83_relativity/83.010_lorentz_geometry_relativity/83.010_lorentz_geometry_relativity.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "46.040",
+      "target_id": "90.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "90.010",
+          "source_path": "public_notes/90_optimization/90.010_convex_duality_fenchel/90.010_convex_duality_fenchel.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "90.020",
+      "target_id": "90.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "90.030",
+          "source_path": "public_notes/90_optimization/90.030_numerical_optimization/90.030_numerical_optimization.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "60.050",
+      "target_id": "91.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "91.020",
+          "source_path": "public_notes/91_financial_actuarial/91.020_black_scholes/91.020_black_scholes.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.060",
+      "target_id": "91.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "複製戦略の証明でBrown運動のマルチンゲール表現定理を引用する（原稿253行付近）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "91.020",
+          "source_path": "public_notes/91_financial_actuarial/91.020_black_scholes/91.020_black_scholes.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.070",
+      "target_id": "91.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "リスク中立測度の構成でGirsanovの定理を適用する（原稿168行付近）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "91.020",
+          "source_path": "public_notes/91_financial_actuarial/91.020_black_scholes/91.020_black_scholes.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.080",
+      "target_id": "91.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "91.020",
+          "source_path": "public_notes/91_financial_actuarial/91.020_black_scholes/91.020_black_scholes.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "05.030",
+      "target_id": "91.200",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "91.200",
+          "source_path": "public_notes/91_financial_actuarial/91.200_social_networks_dynamics/91.200_social_networks_dynamics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "37.010",
+      "target_id": "91.200",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "91.200",
+          "source_path": "public_notes/91_financial_actuarial/91.200_social_networks_dynamics/91.200_social_networks_dynamics.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "37.010",
+      "target_id": "92.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "対象原稿の前提・章構成に対応する中心概念として確認。独立ノート全体の必修や、定理の最短証明に必要であることまでは主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "92.010",
+          "source_path": "public_notes/92_biology_modeling/92.010_epidemic_population_models/92.010_epidemic_population_models.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "93.010",
+      "target_id": "92.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "主題や応用上の関連はあるが、原稿における中心定理の直接の証明前提とは確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "92.010",
+          "source_path": "public_notes/92_biology_modeling/92.010_epidemic_population_models/92.010_epidemic_population_models.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "37.010",
+      "target_id": "93.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "93.020",
+          "source_path": "public_notes/93_systems_control_modeling/93.020_linear_control/93.020_linear_control.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "93.010",
+      "target_id": "93.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "背景知識としては関連するが、このノート全体を直接の証明前提に置く根拠は確認できない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "93.020",
+          "source_path": "public_notes/93_systems_control_modeling/93.020_linear_control/93.020_linear_control.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "要確認",
+      "relevance": "低"
+    },
+    {
+      "source_id": "54.050",
+      "target_id": "46.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "weak*コンパクト性のBanach–Alaoglu証明でTychonoff定理を使用する（原稿73行付近）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.060",
+          "source_path": "public_notes/46_functional_analysis/46.060_weak_weakstar_topology/46.060_weak_weakstar_topology.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "54.020",
+      "target_id": "46.060",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "弱位相の構成には始位相と積位相の理解を直接要する（原稿冒頭）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.060",
+          "source_path": "public_notes/46_functional_analysis/46.060_weak_weakstar_topology/46.060_weak_weakstar_topology.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "55.020",
+      "target_id": "55.030",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "van Kampenの定理には基本群の定義・計算法を要する。先行の被覆と基本群ノートが最も直接的。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "55.030",
+          "source_path": "public_notes/55_algebraic_topology/55.030_seifert_van_kampen/55.030_seifert_van_kampen.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.030",
+      "target_id": "28.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "有限測度に対する存在定理においてL²のRiesz表現定理を明示的に使用（原稿148行付近）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "28.010",
+          "source_path": "public_notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "42.020",
+      "target_id": "35.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "Sobolev埋め込みやトレースの評価にPlancherelの定理を明示使用（原稿213行付近等）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "35.020",
+          "source_path": "public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "55.010",
+      "target_id": "30.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "解析接続の一価性には経路のホモトピーの理解が必要（原稿冒頭）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "30.040",
+          "source_path": "public_notes/30_complex_analysis/30.040_analytic_continuation_monodromy/30.040_analytic_continuation_monodromy.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.040",
+      "target_id": "47.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "コンパクト作用素のレゾルベントに関する議論でHahn–Banachの定理を引用（原稿237行付近）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "47.020",
+          "source_path": "public_notes/47_operator_theory/47.020_compact_operator_spectrum/47.020_compact_operator_spectrum.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.010",
+      "target_id": "62.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "Rao–Blackwellによる推定量の改善で条件付き期待値を直接利用（原稿105行以降）。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "62.020",
+          "source_path": "public_notes/62_mathematical_statistics/62.020_sufficiency_completeness/62.020_sufficiency_completeness.tex",
+          "review_basis": "source_preamble_sections_and_selected_arguments",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "47.010",
+      "target_id": "34.010",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "縮小写像原理を積分方程式のPicard逐次近似に適用し、局所解の存在・一意性を得る。",
+      "related_concepts": [
+        "banach-fixed-point",
+        "picard-lindelof"
+      ],
+      "evidence": [
+        {
+          "note_id": "47.010",
+          "section": "縮小写像原理",
+          "source_path": "./public_notes/47_operator_theory/47.010_banach_fixed_point/47.010_banach_fixed_point.tex"
+        },
+        {
+          "note_id": "34.010",
+          "section": "Picard–Lindelöfの局所存在・一意性定理",
+          "source_path": null
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "47.010",
+      "target_id": "P5.010",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "縮小写像の不動点と反復誤差評価を、演習の停止条件・積分方程式へ適用する。",
+      "related_concepts": [
+        "banach-fixed-point"
+      ],
+      "evidence": [
+        {
+          "note_id": "47.010",
+          "section": "縮小写像原理",
+          "source_path": "./public_notes/47_operator_theory/47.010_banach_fixed_point/47.010_banach_fixed_point.tex"
+        },
+        {
+          "note_id": "P5.010",
+          "section": "完備性と不動点：問題",
+          "source_path": null
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "34.010",
+      "target_id": "P5.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "Picard–Lindelöfの一意性条件を、Lipschitz条件が破れる初期値問題の演習で検討する。",
+      "related_concepts": [
+        "picard-lindelof"
+      ],
+      "evidence": [
+        {
+          "note_id": "34.010",
+          "section": "Picard–Lindelöfの局所存在・一意性定理",
+          "source_path": null
+        },
+        {
+          "note_id": "P5.010",
+          "section": "積分方程式と微分方程式：問題",
+          "source_path": null
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "28.010",
+      "target_id": "60.070",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "Radon–Nikodym密度を用いて確率測度を変更し、Brown運動のドリフト変換を考える。",
+      "related_concepts": [
+        "radon-nikodym"
+      ],
+      "evidence": [
+        {
+          "note_id": "28.010",
+          "section": "絶対連続性と密度",
+          "source_path": "./public_notes/28_measure_theory/28.010_radon_nikodym/28.010_radon_nikodym.tex"
+        },
+        {
+          "note_id": "60.070",
+          "section": "確率測度の変更",
+          "source_path": "./public_notes/60_probability_stochastic/60.070_girsanov/60.070_girsanov.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.030",
+      "target_id": "43.010",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "コンパクトAbel群のHaar測度を用いて指標の直交性とFourier係数を定式化する。",
+      "related_concepts": [
+        "haar-measure"
+      ],
+      "evidence": [
+        {
+          "note_id": "22.030",
+          "section": "Haar測度の一意性",
+          "source_path": "./public_notes/22_topological_lie_groups/22.030_haar_measure/22.030_haar_measure.tex"
+        },
+        {
+          "note_id": "43.010",
+          "section": "Haar測度と指標の直交性",
+          "source_path": "./public_notes/43_abstract_harmonic_analysis/43.010_compact_abelian_fourier/43.010_compact_abelian_fourier.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "35.020",
+      "target_id": "65.070",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "Lax–Milgramの定理をGalerkin方程式の存在・一意性と有限要素法の誤差解析に適用する。",
+      "related_concepts": [
+        "lax-milgram"
+      ],
+      "evidence": [
+        {
+          "note_id": "35.020",
+          "section": "Lax–Milgramの定理",
+          "source_path": "./public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex"
+        },
+        {
+          "note_id": "65.070",
+          "section": "弱形式とGalerkin近似",
+          "source_path": "./public_notes/65_numerical_analysis/65.070_finite_element_methods/65.070_finite_element_methods.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "13.030",
+      "target_id": "13.040",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "辞書式順序によるGröbner基底の消去定理を、多項式連立方程式の変数消去に適用する。",
+      "related_concepts": [
+        "groebner-elimination"
+      ],
+      "evidence": [
+        {
+          "note_id": "13.030",
+          "section": "Buchbergerの判定条件",
+          "source_path": "./public_notes/13_commutative_algebra/13.030_groebner_bases/13.030_groebner_bases.tex"
+        },
+        {
+          "note_id": "13.040",
+          "section": "辞書式順序と消去",
+          "source_path": "./public_notes/13_commutative_algebra/13.040_elimination_resultants/13.040_elimination_resultants.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "13.030",
+      "target_id": "13.040",
+      "relation_type": "alternative_method",
+      "direction": "undirected",
+      "symmetric": true,
+      "subtype": null,
+      "explanation": "多項式消去に対してGröbner基底とSylvester終結式という異なる計算方法を比較できる。",
+      "related_concepts": [
+        "groebner-elimination",
+        "resultant-elimination"
+      ],
+      "evidence": [
+        {
+          "note_id": "13.030",
+          "section": "Buchbergerの判定条件",
+          "source_path": "./public_notes/13_commutative_algebra/13.030_groebner_bases/13.030_groebner_bases.tex"
+        },
+        {
+          "note_id": "13.040",
+          "section": "Sylvester行列",
+          "source_path": "./public_notes/13_commutative_algebra/13.040_elimination_resultants/13.040_elimination_resultants.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "18.040",
+      "target_id": "18.060",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "層・茎の定義と局所的貼り合わせは、Abel群の層のコホモロジーを構成する基礎概念である。",
+      "related_concepts": [
+        "sheaf"
+      ],
+      "evidence": [
+        {
+          "note_id": "18.040",
+          "section": "層の貼り合わせ公理",
+          "source_path": "./public_notes/18_category_homological/18.040_sheaves_stalks_sheafification/18.040_sheaves_stalks_sheafification.tex"
+        },
+        {
+          "note_id": "18.060",
+          "section": "Abel群の層と大域切断",
+          "source_path": "./public_notes/18_category_homological/18.060_sheaf_cohomology/18.060_sheaf_cohomology.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "18.050",
+      "target_id": "18.060",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "入射分解と右導来函手の構成を、大域切断函手のコホモロジーとして用いる。",
+      "related_concepts": [
+        "cohomology"
+      ],
+      "evidence": [
+        {
+          "note_id": "18.050",
+          "section": "ExtとTorの定義",
+          "source_path": "./public_notes/18_category_homological/18.050_homological_ext_tor/18.050_homological_ext_tor.tex"
+        },
+        {
+          "note_id": "18.060",
+          "section": "層コホモロジーの定義",
+          "source_path": "./public_notes/18_category_homological/18.060_sheaf_cohomology/18.060_sheaf_cohomology.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "60.020",
+      "target_id": "60.030",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "Brown運動とそのフィルトレーション・二乗平均の性質をItô積分の構成に用いる。",
+      "related_concepts": [
+        "brownian-motion"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.020",
+          "section": "Brown運動の定義",
+          "source_path": "./public_notes/60_probability_stochastic/60.020_brownian_motion/60.020_brownian_motion.tex"
+        },
+        {
+          "note_id": "60.030",
+          "section": "単純過程に対するItô積分",
+          "source_path": "./public_notes/60_probability_stochastic/60.030_ito_integral/60.030_ito_integral.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "60.030",
+      "target_id": "60.040",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "Itô積分の構成と等長性を前提としてItôの公式を導く。",
+      "related_concepts": [
+        "ito-isometry"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.030",
+          "section": "Itô等長性",
+          "source_path": "./public_notes/60_probability_stochastic/60.030_ito_integral/60.030_ito_integral.tex"
+        },
+        {
+          "note_id": "60.040",
+          "section": "一般のItôの公式",
+          "source_path": "./public_notes/60_probability_stochastic/60.040_ito_formula/60.040_ito_formula.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "60.040",
+      "target_id": "60.050",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "確率積分の評価とItôの公式を確率微分方程式の議論に結び付ける。",
+      "related_concepts": [
+        "ito-formula"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.040",
+          "section": "一般のItôの公式",
+          "source_path": "./public_notes/60_probability_stochastic/60.040_ito_formula/60.040_ito_formula.tex"
+        },
+        {
+          "note_id": "60.050",
+          "section": "確率微分方程式の定式化",
+          "source_path": "./public_notes/60_probability_stochastic/60.050_sde_existence_uniqueness/60.050_sde_existence_uniqueness.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "60.040",
+      "target_id": "60.080",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "Itôの公式を生成作用素とDynkinの公式の導出に使用する。",
+      "related_concepts": [
+        "ito-formula",
+        "feynman-kac"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.040",
+          "section": "一般のItôの公式",
+          "source_path": "./public_notes/60_probability_stochastic/60.040_ito_formula/60.040_ito_formula.tex"
+        },
+        {
+          "note_id": "60.080",
+          "section": "Itôの公式による生成作用素",
+          "source_path": "./public_notes/60_probability_stochastic/60.080_feynman_kac_kolmogorov/60.080_feynman_kac_kolmogorov.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "53.030",
+      "target_id": "53.040",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "測地線の方程式・局所最短性・指数写像を用いてHopf–Rinowの完備性と最短測地線の関係を考える。",
+      "related_concepts": [
+        "geodesic"
+      ],
+      "evidence": [
+        {
+          "note_id": "53.030",
+          "section": "測地線の局所理論",
+          "source_path": "./public_notes/53_differential_geometry/53.030_geodesics_exponential_map/53.030_geodesics_exponential_map.tex"
+        },
+        {
+          "note_id": "53.040",
+          "section": "測地線完備性",
+          "source_path": "./public_notes/53_differential_geometry/53.040_hopf_rinow/53.040_hopf_rinow.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "42.010",
+      "target_id": "43.010",
+      "relation_type": "generalization",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "円周上のFourier級数で使う直交指標を、一般のコンパクトAbel群の指標とHaar測度へ拡張する。",
+      "related_concepts": [
+        "fourier-series",
+        "haar-measure"
+      ],
+      "evidence": [
+        {
+          "note_id": "42.010",
+          "section": "周期関数とFourier係数",
+          "source_path": "./public_notes/42_fourier_analysis/42.010_fourier_series/42.010_fourier_series.tex"
+        },
+        {
+          "note_id": "43.010",
+          "section": "コンパクトAbel群と指標",
+          "source_path": "./public_notes/43_abstract_harmonic_analysis/43.010_compact_abelian_fourier/43.010_compact_abelian_fourier.tex"
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "54.040",
+      "target_id": "54.050",
+      "relation_type": "shared_concept",
+      "direction": "undirected",
+      "symmetric": true,
+      "subtype": null,
+      "explanation": "超フィルターによるコンパクト性判定とTychonoffの定理の証明を共有する。",
+      "related_concepts": [
+        "ultrafilter",
+        "compactness"
+      ],
+      "evidence": [
+        {
+          "note_id": "54.040",
+          "section": "コンパクト性の特徴づけ",
+          "source_path": "./public_notes/54_general_topology/54.040_filters_ultrafilters/54.040_filters_ultrafilters.tex"
+        },
+        {
+          "note_id": "54.050",
+          "section": "フィルターと超フィルター",
+          "source_path": "./public_notes/54_general_topology/54.050_compactness_tychonoff/54.050_compactness_tychonoff.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "46.020",
+      "target_id": "46.050",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "Baireのカテゴリー定理をBanach空間の開写像定理に適用する。",
+      "related_concepts": [
+        "banach-space"
+      ],
+      "evidence": [
+        {
+          "note_id": "46.020",
+          "section": "Baireのカテゴリー定理",
+          "source_path": "./public_notes/46_functional_analysis/46.020_uniform_boundedness/46.020_uniform_boundedness.tex"
+        },
+        {
+          "note_id": "46.050",
+          "section": "Banach空間とBaireのカテゴリー定理",
+          "source_path": "./public_notes/46_functional_analysis/46.050_open_mapping_closed_graph/46.050_open_mapping_closed_graph.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "30.020",
+      "target_id": "30.030",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "Cauchy積分の方法を、零点・極の位数と偏角の原理に接続する。",
+      "related_concepts": [
+        "complex-integration",
+        "argument-principle"
+      ],
+      "evidence": [
+        {
+          "note_id": "30.020",
+          "section": "円周の積分とCauchyの公式",
+          "source_path": "./public_notes/30_complex_analysis/30.020_cauchy_integral_theorem/30.020_cauchy_integral_theorem.tex"
+        },
+        {
+          "note_id": "30.030",
+          "section": "偏角の原理",
+          "source_path": "./public_notes/30_complex_analysis/30.030_argument_principle_rouche/30.030_argument_principle_rouche.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "05.050",
+      "target_id": "97.120",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "Burnsideの補題を約数の対の反転作用に適用し、整数問題の解の個数を求める。",
+      "related_concepts": [
+        "burnside-enumeration"
+      ],
+      "evidence": [
+        {
+          "note_id": "05.050",
+          "section": "Burnsideの補題",
+          "source_path": "./public_notes/05_combinatorics/05.050_group_actions_enumeration/05.050_group_actions_enumeration.tex"
+        },
+        {
+          "note_id": "97.120",
+          "section": "軌道計数とBurnsideの補題",
+          "source_path": "./public_notes/97_entrance_math/97.120_divisor_orbits/97.120_divisor_orbits.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "43.010",
+      "target_id": "97.170",
+      "relation_type": "generalization",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "有限巡回群上の根の和による抽出は、コンパクトAbel群の指標直交性の有限群の場合に当たる。",
+      "related_concepts": [
+        "finite-fourier"
+      ],
+      "evidence": [
+        {
+          "note_id": "43.010",
+          "section": "有限Abel群上のFourier変換",
+          "source_path": "./public_notes/43_abstract_harmonic_analysis/43.010_compact_abelian_fourier/43.010_compact_abelian_fourier.tex"
+        },
+        {
+          "note_id": "97.170",
+          "section": "有限巡回群の指標",
+          "source_path": "./public_notes/97_entrance_math/97.170_finite_fourier/97.170_finite_fourier.tex"
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "05.010",
+      "target_id": "11.010",
+      "relation_type": "theoretical_connection",
+      "direction": "undirected",
+      "symmetric": true,
+      "subtype": null,
+      "explanation": "有限半順序集合の接続代数のMöbius反転は、整除順序上でDirichlet畳み込みの反転として現れる。",
+      "related_concepts": [
+        "arithmetic-function",
+        "combinatorial-inversion"
+      ],
+      "evidence": [
+        {
+          "note_id": "05.010",
+          "section": "Möbius反転",
+          "source_path": "./public_notes/05_combinatorics/05.010_counting_mobius_inversion/05.010_counting_mobius_inversion.tex"
+        },
+        {
+          "note_id": "11.010",
+          "section": "Möbius反転",
+          "source_path": "./public_notes/11_number_theory/11.010_arithmetic_dirichlet_zeta/11.010_arithmetic_dirichlet_zeta.tex"
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "53.100",
+      "target_id": "70.020",
+      "relation_type": "shared_concept",
+      "direction": "undirected",
+      "symmetric": true,
+      "subtype": null,
+      "explanation": "シンプレクティック形式・Hamiltonベクトル場・Poisson括弧を共通して扱う。",
+      "related_concepts": [
+        "symplectic-geometry"
+      ],
+      "evidence": [
+        {
+          "note_id": "53.100",
+          "section": "Hamiltonベクトル場",
+          "source_path": "./public_notes/53_differential_geometry/53.100_symplectic_geometry/53.100_symplectic_geometry.tex"
+        },
+        {
+          "note_id": "70.020",
+          "section": "シンプレクティック形式",
+          "source_path": "./public_notes/70_mechanics/70.020_hamiltonian_mechanics/70.020_hamiltonian_mechanics.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.040",
+      "target_id": "58.060",
+      "relation_type": "application",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "閉形式と完全形式を局所的に同一視するPoincaréの補題を、de Rhamコホモロジーの構成に結び付ける。",
+      "related_concepts": [
+        "differential-form",
+        "de-rham"
+      ],
+      "evidence": [
+        {
+          "note_id": "58.040",
+          "section": "Poincaréの補題",
+          "source_path": "./public_notes/58_analysis_on_manifolds/58.040_poincare_lemma_forms/58.040_poincare_lemma_forms.tex"
+        },
+        {
+          "note_id": "58.060",
+          "section": "de Rham複体",
+          "source_path": "./public_notes/58_analysis_on_manifolds/58.060_de_rham_cohomology/58.060_de_rham_cohomology.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "35.020",
+      "target_id": "35.030",
+      "relation_type": "shared_concept",
+      "direction": "undirected",
+      "symmetric": true,
+      "subtype": null,
+      "explanation": "Lipschitz領域のトレース定理と零トレースの議論が、楕円型方程式のノートの補遺にも収録される。",
+      "related_concepts": [
+        "sobolev",
+        "trace-theorem"
+      ],
+      "evidence": [
+        {
+          "note_id": "35.030",
+          "section": "Lipschitz領域の一般トレース定理",
+          "source_path": "./public_notes/35_partial_differential_equations/35.030_lipschitz_trace/35.030_lipschitz_trace.tex"
+        },
+        {
+          "note_id": "35.020",
+          "section": "一般Lipschitzトレース定理の補遺",
+          "source_path": "./public_notes/35_partial_differential_equations/35.020_sobolev_elliptic/35.020_sobolev_elliptic.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "70.020",
+      "target_id": "70.030",
+      "relation_type": "shared_concept",
+      "direction": "undirected",
+      "symmetric": true,
+      "subtype": null,
+      "explanation": "Liouville–Arnoldの定理とその証明をHamilton力学ノートの補遺と独立ノートで扱う。",
+      "related_concepts": [
+        "symplectic-geometry"
+      ],
+      "evidence": [
+        {
+          "note_id": "70.020",
+          "section": "Liouville–Arnoldの定理の証明",
+          "source_path": "./public_notes/70_mechanics/70.020_hamiltonian_mechanics/70.020_hamiltonian_mechanics.tex"
+        },
+        {
+          "note_id": "70.030",
+          "section": "Liouville–Arnoldの定理の証明",
+          "source_path": "./public_notes/70_mechanics/70.030_liouville_arnold/70.030_liouville_arnold.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "28.020",
+      "target_id": "58.050",
+      "relation_type": "theoretical_connection",
+      "direction": "undirected",
+      "symmetric": true,
+      "subtype": null,
+      "explanation": "Euclid空間のヤコビアンによる変数変換と微分形式の引き戻しによる積分変換が対応する。",
+      "related_concepts": [
+        "change-of-variables",
+        "differential-form"
+      ],
+      "evidence": [
+        {
+          "note_id": "28.020",
+          "section": "大域的な変数変換公式",
+          "source_path": "./public_notes/28_measure_theory/28.020_change_of_variables/28.020_change_of_variables.tex"
+        },
+        {
+          "note_id": "58.050",
+          "section": "引き戻しと変数変換",
+          "source_path": "./public_notes/58_analysis_on_manifolds/58.050_stokes_manifolds/58.050_stokes_manifolds.tex"
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "60.030",
+      "target_id": "60.070",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": null,
+      "explanation": "指数マルチンゲールの確率積分を構成するためにItô積分を使う。",
+      "related_concepts": [
+        "stochastic-integration"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.030",
+          "section": "Itô積分の構成",
+          "source_path": "./public_notes/60_probability_stochastic/60.030_ito_integral/60.030_ito_integral.tex"
+        },
+        {
+          "note_id": "60.070",
+          "section": "確率指数関数",
+          "source_path": "./public_notes/60_probability_stochastic/60.070_girsanov/60.070_girsanov.tex"
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "34.010",
+      "target_id": "47.010",
+      "relation_type": "alternative_method",
+      "direction": "undirected",
+      "symmetric": true,
+      "subtype": null,
+      "explanation": "同じ常微分方程式の一意性を、不動点反復による構成とGrönwall不等式による評価から扱う。",
+      "related_concepts": [
+        "banach-fixed-point",
+        "gronwall"
+      ],
+      "evidence": [
+        {
+          "note_id": "47.010",
+          "section": "Picard–Lindelöfの定理",
+          "source_path": "./public_notes/47_operator_theory/47.010_banach_fixed_point/47.010_banach_fixed_point.tex"
+        },
+        {
+          "note_id": "34.010",
+          "section": "Grönwallの不等式",
+          "source_path": null
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    }
+  ]
+}
