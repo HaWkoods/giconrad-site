@@ -1,120 +1,390 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="擬コンラット数学ノート集の共通記号・記法一覧。意味が異なり得る記号や各ノートの約束も明記。">
-<title>記号・記法一覧 | 擬コンラット</title>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="擬コンラット数学ノート集の共通記号・記法一覧。数学書に近い数式組版で、意味・定義・用法の違いを確認できます。">
+<title>共通記号・記法一覧 | 擬コンラット</title>
 <link rel="stylesheet" href="./assets/style.css">
 <style>
-.notationMain{max-width:1050px;margin:0 auto;padding:42px 0 84px}
-.notationMain h1{font-size:clamp(30px,4vw,46px);line-height:1.3;letter-spacing:-.04em;margin:12px 0 20px}
-.notationIntro{max-width:860px;color:var(--muted);font-size:14px;line-height:1.95}
-.notationSearch{margin:25px 0 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.notationSearch label{font-weight:700;font-size:13px}
-.notationSearch input{flex:1;min-width:220px;max-width:580px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px 14px}
-.notationCount{color:var(--muted);font-size:12px}
-.notationJump{display:flex;flex-wrap:wrap;gap:8px 15px;padding:12px 0 27px;border-bottom:1px solid var(--line);font-size:12px}
-.notationJump a{color:var(--accent);text-decoration:none}
-.notationSection{padding-top:18px;scroll-margin-top:24px}
-.notationSection h2{font-size:21px;font-weight:730;margin:30px 0 14px}
-.tableScroll{overflow:auto;border:1px solid var(--line);border-radius:7px;background:#fff}
-.notationSection table{border-collapse:collapse;width:100%;font-size:13px;line-height:1.8}
-.notationSection th,.notationSection td{border-bottom:1px solid var(--line);padding:12px 14px;vertical-align:top}
-.notationSection tbody tr:last-child th,.notationSection tbody tr:last-child td{border-bottom:0}
-.notationSection thead{background:var(--pale);text-align:left}
-.notationSection thead th{font-size:12px;color:#3e5648;font-weight:680}
-.notationSection tbody th{min-width:108px;max-width:180px;font-size:16px;font-weight:650;white-space:nowrap;font-family:Georgia,"Noto Serif",serif}
-.notationSection tbody td:nth-child(2){min-width:215px}
-.notationSection tbody td:nth-child(3){color:var(--muted);min-width:180px}
-.notationSection tbody td:last-child{min-width:105px}
-.notationSection tbody td a{color:var(--accent);text-underline-offset:2px}
-.notationState{display:block;font-size:10px;color:var(--muted);margin-bottom:3px}
-.notationMeta{font-size:12px;color:var(--muted);line-height:1.9}
-.notationLegend{border-top:1px solid var(--line);padding-top:26px;margin-top:28px;font-size:13px;line-height:1.9;color:var(--muted)}
-@media(max-width:660px){.notationMain{padding-top:25px}.notationSection th,.notationSection td{padding:10px}.notationSection tbody th{min-width:85px}.notationSection table{font-size:12px}}
+.notationMain{max-width:1080px;margin:0 auto;padding:42px 0 88px}
+.notationMain h1{font-size:clamp(30px,4vw,43px);letter-spacing:-.03em;line-height:1.35;margin:12px 0 20px}
+.notationIntro{font-size:14px;line-height:2;max-width:860px;color:var(--muted);margin:12px 0}
+.notationIntro strong{color:var(--ink)}
+.notationSearch{margin:27px 0 12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.notationSearch label{font-size:13px;font-weight:720}
+.notationSearch input{min-width:200px;flex:1;max-width:560px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);padding:12px 14px;font-size:14px}
+.notationCount{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.notationNav{display:flex;gap:9px 17px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:15px 0 25px;font-size:12px}
+.notationNav a{color:var(--accent);text-decoration:none}
+.notationNav a:hover,.notationRef:hover{text-decoration:underline}
+.notationSection{margin-top:36px;scroll-margin-top:20px}
+.notationSection[hidden],.notationEntry[hidden]{display:none!important}
+.notationSectionHeading{display:flex;align-items:baseline;gap:16px;justify-content:space-between;margin-bottom:12px}
+.notationSectionHeading h2{font-size:21px;margin:0;line-height:1.5}
+.notationSectionHeading span{font-size:12px;color:var(--muted)}
+.notationEntries{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.notationEntry{display:grid;grid-template-columns:minmax(125px,185px) minmax(0,1fr) minmax(110px,135px);gap:20px;padding:20px 21px;border-bottom:1px solid var(--line);align-items:start;scroll-margin-top:20px}
+.notationEntry:last-child{border-bottom:none}
+.notationSymbol{font-family:Cambria,"STIX Two Math","Cambria Math","Times New Roman",serif;font-size:21px;line-height:1.5;overflow-wrap:anywhere}
+.notationSymbol .mathMain{display:inline-block;max-width:100%;font-weight:400;white-space:normal}
+.notationText{min-width:0;font-size:14px;line-height:1.95}
+.notationDefinition,.notationUsage{margin:0}
+.notationDefinition{color:var(--ink)}
+.notationUsage{color:var(--muted);margin-top:7px;font-size:13px}
+.notationMeta{font-size:11px;display:flex;flex-direction:column;gap:8px;line-height:1.55}
+.notationType{color:var(--muted);font-weight:600}
+.notationRef{color:var(--accent);text-decoration:none}
+.math{font-family:Cambria,"STIX Two Math","Cambria Math",serif;letter-spacing:0;white-space:normal}
+.math mjx-container{margin:0!important;vertical-align:middle}
+.mathMain mjx-container{font-size:1.05em!important}
+.notationFooter{border-top:1px solid var(--line);margin-top:42px;padding-top:25px;font-size:13px;line-height:2;color:var(--muted)}
+.notationFooter h2{font-size:19px;color:var(--ink);margin:0 0 12px}
+.notationFooter a{color:var(--accent)}
+.srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:820px){
+.notationEntry{grid-template-columns:minmax(105px,145px) minmax(0,1fr);gap:12px 17px}
+.notationMeta{grid-column:2;flex-direction:row;flex-wrap:wrap;gap:13px}
+}
+@media(max-width:560px){
+.notationMain{padding:26px 0 60px}
+.notationEntry{grid-template-columns:minmax(0,1fr);padding:17px 18px;gap:9px}
+.notationSymbol{font-size:22px}
+.notationMeta{grid-column:1;margin-top:3px}
+.notationIntro{font-size:13px}
+.notationText{font-size:13px}
+.notationUsage{font-size:12px}
+.notationNav{font-size:11px;gap:11px}
+}
 </style>
-</head><body><div class="shell">
-<header><a class="brand" href="./"><span>∈</span> 擬コンラット</a><small>MATHEMATICAL NOTES · NOTATION REFERENCE</small></header>
+<script>window.MathJax={svg:{fontCache:"global"},options:{enableMenu:false}};</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body><div class="shell">
+<header><a class="brand" href="./"><span>∈</span> 擬コンラット</a><small>MATHEMATICAL NOTES · NOTATION</small></header>
 <main class="notationMain">
-<div class="eyebrow">REFERENCE · NOTATION</div>
+<div class="eyebrow">MATHEMATICAL NOTATION</div>
 <h1>共通記号・記法一覧</h1>
-<p class="notationIntro">擬コンラットに収録する数学ノートで用いる主要な記号をまとめる。全ノートの意味を無条件に統一する一覧ではない。<strong>「規約」</strong>は明示された共通の読み方、<strong>「分野」</strong>は対象・前提によって意味が定まる記法、<strong>「要確認」</strong>はノート間で用法が変わるか、全冊の統一確認が済んでいない記法である。</p>
-<p class="notationIntro">各ノートの冒頭や初出箇所に記された定義・仮定が優先される。この一覧が、個別ノートの定義を省く理由になることはない。記号の意味が定まらない場合は推測せず、該当するノートの本文を確認する。</p>
-<div class="notationSearch"><label for="notationSearch">記号・意味を検索</label><input id="notationSearch" type="search" placeholder="例：双対、閉球、Spec、自然数、Fourier"><span class="notationCount" id="notationCount" role="status">55項目</span></div>
-<nav class="notationJump" aria-label="分野へ移動"><a href="#g1">基礎・集合・写像</a><a href="#g2">位相・関数空間・解析</a><a href="#g3">線形・作用素・双対</a><a href="#g4">代数・圏・幾何</a><a href="#g5">測度・確率</a><a href="#g6">意味が変わりやすい記号</a></nav>
-<section class="notationSection" id="g1"><h2>基礎・集合・写像</h2><div class="tableScroll"><table><thead><tr><th scope="col">記号</th><th scope="col">意味・定義</th><th scope="col">適用上の注意</th><th scope="col">ノート例</th></tr></thead><tbody><tr data-search="ℕ 自然数全体。0 を含めるかはノート間で未統一であり、現段階では一律に固定しない。 使用するノートで {0,1,2,…} または {1,2,…} と明示する。 要確認 "><th scope="row">ℕ</th><td>自然数全体。0 を含めるかはノート間で未統一であり、現段階では一律に固定しない。</td><td>使用するノートで {0,1,2,…} または {1,2,…} と明示する。</td><td><span class="notationState">要確認</span>—</td></tr>
-<tr data-search="ℕ₀ {0,1,2,…}。0 を含む非負整数全体。 多重指数など、0 を含むことが必要な場合に用いる。 規約 13.030"><th scope="row">ℕ₀</th><td>{0,1,2,…}。0 を含む非負整数全体。</td><td>多重指数など、0 を含むことが必要な場合に用いる。</td><td><span class="notationState">規約</span><a href="./note.html?id=13.030">13.030</a></td></tr>
-<tr data-search="a ⊆ b a の全ての元が b に属する。a = b を許す。 等号の有無を明確にする場合はこの記号を使う。 規約 54.010"><th scope="row">A ⊆ B</th><td>A の全ての元が B に属する。A = B を許す。</td><td>等号の有無を明確にする場合はこの記号を使う。</td><td><span class="notationState">規約</span><a href="./note.html?id=54.010">54.010</a></td></tr>
-<tr data-search="a ⊊ b a ⊆ b かつ a ≠ b（真包含）。 ⊊ と ⊂ を混同しない。 規約 15.010"><th scope="row">A ⊊ B</th><td>A ⊆ B かつ A ≠ B（真包含）。</td><td>⊊ と ⊂ を混同しない。</td><td><span class="notationState">規約</span><a href="./note.html?id=15.010">15.010</a></td></tr>
-<tr data-search="a ⊂ b 包含記号。既存原稿では等号を許す用法があるが、全冊での統一は未確認。 改訂時は可能な限り ⊆ または ⊊ に置き換え、ノート内でも説明する。 要確認 54.020"><th scope="row">A ⊂ B</th><td>包含記号。既存原稿では等号を許す用法があるが、全冊での統一は未確認。</td><td>改訂時は可能な限り ⊆ または ⊊ に置き換え、ノート内でも説明する。</td><td><span class="notationState">要確認</span><a href="./note.html?id=54.020">54.020</a></td></tr>
-<tr data-search="𝒫(x) 集合 x の冪集合、すなわち x の部分集合全体。 値域・順序の意味では使用しない。 規約 54.010"><th scope="row">𝒫(X)</th><td>集合 X の冪集合、すなわち X の部分集合全体。</td><td>値域・順序の意味では使用しない。</td><td><span class="notationState">規約</span><a href="./note.html?id=54.010">54.010</a></td></tr>
-<tr data-search="f⁻¹(a) f : x → y と a ⊆ y に対し、{x ∈ x : f(x) ∈ a}。 f が全単射でなくても定義される。逆写像とは区別する。 規約 54.010"><th scope="row">f⁻¹(A)</th><td>f : X → Y と A ⊆ Y に対し、{x ∈ X : f(x) ∈ A}。</td><td>f が全単射でなくても定義される。逆写像とは区別する。</td><td><span class="notationState">規約</span><a href="./note.html?id=54.010">54.010</a></td></tr>
-<tr data-search="1_a, 𝟙_a 集合 a の指示関数。a 上で 1、a の外で 0。 1_a の定義域は文脈の全空間とする。 分野 28.010"><th scope="row">1_A, 𝟙_A</th><td>集合 A の指示関数。A 上で 1、A の外で 0。</td><td>1_A の定義域は文脈の全空間とする。</td><td><span class="notationState">分野</span><a href="./note.html?id=28.010">28.010</a></td></tr>
-<tr data-search="a° 位相空間の部分集合 a の内部。 a に含まれる最大の開集合。 分野 54.010"><th scope="row">A°</th><td>位相空間の部分集合 A の内部。</td><td>A に含まれる最大の開集合。</td><td><span class="notationState">分野</span><a href="./note.html?id=54.010">54.010</a></td></tr>
-<tr data-search="a̅ 位相空間の部分集合 a の閉包。 閉球の記号との混同に注意する。 分野 54.010"><th scope="row">A̅</th><td>位相空間の部分集合 A の閉包。</td><td>閉球の記号との混同に注意する。</td><td><span class="notationState">分野</span><a href="./note.html?id=54.010">54.010</a></td></tr></tbody></table></div></section>
-<section class="notationSection" id="g2"><h2>位相・関数空間・解析</h2><div class="tableScroll"><table><thead><tr><th scope="col">記号</th><th scope="col">意味・定義</th><th scope="col">適用上の注意</th><th scope="col">ノート例</th></tr></thead><tbody><tr data-search="b_x(x,r) 距離空間 (x,d) の開球 {y ∈ x : d(x,y) &lt; r}（r &gt; 0）。 b(x,r) は空間の添字を省略した記法。既存原稿の各用例は要点検。 分野 46.050"><th scope="row">B_X(x,r)</th><td>距離空間 (X,d) の開球 {y ∈ X : d(x,y) &lt; r}（r &gt; 0）。</td><td>B(x,r) は空間の添字を省略した記法。既存原稿の各用例は要点検。</td><td><span class="notationState">分野</span><a href="./note.html?id=46.050">46.050</a></td></tr>
-<tr data-search="閉球 {y ∈ x : d(x,y) ≤ r}（r ≥ 0）。 一般の距離空間では開球の閉包と一致するとは限らない。 分野 46.050"><th scope="row">閉球</th><td>{y ∈ X : d(x,y) ≤ r}（r ≥ 0）。</td><td>一般の距離空間では開球の閉包と一致するとは限らない。</td><td><span class="notationState">分野</span><a href="./note.html?id=46.050">46.050</a></td></tr>
-<tr data-search="c(x;𝕂) x 上の連続な 𝕂 値関数全体（𝕂 = ℝ または ℂ）。 連続性の位相と値域はノート内で指定する。 分野 46.010"><th scope="row">C(X;𝕂)</th><td>X 上の連続な 𝕂 値関数全体（𝕂 = ℝ または ℂ）。</td><td>連続性の位相と値域はノート内で指定する。</td><td><span class="notationState">分野</span><a href="./note.html?id=46.010">46.010</a></td></tr>
-<tr data-search="supp f 関数 f が 0 でない点の集合の閉包（台）。 測度論の本質的台とは区別する。 分野 22.030"><th scope="row">supp f</th><td>関数 f が 0 でない点の集合の閉包（台）。</td><td>測度論の本質的台とは区別する。</td><td><span class="notationState">分野</span><a href="./note.html?id=22.030">22.030</a></td></tr>
-<tr data-search="c_c(x) x 上のコンパクトな台をもつ連続関数全体。 実数値か複素数値かは、そのノートの係数体の約束による。 分野 22.030"><th scope="row">C_c(X)</th><td>X 上のコンパクトな台をもつ連続関数全体。</td><td>実数値か複素数値かは、そのノートの係数体の約束による。</td><td><span class="notationState">分野</span><a href="./note.html?id=22.030">22.030</a></td></tr>
-<tr data-search="c_c^∞(ω) 開集合 ω 上の滑らかな関数で、台が ω 内のコンパクト集合であるもの全体。 試験関数空間。境界上まで台が達する関数は含めない。 分野 35.020"><th scope="row">C_c^∞(Ω)</th><td>開集合 Ω 上の滑らかな関数で、台が Ω 内のコンパクト集合であるもの全体。</td><td>試験関数空間。境界上まで台が達する関数は含めない。</td><td><span class="notationState">分野</span><a href="./note.html?id=35.020">35.020</a></td></tr>
-<tr data-search="lᵖ(μ) μ に関して p 乗可積分な可測関数を、μ ほとんど至る所の一致で同一視した空間（1 ≤ p &lt; ∞）。 l∞ は本質的上限を用いて別途定義する。 分野 28.010"><th scope="row">Lᵖ(μ)</th><td>μ に関して p 乗可積分な可測関数を、μ ほとんど至る所の一致で同一視した空間（1 ≤ p &lt; ∞）。</td><td>L∞ は本質的上限を用いて別途定義する。</td><td><span class="notationState">分野</span><a href="./note.html?id=28.010">28.010</a></td></tr>
-<tr data-search="‖f‖_{lᵖ} (∫ |f|ᵖ dμ)^{1/p}（1 ≤ p &lt; ∞）。 同値類に対して定義されるノルム。 分野 28.010"><th scope="row">‖f‖_{Lᵖ}</th><td>(∫ |f|ᵖ dμ)^{1/p}（1 ≤ p &lt; ∞）。</td><td>同値類に対して定義されるノルム。</td><td><span class="notationState">分野</span><a href="./note.html?id=28.010">28.010</a></td></tr>
-<tr data-search="a.e. / 概至る所 指定した測度について、零集合を除いて成り立つこと。 「どの測度に関して」を明記する。 分野 28.010"><th scope="row">a.e. / 概至る所</th><td>指定した測度について、零集合を除いて成り立つこと。</td><td>「どの測度に関して」を明記する。</td><td><span class="notationState">分野</span><a href="./note.html?id=28.010">28.010</a></td></tr>
-<tr data-search="𝓑(x) 位相空間 x の開集合族が生成する borel σ-加法族。 𝓑(x,y)（有界線形作用素全体）と異なる。 分野 28.020"><th scope="row">𝓑(X)</th><td>位相空間 X の開集合族が生成する Borel σ-加法族。</td><td>𝓑(X,Y)（有界線形作用素全体）と異なる。</td><td><span class="notationState">分野</span><a href="./note.html?id=28.020">28.020</a></td></tr>
-<tr data-search="𝓛ⁿ ℝⁿ の lebesgue 可測集合全体の σ-加法族。 borel σ-加法族 𝓑ⁿ と区別する。 分野 28.020"><th scope="row">𝓛ⁿ</th><td>ℝⁿ の Lebesgue 可測集合全体の σ-加法族。</td><td>Borel σ-加法族 𝓑ⁿ と区別する。</td><td><span class="notationState">分野</span><a href="./note.html?id=28.020">28.020</a></td></tr>
-<tr data-search="σ(x,x*) x 上の連続双対 x* による弱位相。 実ノルム空間・実 banach 空間の文脈。 分野 46.060"><th scope="row">σ(X,X*)</th><td>X 上の連続双対 X* による弱位相。</td><td>実ノルム空間・実 Banach 空間の文脈。</td><td><span class="notationState">分野</span><a href="./note.html?id=46.060">46.060</a></td></tr>
-<tr data-search="σ(x*,x) x* 上の評価写像 f ↦ f(x)（x ∈ x）が定める弱*位相。 x* 自身の弱位相 σ(x*,x**) とは通常異なる。 分野 46.060"><th scope="row">σ(X*,X)</th><td>X* 上の評価写像 f ↦ f(x)（x ∈ X）が定める弱*位相。</td><td>X* 自身の弱位相 σ(X*,X**) とは通常異なる。</td><td><span class="notationState">分野</span><a href="./note.html?id=46.060">46.060</a></td></tr>
-<tr data-search="x^α, ∂^α 多重指数 α=(α₁,…,α_d) ∈ ℕ₀ᵈ に対し、x^α=∏xⱼ^{αⱼ}、∂^α=∂₁^{α₁}⋯∂_d^{α_d}。 偏微分の存在階数は個別の命題の仮定による。 分野 42.020"><th scope="row">x^α, ∂^α</th><td>多重指数 α=(α₁,…,α_d) ∈ ℕ₀ᵈ に対し、x^α=∏xⱼ^{αⱼ}、∂^α=∂₁^{α₁}⋯∂_d^{α_d}。</td><td>偏微分の存在階数は個別の命題の仮定による。</td><td><span class="notationState">分野</span><a href="./note.html?id=42.020">42.020</a></td></tr></tbody></table></div></section>
-<section class="notationSection" id="g3"><h2>線形・作用素・双対</h2><div class="tableScroll"><table><thead><tr><th scope="col">記号</th><th scope="col">意味・定義</th><th scope="col">適用上の注意</th><th scope="col">ノート例</th></tr></thead><tbody><tr data-search="e* ノルム空間 e の有界線形汎関数全体からなる連続双対空間。 位相のない線形空間の代数的双対とは区別。 分野 46.040"><th scope="row">E*</th><td>ノルム空間 E の有界線形汎関数全体からなる連続双対空間。</td><td>位相のない線形空間の代数的双対とは区別。</td><td><span class="notationState">分野</span><a href="./note.html?id=46.040">46.040</a></td></tr>
-<tr data-search="e** (e*)*。連続双対 e* の連続双対。 x ∈ e を評価汎関数 f ↦ f(x) と同一視する標準埋め込みがある。 分野 46.060"><th scope="row">E**</th><td>(E*)*。連続双対 E* の連続双対。</td><td>x ∈ E を評価汎関数 f ↦ f(x) と同一視する標準埋め込みがある。</td><td><span class="notationState">分野</span><a href="./note.html?id=46.060">46.060</a></td></tr>
-<tr data-search="‖f‖_{e*} sup{|f(x)| : ‖x‖_e ≤ 1}。 有界線形汎関数 f に対する作用素ノルム。 分野 46.040"><th scope="row">‖f‖_{E*}</th><td>sup{|f(x)| : ‖x‖_E ≤ 1}。</td><td>有界線形汎関数 f に対する作用素ノルム。</td><td><span class="notationState">分野</span><a href="./note.html?id=46.040">46.040</a></td></tr>
-<tr data-search="𝓑(e,f) ノルム空間 e → f の有界線形作用素全体。 borel σ-加法族を表す 𝓑(x) とは別記号。 分野 46.050"><th scope="row">𝓑(E,F)</th><td>ノルム空間 E → F の有界線形作用素全体。</td><td>Borel σ-加法族を表す 𝓑(X) とは別記号。</td><td><span class="notationState">分野</span><a href="./note.html?id=46.050">46.050</a></td></tr>
-<tr data-search="‖t‖ sup{‖tx‖_f : ‖x‖_e ≤ 1}（t : e → f は有界線形）。 空間固有のノルムに依存する。 分野 47.020"><th scope="row">‖T‖</th><td>sup{‖Tx‖_F : ‖x‖_E ≤ 1}（T : E → F は有界線形）。</td><td>空間固有のノルムに依存する。</td><td><span class="notationState">分野</span><a href="./note.html?id=47.020">47.020</a></td></tr>
-<tr data-search="𝓚(e,f) e → f のコンパクト線形作用素全体。 作用素は有界線形である。 分野 47.020"><th scope="row">𝓚(E,F)</th><td>E → F のコンパクト線形作用素全体。</td><td>作用素は有界線形である。</td><td><span class="notationState">分野</span><a href="./note.html?id=47.020">47.020</a></td></tr>
-<tr data-search="⟨x,y⟩ 内積または双対ペアリング。 複素内積がどちらの変数で線形か、双対評価かは全冊で未統一。各ノートで定める。 要確認 46.030"><th scope="row">⟨x,y⟩</th><td>内積または双対ペアリング。</td><td>複素内積がどちらの変数で線形か、双対評価かは全冊で未統一。各ノートで定める。</td><td><span class="notationState">要確認</span><a href="./note.html?id=46.030">46.030</a></td></tr>
-<tr data-search="m_{m,n}(r) 環 r に係数をもつ m 行 n 列の行列全体。 積が定義される行列の型を区別する。 分野 15.010"><th scope="row">M_{m,n}(R)</th><td>環 R に係数をもつ m 行 n 列の行列全体。</td><td>積が定義される行列の型を区別する。</td><td><span class="notationState">分野</span><a href="./note.html?id=15.010">15.010</a></td></tr>
-<tr data-search="glₙ(r) r 上の n 次可逆正方行列全体の群。 体以外の環でも定義する。 分野 15.010"><th scope="row">GLₙ(R)</th><td>R 上の n 次可逆正方行列全体の群。</td><td>体以外の環でも定義する。</td><td><span class="notationState">分野</span><a href="./note.html?id=15.010">15.010</a></td></tr></tbody></table></div></section>
-<section class="notationSection" id="g4"><h2>代数・圏・幾何</h2><div class="tableScroll"><table><thead><tr><th scope="col">記号</th><th scope="col">意味・定義</th><th scope="col">適用上の注意</th><th scope="col">ノート例</th></tr></thead><tbody><tr data-search="r×, k× 環・体の単元全体からなる乗法群。 体の場合は k \ {0} と一致する。 分野 12.050"><th scope="row">R×, K×</th><td>環・体の単元全体からなる乗法群。</td><td>体の場合は K \ {0} と一致する。</td><td><span class="notationState">分野</span><a href="./note.html?id=12.050">12.050</a></td></tr>
-<tr data-search="(a,b), (d) 環 r のイデアル ra+rb および rd。 数論で (a,b) を最大公約数として使う表記とは区別する。 分野 15.010"><th scope="row">(a,b), (d)</th><td>環 R のイデアル Ra+Rb および Rd。</td><td>数論で (a,b) を最大公約数として使う表記とは区別する。</td><td><span class="notationState">分野</span><a href="./note.html?id=15.010">15.010</a></td></tr>
-<tr data-search="𝔽ₚ, 𝔽_q 𝔽ₚ=ℤ/pℤ（p は素数）。𝔽_q は q 元の有限体（q は素数冪）。 抽象的な有限体の同型類は一意だが、元の同一視は指定が必要。 分野 12.010"><th scope="row">𝔽ₚ, 𝔽_q</th><td>𝔽ₚ=ℤ/pℤ（p は素数）。𝔽_q は q 元の有限体（q は素数冪）。</td><td>抽象的な有限体の同型類は一意だが、元の同一視は指定が必要。</td><td><span class="notationState">分野</span><a href="./note.html?id=12.010">12.010</a></td></tr>
-<tr data-search="[l:k] 体の拡大 l/k の次数 dim_k l。 無限次拡大にも基数として定義できる場合がある。 分野 12.010"><th scope="row">[L:K]</th><td>体の拡大 L/K の次数 dim_K L。</td><td>無限次拡大にも基数として定義できる場合がある。</td><td><span class="notationState">分野</span><a href="./note.html?id=12.010">12.010</a></td></tr>
-<tr data-search="spec(a) 可換環 a の素イデアル全体。 通常は zariski 位相を備える空間として扱う。 分野 13.020"><th scope="row">Spec(A)</th><td>可換環 A の素イデアル全体。</td><td>通常は Zariski 位相を備える空間として扱う。</td><td><span class="notationState">分野</span><a href="./note.html?id=13.020">13.020</a></td></tr>
-<tr data-search="v(i) イデアル i を含む素イデアル全体。spec(a) の閉部分集合。 v(i)={𝔭 ∈ spec(a) : i ⊆ 𝔭}。 分野 13.020"><th scope="row">V(I)</th><td>イデアル I を含む素イデアル全体。Spec(A) の閉部分集合。</td><td>V(I)={𝔭 ∈ Spec(A) : I ⊆ 𝔭}。</td><td><span class="notationState">分野</span><a href="./note.html?id=13.020">13.020</a></td></tr>
-<tr data-search="hom_c(a,b) 圏 c の対象 a から b への射の集合。 c が小圏でない場合は集合の大きさの取り扱いに注意。 分野 18.010"><th scope="row">Hom_C(A,B)</th><td>圏 C の対象 A から B への射の集合。</td><td>C が小圏でない場合は集合の大きさの取り扱いに注意。</td><td><span class="notationState">分野</span><a href="./note.html?id=18.010">18.010</a></td></tr>
-<tr data-search="ob(c) 圏 c の対象全体。 対象の集まりが集合かクラスかは前提による。 分野 18.010"><th scope="row">Ob(C)</th><td>圏 C の対象全体。</td><td>対象の集まりが集合かクラスかは前提による。</td><td><span class="notationState">分野</span><a href="./note.html?id=18.010">18.010</a></td></tr>
-<tr data-search="cᵒᵖ 圏 c の反対圏。対象は同じで射の向きを逆にする。 合成の順番も反転する。 分野 18.010"><th scope="row">Cᵒᵖ</th><td>圏 C の反対圏。対象は同じで射の向きを逆にする。</td><td>合成の順番も反転する。</td><td><span class="notationState">分野</span><a href="./note.html?id=18.010">18.010</a></td></tr>
-<tr data-search="hₙ(c) 鎖複体 c の n 次ホモロジー ker dₙ / im dₙ₊₁。 添字の次数、鎖複体か余鎖複体かを確認する。 分野 18.050"><th scope="row">Hₙ(C)</th><td>鎖複体 C の n 次ホモロジー ker dₙ / im dₙ₊₁。</td><td>添字の次数、鎖複体か余鎖複体かを確認する。</td><td><span class="notationState">分野</span><a href="./note.html?id=18.050">18.050</a></td></tr>
-<tr data-search="lt(f), lm(f) 単項式順序に対する先頭項（係数込み）と先頭単項式（係数なし）。 f ≠ 0 と単項式順序の固定を仮定する。 分野 13.030"><th scope="row">LT(f), LM(f)</th><td>単項式順序に対する先頭項（係数込み）と先頭単項式（係数なし）。</td><td>f ≠ 0 と単項式順序の固定を仮定する。</td><td><span class="notationState">分野</span><a href="./note.html?id=13.030">13.030</a></td></tr></tbody></table></div></section>
-<section class="notationSection" id="g5"><h2>測度・確率</h2><div class="tableScroll"><table><thead><tr><th scope="col">記号</th><th scope="col">意味・定義</th><th scope="col">適用上の注意</th><th scope="col">ノート例</th></tr></thead><tbody><tr data-search="ν ≪ μ ν が μ に関して絶対連続：μ(a)=0 ⇒ ν(a)=0。 数論の vinogradov 記号 ≪ と意味が違う。 分野 28.010"><th scope="row">ν ≪ μ</th><td>ν が μ に関して絶対連続：μ(A)=0 ⇒ ν(A)=0。</td><td>数論の Vinogradov 記号 ≪ と意味が違う。</td><td><span class="notationState">分野</span><a href="./note.html?id=28.010">28.010</a></td></tr>
-<tr data-search="dν/dμ radon–nikodym 密度：ν(a)=∫_a f dμ を満たす f（μ-a.e. で一意）。 適切な絶対連続性・有限性などを仮定して用いる。 分野 28.010"><th scope="row">dν/dμ</th><td>Radon–Nikodym 密度：ν(A)=∫_A f dμ を満たす f（μ-a.e. で一意）。</td><td>適切な絶対連続性・有限性などを仮定して用いる。</td><td><span class="notationState">分野</span><a href="./note.html?id=28.010">28.010</a></td></tr>
-<tr data-search="σ-有限 空間が測度有限の可測集合の可算和で覆われること。 対象となる測度を特定する。 分野 28.010"><th scope="row">σ-有限</th><td>空間が測度有限の可測集合の可算和で覆われること。</td><td>対象となる測度を特定する。</td><td><span class="notationState">分野</span><a href="./note.html?id=28.010">28.010</a></td></tr>
-<tr data-search="p(a), e[x] 確率空間 (ω,𝓕,p) における確率 p(a) と期待値 ∫_ω x dp。 期待値を取るための可積分性を確認する。 分野 60.020"><th scope="row">P(A), E[X]</th><td>確率空間 (Ω,𝓕,P) における確率 P(A) と期待値 ∫_Ω X dP。</td><td>期待値を取るための可積分性を確認する。</td><td><span class="notationState">分野</span><a href="./note.html?id=60.020">60.020</a></td></tr>
-<tr data-search="cov(x,y) e[(x−e[x])(y−e[y])]。 二次可積分性など、存在を保証する仮定が必要。 分野 60.020"><th scope="row">Cov(X,Y)</th><td>E[(X−E[X])(Y−E[Y])]。</td><td>二次可積分性など、存在を保証する仮定が必要。</td><td><span class="notationState">分野</span><a href="./note.html?id=60.020">60.020</a></td></tr>
-<tr data-search="a.s. / ほとんど確実 確率 1 の事象の上で成り立つこと。 確率測度 p に関する a.e. に等しい。 分野 60.020"><th scope="row">a.s. / ほとんど確実</th><td>確率 1 の事象の上で成り立つこと。</td><td>確率測度 P に関する a.e. に等しい。</td><td><span class="notationState">分野</span><a href="./note.html?id=60.020">60.020</a></td></tr></tbody></table></div></section>
-<section class="notationSection" id="g6"><h2>意味が変わりやすい記号</h2><div class="tableScroll"><table><thead><tr><th scope="col">記号</th><th scope="col">意味・定義</th><th scope="col">適用上の注意</th><th scope="col">ノート例</th></tr></thead><tbody><tr data-search="f̂, ℱf fourier 解析では f の fourier 変換。 正規化（2π 因子・指数の符号）をノートで定める。 要確認 42.020"><th scope="row">f̂, ℱf</th><td>Fourier 解析では f の Fourier 変換。</td><td>正規化（2π 因子・指数の符号）をノートで定める。</td><td><span class="notationState">要確認</span><a href="./note.html?id=42.020">42.020</a></td></tr>
-<tr data-search="k̂, r̂ 付値・ノルムやイデアル進位相に関する完備化を表すことがある。 どの位相で完備化するかで対象が変わる。 要確認 12.050"><th scope="row">K̂, R̂</th><td>付値・ノルムやイデアル進位相に関する完備化を表すことがある。</td><td>どの位相で完備化するかで対象が変わる。</td><td><span class="notationState">要確認</span><a href="./note.html?id=12.050">12.050</a></td></tr>
-<tr data-search="θ̂ 統計では母数 θ の推定量を表すことがある。 完備化や fourier 変換のハットと同一視しない。 要確認 62.010"><th scope="row">θ̂</th><td>統計では母数 θ の推定量を表すことがある。</td><td>完備化や Fourier 変換のハットと同一視しない。</td><td><span class="notationState">要確認</span><a href="./note.html?id=62.010">62.010</a></td></tr>
-<tr data-search="≪ 測度では絶対連続、解析的整数論では上界 o(·) に相当する記号として使うことがある。 左右の対象・分野で判定し、初出で必ず明示する。 要確認 28.010"><th scope="row">≪</th><td>測度では絶対連続、解析的整数論では上界 O(·) に相当する記号として使うことがある。</td><td>左右の対象・分野で判定し、初出で必ず明示する。</td><td><span class="notationState">要確認</span><a href="./note.html?id=28.010">28.010</a></td></tr>
-<tr data-search="∂ 偏微分記号、境界作用素、連結準同型など。 分野・次数で意味が異なるため、適用対象と定義域・値域を確認。 要確認 18.050"><th scope="row">∂</th><td>偏微分記号、境界作用素、連結準同型など。</td><td>分野・次数で意味が異なるため、適用対象と定義域・値域を確認。</td><td><span class="notationState">要確認</span><a href="./note.html?id=18.050">18.050</a></td></tr></tbody></table></div></section>
-<section class="notationLegend"><h2>運用上の約束</h2>
-<p>この一覧は主要記号の<strong>初版（55項目）</strong>であり、全160冊の原稿からすべての記号を網羅的に抽出したものではない。今後の査読では、定理の仮定、量化、記号の定義域・値域に関わる表記を優先して追記する。「要確認」の記号は、定義が確定したノートごとに参照例を増やしていく。</p>
-<p>共通の運用方針は <a href="https://github.com/HaWkoods/giconrad-site/blob/main/docs/notation_policy.md">記号と表記の方針</a> に記録されている。このページはその方針とは別に、記号の<strong>実際の意味</strong>を引くための中心的な参照先である。</p>
+<p class="notationIntro">擬コンラットの各ノートに現れる主要な記号について、意味と使用上の約束を整理する。記号の意味が分野や文献によって異なる場合は、その違いを併記する。</p>
+<p class="notationIntro"><strong>各ノートで明示した定義・仮定を優先する。</strong> 本一覧は個別の定義に代わるものではない。「要確認」は既存ノート全体での統一を確認していない記法であり、数学的な誤りを意味しない。</p>
+<div class="notationSearch"><label for="notationSearch">記号を検索</label><input type="search" id="notationSearch" placeholder="例：双対、閉球、Spec、自然数" autocomplete="off"><span id="notationCount" class="notationCount" role="status">全55項目</span></div>
+<nav class="notationNav" aria-label="項目の分野"><a href="#g1">基礎・集合・写像</a><a href="#g2">位相・関数空間・解析</a><a href="#g3">線形代数・作用素・双対</a><a href="#g4">代数・圏・幾何</a><a href="#g5">測度・確率</a><a href="#g6">同じ記号の異なる用法</a></nav>
+<section class="notationSection" id="g1" aria-labelledby="title-g1"><div class="notationSectionHeading"><h2 id="title-g1">基礎・集合・写像</h2><span>10項目</span></div><div class="notationEntries"><article class="notationEntry" id="s1-01" data-search="n \mathbb n 自然数全体を表す。0\in\mathbb n とするかどうかは文献により異なる。 各ノートで 0 を含むかを明示する。全ノートでの規約は、現段階では固定しない。  要確認">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathbb N">ℕ</span></div>
+<div class="notationText"><h3 class="srOnly">ℕ</h3><p class="notationDefinition">自然数全体を表す。<span class="math" data-tex="0\in\mathbb N">0\in\mathbb N</span> とするかどうかは文献により異なる。</p><p class="notationUsage">各ノートで <span class="math" data-tex="0">0</span> を含むかを明示する。全ノートでの規約は、現段階では固定しない。</p></div>
+<div class="notationMeta"><span class="notationType">要確認</span></div>
+</article>
+<article class="notationEntry" id="s1-02" data-search="n0 \mathbb n_0 非負整数全体 \mathbb n_0=\{0,1,2,\ldots\}。 多重指数の成分など、0 を許す場合に用いる。 13.030 共通規約">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathbb N_0">ℕ₀</span></div>
+<div class="notationText"><h3 class="srOnly">ℕ₀</h3><p class="notationDefinition">非負整数全体 <span class="math" data-tex="\mathbb N_0=\{0,1,2,\ldots\}">\mathbb N_0=\{0,1,2,\ldots\}</span>。</p><p class="notationUsage">多重指数の成分など、<span class="math" data-tex="0">0</span> を許す場合に用いる。</p></div>
+<div class="notationMeta"><span class="notationType">共通規約</span><a class="notationRef" href="./note.html?id=13.030">参考ノート 13.030</a></div>
+</article>
+<article class="notationEntry" id="s1-03" data-search="a ⊆ b a\subseteq b 集合 a のすべての元が b に属すること。等号 a=b を許す。 等号を許す包含関係を明示する場合に用いる。 54.010 共通規約">
+<div class="notationSymbol"><span class="math mathMain" data-tex="A\subseteq B">A ⊆ B</span></div>
+<div class="notationText"><h3 class="srOnly">A ⊆ B</h3><p class="notationDefinition">集合 <span class="math" data-tex="A">A</span> のすべての元が <span class="math" data-tex="B">B</span> に属すること。等号 <span class="math" data-tex="A=B">A=B</span> を許す。</p><p class="notationUsage">等号を許す包含関係を明示する場合に用いる。</p></div>
+<div class="notationMeta"><span class="notationType">共通規約</span><a class="notationRef" href="./note.html?id=54.010">参考ノート 54.010</a></div>
+</article>
+<article class="notationEntry" id="s1-04" data-search="a ⊊ b a\subsetneq b a\subseteq b かつ a\ne b。すなわち真包含を表す。 a\subset b とは区別して表記する。 15.010 共通規約">
+<div class="notationSymbol"><span class="math mathMain" data-tex="A\subsetneq B">A ⊊ B</span></div>
+<div class="notationText"><h3 class="srOnly">A ⊊ B</h3><p class="notationDefinition"><span class="math" data-tex="A\subseteq B">A\subseteq B</span> かつ <span class="math" data-tex="A\ne B">A\ne B</span>。すなわち真包含を表す。</p><p class="notationUsage"><span class="math" data-tex="A\subset B">A\subset B</span> とは区別して表記する。</p></div>
+<div class="notationMeta"><span class="notationType">共通規約</span><a class="notationRef" href="./note.html?id=15.010">参考ノート 15.010</a></div>
+</article>
+<article class="notationEntry" id="s1-05" data-search="a ⊂ b a\subset b 包含関係を表すが、等号を許すかどうかは文献によって異なる。 既存原稿全体での意味の統一は未確認。改訂時は \subseteq または \subsetneq を優先する。 54.020 要確認">
+<div class="notationSymbol"><span class="math mathMain" data-tex="A\subset B">A ⊂ B</span></div>
+<div class="notationText"><h3 class="srOnly">A ⊂ B</h3><p class="notationDefinition">包含関係を表すが、等号を許すかどうかは文献によって異なる。</p><p class="notationUsage">既存原稿全体での意味の統一は未確認。改訂時は <span class="math" data-tex="\subseteq">\subseteq</span> または <span class="math" data-tex="\subsetneq">\subsetneq</span> を優先する。</p></div>
+<div class="notationMeta"><span class="notationType">要確認</span><a class="notationRef" href="./note.html?id=54.020">参考ノート 54.020</a></div>
+</article>
+<article class="notationEntry" id="s1-06" data-search="p(x) \mathcal p(x) 集合 x の冪集合。すなわち \mathcal p(x)=\{a:a\subseteq x\}。 \mathcal p(x) は集合を表す。確率測度 p などとは文脈で区別する。 54.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathcal P(X)">𝒫(X)</span></div>
+<div class="notationText"><h3 class="srOnly">𝒫(X)</h3><p class="notationDefinition">集合 <span class="math" data-tex="X">X</span> の冪集合。すなわち <span class="math" data-tex="\mathcal P(X)=\{A:A\subseteq X\}">\mathcal P(X)=\{A:A\subseteq X\}</span>。</p><p class="notationUsage"><span class="math" data-tex="\mathcal P(X)">\mathcal P(X)</span> は集合を表す。確率測度 <span class="math" data-tex="P">P</span> などとは文脈で区別する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=54.010">参考ノート 54.010</a></div>
+</article>
+<article class="notationEntry" id="s1-07" data-search="f−1(a) f^{-1}(a) 写像 f:x\to y と a\subseteq y に対する逆像 \{x\in x:f(x)\in a\}。 f が全単射でなくても定義される。逆写像 f^{-1}:y\to x と区別する。 54.010 共通規約">
+<div class="notationSymbol"><span class="math mathMain" data-tex="f^{-1}(A)">f⁻¹(A)</span></div>
+<div class="notationText"><h3 class="srOnly">f⁻¹(A)</h3><p class="notationDefinition">写像 <span class="math" data-tex="f:X\to Y">f:X\to Y</span> と <span class="math" data-tex="A\subseteq Y">A\subseteq Y</span> に対する逆像 <span class="math" data-tex="\{x\in X:f(x)\in A\}">\{x\in X:f(x)\in A\}</span>。</p><p class="notationUsage"><span class="math" data-tex="f">f</span> が全単射でなくても定義される。逆写像 <span class="math" data-tex="f^{-1}:Y\to X">f^{-1}:Y\to X</span> と区別する。</p></div>
+<div class="notationMeta"><span class="notationType">共通規約</span><a class="notationRef" href="./note.html?id=54.010">参考ノート 54.010</a></div>
+</article>
+<article class="notationEntry" id="s1-08" data-search="1_a \mathbf1_a 集合 a の指示関数。a 上で 1、その外で 0 をとる。 \mathbf1_a の定義域は周囲の空間とする。指示関数の書体はノート内で統一する。 28.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathbf1_A">1_A</span></div>
+<div class="notationText"><h3 class="srOnly">1_A</h3><p class="notationDefinition">集合 <span class="math" data-tex="A">A</span> の指示関数。<span class="math" data-tex="A">A</span> 上で <span class="math" data-tex="1">1</span>、その外で <span class="math" data-tex="0">0</span> をとる。</p><p class="notationUsage"><span class="math" data-tex="\mathbf1_A">\mathbf1_A</span> の定義域は周囲の空間とする。指示関数の書体はノート内で統一する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.010">参考ノート 28.010</a></div>
+</article>
+<article class="notationEntry" id="s1-09" data-search="a° a^\circ 位相空間の部分集合 a の内部。a に含まれる開集合の和集合に等しい。 \operatorname{int}a と書く場合もある。 54.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="A^\circ">A°</span></div>
+<div class="notationText"><h3 class="srOnly">A°</h3><p class="notationDefinition">位相空間の部分集合 <span class="math" data-tex="A">A</span> の内部。<span class="math" data-tex="A">A</span> に含まれる開集合の和集合に等しい。</p><p class="notationUsage"><span class="math" data-tex="\operatorname{int}A">\operatorname{int}A</span> と書く場合もある。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=54.010">参考ノート 54.010</a></div>
+</article>
+<article class="notationEntry" id="s1-10" data-search="a̅ \overline a 位相空間の部分集合 a の閉包。a を含む閉集合の共通部分に等しい。 \overline a の意味は、指定された位相に依存する。 54.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\overline A">A̅</span></div>
+<div class="notationText"><h3 class="srOnly">A̅</h3><p class="notationDefinition">位相空間の部分集合 <span class="math" data-tex="A">A</span> の閉包。<span class="math" data-tex="A">A</span> を含む閉集合の共通部分に等しい。</p><p class="notationUsage"><span class="math" data-tex="\overline A">\overline A</span> の意味は、指定された位相に依存する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=54.010">参考ノート 54.010</a></div>
+</article></div></section>
+<section class="notationSection" id="g2" aria-labelledby="title-g2"><div class="notationSectionHeading"><h2 id="title-g2">位相・関数空間・解析</h2><span>14項目</span></div><div class="notationEntries"><article class="notationEntry" id="s2-01" data-search="b_x(x,r) b_x(x,r) 距離空間 (x,d) における開球 b_x(x,r)=\{y\in x:d(x,y)&lt;r\}(r&gt;0)。 空間が明らかなとき添字 x を省略する。閉球とは区別する。 46.050 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="B_X(x,r)">B_X(x,r)</span></div>
+<div class="notationText"><h3 class="srOnly">B_X(x,r)</h3><p class="notationDefinition">距離空間 <span class="math" data-tex="(X,d)">(X,d)</span> における開球 <span class="math" data-tex="B_X(x,r)=\{y\in X:d(x,y)&lt;r\}">B_X(x,r)=\{y\in X:d(x,y)&lt;r\}</span>（<span class="math" data-tex="r&gt;0">r&gt;0</span>）。</p><p class="notationUsage">空間が明らかなとき添字 <span class="math" data-tex="X">X</span> を省略する。閉球とは区別する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=46.050">参考ノート 46.050</a></div>
+</article>
+<article class="notationEntry" id="s2-02" data-search="閉球 \overline b_x[x,r] 距離空間 (x,d) の閉球 \{y\in x:d(x,y)\le r\}(r\ge0)。 記号は書籍によって異なる。一般の距離空間では、開球の閉包と閉球が一致するとは限らない。 46.050 要確認">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\overline B_X[x,r]">閉球</span></div>
+<div class="notationText"><h3 class="srOnly">閉球</h3><p class="notationDefinition">距離空間 <span class="math" data-tex="(X,d)">(X,d)</span> の閉球 <span class="math" data-tex="\{y\in X:d(x,y)\le r\}">\{y\in X:d(x,y)\le r\}</span>（<span class="math" data-tex="r\ge0">r\ge0</span>）。</p><p class="notationUsage">記号は書籍によって異なる。一般の距離空間では、開球の閉包と閉球が一致するとは限らない。</p></div>
+<div class="notationMeta"><span class="notationType">要確認</span><a class="notationRef" href="./note.html?id=46.050">参考ノート 46.050</a></div>
+</article>
+<article class="notationEntry" id="s2-03" data-search="c(x;k) c(x;\mathbb k) 位相空間 x から \mathbb k への連続関数全体(\mathbb k=\mathbb r または \mathbb c)。 値域とその位相を定める。c(x) と略すときは係数体を明示する。 46.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="C(X;\mathbb K)">C(X;𝕂)</span></div>
+<div class="notationText"><h3 class="srOnly">C(X;𝕂)</h3><p class="notationDefinition">位相空間 <span class="math" data-tex="X">X</span> から <span class="math" data-tex="\mathbb K">\mathbb K</span> への連続関数全体（<span class="math" data-tex="\mathbb K=\mathbb R">\mathbb K=\mathbb R</span> または <span class="math" data-tex="\mathbb C">\mathbb C</span>）。</p><p class="notationUsage">値域とその位相を定める。<span class="math" data-tex="C(X)">C(X)</span> と略すときは係数体を明示する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=46.010">参考ノート 46.010</a></div>
+</article>
+<article class="notationEntry" id="s2-04" data-search="supp f \operatorname{supp}f 関数 f の台。f が 0 でない点の集合の閉包。 測度論で用いる本質的台とは一般に異なる。 22.030 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\operatorname{supp}f">supp f</span></div>
+<div class="notationText"><h3 class="srOnly">supp f</h3><p class="notationDefinition">関数 <span class="math" data-tex="f">f</span> の台。<span class="math" data-tex="f">f</span> が <span class="math" data-tex="0">0</span> でない点の集合の閉包。</p><p class="notationUsage">測度論で用いる本質的台とは一般に異なる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=22.030">参考ノート 22.030</a></div>
+</article>
+<article class="notationEntry" id="s2-05" data-search="c_c(x) c_c(x) 位相空間 x 上の連続関数のうち、台がコンパクトであるもの全体。 実数値・複素数値のいずれを採用するかは、各ノートで指定する。 22.030 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="C_c(X)">C_c(X)</span></div>
+<div class="notationText"><h3 class="srOnly">C_c(X)</h3><p class="notationDefinition">位相空間 <span class="math" data-tex="X">X</span> 上の連続関数のうち、台がコンパクトであるもの全体。</p><p class="notationUsage">実数値・複素数値のいずれを採用するかは、各ノートで指定する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=22.030">参考ノート 22.030</a></div>
+</article>
+<article class="notationEntry" id="s2-06" data-search="c_c^∞(ω) c_c^\infty(\omega) 開集合 \omega\subseteq\mathbb r^n 上の滑らかな関数で、台が \omega 内のコンパクト集合であるもの全体。 試験関数空間ともいう。関数の台が境界に接する場合は含まない。 35.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="C_c^\infty(\Omega)">C_c^∞(Ω)</span></div>
+<div class="notationText"><h3 class="srOnly">C_c^∞(Ω)</h3><p class="notationDefinition">開集合 <span class="math" data-tex="\Omega\subseteq\mathbb R^n">\Omega\subseteq\mathbb R^n</span> 上の滑らかな関数で、台が <span class="math" data-tex="\Omega">\Omega</span> 内のコンパクト集合であるもの全体。</p><p class="notationUsage">試験関数空間ともいう。関数の台が境界に接する場合は含まない。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=35.020">参考ノート 35.020</a></div>
+</article>
+<article class="notationEntry" id="s2-07" data-search="lp(μ) l^p(\mu) 1\le p&lt;\infty に対し、p 乗可積分な可測関数を \mu-ほとんど至る所の一致で同一視した空間。 l^\infty(\mu) は本質的上限を用いて定義する。 28.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="L^p(\mu)">Lᵖ(μ)</span></div>
+<div class="notationText"><h3 class="srOnly">Lᵖ(μ)</h3><p class="notationDefinition"><span class="math" data-tex="1\le p&lt;\infty">1\le p&lt;\infty</span> に対し、<span class="math" data-tex="p">p</span> 乗可積分な可測関数を <span class="math" data-tex="\mu">\mu</span>-ほとんど至る所の一致で同一視した空間。</p><p class="notationUsage"><span class="math" data-tex="L^\infty(\mu)">L^\infty(\mu)</span> は本質的上限を用いて定義する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.010">参考ノート 28.010</a></div>
+</article>
+<article class="notationEntry" id="s2-08" data-search="‖f‖_{lp} \|f\|_{l^p(\mu)} 1\le p&lt;\infty に対し、\|f\|_{l^p(\mu)}=\bigl(\int |f|^p\,d\mu\bigr)^{1/p}。 同値類の代表元によらず定まる。 28.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\|f\|_{L^p(\mu)}">‖f‖_{Lᵖ}</span></div>
+<div class="notationText"><h3 class="srOnly">‖f‖_{Lᵖ}</h3><p class="notationDefinition"><span class="math" data-tex="1\le p&lt;\infty">1\le p&lt;\infty</span> に対し、<span class="math" data-tex="\|f\|_{L^p(\mu)}=\bigl(\int |f|^p\,d\mu\bigr)^{1/p}">\|f\|_{L^p(\mu)}=\bigl(\int |f|^p\,d\mu\bigr)^{1/p}</span>。</p><p class="notationUsage">同値類の代表元によらず定まる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.010">参考ノート 28.010</a></div>
+</article>
+<article class="notationEntry" id="s2-09" data-search="a.e. \mathrm{a.e.} 「ほとんど至る所」(almost everywhere)。指定した測度の零集合を除いて成立すること。 どの測度に関する主張かを明記する。 28.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathrm{a.e.}">a.e.</span></div>
+<div class="notationText"><h3 class="srOnly">a.e.</h3><p class="notationDefinition">「ほとんど至る所」（almost everywhere）。指定した測度の零集合を除いて成立すること。</p><p class="notationUsage">どの測度に関する主張かを明記する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.010">参考ノート 28.010</a></div>
+</article>
+<article class="notationEntry" id="s2-10" data-search="b(x) \mathcal b(x) 位相空間 x の開集合族が生成する borel \sigma-加法族。 有界線形作用素を表す \mathcal b(e,f) とは異なる。 28.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathcal B(X)">𝓑(X)</span></div>
+<div class="notationText"><h3 class="srOnly">𝓑(X)</h3><p class="notationDefinition">位相空間 <span class="math" data-tex="X">X</span> の開集合族が生成する Borel <span class="math" data-tex="\sigma">\sigma</span>-加法族。</p><p class="notationUsage">有界線形作用素を表す <span class="math" data-tex="\mathcal B(E,F)">\mathcal B(E,F)</span> とは異なる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.020">参考ノート 28.020</a></div>
+</article>
+<article class="notationEntry" id="s2-11" data-search="ln \mathcal l^n \mathbb r^n の lebesgue 可測集合全体の \sigma-加法族。 borel \sigma-加法族 \mathcal b^n と区別する。 28.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathcal L^n">𝓛ⁿ</span></div>
+<div class="notationText"><h3 class="srOnly">𝓛ⁿ</h3><p class="notationDefinition"><span class="math" data-tex="\mathbb R^n">\mathbb R^n</span> の Lebesgue 可測集合全体の <span class="math" data-tex="\sigma">\sigma</span>-加法族。</p><p class="notationUsage">Borel <span class="math" data-tex="\sigma">\sigma</span>-加法族 <span class="math" data-tex="\mathcal B^n">\mathcal B^n</span> と区別する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.020">参考ノート 28.020</a></div>
+</article>
+<article class="notationEntry" id="s2-12" data-search="σ(x,x*) \sigma(x,x^*) ノルム空間 x 上の弱位相。すべての f\in x^* を連続にする最弱の位相。 x^* は連続双対空間とする。 46.060 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\sigma(X,X^*)">σ(X,X*)</span></div>
+<div class="notationText"><h3 class="srOnly">σ(X,X*)</h3><p class="notationDefinition">ノルム空間 <span class="math" data-tex="X">X</span> 上の弱位相。すべての <span class="math" data-tex="f\in X^*">f\in X^*</span> を連続にする最弱の位相。</p><p class="notationUsage"><span class="math" data-tex="X^*">X^*</span> は連続双対空間とする。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=46.060">参考ノート 46.060</a></div>
+</article>
+<article class="notationEntry" id="s2-13" data-search="σ(x*,x) \sigma(x^*,x) x^* 上の弱*位相。評価写像 f\mapsto f(x)(x\in x)が定める初期位相。 x^* の弱位相 \sigma(x^*,x^{**}) と区別する。 46.060 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\sigma(X^*,X)">σ(X*,X)</span></div>
+<div class="notationText"><h3 class="srOnly">σ(X*,X)</h3><p class="notationDefinition"><span class="math" data-tex="X^*">X^*</span> 上の弱*位相。評価写像 <span class="math" data-tex="f\mapsto f(x)">f\mapsto f(x)</span>（<span class="math" data-tex="x\in X">x\in X</span>）が定める初期位相。</p><p class="notationUsage"><span class="math" data-tex="X^*">X^*</span> の弱位相 <span class="math" data-tex="\sigma(X^*,X^{**})">\sigma(X^*,X^{**})</span> と区別する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=46.060">参考ノート 46.060</a></div>
+</article>
+<article class="notationEntry" id="s2-14" data-search="x^α, ∂^α x^\alpha,\ \partial^\alpha 多重指数 \alpha=(\alpha_1,\ldots,\alpha_n)\in\mathbb n_0^n に対し、x^\alpha=\prod_{j=1}^n x_j^{\alpha_j}、\partial^\alpha=\partial_1^{\alpha_1}\cdots\partial_n^{\alpha_n}。 偏微分に必要な滑らかさは、個々の命題の仮定による。 42.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="x^\alpha,\ \partial^\alpha">x^α, ∂^α</span></div>
+<div class="notationText"><h3 class="srOnly">x^α, ∂^α</h3><p class="notationDefinition">多重指数 <span class="math" data-tex="\alpha=(\alpha_1,\ldots,\alpha_n)\in\mathbb N_0^n">\alpha=(\alpha_1,\ldots,\alpha_n)\in\mathbb N_0^n</span> に対し、<span class="math" data-tex="x^\alpha=\prod_{j=1}^n x_j^{\alpha_j}">x^\alpha=\prod_{j=1}^n x_j^{\alpha_j}</span>、<span class="math" data-tex="\partial^\alpha=\partial_1^{\alpha_1}\cdots\partial_n^{\alpha_n}">\partial^\alpha=\partial_1^{\alpha_1}\cdots\partial_n^{\alpha_n}</span>。</p><p class="notationUsage">偏微分に必要な滑らかさは、個々の命題の仮定による。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=42.020">参考ノート 42.020</a></div>
+</article></div></section>
+<section class="notationSection" id="g3" aria-labelledby="title-g3"><div class="notationSectionHeading"><h2 id="title-g3">線形代数・作用素・双対</h2><span>9項目</span></div><div class="notationEntries"><article class="notationEntry" id="s3-01" data-search="e* e^* ノルム空間 e 上の有界 \mathbb k-線形汎関数全体。これを連続双対空間という。 位相を指定しない線形空間の代数的双対とは区別する。 46.040 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="E^*">E*</span></div>
+<div class="notationText"><h3 class="srOnly">E*</h3><p class="notationDefinition">ノルム空間 <span class="math" data-tex="E">E</span> 上の有界 <span class="math" data-tex="\mathbb K">\mathbb K</span>-線形汎関数全体。これを連続双対空間という。</p><p class="notationUsage">位相を指定しない線形空間の代数的双対とは区別する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=46.040">参考ノート 46.040</a></div>
+</article>
+<article class="notationEntry" id="s3-02" data-search="e** e^{**} 連続双対空間 e^* の連続双対 (e^*)^*。 x\in e を f\mapsto f(x) に対応させる標準的な等長埋め込み e\to e^{**} がある。 46.060 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="E^{**}">E**</span></div>
+<div class="notationText"><h3 class="srOnly">E**</h3><p class="notationDefinition">連続双対空間 <span class="math" data-tex="E^*">E^*</span> の連続双対 <span class="math" data-tex="(E^*)^*">(E^*)^*</span>。</p><p class="notationUsage"><span class="math" data-tex="x\in E">x\in E</span> を <span class="math" data-tex="f\mapsto f(x)">f\mapsto f(x)</span> に対応させる標準的な等長埋め込み <span class="math" data-tex="E\to E^{**}">E\to E^{**}</span> がある。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=46.060">参考ノート 46.060</a></div>
+</article>
+<article class="notationEntry" id="s3-03" data-search="‖f‖_{e*} \|f\|_{e^*} f\in e^* に対する双対ノルム \sup_{\|x\|_e\le1}|f(x)|。 有界線形汎関数に対して有限となる。 46.040 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\|f\|_{E^*}">‖f‖_{E*}</span></div>
+<div class="notationText"><h3 class="srOnly">‖f‖_{E*}</h3><p class="notationDefinition"><span class="math" data-tex="f\in E^*">f\in E^*</span> に対する双対ノルム <span class="math" data-tex="\sup_{\|x\|_E\le1}|f(x)|">\sup_{\|x\|_E\le1}|f(x)|</span>。</p><p class="notationUsage">有界線形汎関数に対して有限となる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=46.040">参考ノート 46.040</a></div>
+</article>
+<article class="notationEntry" id="s3-04" data-search="b(e,f) \mathcal b(e,f) ノルム空間 e から f への有界線形作用素全体。 borel \sigma-加法族の記号 \mathcal b(x) と文脈で区別する。 46.050 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathcal B(E,F)">𝓑(E,F)</span></div>
+<div class="notationText"><h3 class="srOnly">𝓑(E,F)</h3><p class="notationDefinition">ノルム空間 <span class="math" data-tex="E">E</span> から <span class="math" data-tex="F">F</span> への有界線形作用素全体。</p><p class="notationUsage">Borel <span class="math" data-tex="\sigma">\sigma</span>-加法族の記号 <span class="math" data-tex="\mathcal B(X)">\mathcal B(X)</span> と文脈で区別する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=46.050">参考ノート 46.050</a></div>
+</article>
+<article class="notationEntry" id="s3-05" data-search="‖t‖ \|t\| 有界線形作用素 t:e\to f の作用素ノルム \sup_{\|x\|_e\le1}\|tx\|_f。 定義域と値域のノルムを固定して用いる。 47.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\|T\|">‖T‖</span></div>
+<div class="notationText"><h3 class="srOnly">‖T‖</h3><p class="notationDefinition">有界線形作用素 <span class="math" data-tex="T:E\to F">T:E\to F</span> の作用素ノルム <span class="math" data-tex="\sup_{\|x\|_E\le1}\|Tx\|_F">\sup_{\|x\|_E\le1}\|Tx\|_F</span>。</p><p class="notationUsage">定義域と値域のノルムを固定して用いる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=47.020">参考ノート 47.020</a></div>
+</article>
+<article class="notationEntry" id="s3-06" data-search="k(e,f) \mathcal k(e,f) ノルム空間 e から f へのコンパクト線形作用素全体。 コンパクト作用素は有界線形作用素である。 47.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathcal K(E,F)">𝓚(E,F)</span></div>
+<div class="notationText"><h3 class="srOnly">𝓚(E,F)</h3><p class="notationDefinition">ノルム空間 <span class="math" data-tex="E">E</span> から <span class="math" data-tex="F">F</span> へのコンパクト線形作用素全体。</p><p class="notationUsage">コンパクト作用素は有界線形作用素である。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=47.020">参考ノート 47.020</a></div>
+</article>
+<article class="notationEntry" id="s3-07" data-search="⟨x,y⟩ \langle x,y\rangle 内積、または双対空間と元の空間とのペアリングを表す記法。 複素内積でどちらの変数を線形とするか、双対評価を意味するかはノート内で定める。 46.030 要確認">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\langle x,y\rangle">⟨x,y⟩</span></div>
+<div class="notationText"><h3 class="srOnly">⟨x,y⟩</h3><p class="notationDefinition">内積、または双対空間と元の空間とのペアリングを表す記法。</p><p class="notationUsage">複素内積でどちらの変数を線形とするか、双対評価を意味するかはノート内で定める。</p></div>
+<div class="notationMeta"><span class="notationType">要確認</span><a class="notationRef" href="./note.html?id=46.030">参考ノート 46.030</a></div>
+</article>
+<article class="notationEntry" id="s3-08" data-search="m_{m,n}(r) m_{m,n}(r) 環 r に係数をもつ m 行 n 列の行列全体。 行列積では行数と列数の整合性に注意する。 15.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="M_{m,n}(R)">M_{m,n}(R)</span></div>
+<div class="notationText"><h3 class="srOnly">M_{m,n}(R)</h3><p class="notationDefinition">環 <span class="math" data-tex="R">R</span> に係数をもつ <span class="math" data-tex="m">m</span> 行 <span class="math" data-tex="n">n</span> 列の行列全体。</p><p class="notationUsage">行列積では行数と列数の整合性に注意する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=15.010">参考ノート 15.010</a></div>
+</article>
+<article class="notationEntry" id="s3-09" data-search="gln(r) \operatorname{gl}_n(r) 単位的可換環 r 上の可逆な n 次正方行列全体がなす群。 一般の可換環上で定義できる。 15.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\operatorname{GL}_n(R)">GLₙ(R)</span></div>
+<div class="notationText"><h3 class="srOnly">GLₙ(R)</h3><p class="notationDefinition">単位的可換環 <span class="math" data-tex="R">R</span> 上の可逆な <span class="math" data-tex="n">n</span> 次正方行列全体がなす群。</p><p class="notationUsage">一般の可換環上で定義できる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=15.010">参考ノート 15.010</a></div>
+</article></div></section>
+<section class="notationSection" id="g4" aria-labelledby="title-g4"><div class="notationSectionHeading"><h2 id="title-g4">代数・圏・幾何</h2><span>11項目</span></div><div class="notationEntries"><article class="notationEntry" id="s4-01" data-search="r×, k× r^\times,\ k^\times 単位的環 r の単元群、および体 k の零でない元全体の乗法群。 環の場合、零でない元がすべて単元になるとは限らない。 12.050 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="R^\times,\ K^\times">R×, K×</span></div>
+<div class="notationText"><h3 class="srOnly">R×, K×</h3><p class="notationDefinition">単位的環 <span class="math" data-tex="R">R</span> の単元群、および体 <span class="math" data-tex="K">K</span> の零でない元全体の乗法群。</p><p class="notationUsage">環の場合、零でない元がすべて単元になるとは限らない。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=12.050">参考ノート 12.050</a></div>
+</article>
+<article class="notationEntry" id="s4-02" data-search="(a,b), (d) (a,b),\ (d) 単位的可換環 r のイデアル (a,b)=ra+rb および (d)=rd。 数論における最大公約数の記法 (a,b) とは区別する。 15.010 要確認">
+<div class="notationSymbol"><span class="math mathMain" data-tex="(a,b),\ (d)">(a,b), (d)</span></div>
+<div class="notationText"><h3 class="srOnly">(a,b), (d)</h3><p class="notationDefinition">単位的可換環 <span class="math" data-tex="R">R</span> のイデアル <span class="math" data-tex="(a,b)=Ra+Rb">(a,b)=Ra+Rb</span> および <span class="math" data-tex="(d)=Rd">(d)=Rd</span>。</p><p class="notationUsage">数論における最大公約数の記法 <span class="math" data-tex="(a,b)">(a,b)</span> とは区別する。</p></div>
+<div class="notationMeta"><span class="notationType">要確認</span><a class="notationRef" href="./note.html?id=15.010">参考ノート 15.010</a></div>
+</article>
+<article class="notationEntry" id="s4-03" data-search="fp, f_q \mathbb f_p,\ \mathbb f_q 素数 p に対し \mathbb f_p=\mathbb z/p\mathbb z。素数冪 q に対し \mathbb f_q は q 元の有限体。 同じ位数の有限体は同型だが、具体的な同型を選ぶ必要がある場合がある。 12.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathbb F_p,\ \mathbb F_q">𝔽ₚ, 𝔽_q</span></div>
+<div class="notationText"><h3 class="srOnly">𝔽ₚ, 𝔽_q</h3><p class="notationDefinition">素数 <span class="math" data-tex="p">p</span> に対し <span class="math" data-tex="\mathbb F_p=\mathbb Z/p\mathbb Z">\mathbb F_p=\mathbb Z/p\mathbb Z</span>。素数冪 <span class="math" data-tex="q">q</span> に対し <span class="math" data-tex="\mathbb F_q">\mathbb F_q</span> は <span class="math" data-tex="q">q</span> 元の有限体。</p><p class="notationUsage">同じ位数の有限体は同型だが、具体的な同型を選ぶ必要がある場合がある。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=12.010">参考ノート 12.010</a></div>
+</article>
+<article class="notationEntry" id="s4-04" data-search="[l:k] [l:k] 体拡大 l/k の次数。[l:k]=\dim_k l。 有限次拡大では正整数、無限次拡大では基数として扱うこともできる。 12.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="[L:K]">[L:K]</span></div>
+<div class="notationText"><h3 class="srOnly">[L:K]</h3><p class="notationDefinition">体拡大 <span class="math" data-tex="L/K">L/K</span> の次数。<span class="math" data-tex="[L:K]=\dim_K L">[L:K]=\dim_K L</span>。</p><p class="notationUsage">有限次拡大では正整数、無限次拡大では基数として扱うこともできる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=12.010">参考ノート 12.010</a></div>
+</article>
+<article class="notationEntry" id="s4-05" data-search="spec(a) \operatorname{spec}(a) 可換環 a の素イデアル全体。通常は zariski 位相を入れて考える。 a の単位元の有無など、環の前提はノートごとに確認する。 13.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\operatorname{Spec}(A)">Spec(A)</span></div>
+<div class="notationText"><h3 class="srOnly">Spec(A)</h3><p class="notationDefinition">可換環 <span class="math" data-tex="A">A</span> の素イデアル全体。通常は Zariski 位相を入れて考える。</p><p class="notationUsage"><span class="math" data-tex="A">A</span> の単位元の有無など、環の前提はノートごとに確認する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=13.020">参考ノート 13.020</a></div>
+</article>
+<article class="notationEntry" id="s4-06" data-search="v(i) v(i) イデアル i\subseteq a に対し、v(i)=\{\mathfrak p\in\operatorname{spec}(a):i\subseteq\mathfrak p\}。 zariski 位相における閉集合を与える。 13.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="V(I)">V(I)</span></div>
+<div class="notationText"><h3 class="srOnly">V(I)</h3><p class="notationDefinition">イデアル <span class="math" data-tex="I\subseteq A">I\subseteq A</span> に対し、<span class="math" data-tex="V(I)=\{\mathfrak p\in\operatorname{Spec}(A):I\subseteq\mathfrak p\}">V(I)=\{\mathfrak p\in\operatorname{Spec}(A):I\subseteq\mathfrak p\}</span>。</p><p class="notationUsage">Zariski 位相における閉集合を与える。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=13.020">参考ノート 13.020</a></div>
+</article>
+<article class="notationEntry" id="s4-07" data-search="hom_c(a,b) \operatorname{hom}_{\mathcal c}(a,b) 圏 \mathcal c における対象 a から対象 b への射全体。 大きな圏では、射全体が集合をなすかに注意する。 18.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\operatorname{Hom}_{\mathcal C}(A,B)">Hom_C(A,B)</span></div>
+<div class="notationText"><h3 class="srOnly">Hom_C(A,B)</h3><p class="notationDefinition">圏 <span class="math" data-tex="\mathcal C">\mathcal C</span> における対象 <span class="math" data-tex="A">A</span> から対象 <span class="math" data-tex="B">B</span> への射全体。</p><p class="notationUsage">大きな圏では、射全体が集合をなすかに注意する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=18.010">参考ノート 18.010</a></div>
+</article>
+<article class="notationEntry" id="s4-08" data-search="ob(c) \operatorname{ob}(\mathcal c) 圏 \mathcal c の対象全体。 小圏では集合として扱う。大きな圏では一般にクラスとなる。 18.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\operatorname{Ob}(\mathcal C)">Ob(C)</span></div>
+<div class="notationText"><h3 class="srOnly">Ob(C)</h3><p class="notationDefinition">圏 <span class="math" data-tex="\mathcal C">\mathcal C</span> の対象全体。</p><p class="notationUsage">小圏では集合として扱う。大きな圏では一般にクラスとなる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=18.010">参考ノート 18.010</a></div>
+</article>
+<article class="notationEntry" id="s4-09" data-search="cop \mathcal c^{\mathrm{op}} 圏 \mathcal c の反対圏。対象はそのままに、射の向きを反転させる。 合成の向きも反転する。 18.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathcal C^{\mathrm{op}}">Cᵒᵖ</span></div>
+<div class="notationText"><h3 class="srOnly">Cᵒᵖ</h3><p class="notationDefinition">圏 <span class="math" data-tex="\mathcal C">\mathcal C</span> の反対圏。対象はそのままに、射の向きを反転させる。</p><p class="notationUsage">合成の向きも反転する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=18.010">参考ノート 18.010</a></div>
+</article>
+<article class="notationEntry" id="s4-10" data-search="hn(c) h_n(c) 鎖複体 (c_n,d_n) の n 次ホモロジー \ker(d_n)/\operatorname{im}(d_{n+1})。 ホモロジーとコホモロジーでは微分の次数の向きが異なる。 18.050 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="H_n(C)">Hₙ(C)</span></div>
+<div class="notationText"><h3 class="srOnly">Hₙ(C)</h3><p class="notationDefinition">鎖複体 <span class="math" data-tex="(C_n,d_n)">(C_n,d_n)</span> の <span class="math" data-tex="n">n</span> 次ホモロジー <span class="math" data-tex="\ker(d_n)/\operatorname{im}(d_{n+1})">\ker(d_n)/\operatorname{im}(d_{n+1})</span>。</p><p class="notationUsage">ホモロジーとコホモロジーでは微分の次数の向きが異なる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=18.050">参考ノート 18.050</a></div>
+</article>
+<article class="notationEntry" id="s4-11" data-search="lt(f), lm(f) \operatorname{lt}(f),\ \operatorname{lm}(f) 固定した単項式順序に関する、非零多項式 f の先頭項(係数込み)と先頭単項式(係数なし)。 f\ne0 と単項式順序の指定を仮定する。 13.030 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\operatorname{LT}(f),\ \operatorname{LM}(f)">LT(f), LM(f)</span></div>
+<div class="notationText"><h3 class="srOnly">LT(f), LM(f)</h3><p class="notationDefinition">固定した単項式順序に関する、非零多項式 <span class="math" data-tex="f">f</span> の先頭項（係数込み）と先頭単項式（係数なし）。</p><p class="notationUsage"><span class="math" data-tex="f\ne0">f\ne0</span> と単項式順序の指定を仮定する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=13.030">参考ノート 13.030</a></div>
+</article></div></section>
+<section class="notationSection" id="g5" aria-labelledby="title-g5"><div class="notationSectionHeading"><h2 id="title-g5">測度・確率</h2><span>6項目</span></div><div class="notationEntries"><article class="notationEntry" id="s5-01" data-search="ν ≪ μ \nu\ll\mu 測度 \nu が \mu に関して絶対連続であること。すなわち \mu(a)=0 ならば \nu(a)=0。 整数論の vinogradov 記号 \ll とは意味が異なる。 28.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\nu\ll\mu">ν ≪ μ</span></div>
+<div class="notationText"><h3 class="srOnly">ν ≪ μ</h3><p class="notationDefinition">測度 <span class="math" data-tex="\nu">\nu</span> が <span class="math" data-tex="\mu">\mu</span> に関して絶対連続であること。すなわち <span class="math" data-tex="\mu(A)=0">\mu(A)=0</span> ならば <span class="math" data-tex="\nu(A)=0">\nu(A)=0</span>。</p><p class="notationUsage">整数論の Vinogradov 記号 <span class="math" data-tex="\ll">\ll</span> とは意味が異なる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.010">参考ノート 28.010</a></div>
+</article>
+<article class="notationEntry" id="s5-02" data-search="dν/dμ \frac{d\nu}{d\mu} \nu(a)=\int_a f\,d\mu を満たす密度 f の記号。f=d\nu/d\mu と書く。 radon–nikodym の定理の仮定の下で存在し、\mu-ほとんど至る所で一意となる。 28.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\frac{d\nu}{d\mu}">dν/dμ</span></div>
+<div class="notationText"><h3 class="srOnly">dν/dμ</h3><p class="notationDefinition"><span class="math" data-tex="\nu(A)=\int_A f\,d\mu">\nu(A)=\int_A f\,d\mu</span> を満たす密度 <span class="math" data-tex="f">f</span> の記号。<span class="math" data-tex="f=d\nu/d\mu">f=d\nu/d\mu</span> と書く。</p><p class="notationUsage">Radon–Nikodym の定理の仮定の下で存在し、<span class="math" data-tex="\mu">\mu</span>-ほとんど至る所で一意となる。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.010">参考ノート 28.010</a></div>
+</article>
+<article class="notationEntry" id="s5-03" data-search="σ-有限 \sigma\text{-有限} 測度 \mu をもつ空間が、\mu-測度有限な可測集合の可算和で覆われること。 対象の測度を明示する。 28.010 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\sigma\text{-有限}">σ-有限</span></div>
+<div class="notationText"><h3 class="srOnly">σ-有限</h3><p class="notationDefinition">測度 <span class="math" data-tex="\mu">\mu</span> をもつ空間が、<span class="math" data-tex="\mu">\mu</span>-測度有限な可測集合の可算和で覆われること。</p><p class="notationUsage">対象の測度を明示する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.010">参考ノート 28.010</a></div>
+</article>
+<article class="notationEntry" id="s5-04" data-search="p(a), e[x] p(a),\ e[x] 確率空間 (\omega,\mathcal f,p) における事象 a の確率、および可積分確率変数 x の期待値 e[x]=\int_\omega x\,dp。 期待値の存在に必要な可積分性を確認する。 60.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="P(A),\ E[X]">P(A), E[X]</span></div>
+<div class="notationText"><h3 class="srOnly">P(A), E[X]</h3><p class="notationDefinition">確率空間 <span class="math" data-tex="(\Omega,\mathcal F,P)">(\Omega,\mathcal F,P)</span> における事象 <span class="math" data-tex="A">A</span> の確率、および可積分確率変数 <span class="math" data-tex="X">X</span> の期待値 <span class="math" data-tex="E[X]=\int_\Omega X\,dP">E[X]=\int_\Omega X\,dP</span>。</p><p class="notationUsage">期待値の存在に必要な可積分性を確認する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=60.020">参考ノート 60.020</a></div>
+</article>
+<article class="notationEntry" id="s5-05" data-search="cov(x,y) \operatorname{cov}(x,y) 確率変数 x,y の共分散 e[(x-e[x])(y-e[y])]。 式が意味をもつよう、例えば x,y が二乗可積分であることを仮定する。 60.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\operatorname{Cov}(X,Y)">Cov(X,Y)</span></div>
+<div class="notationText"><h3 class="srOnly">Cov(X,Y)</h3><p class="notationDefinition">確率変数 <span class="math" data-tex="X,Y">X,Y</span> の共分散 <span class="math" data-tex="E[(X-E[X])(Y-E[Y])]">E[(X-E[X])(Y-E[Y])]</span>。</p><p class="notationUsage">式が意味をもつよう、例えば <span class="math" data-tex="X,Y">X,Y</span> が二乗可積分であることを仮定する。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=60.020">参考ノート 60.020</a></div>
+</article>
+<article class="notationEntry" id="s5-06" data-search="a.s. \mathrm{a.s.} 「ほとんど確実に」(almost surely)。確率 1 の事象上で成立すること。 確率測度 p に関する「ほとんど至る所」と同じ意味。 60.020 分野別">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\mathrm{a.s.}">a.s.</span></div>
+<div class="notationText"><h3 class="srOnly">a.s.</h3><p class="notationDefinition">「ほとんど確実に」（almost surely）。確率 <span class="math" data-tex="1">1</span> の事象上で成立すること。</p><p class="notationUsage">確率測度 <span class="math" data-tex="P">P</span> に関する「ほとんど至る所」と同じ意味。</p></div>
+<div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=60.020">参考ノート 60.020</a></div>
+</article></div></section>
+<section class="notationSection" id="g6" aria-labelledby="title-g6"><div class="notationSectionHeading"><h2 id="title-g6">同じ記号の異なる用法</h2><span>5項目</span></div><div class="notationEntries"><article class="notationEntry" id="s6-01" data-search="f̂, ff \widehat f,\ \mathcal f f fourier 解析では、関数 f の fourier 変換を表すことが多い。 指数関数の符号、2\pi に関する係数など、変換の正規化を初出で指定する。 42.020 要確認">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\widehat f,\ \mathcal F f">f̂, ℱf</span></div>
+<div class="notationText"><h3 class="srOnly">f̂, ℱf</h3><p class="notationDefinition">Fourier 解析では、関数 <span class="math" data-tex="f">f</span> の Fourier 変換を表すことが多い。</p><p class="notationUsage">指数関数の符号、<span class="math" data-tex="2\pi">2\pi</span> に関する係数など、変換の正規化を初出で指定する。</p></div>
+<div class="notationMeta"><span class="notationType">要確認</span><a class="notationRef" href="./note.html?id=42.020">参考ノート 42.020</a></div>
+</article>
+<article class="notationEntry" id="s6-02" data-search="k̂, r̂ \widehat k,\ \widehat r 絶対値・付値、またはイデアル進位相などに関する完備化を表す場合がある。 どの位相・一様構造に関する完備化かを必ず指定する。 12.050 要確認">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\widehat K,\ \widehat R">K̂, R̂</span></div>
+<div class="notationText"><h3 class="srOnly">K̂, R̂</h3><p class="notationDefinition">絶対値・付値、またはイデアル進位相などに関する完備化を表す場合がある。</p><p class="notationUsage">どの位相・一様構造に関する完備化かを必ず指定する。</p></div>
+<div class="notationMeta"><span class="notationType">要確認</span><a class="notationRef" href="./note.html?id=12.050">参考ノート 12.050</a></div>
+</article>
+<article class="notationEntry" id="s6-03" data-search="θ̂ \widehat\theta 数理統計学では、母数 \theta の推定量を表すことがある。 fourier 変換や完備化のハット記号と混同しない。 62.010 要確認">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\widehat\theta">θ̂</span></div>
+<div class="notationText"><h3 class="srOnly">θ̂</h3><p class="notationDefinition">数理統計学では、母数 <span class="math" data-tex="\theta">\theta</span> の推定量を表すことがある。</p><p class="notationUsage">Fourier 変換や完備化のハット記号と混同しない。</p></div>
+<div class="notationMeta"><span class="notationType">要確認</span><a class="notationRef" href="./note.html?id=62.010">参考ノート 62.010</a></div>
+</article>
+<article class="notationEntry" id="s6-04" data-search="≪ \ll 測度論では \nu\ll\mu が絶対連続性を表す。一方、解析的整数論では f\ll g が |f|\le cg の形の上界を表すことがある。 左右の対象とノートの分野を確認し、初出で意味を明示する。 28.010 要確認">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\ll">≪</span></div>
+<div class="notationText"><h3 class="srOnly">≪</h3><p class="notationDefinition">測度論では <span class="math" data-tex="\nu\ll\mu">\nu\ll\mu</span> が絶対連続性を表す。一方、解析的整数論では <span class="math" data-tex="f\ll g">f\ll g</span> が <span class="math" data-tex="|f|\le Cg">|f|\le Cg</span> の形の上界を表すことがある。</p><p class="notationUsage">左右の対象とノートの分野を確認し、初出で意味を明示する。</p></div>
+<div class="notationMeta"><span class="notationType">要確認</span><a class="notationRef" href="./note.html?id=28.010">参考ノート 28.010</a></div>
+</article>
+<article class="notationEntry" id="s6-05" data-search="∂ \partial 偏微分記号、鎖複体の境界作用素、長完全列の連結準同型などに用いられる。 対象に応じて作用先・定義域・値域・次数を指定する。 18.050 要確認">
+<div class="notationSymbol"><span class="math mathMain" data-tex="\partial">∂</span></div>
+<div class="notationText"><h3 class="srOnly">∂</h3><p class="notationDefinition">偏微分記号、鎖複体の境界作用素、長完全列の連結準同型などに用いられる。</p><p class="notationUsage">対象に応じて作用先・定義域・値域・次数を指定する。</p></div>
+<div class="notationMeta"><span class="notationType">要確認</span><a class="notationRef" href="./note.html?id=18.050">参考ノート 18.050</a></div>
+</article></div></section>
+<section class="notationFooter"><h2>この一覧の使い方</h2>
+<p>「共通規約」は表記の読み方を明示したもの、「分野別」はその分野の定義・前提に従うもの、「要確認」は文脈によって意味が変わるか、全ノート間での統一が未検証のものを表す。参考ノートの番号を押すと、対応するノートの案内ページへ移動する。</p>
+<p>この一覧は初版（55項目）であり、全ノートの記号を網羅していない。各原稿の初出定義・定理の仮定・証明との照合を継続する。全体の運用基準は<a href="https://github.com/HaWkoods/giconrad-site/blob/main/docs/notation_policy.md">記号と表記の共通方針</a>を参照する。</p>
 <p><a href="./">数学ノート横断索引へ戻る</a></p></section>
-</main><footer><span>擬コンラット · 独立した数学ノートの集積</span><a href="./">横断索引</a></footer>
+</main>
+<footer><span>擬コンラット · 数学ノート集</span><a href="./">横断索引</a></footer>
 </div>
 <script>
 (function(){
- const input=document.getElementById("notationSearch");
- const rows=Array.from(document.querySelectorAll(".notationSection tbody tr"));
- const sections=Array.from(document.querySelectorAll(".notationSection"));
- const counter=document.getElementById("notationCount");
- function update(){
-   const q=input.value.trim().toLocaleLowerCase("ja");
-   let count=0;
-   rows.forEach(row=>{const found=!q||row.dataset.search.includes(q);row.hidden=!found;if(found)count++;});
-   sections.forEach(s=>{s.hidden=!Array.from(s.querySelectorAll("tbody tr")).some(row=>!row.hidden);});
-   counter.textContent=count+" / "+rows.length+"項目";
- }
- input.addEventListener("input",update);
+  const input=document.getElementById("notationSearch");
+  const entries=Array.from(document.querySelectorAll(".notationEntry"));
+  const sections=Array.from(document.querySelectorAll(".notationSection"));
+  const count=document.getElementById("notationCount");
+  function search(){
+    const terms=input.value.trim().normalize("NFKC").toLocaleLowerCase("ja").split(/\\s+/).filter(Boolean);
+    let visible=0;
+    for(const entry of entries){
+      const matched=terms.every(t=>entry.dataset.search.includes(t));
+      entry.hidden=!matched;
+      if(matched) visible++;
+    }
+    for(const s of sections){
+      s.hidden=!Array.from(s.querySelectorAll(".notationEntry")).some(e=>!e.hidden);
+    }
+    count.textContent=visible+" / "+entries.length+"項目";
+  }
+  input.addEventListener("input",search);
+  async function typeset(){
+    const mj=window.MathJax;
+    if(!mj||!mj.typesetPromise||!mj.startup)return;
+    try{
+      await mj.startup.promise;
+      const items=Array.from(document.querySelectorAll("[data-tex]"));
+      const previous=items.map(x=>x.textContent);
+      items.forEach(n=>{n.textContent="\\("+n.dataset.tex+"\\)";});
+      try { await mj.typesetPromise(items); }
+      catch(e){items.forEach((n,i)=>{n.textContent=previous[i];});}
+    }catch(e){/* Unicode fallback stays visible when the library is unavailable. */}
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",typeset,{once:true});
+  else typeset();
 })();
 </script>
 </body></html>
