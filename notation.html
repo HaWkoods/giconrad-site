@@ -28,6 +28,7 @@
 .notationEntry:last-child{border-bottom:none}
 .notationSymbol{font-family:Cambria,"STIX Two Math","Cambria Math","Times New Roman",serif;font-size:21px;line-height:1.5;overflow-wrap:anywhere}
 .notationSymbol .mathMain{display:inline-block;max-width:100%;font-weight:400;white-space:normal}
+.notationJapanese{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;font-weight:600;font-size:19px}
 .notationText{min-width:0;font-size:14px;line-height:1.95}
 .notationDefinition,.notationUsage{margin:0}
 .notationDefinition{color:var(--ink)}
@@ -37,6 +38,7 @@
 .notationRef{color:var(--accent);text-decoration:none}
 .math{font-family:Cambria,"STIX Two Math","Cambria Math",serif;letter-spacing:0;white-space:normal}
 .math mjx-container{margin:0!important;vertical-align:middle}
+.notationText .math mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
 .mathMain mjx-container{font-size:1.05em!important}
 .notationFooter{border-top:1px solid var(--line);margin-top:42px;padding-top:25px;font-size:13px;line-height:2;color:var(--muted)}
 .notationFooter h2{font-size:19px;color:var(--ink);margin:0 0 12px}
@@ -125,7 +127,7 @@
 <div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=46.050">参考ノート 46.050</a></div>
 </article>
 <article class="notationEntry" id="s2-02" data-search="閉球 \overline b_x[x,r] 距離空間 (x,d) の閉球 \{y\in x:d(x,y)\le r\}(r\ge0)。 記号は書籍によって異なる。一般の距離空間では、開球の閉包と閉球が一致するとは限らない。 46.050 要確認">
-<div class="notationSymbol"><span class="math mathMain" data-tex="\overline B_X[x,r]">閉球</span></div>
+<div class="notationSymbol notationJapanese">閉球</div>
 <div class="notationText"><h3 class="srOnly">閉球</h3><p class="notationDefinition">距離空間 <span class="math" data-tex="(X,d)">(X,d)</span> の閉球 <span class="math" data-tex="\{y\in X:d(x,y)\le r\}">\{y\in X:d(x,y)\le r\}</span>（<span class="math" data-tex="r\ge0">r\ge0</span>）。</p><p class="notationUsage">記号は書籍によって異なる。一般の距離空間では、開球の閉包と閉球が一致するとは限らない。</p></div>
 <div class="notationMeta"><span class="notationType">要確認</span><a class="notationRef" href="./note.html?id=46.050">参考ノート 46.050</a></div>
 </article>
@@ -300,7 +302,7 @@
 <div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.010">参考ノート 28.010</a></div>
 </article>
 <article class="notationEntry" id="s5-03" data-search="σ-有限 \sigma\text{-有限} 測度 \mu をもつ空間が、\mu-測度有限な可測集合の可算和で覆われること。 対象の測度を明示する。 28.010 分野別">
-<div class="notationSymbol"><span class="math mathMain" data-tex="\sigma\text{-有限}">σ-有限</span></div>
+<div class="notationSymbol notationJapanese">σ-有限</div>
 <div class="notationText"><h3 class="srOnly">σ-有限</h3><p class="notationDefinition">測度 <span class="math" data-tex="\mu">\mu</span> をもつ空間が、<span class="math" data-tex="\mu">\mu</span>-測度有限な可測集合の可算和で覆われること。</p><p class="notationUsage">対象の測度を明示する。</p></div>
 <div class="notationMeta"><span class="notationType">分野別</span><a class="notationRef" href="./note.html?id=28.010">参考ノート 28.010</a></div>
 </article>
@@ -358,7 +360,7 @@
   const sections=Array.from(document.querySelectorAll(".notationSection"));
   const count=document.getElementById("notationCount");
   function search(){
-    const terms=input.value.trim().normalize("NFKC").toLocaleLowerCase("ja").split(/\\s+/).filter(Boolean);
+    const terms=input.value.trim().normalize("NFKC").toLocaleLowerCase("ja").split(/\s+/).filter(Boolean);
     let visible=0;
     for(const entry of entries){
       const matched=terms.every(t=>entry.dataset.search.includes(t));
