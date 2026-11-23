@@ -125,3 +125,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{o
 .evidenceExplanation{font-size:12px;line-height:1.8;margin:9px 0 0}
 .evidenceSource{font-size:11px;line-height:1.6;color:var(--muted);border-top:1px dotted var(--line);padding-top:7px;margin:10px 0 0}
 @media(max-width:650px){.evidenceRelations{grid-template-columns:1fr}}
+
+.candidateRelations{margin-top:22px;border-top:1px solid var(--line);padding-top:14px}
+.candidateRelations summary{cursor:pointer;color:var(--accent);font-weight:700;font-size:13px;margin-bottom:14px}
+.candidateRelations .evidenceCard{background:#fafbfa}
