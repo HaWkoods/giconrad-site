@@ -28,7 +28,49 @@ if [[ "${GITHUB_EVENT_NAME:-}" == workflow_dispatch ]]; then
     exit 1
   fi
 elif [[ -n "${BEFORE_SHA:-}" ]] && git cat-file -e "${BEFORE_SHA}^{commit}" 2>/dev/null; then
-  if [[ -n "$(git diff --name-only "$BEFORE_SHA" HEAD -- scripts/build_public_notes.sh .github/workflows/build_public_notes.yml)" ]]; then
+  if [[ -n "$(git diff --name-only "$BEFORE_SHA" HEAD -- scripts/notation_build_queue.txt)" ]]; then
+    # Rebuild exactly the audited batch, including sources from intermediate
+    # commits whose automatically queued workflow runs were superseded.
+    mapfile -t files < <(grep -E '^public_notes/[A-Za-z0-9_./-]+\\.tex
+  else
+    mapfile -t files < <(git diff --name-only --diff-filter=AMR "$BEFORE_SHA" HEAD -- "$root" | grep -E '^public_notes/.*\.tex$' | LC_ALL=C sort || true)
+  fi
+else
+  all_notes
+fi
+
+if (( ${#files[@]} == 0 )); then
+  echo 'No changed public pLaTeX sources. Nothing to compile.'
+  exit 0
+fi
+
+for source in "${files[@]}"; do
+  [[ -f "$source" ]] || continue
+  dir="$(dirname "$source")"
+  stem="$(basename "$source" .tex)"
+  work="${RUNNER_TEMP:-/tmp}/giconrad-pdf-build/$stem"
+  mkdir -p "$work"
+  echo "::group::Compiling $source"
+  (
+    cd "$dir"
+    platex -interaction=nonstopmode -halt-on-error -file-line-error -output-directory="$work" "$stem.tex"
+    platex -interaction=nonstopmode -halt-on-error -file-line-error -output-directory="$work" "$stem.tex"
+  )
+  dvipdfmx -o "$dir/$stem.pdf" "$work/$stem.dvi"
+  if grep -Eq 'Overfull \\hbox|Underfull \\hbox|LaTeX Warning: Reference|LaTeX Warning: There were undefined references' "$work/$stem.log"; then
+    echo "Typesetting warnings detected in $work/$stem.log" >&2
+    exit 1
+  fi
+  pdfinfo "$dir/$stem.pdf" | grep '^Pages:'
+  echo '::endgroup::'
+done scripts/notation_build_queue.txt | LC_ALL=C sort -u)
+    for source in "${files[@]}"; do
+      if [[ ! -f "$source" ]]; then
+        echo "Missing queued note: $source" >&2
+        exit 1
+      fi
+    done
+  elif [[ -n "$(git diff --name-only "$BEFORE_SHA" HEAD -- scripts/build_public_notes.sh .github/workflows/build_public_notes.yml)" ]]; then
     all_notes
   else
     mapfile -t files < <(git diff --name-only --diff-filter=AMR "$BEFORE_SHA" HEAD -- "$root" | grep -E '^public_notes/.*\.tex$' | LC_ALL=C sort || true)

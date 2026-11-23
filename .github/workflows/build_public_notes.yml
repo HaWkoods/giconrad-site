@@ -6,6 +6,7 @@ on:
     paths:
       - 'public_notes/**/*.tex'
       - 'scripts/build_public_notes.sh'
+      - 'scripts/notation_build_queue.txt'
       - '.github/workflows/build_public_notes.yml'
   workflow_dispatch:
     inputs:
