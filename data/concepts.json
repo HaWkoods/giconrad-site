@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "notes_count": 168,
+  "notes_count": 169,
   "concepts": [
     {
       "id": "universality",
@@ -68,13 +68,16 @@
         "functional-analysis",
         "probability-theory",
         "optimization",
-        "harmonic-analysis"
+        "harmonic-analysis",
+        "fourier-analysis",
+        "measure-theory"
       ],
       "related_note_ids": [
         "05.050",
         "05.070",
         "12.020",
         "22.010",
+        "22.040",
         "55.020",
         "57.020",
         "97.120",
@@ -273,11 +276,13 @@
         "analytic-number-theory",
         "fourier-analysis",
         "pde",
-        "classical-mechanics"
+        "classical-mechanics",
+        "optimization"
       ],
       "related_note_ids": [
         "12.070",
         "22.030",
+        "22.040",
         "28.010",
         "28.020",
         "58.050",
@@ -316,10 +321,14 @@
         "harmonic-analysis",
         "functional-analysis",
         "probability-theory",
-        "manifold-analysis"
+        "manifold-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "optimization"
       ],
       "related_note_ids": [
         "22.030",
+        "22.040",
         "28.010",
         "28.020",
         "60.020"
@@ -1624,9 +1633,17 @@
         "differential-geometry",
         "manifold-analysis",
         "ode",
-        "classical-mechanics"
+        "classical-mechanics",
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
       ],
       "related_note_ids": [
+        "22.040",
         "53.020",
         "53.030"
       ],
@@ -1894,11 +1911,16 @@
         "algebra",
         "measure-theory",
         "harmonic-analysis",
-        "fourier-analysis"
+        "fourier-analysis",
+        "functional-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "optimization"
       ],
       "related_note_ids": [
         "22.010",
         "22.030",
+        "22.040",
         "43.010"
       ],
       "related_concept_ids": [],
@@ -1914,10 +1936,17 @@
         "topological-groups",
         "differential-geometry",
         "linear-algebra",
-        "manifold-theory"
+        "manifold-theory",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
       ],
       "related_note_ids": [
-        "22.020"
+        "22.020",
+        "22.040"
       ],
       "related_concept_ids": [],
       "index_status": "既存タグから移行"
@@ -2125,9 +2154,15 @@
         "operator-theory",
         "probability-theory",
         "statistics",
-        "numerical-analysis"
+        "numerical-analysis",
+        "topological-groups",
+        "harmonic-analysis",
+        "differential-geometry",
+        "measure-theory",
+        "optimization"
       ],
       "related_note_ids": [
+        "22.040",
         "42.020",
         "46.030",
         "46.070",
@@ -2370,9 +2405,15 @@
         "analysis",
         "analytic-number-theory",
         "pde",
-        "classical-mechanics"
+        "classical-mechanics",
+        "topological-groups",
+        "harmonic-analysis",
+        "differential-geometry",
+        "measure-theory",
+        "optimization"
       ],
       "related_note_ids": [
+        "22.040",
         "42.010",
         "46.070",
         "58.070"
@@ -2714,10 +2755,13 @@
         "combinatorics",
         "algebra",
         "optimization",
-        "harmonic-analysis"
+        "harmonic-analysis",
+        "topological-groups",
+        "differential-geometry"
       ],
       "related_note_ids": [
         "05.070",
+        "22.040",
         "46.070",
         "60.004",
         "60.010"
@@ -3385,10 +3429,15 @@
         "combinatorics",
         "algebra",
         "probability-theory",
-        "harmonic-analysis"
+        "harmonic-analysis",
+        "topological-groups",
+        "fourier-analysis",
+        "differential-geometry",
+        "measure-theory"
       ],
       "related_note_ids": [
         "05.070",
+        "22.040",
         "46.040",
         "90.010",
         "90.020",
@@ -3921,10 +3970,15 @@
         "topological-groups",
         "measure-theory",
         "harmonic-analysis",
-        "fourier-analysis"
+        "fourier-analysis",
+        "functional-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "optimization"
       ],
       "related_note_ids": [
         "22.030",
+        "22.040",
         "43.010"
       ],
       "related_concept_ids": [
@@ -4535,10 +4589,13 @@
         "combinatorics",
         "algebra",
         "optimization",
-        "harmonic-analysis"
+        "harmonic-analysis",
+        "topological-groups",
+        "differential-geometry"
       ],
       "related_note_ids": [
         "05.070",
+        "22.040",
         "46.070",
         "60.004"
       ],
@@ -4653,10 +4710,15 @@
         "functional-analysis",
         "probability-theory",
         "optimization",
-        "harmonic-analysis"
+        "harmonic-analysis",
+        "topological-groups",
+        "fourier-analysis",
+        "differential-geometry",
+        "measure-theory"
       ],
       "related_note_ids": [
-        "05.070"
+        "05.070",
+        "22.040"
       ],
       "related_concept_ids": [],
       "index_status": "原稿に基づく追加"
@@ -4693,10 +4755,15 @@
         "functional-analysis",
         "probability-theory",
         "optimization",
-        "harmonic-analysis"
+        "harmonic-analysis",
+        "topological-groups",
+        "fourier-analysis",
+        "differential-geometry",
+        "measure-theory"
       ],
       "related_note_ids": [
-        "05.070"
+        "05.070",
+        "22.040"
       ],
       "related_concept_ids": [],
       "index_status": "原稿に基づく追加"
@@ -4802,6 +4869,204 @@
       ],
       "related_note_ids": [
         "58.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "bochner-integral",
+      "name_ja": "Bochner積分",
+      "name_en": "Bochner integral",
+      "aliases": [],
+      "description": "Bochner積分に関する概念・手法。",
+      "fields": [
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
+      ],
+      "related_note_ids": [
+        "22.040"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "complete-reducibility",
+      "name_ja": "完全可約性",
+      "name_en": "complete reducibility",
+      "aliases": [],
+      "description": "完全可約性に関する概念・手法。",
+      "fields": [
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
+      ],
+      "related_note_ids": [
+        "22.040"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "schur-lemma",
+      "name_ja": "Schurの補題",
+      "name_en": "Schur lemma",
+      "aliases": [],
+      "description": "Schurの補題に関する概念・手法。",
+      "fields": [
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
+      ],
+      "related_note_ids": [
+        "22.040"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "isotypic-projection",
+      "name_ja": "指標射影",
+      "name_en": "isotypic projection",
+      "aliases": [],
+      "description": "指標射影に関する概念・手法。",
+      "fields": [
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
+      ],
+      "related_note_ids": [
+        "22.040"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "peter-weyl-theorem",
+      "name_ja": "Peter–Weylの定理",
+      "name_en": "Peter–Weyl theorem",
+      "aliases": [],
+      "description": "Peter–Weylの定理に関する概念・手法。",
+      "fields": [
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
+      ],
+      "related_note_ids": [
+        "22.040"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "invariant-metric",
+      "name_ja": "不変Riemann計量",
+      "name_en": "invariant Riemannian metric",
+      "aliases": [],
+      "description": "不変Riemann計量に関する概念・手法。",
+      "fields": [
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
+      ],
+      "related_note_ids": [
+        "22.040"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "invariant-measure",
+      "name_ja": "不変測度",
+      "name_en": "invariant measure",
+      "aliases": [],
+      "description": "不変測度に関する概念・手法。",
+      "fields": [
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
+      ],
+      "related_note_ids": [
+        "22.040"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "amenability",
+      "name_ja": "従順群",
+      "name_en": "amenable group",
+      "aliases": [],
+      "description": "従順群に関する概念・手法。",
+      "fields": [
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
+      ],
+      "related_note_ids": [
+        "22.040"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "invariant-mean",
+      "name_ja": "不変平均",
+      "name_en": "invariant mean",
+      "aliases": [],
+      "description": "不変平均に関する概念・手法。",
+      "fields": [
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
+      ],
+      "related_note_ids": [
+        "22.040"
       ],
       "related_concept_ids": [],
       "index_status": "原稿に基づく追加"

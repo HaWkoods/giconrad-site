@@ -1,0 +1,442 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{コンパクト群における平均化の原理}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+
+\newcommand{\C}{\mathbb C}
+\newcommand{\T}{\mathbb T}
+\newcommand{\ip}[2]{\langle #1,#2\rangle}
+\begin{document}
+\section{Haar測度とベクトル値積分}
+本稿では，有限群に対する平均化作用素をコンパクト群へ拡張し，表現論，Fourier解析，微分幾何学，確率論および凸最適化の諸結果を導く．前提知識は位相群，Lebesgue積分，Banach空間とHilbert空間，有限次元線形代数である．多様体に関する節では滑らかな多様体と接空間を既知とする．Haar測度の存在・一意性定理，および最後に述べるPeter--Weylの定理は引用する．内積は第1変数について線形とする．
+
+\begin{proposition}[正規化Haar測度]\label{haar}
+コンパクトHausdorff群 $G$ 上にはただ一つの左不変なRadon確率測度 $\mu$ が存在する．これは右移動および反転でも不変である．さらに非空開集合は正測度を持つ．
+\end{proposition}
+\begin{proof}
+Haarの定理により非零の左不変Radon測度が存在し，コンパクト性により全測度は有限である．全測度で割れば確率測度を得る．右移動による像測度も左不変な確率測度なので，一意性により元の測度と一致する．反転による像測度は右不変であり，右不変性を得た元の測度と一致する（右Haar測度の一意性は反転を介して左Haar測度の一意性から従う）．非空開集合 $U$ の左移動は $G$ を覆い，有限部分被覆を持つから，$\mu(U)=0$ なら $\mu(G)=0$ となり矛盾する．
+\end{proof}
+以下，特に断らない限り $G$ はコンパクトHausdorff群，$\mu$ はその正規化Haar測度とする．$dg$ は $d\mu(g)$ の略記である．有限群を離散位相で考えれば $\mu(\{g\})=1/|G|$ であり，Haar積分は算術平均に一致する．
+
+\begin{lemma}[連続なベクトル値函数の積分]\label{bochner}
+$E$ を実または複素Banach空間，$F:G\to E$ を連続写像とする．このときBochner積分 $\int_G F(g)\,dg$ が存在する．任意の有界線形写像 $A:E\to E'$ に対し
+\begin{align*}
+ \norm{\int_G F(g)\,dg}&\le\int_G\norm{F(g)}\,dg,\\
+ A\int_G F(g)\,dg&=\int_G AF(g)\,dg
+\end{align*}
+が成り立つ．積分は左・右移動および反転で不変である．
+\end{lemma}
+\begin{proof}
+$F(G)$ は距離空間 $E$ のコンパクト部分集合である．任意の $n\ge1$ に対し有限個の半径 $1/n$ の開球で覆い，逆像の重複を順に除いてBorel分割 $(B_j)$ を得る．球の中心を $v_j$ として $F_n=\sum_j v_j1_{B_j}$ と置けば $\norm{F_n-F}_\infty\le1/n$ となる．単函数の積分を $\sum_j\mu(B_j)v_j$ と定めると三角不等式から上のノルム評価を得る．従って $\int F_n$ はCauchy列となり，完備性から極限が存在する．同じ評価により近似の選び方に依存しない．これはBochner積分の定義に一致する．線形性，有界線形写像との交換および移動不変性は単函数について成立し，一様近似により一般の場合に移る．
+\end{proof}
+\begin{remark}
+$G$ に第二可算性を仮定しなくても，連続写像の像はコンパクト距離空間であり，上の構成が可能である．後に積測度と可測な作用を扱う節では，必要な可測性を別に仮定する．
+\end{remark}
+
+\section{平均化作用素と直交射影}
+\begin{definition}
+Banach空間 $E$ 上の強連続表現とは群準同型 $\rho:G\to\operatorname{GL}(E)$ で，各 $v\in E$ に対し $g\mapsto\rho(g)v$ が連続となるものをいう．ここで $\operatorname{GL}(E)$ は有界な逆写像を持つ有界線形作用素の群である．不変部分空間を $E^G=\{v:\rho(g)v=v\ (g\in G)\}$ とする．
+\end{definition}
+\begin{theorem}[平均化作用素]\label{proj}
+強連続表現に対し
+\[
+ Pv=\int_G\rho(g)v\,dg
+\]
+と置くと $P$ は有界線形射影であり，
+\[
+ P^2=P,\quad \operatorname{im}P=E^G,
+ \quad \rho(h)P=P\rho(h)=P
+\]
+を満たす．従って $E=E^G\oplus\ker P$ である．
+\end{theorem}
+\begin{proof}
+補題\ref{bochner}から積分が存在する．各 $v$ に対し $\sup_g\norm{\rho(g)v}<\infty$ だから一様有界性原理により $M=\sup_g\norm{\rho(g)}<\infty$ である．従って $\norm{Pv}\le M\norm v$ であり，線形性も積分から従う．左不変性と有界線形写像との交換により
+\[
+ \rho(h)Pv=\int_G\rho(hg)v\,dg=Pv.
+\]
+同様に右不変性から $P\rho(h)v=Pv$ である．従って $Pv\in E^G$．逆に $v\in E^G$ なら積分の被積分函数は定数 $v$ なので $Pv=v$．これから像の等式と冪等性が従う．任意の $v$ は $Pv+(v-Pv)$ と分解され，後者は核に属する．像と核の共通部分は零である．両部分空間は閉じている．
+\end{proof}
+\begin{corollary}[最良近似]\label{orth}
+$E=H$ がHilbert空間で $\rho(g)$ が内積を保つなら，$P$ は $H^G$ への直交射影である．特に任意の $w\in H^G$ に対し
+\[
+ \norm{v-w}^2=\norm{v-Pv}^2+\norm{Pv-w}^2
+\]
+となる．
+\end{corollary}
+\begin{proof}
+$w\in H^G$ に対して $\ip{Pv}{w}=\int_G\ip{\rho(g)v}{w}\,dg=\ip{v}{w}$ である．従って $v-Pv\perp H^G$ であり，定理\ref{proj}と合わせて直交射影の特徴づけを得る．等式はPythagorasの定理による．
+\end{proof}
+\begin{proposition}[不変ノルム]
+任意の強連続表現は同値なノルム
+\[
+ \norm v_G=\sup_{g\in G}\norm{\rho(g)v}
+\]
+に関して等長作用となる．
+\end{proposition}
+\begin{proof}
+ノルムの公理は各 $\rho(g)$ の線形性と恒等元の存在から従う．定理\ref{proj}の $M$ により $\norm v\le\norm v_G\le M\norm v$．右移動が $G$ の全単射なので $\norm{\rho(h)v}_G=\norm v_G$ である．
+\end{proof}
+\begin{example}[回転平均]
+$G=SO(2)$ とし，$R_\theta$ を角 $\theta$ の回転行列とする．連続函数 $f:\R^2\to\R$ に対し
+\[
+ Af(x)=\frac1{2\pi}\int_0^{2\pi}f(R_\theta x)\,d\theta
+\]
+は回転不変である．実際角度の平行移動で積分は変わらない．従って $Af(x)=F(\norm x)$ となる連続函数 $F:[0,\infty)\to\R$ が存在する（$F(r)=Af(r,0)$ とすればよい）．特に $f(x,y)=x^2$ なら
+\[
+ Af(x,y)=\frac{x^2+y^2}{2}
+\]
+となる．$L^2(\R^2)$ 上では回転は測度を保存するユニタリ作用である．強連続性は $C_c(\R^2)$ 上で優収束定理により示され，その稠密性と等長性から全空間へ移る．従ってこの平均は回転不変函数への直交射影を与える．上の多項式の例自体は $L^2$ の元ではないことに注意する．
+\end{example}
+
+\section{不変内積と完全可約性}
+\begin{theorem}[内積の平均化]\label{metric}
+$V$ を有限次元実または複素線形空間，$\rho$ を $G$ の連続表現とする．$G$ 不変な内積が存在する．
+\end{theorem}
+\begin{proof}
+任意の内積 $\ip{\cdot}{\cdot}_0$ を選び，
+\[
+ \ip{v}{w}_G=\int_G\ip{\rho(g)v}{\rho(g)w}_0\,dg
+\]
+と定める．積分の線形性から半双線形性とHermite対称性を得る（実の場合は双線形性と対称性）．$v\ne0$ なら被積分函数 $\norm{\rho(g)v}_0^2$ は正値連続函数であり，コンパクト性から正の最小値を持つ．従って正定値である．右不変性から $\ip{\rho(h)v}{\rho(h)w}_G=\ip{v}{w}_G$ となる．
+\end{proof}
+\begin{theorem}[完全可約性]\label{reducible}
+有限次元連続表現は既約連続表現の直和に分解される．
+\end{theorem}
+\begin{proof}
+定理\ref{metric}の不変内積を用いる．不変な部分空間 $U$ の直交補空間 $U^\perp$ は不変である．実際 $v\in U^\perp$，$u\in U$ なら $\ip{\rho(g)v}{u}_G=\ip{v}{\rho(g^{-1})u}_G=0$．従って $V=U\oplus U^\perp$ である．零空間は空の直和とし，非零既約の場合は明らかである．それ以外の場合には真の非零不変部分空間を取り，上の分解の各項に次元についての帰納法を適用する．
+\end{proof}
+\begin{proposition}[写像の平均化]\label{intertwine}
+有限次元連続表現 $V,W$ の間の線形写像 $T:V\to W$ に対し
+\[
+ Q(T)=\int_G\rho_W(g)T\rho_V(g)^{-1}\,dg
+\]
+と置けば，$Q$ は $\operatorname{Hom}_G(V,W)$ への射影である．
+\end{proposition}
+\begin{proof}
+$\operatorname{Hom}(V,W)$ 上に $g\cdot T=\rho_W(g)T\rho_V(g)^{-1}$ と定めると有限次元連続表現となる．不変元の条件は $\rho_W(g)T=T\rho_V(g)$ であり，定理\ref{proj}を適用すればよい．
+\end{proof}
+\begin{remark}
+有限群の場合と同様，射影そのものを平均しても完全可約性が得られる．$U$ が不変なら任意の線形射影 $p:V\to U$ を $Q$ で平均する．各共役は $U$ 上恒等写像なので $Q(p)|_U=I$ である．その核は不変で，$V=U\oplus\ker Q(p)$ となる．
+\end{remark}
+
+\section{指標による射影とFourier解析}
+以下，表現は複素表現とする．有限次元表現 $V$ の指標を $\chi_V(g)=\operatorname{tr}\rho_V(g)$ と定める．定理\ref{metric}によりユニタリ表現として扱える．
+\begin{lemma}[Schurの補題]\label{schur}
+非零有限次元既約表現 $V,W$ に対して $\operatorname{Hom}_G(V,W)$ は非同型なら零，同型なら1次元である．
+\end{lemma}
+\begin{proof}
+可換な写像の核と像は不変であるから，非零の写像は同型である．同型の場合は $V=W$ に帰着する．$T\in\operatorname{End}_G(V)$ は複素数体上で固有値 $\lambda$ を持ち，$T-\lambda I$ の核が非零である．既約性により $T=\lambda I$ となる．
+\end{proof}
+\begin{theorem}[指標の直交性]\label{char}
+有限次元連続表現 $V,W$ に対し
+\[
+ \int_G\overline{\chi_V(g)}\chi_W(g)\,dg
+ =\dim\operatorname{Hom}_G(V,W).
+\]
+特に既約表現の指標は同型類ごとに正規直交系をなす．
+\end{theorem}
+\begin{proof}
+命題\ref{intertwine}の射影の跡はその像の次元に等しい．行列単位 $E_{ij}$ によって，写像 $T\mapsto BTA$ の跡は $\sum_{i,j}B_{ii}A_{jj}=\operatorname{tr}B\operatorname{tr}A$ と分かる．$A=\rho_V(g)^{-1}$，$B=\rho_W(g)$ と置けば，ユニタリ性から $\operatorname{tr}A=\overline{\chi_V(g)}$．有限次元の積分と跡を交換して第1式を得る．既約の場合は補題\ref{schur}による．
+\end{proof}
+\begin{lemma}[行列係数の直交性]\label{matrix}
+非同型な既約ユニタリ表現 $\pi,\sigma$ の行列係数は互いに直交する．同一の $d$ 次元既約ユニタリ表現 $\pi$ の正規直交基底による行列成分について
+\[
+ \int_G \pi_{ij}(g)\overline{\pi_{kl}(g)}\,dg
+ =\frac{\delta_{ik}\delta_{jl}}d.
+\]
+\end{lemma}
+\begin{proof}
+写像 $T:V_\pi\to V_\sigma$ を命題\ref{intertwine}で平均する．非同型なら $Q(T)=0$ である．同一表現の場合はSchurの補題から $Q(T)=cI$，跡を取ると $dc=\operatorname{tr}T$ である．$T$ を行列単位 $E_{jl}$ として $Q(T)$ の $(i,k)$ 成分を取る．ユニタリ性からその成分は $\int_G\sigma_{ij}(g)\overline{\pi_{kl}(g)}\,dg$ である．上の二つの場合の値を代入すれば結論を得る．
+\end{proof}
+\begin{theorem}[指標射影]\label{isotypic}
+$H$ 上の強連続ユニタリ表現 $\rho$ と，$d$ 次元既約ユニタリ表現 $\pi$ に対し
+\[
+ P_\pi v=d\int_G\overline{\chi_\pi(g)}\rho(g)v\,dg
+\]
+と置く．これは $\pi$ と同型な有限次元不変部分空間の閉線形包 $H_\pi$ への直交射影である．
+\end{theorem}
+\begin{proof}
+行列係数を用いて有界作用素
+\[
+ A_{ij}v=d\int_G\overline{\pi_{ij}(g)}\rho(g)v\,dg
+\]
+を定める．$g=h^{-1}k$ と変数変換し，$\pi(h^{-1})=\pi(h)^*$ を用いると
+\[
+ \rho(h)A_{ij}v=\sum_a\pi_{ai}(h)A_{aj}v.
+\]
+従って $e_i\mapsto A_{ij}v$ は $\pi$ から $H$ への可換な線形写像である．その像は零または $\pi$ と同型な部分表現である（核は不変）．特に $P_\pi v=\sum_i A_{ii}v\in H_\pi$ である．
+
+任意の $\pi$ と同型な部分表現 $U$ に制限すると，命題\ref{intertwine}または上の行列係数の直交性から $P_\pi|_U=I$ を得る．実際，その正規直交基底で $(a,b)$ 成分は
+\[
+ d\sum_i\int_G\overline{\pi_{ii}(g)}\pi_{ab}(g)\,dg
+ =\delta_{ab}
+\]
+である．ここで同型なユニタリ表現の間にはユニタリ同型を選べる．任意の同型 $S$ に対し $S^*S$ が表現と可換で，Schurの補題により正のスカラー倍の恒等写像となるためである．有界性から $P_\pi|_{H_\pi}=I$ となる．
+
+最後に $P_\pi$ の自己共役性を示す．反転不変性と $\chi_\pi(g^{-1})=\overline{\chi_\pi(g)}$ から
+\begin{align*}
+ \ip{P_\pi v}{w}
+ &=d\int_G\overline{\chi_\pi(g)}\ip{v}{\rho(g^{-1})w}\,dg\\
+ &=\ip{v}{P_\pi w}.
+\end{align*}
+従って $P_\pi$ は自己共役な射影であり，結論を得る．
+\end{proof}
+\begin{remark}
+定理\ref{isotypic}の証明にはPeter--Weylの定理を用いていない．全ての既約表現に対応する射影の像が $H$ を尽くすことは別の問題である．
+\end{remark}
+\begin{example}[円周群とFourier係数]
+$G=\T=\R/2\pi\mathbb Z$ とする．$\rho(\theta)f(x)=f(x+\theta)$ は $L^2(\T)$ 上の強連続ユニタリ表現である．強連続性は連続函数の一様連続性と $L^2$ 稠密性から従う．指標 $\chi_n(\theta)=e^{in\theta}$ に対する射影は
+\begin{align*}
+ P_nf(x)&=\frac1{2\pi}\int_0^{2\pi}e^{-in\theta}f(x+\theta)\,d\theta\\
+ &=e^{inx}\widehat f(n),\\
+ \widehat f(n)&=\frac1{2\pi}\int_0^{2\pi}e^{-int}f(t)\,dt.
+\end{align*}
+まず連続函数について変数変換で成立し，両辺が有界線形作用素なので $L^2$ 全体へ拡張できる．三角多項式の稠密性（Stone--Weierstrassの定理と連続函数の $L^2$ 稠密性）により $f=\sum_{n\in\mathbb Z}P_nf$ が $L^2$ で成立し，直交性からParsevalの等式を得る．従ってFourier解析は重み付き平均化として理解できる．
+\end{example}
+\begin{remark}[Peter--Weylの定理（引用）]
+一般のコンパクトHausdorff群について，有限次元連続既約ユニタリ表現の行列係数の線形包は $C(G)$ に一様稠密であり，$L^2(G)$ にも稠密である．これはPeter--Weylの定理である．定理\ref{isotypic}と補題\ref{matrix}はこの定理の直交分解の側面を説明するが，稠密性そのものの証明は本稿の範囲外とする．
+\end{remark}
+
+\section{不変Riemann計量}
+$G$ をコンパクトLie群，$M$ をHausdorffかつ第二可算な滑らかな有限次元多様体とし，$G$ が $M$ に滑らかに左作用するとする．$a_g(x)=gx$ と書く．
+\begin{theorem}[計量の平均化]\label{riem}
+任意のRiemann計量 $h$ に対し
+\[
+ \overline h_x(v,w)=\int_G h_{gx}((da_g)_xv,(da_g)_xw)\,dg
+\]
+は $G$ 不変なRiemann計量を与える．
+\end{theorem}
+\begin{proof}
+各点で双線形性と対称性が従う．$v\ne0$ なら $a_g$ は微分同相なので $(da_g)_xv\ne0$．被積分函数は正値連続であり，正定値性を得る．滑らかさを示すため局所座標 $(x^i)$ において $F_{ij}(g,x)=(a_g^*h)_x(\partial_i,\partial_j)$ と置く．作用と計量の滑らかさから $F_{ij}$ は $G\times U$ 上滑らかである．任意の点の座標近傍を小さく取り，その閉包が座標域に含まれるようにする．全ての有限階の $x$ 微分はその閉包と $G$ の直積上で連続かつ有界である．差分商を平均値の定理で支配し，優収束定理を繰り返せば
+\[
+ \partial_x^\alpha\overline h_{ij}(x)
+ =\int_G\partial_x^\alpha F_{ij}(g,x)\,dg
+\]
+が成り立ち，右辺は連続である．従って計量は滑らかである．最後に $a_g\circ a_k=a_{gk}$ なので右不変性から
+\[
+ a_k^*\overline h=\int_G a_{gk}^*h\,dg=\overline h
+\]
+となる．
+\end{proof}
+\begin{corollary}[両側不変計量]
+コンパクトLie群には左・右の平行移動で不変なRiemann計量が存在する．
+\end{corollary}
+\begin{proof}
+Lie代数 $\mathfrak g=T_eG$ 上の任意の内積を随伴表現 $\operatorname{Ad}$ について定理\ref{metric}で平均して不変内積 $b$ を得る．これを左平行移動によって $G$ 全体に拡張する：$h_x(v,w)=b((dL_{x^{-1}})_xv,(dL_{x^{-1}})_xw)$ と置く．滑らかさと左不変性は群演算の滑らかさと合成則から従う．右平行移動については
+\[
+ L_{(xk)^{-1}}\circ R_k\circ L_x=C_{k^{-1}},
+\]
+ただし $C_{k^{-1}}(y)=k^{-1}yk$ である．単位元で微分すると $\operatorname{Ad}(k^{-1})$ が現れる．$b$ の随伴不変性により $R_k^*h=h$ となる．
+\end{proof}
+\begin{proposition}[不変な微分形式]
+$\omega$ を $M$ 上の滑らかな微分形式とし $A\omega=\int_G a_g^*\omega\,dg$ と置く．これは不変な滑らかな微分形式であり，$dA\omega=A(d\omega)$ である．
+\end{proposition}
+\begin{proof}
+局所係数の滑らかさは定理\ref{riem}と同じ微分と積分の交換による．右不変性から不変性を得る．局所表示で外微分は係数の一階微分の線形結合であり，$d(a_g^*\omega)=a_g^*(d\omega)$ だから主張が従う．
+\end{proof}
+\begin{remark}
+閉形式を平均すれば閉形式が，完全形式を平均すれば不変な完全形式が得られる．ただし任意のde Rhamコホモロジー類が不変形式で代表されるとは限らない．例えば群が連結なら各作用写像が恒等写像とホモトピックであることを利用して，さらに議論できる．
+\end{remark}
+
+\section{不変測度と条件付き期待値}
+この節では $G$ をコンパクト距離化可能群，$X$ を距離化可能な第二可算空間とし，連続な群作用を考える．この仮定の下では積空間のBorel $\sigma$ 代数は積 $\sigma$ 代数に一致するのでFubiniの定理を適用できる．
+\begin{theorem}[確率測度の平均化]\label{measureavg}
+$\nu$ を $X$ 上のBorel確率測度とする．
+\[
+ \overline\nu(A)=\int_G\nu(g^{-1}A)\,dg
+ \qquad(A\in\mathcal B(X))
+\]
+は $G$ 不変なBorel確率測度を定める．既に $\nu$ が不変なら $\overline\nu=\nu$ である．
+\end{theorem}
+\begin{proof}
+$\nu(g^{-1}A)=\int_X1_A(gx)\,d\nu(x)$ は作用の連続性とTonelliの定理により $g$ の可測函数である．非負性と全測度1は明らかであり，互いに素なBorel集合の列について指示函数の和と積分を単調収束定理により交換すれば可算加法性を得る．$h\in G$ に対し
+\[
+ \overline\nu(h^{-1}A)=\int_G\nu((hg)^{-1}A)\,dg
+ =\overline\nu(A)
+\]
+となる．最後の主張は被積分函数が定数であることから従う．
+\end{proof}
+\begin{example}[軌道上の確率測度]
+$\nu=\delta_x$ とすれば $\overline\nu$ は軌道写像 $g\mapsto gx$ によるHaar測度の像測度である．これはコンパクトな軌道 $Gx$ に集中する不変確率測度である．
+\end{example}
+\begin{proposition}[推移的作用での一意性]\label{trans}
+$X$ が空でなく，$G$ が $X$ に推移的に作用するなら，不変確率測度は一意である．
+\end{proposition}
+\begin{proof}
+任意の有界Borel函数 $f$ に対し $Af(x)=\int_G f(gx)\,dg$ は右不変性により軌道上定数である．推移性から $Af$ は全空間で定数となる．不変確率測度 $\eta$ があればFubiniにより
+\[
+ \int_X f\,d\eta=\int_X Af\,d\eta=Af(x_0)
+\]
+となる．右辺は $\eta$ に依存しない．指示函数を取れば一意性を得る．存在は定理\ref{measureavg}でDirac測度を平均すればよい．
+\end{proof}
+
+\begin{theorem}[軌道平均と条件付き期待値]\label{conditional}
+$\nu$ を $G$ 不変Borel確率測度とし，$\mathcal I$ を厳密に不変なBorel集合全体，すなわち $gA=A$ が全ての $g$ に対し成り立つ集合の $\sigma$ 代数とする．$f\in L^1(X,\nu)$ に対し，ほとんど至る所で
+\[
+ \mathbb E[f\mid\mathcal I](x)=\int_G f(gx)\,dg
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$f$ の有限値Borel代表元を選ぶ．Tonelliと不変性から
+\[
+ \int_X\int_G\abs{f(gx)}\,dg\,d\nu(x)=\norm f_1
+\]
+である．従って内側の積分が有限である集合 $B$ は全測度を持つBorel集合である．右不変性により $B$ は厳密に不変である．$B$ 上で $Af(x)=\int_G f(gx)\,dg$，その補集合上で $Af=0$ と置けば，$Af$ はBorel可測かつ厳密に不変である．従って $\mathcal I$ 可測であり，$\norm{Af}_1\le\norm f_1$．任意の $A\in\mathcal I$ について
+\begin{align*}
+ \int_A Af\,d\nu&=\int_G\int_A f(gx)\,d\nu(x)\,dg\\
+ &=\int_G\int_{gA}f(y)\,d\nu(y)\,dg\\
+ &=\int_A f\,d\nu.
+\end{align*}
+ここでFubiniの可積分性は最初の評価で保証されている．条件付き期待値の定義と一意性から結論を得る．代表元の変更は同じTonelliの計算を差に適用すれば零集合上の変更に限られる．
+\end{proof}
+\begin{corollary}
+$f\in L^2(X,\nu)$ の場合 $Af$ は $L^2(X,\mathcal I,\nu)$ への直交射影である．
+\end{corollary}
+\begin{proof}
+Cauchy--Schwarzの不等式とTonelliから $\norm{Af}_2\le\norm f_2$．条件付き期待値の定義から $f-Af$ は $\mathcal I$ 可測な指示函数と直交し，線形性により単函数とも直交する．単函数の $L^2$ 稠密性から $L^2(X,\mathcal I,\nu)$ 全体と直交する．同空間は閉部分空間である（$L^2$ 収束列からほとんど至る所収束する部分列を選び，極限の可測代表元を得る）．従って直交射影である．
+\end{proof}
+\begin{example}
+$X=\R^2$ 上に標準2次元正規分布を入れ，$SO(2)$ が回転で作用するとする．$f(x,y)=x^2$ の条件付き期待値は不変 $\sigma$ 代数に関して $(x^2+y^2)/2$ である．これは第2節の回転平均の計算をそのまま確率論へ移したものである．この場合 $f\in L^2(\nu)$ なので，この値は回転不変な予測函数の中で二乗誤差を最小にする．
+\end{example}
+
+\section{凸最適化への応用}
+\begin{theorem}[対称化による最小化]\label{convex}
+$E$ を実Banach空間，$G$ の強連続線形表現を持つとする．$C\subset E$ を空でない閉凸不変集合，$f:C\to\R$ を連続凸不変函数とする．このとき
+\[
+ Px\in C\cap E^G,\qquad f(Px)\le f(x)\quad(x\in C).
+\]
+特に $C$ 上と $C\cap E^G$ 上の下限は等しく，最小点が存在すれば不変な最小点も存在する．狭義凸の場合は最小点は存在するならば一意である．
+\end{theorem}
+\begin{proof}
+連続な軌道写像 $g\mapsto\rho(g)x$ を，値が軌道上にある単函数で一様近似する．具体的には軌道を半径 $1/n$ の開球で有限被覆し，中心を軌道上に取って逆像を分割する．得られる単函数の積分 $x_n=\sum_j\mu(B_j)\rho(g_j)x$ は $C$ 内の有限凸結合である．凸性と不変性から $f(x_n)\le\sum_j\mu(B_j)f(\rho(g_j)x)=f(x)$．補題\ref{bochner}により $x_n\to Px$ であり，$C$ の閉性と $f$ の連続性から主張が従う．定理\ref{proj}で $Px\in E^G$ を得る．下限の等式は包含による逆向きの不等式と合わせればよい．最小点 $x$ があれば $Px$ も最小点である．狭義凸函数の異なる二つの最小点の中点はより小さい値を与えるので，一意性が従う．
+\end{proof}
+\begin{remark}
+証明では $f$ の下半連続性で十分である．閉凸性を課すのは有限凸結合からその極限へ移るためである．最小点の存在は別途示す必要がある．
+\end{remark}
+\begin{example}[回転対称な行列最適化]
+$E$ を実対称 $n\times n$ 行列空間，$O(n)$ の作用を $A\mapsto UAU^{\mathsf T}$ とする．全ての直交行列と可換な対称行列はスカラー行列である．実際符号反転との可換性で非対角成分が零となり，置換行列との可換性で対角成分が等しくなる．跡は共役で不変なので
+\[
+ P(A)=\frac{\operatorname{tr}A}{n}I.
+\]
+半正定値行列 $A$ で $\operatorname{tr}A=c>0$ という制約の下，$f(A)=\operatorname{tr}(A^2)$ を最小化する．制約は閉凸不変であり，$f$ はFrobeniusノルムの平方だから狭義凸不変である．定理\ref{convex}から $A=(c/n)I$ が一意な最小点であり，最小値は $c^2/n$ となる．変数の数を $n(n+1)/2$ から1に減らしたことになる．
+\end{example}
+\begin{example}[線形方程式の対称化]
+$E,F$ をBanach空間，$G$ の強連続表現を持つとする．有界線形写像 $T:E\to F$ が作用と可換で，$b\in F^G$ とする．$Tx=b$ が可解なら不変な解が存在する．実際，解 $x$ に対し
+\[
+ T P_E x=P_F Tx=P_F b=b
+\]
+である．ここでは凸最適化の仮定すら不要であり，積分と有界線形写像との交換のみで得られる．
+\end{example}
+
+\section{非コンパクト群における障害}
+\begin{proposition}\label{noncompact}
+局所コンパクトHausdorff群 $G$ が有限な非零左Haar測度を持つなら $G$ はコンパクトである．
+\end{proposition}
+\begin{proof}
+対偶を示す．$G$ が非コンパクトとし，単位元の相対コンパクトな開近傍 $U$ を取る．Haar測度では $\mu(U)>0$ である．$K=\overline U(\overline U)^{-1}$ はコンパクトである．$g_1=e$ とし，$g_1,\ldots,g_n$ を選んだとき $g_{n+1}$ を $\bigcup_{i=1}^n g_iK$ の外から取る．有限個のコンパクト集合の合併は $G$ 全体ではないからこの選択は可能である．$g_iU$ と $g_jU$ が交われば $g_i^{-1}g_j\in UU^{-1}\subset K$ となり，選択に反する．従って互いに素な左移動が無限個得られ，$\mu(G)\ge n\mu(U)$ が任意の $n$ に対して成り立つ．よって $\mu(G)=\infty$ である．
+\end{proof}
+\begin{example}[有限区間の平均の限界]
+$G=\R$ とし，$L^\infty(\R)$ 上で
+\[
+ A_Tf(x)=\frac1{2T}\int_{-T}^T f(x+t)\,dt
+\]
+を考える．任意の $h\in\R$ に対し，区間の対称差の長さから
+\[
+ \norm{A_Tf(\cdot+h)-A_Tf}_\infty
+ \le \frac{|h|}{T}\norm f_\infty
+\]
+を得る．従って漸近的な移動不変性はあるが，$A_Tf$ 自体は一般には移動不変でない．さらに $T\to\infty$ で点ごとの極限が存在するとは限らない．実際 $r_0=1$，$r_n=2^{2^n}$ とし，$r_{n-1}<|x|\le r_n$ において $f(x)$ を $n$ が奇数なら1，偶数なら0と定め，$|x|\le1$ では0とする．$A_{r_n}f(0)$ は外側の区間における値との差が $r_{n-1}/r_n$ 以下である．この比は零へ収束するので奇数番目では1，偶数番目では0へ収束する．
+\end{example}
+\begin{definition}[不変平均]
+離散群 $G$ 上の有界実函数空間 $\ell^\infty(G)$ において，正の線形汎関数 $m$ で $m(1)=1$ かつ $m(L_gf)=m(f)$ （$L_gf(x)=f(g^{-1}x)$）を満たすものを左不変平均という．これを持つ離散群を従順群という．
+\end{definition}
+\begin{proposition}
+整数の加法群 $\mathbb Z$ は従順群である．
+\end{proposition}
+\begin{proof}
+$m_N(f)=(2N+1)^{-1}\sum_{k=-N}^N f(k)$ と置く．各 $m_N$ は正の線形汎関数で $\norm{m_N}=m_N(1)=1$．Banach--Alaogluの定理により双対空間の閉単位球は弱$*$コンパクトだから，収束部分ネットを持つ．その極限を $m$ とすると，点ごとの評価の連続性から正性と正規化を保つ．任意の整数 $a$ に対し
+\[
+ |m_N(L_af)-m_N(f)|\le\frac{2|a|}{2N+1}\norm f_\infty
+\]
+である．極限を取ると左不変性を得る．
+\end{proof}
+\begin{remark}
+不変平均は一般には可算加法的な確率測度ではない．$\mathbb Z$ 上の平行移動不変確率測度が可算加法的なら，全ての一元集合の測度は同じ値となる．その値が正なら全測度は無限，零なら全測度は零となるから矛盾する．従順性はコンパクト性をそのまま取り替える条件ではなく，平均化を別の意味で可能にする概念である．
+\end{remark}
+
+\section{結び}
+有限群の平均化において置換不変性が担っていた役割を，コンパクト群ではHaar測度の左右不変性が担う．平均化は，不変元を取り出す射影であり，写像や内積を対称化し，適切な仮定の下で最適化問題の変数を減らす．指標を重みとする平均はさらに非自明な表現成分を取り出す．円周群のFourier展開，確率論の条件付き期待値，Riemann計量の平均化は，この同じ操作の具体化である．
+
+\begin{thebibliography}{9}
+\bibitem{warner} F. W. Warner, \textit{Foundations of Differentiable Manifolds and Lie Groups}, Springer, 1983, Ch. 4, \S4.12; Ch. 6, exercises.
+\bibitem{bogachev} V. I. Bogachev and O. G. Smolyanov, \textit{Real and Functional Analysis}, Springer, 2020, \S11.7.
+\bibitem{conway} J. B. Conway, \textit{A Course in Functional Analysis}, 2nd ed., Springer, 1990, Ch. I.
+\end{thebibliography}
+\end{document}

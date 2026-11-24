@@ -1,7 +1,7 @@
 {
   "version": 1,
   "metadata": {
-    "source": "data/notes.json and data/details.json (168 entries; source proof correctness not certified)",
+    "source": "data/notes.json and data/details.json (169 entries; source proof correctness not certified)",
     "purpose": "Prerequisite graph data; not a proof correctness certification",
     "strength_values": [
       "strong",
@@ -1714,6 +1714,21 @@
         "functional-analysis",
         "pde",
         "classical-mechanics"
+      ]
+    },
+    {
+      "id": "note:22.040",
+      "kind": "note",
+      "label": "コンパクト群における平均化の原理",
+      "fields": [
+        "topological-groups",
+        "functional-analysis",
+        "harmonic-analysis",
+        "fourier-analysis",
+        "differential-geometry",
+        "probability-theory",
+        "measure-theory",
+        "optimization"
       ]
     }
   ],
@@ -4320,6 +4335,39 @@
       "evidence": {
         "path": "data/details.json",
         "item": "05.070"
+      }
+    },
+    {
+      "from": "note:05.070",
+      "to": "note:22.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "22.040"
+      }
+    },
+    {
+      "from": "note:22.030",
+      "to": "note:22.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "22.040"
+      }
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:22.040",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "22.040"
       }
     }
   ]

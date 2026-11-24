@@ -5604,6 +5604,306 @@
       ],
       "verification_status": "数学的に推論可能",
       "relevance": "高"
+    },
+    {
+      "source_id": "05.070",
+      "target_id": "22.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "Haar測度・有限群の平均化・Hilbert空間の既習知識を利用する推奨読書順。個別ノート自体が必読という意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": "Haar測度とベクトル値積分"
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.030",
+      "target_id": "22.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "Haar測度・有限群の平均化・Hilbert空間の既習知識を利用する推奨読書順。個別ノート自体が必読という意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": "Haar測度とベクトル値積分"
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "46.030",
+      "target_id": "22.040",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "Haar測度・有限群の平均化・Hilbert空間の既習知識を利用する推奨読書順。個別ノート自体が必読という意味ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": "Haar測度とベクトル値積分"
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "42.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "円周群の指標による重み付き平均はFourier係数への直交射影となる。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "43.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "指標・行列係数の直交性とPeter–Weylの定理（引用）をコンパクト群の調和解析に結び付ける。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "46.070",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "ユニタリ表現の平均化は不変部分空間への最良近似を与える。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "53.020",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "コンパクトLie群によるRiemann計量の平均化と両側不変計量。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "58.040",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "微分形式の平均と外微分の交換。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "58.060",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "不変微分形式とde Rhamコホモロジーへの接続。代表元の一般的存在は本稿では主張しない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "60.004",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "測度保存作用の軌道平均は厳密に不変なBorel σ代数に関する条件付き期待値。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "60.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "軌道平均のL¹条件付き期待値表示とL²直交射影。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "90.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "閉凸不変集合上の連続凸不変目的関数を不変部分空間に制限して最小化できる。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "46.020",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "強連続表現の一様有界性から平均作用素の有界性を導く。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "46.060",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "Banach–Alaogluの定理を用いて整数群上の不変平均を構成する。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "22.040",
+      "target_id": "22.020",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "コンパクトLie群の随伴表現と両側不変Riemann計量を結び付ける。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "22.040",
+          "source_path": "public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
     }
   ]
 }

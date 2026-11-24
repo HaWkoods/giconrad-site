@@ -825,6 +825,11 @@
       "status": "draft-review",
       "pdf": "./public_notes/58_analysis_on_manifolds/58.070_integration_by_parts_boundary_terms/58.070_integration_by_parts_boundary_terms.pdf",
       "tex": "./public_notes/58_analysis_on_manifolds/58.070_integration_by_parts_boundary_terms/58.070_integration_by_parts_boundary_terms.tex"
+    },
+    "22.040": {
+      "status": "draft-review",
+      "pdf": "./public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.pdf",
+      "tex": "./public_notes/22_topological_lie_groups/22.040_compact_group_averaging/22.040_compact_group_averaging.tex"
     }
   }
 }
