@@ -1,0 +1,416 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{条件付き確率と条件付き期待値}
+\newcommand{\NoteSeries}{擬コンラット 60.004}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathcal F}
+\newcommand{\G}{\mathcal G}
+\newcommand{\B}{\mathcal B}
+\newcommand{\E}{\mathbb E}
+\newcommand{\1}{\mathbf{1}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+
+\begin{document}
+\section{目的と前提}
+本稿では初等確率論の条件付き確率を，部分 $\sigma$-加法族に関する条件付き期待値へ拡張する．条件付き期待値は可積分関数の部分 $\sigma$-加法族に関する積分を保存する関数として特徴づけられ，二乗可積分の場合には直交射影としても特徴づけられる．
+
+確率空間 $(\Omega,\F,P)$，確率変数，期待値，$L^p(P)$（60.001）および独立性（60.002）を既知とする．測度論の収束定理，Fubini--Tonelliの定理，有限測度に対するRadon--Nikodymの定理（28.010），$L^2$ のHilbert空間構造を用いる．特に断らない限り確率変数は実数値であり，$\E X=\int_\Omega X\,dP$ と書く．条件付き期待値の等式および不等式はa.s.の意味に解する．$\1_A$ は集合 $A$ の指示関数を表す．
+
+\section{事象による条件付け}
+\begin{definition}
+事象 $B\in\F$ が $P(B)>0$ を満たすとき，事象 $A$ の $B$ のもとでの条件付き確率を
+\[
+ P(A\mid B)=\frac{P(A\cap B)}{P(B)}
+\]
+と定める．
+\end{definition}
+\begin{proposition}
+$P_B(A)=P(A\mid B)$（$A\in\F$）は $(\Omega,\F)$ 上の確率測度であり，$P_B(B)=1$ である．
+\end{proposition}
+\begin{proof}
+$P_B(\Omega)=1$，$P_B(B)=1$ は定義による．互いに素な列 $(A_n)$ について $A_n\cap B$ も互いに素であり，$(\bigcup_nA_n)\cap B=\bigcup_n(A_n\cap B)$ である．$P$ の可算加法性を適用して $P(B)$ で割ればよい．
+\end{proof}
+$B$ を標本空間として $\F|_B=\{A\cap B:A\in\F\}$ 上に $P(C)/P(B)$ を与えてもよい．元の標本空間上の $P_B$ はこの確率測度を包含写像によって押し出したものである．
+\begin{proposition}[乗法公式]
+$P(B)>0$ なら $P(A\cap B)=P(A\mid B)P(B)$ である．さらに $n\ge2$ とし，$P(\bigcap_{i=1}^{n-1}A_i)>0$ なら
+\[
+ P\left(\bigcap_{i=1}^n A_i\right)
+ =P(A_1)\prod_{k=2}^n P\left(A_k\,\middle|\,\bigcap_{i<k}A_i\right).
+\]
+\end{proposition}
+\begin{proof}
+第一式は定義の書き換えである．$2\le k\le n$ について条件事象の確率は正である．第一式を順次用いれば第二式となる．
+\end{proof}
+\begin{theorem}[全確率の公式とBayesの公式]\label{bayes}
+$(B_i)_{i\in I}$ は $\Omega$ の有限または可算な可測分割とし，$I_+=\{i:P(B_i)>0\}$ とする．任意の $A\in\F$ について
+\[
+ P(A)=\sum_{i\in I_+}P(A\mid B_i)P(B_i).
+\]
+さらに $P(A)>0$ のとき $j\in I_+$ について
+\[
+ P(B_j\mid A)=
+ \frac{P(A\mid B_j)P(B_j)}{\sum_{i\in I_+}P(A\mid B_i)P(B_i)}.
+\]
+$j\notin I_+$ については $P(B_j\mid A)=0$ である．
+\end{theorem}
+\begin{proof}
+$A=\bigsqcup_i(A\cap B_i)$ に可算加法性を適用する．$P(B_i)=0$ なら対応する項は0であり，残りには乗法公式を適用できる．Bayesの公式は $P(B_j\mid A)=P(A\cap B_j)/P(A)$ の分子および分母にこれらの式を代入すれば従う．
+\end{proof}
+\begin{example}
+二種類の製造工程 $B_1,B_2$ の比率を $P(B_1)=3/4$，$P(B_2)=1/4$ とし，不良品事象 $A$ について $P(A\mid B_1)=1/100$，$P(A\mid B_2)=1/20$ とする．全確率は $P(A)=3/400+1/80=1/50$ であり，$P(B_2\mid A)=(1/80)/(1/50)=5/8$ である．条件付き確率と条件事象を入れ替えた確率は，一般には一致しない．
+\end{example}
+\begin{remark}
+$P(B)>0$ のとき，$A,B$ が独立であることは $P(A\mid B)=P(A)$ と同値である．$P(B)=0$ の場合にも積による独立性の定義は意味を持つが，商による条件付き確率は定義されない．
+\end{remark}
+
+\section{部分\texorpdfstring{$\sigma$}{σ}-加法族と情報}
+事象 $B$ の成立・不成立だけを知るとき，判定できる事象は $\sigma(B)=\{\varnothing,B,B^c,\Omega\}$ である．一般に $\G\subset\F$ が $\sigma$-加法族であるとき，$\G$ に属する事象を判定できるという意味で $\G$ を情報とみなす．これは数学的なモデルであり，物理的観測の可否を論じるものではない．
+\begin{definition}
+$X\in L^1(P)$ と部分 $\sigma$-加法族 $\G\subset\F$ に対して，次の二条件を満たす実数値関数 $Y$ を $X$ の $\G$ に関する条件付き期待値の版という．
+\begin{enumerate}
+\item $Y$ は $\G$-可測かつ可積分である．
+\item 任意の $G\in\G$ に対し
+\begin{equation}\label{ce-def}
+ \int_GY\,dP=\int_GX\,dP.
+\end{equation}
+\end{enumerate}
+これを $\E[X\mid\G]$ と記す．
+\end{definition}
+条件付き期待値は一般に数ではなく確率変数である．$\G$ に属する全ての事象について積分を保存し，同時に $\G$-可測であることを要求する．
+\begin{theorem}[存在と一意性]\label{exist}
+任意の $X\in L^1(P)$ および部分 $\sigma$-加法族 $\G$ に対して $\E[X\mid\G]$ の版が存在する．任意の二つの版はa.s.に一致する．
+\end{theorem}
+\begin{proof}
+$G\in\G$ に対して $\nu_+(G)=\int_GX^+dP$，$\nu_-(G)=\int_GX^-dP$ と定める．非負積分の単調収束定理により両者は有限測度である．いずれも $P|_\G$ に関して絶対連続である．Radon--Nikodymの定理を可測空間 $(\Omega,\G)$ 上の有限測度に適用すれば，非負 $\G$-可測関数 $Y_+,Y_-$ が存在して
+\[
+ \nu_\pm(G)=\int_GY_\pm\,dP\qquad(G\in\G)
+\]
+となる．$G=\Omega$ とすれば $Y_+,Y_-$ は可積分であり，無限値を取る $\G$-可測な零集合上の値を0に置き換えられる．従って $Y=Y_+-Y_-$ は実数値 $\G$-可測可積分関数であり，\eqref{ce-def} を満たす．
+
+一意性について，二つの版 $Y,Z$ が与えられたとする．各 $n\ge1$ について $G_n=\{Y-Z\ge1/n\}\in\G$ である．\eqref{ce-def} から
+\[
+ 0=\int_{G_n}(Y-Z)\,dP\ge P(G_n)/n.
+\]
+従って $P(G_n)=0$ であり，$P(Y>Z)=0$ となる．$Y,Z$ を入れ替えれば $P(Z>Y)=0$ も得られる．
+\end{proof}
+\begin{remark}
+$\G$ が完備であることは仮定していない．a.s.に一致する関数であっても，零集合上の変更によって $\G$-可測性を失う場合がある．版というためには可測性を別途満たさなければならない．
+\end{remark}
+\begin{proposition}[可算分割に関する条件付き期待値]\label{part}
+$(B_i)_{i\in I}$ を有限または可算な可測分割とし，$\G=\sigma(\{B_i:i\in I\})$ とする．$X\in L^1(P)$ に対し
+\[
+ Y=\sum_{i\in I_+}\frac{\E[X\1_{B_i}]}{P(B_i)}\1_{B_i}
+\]
+は $\E[X\mid\G]$ の版である．ここで $I_+=\{i:P(B_i)>0\}$ とする．確率0の各分割片の上の値は0と定めている．
+\end{proposition}
+\begin{proof}
+$Y$ は各分割片上で定数であるため $\G$-可測である．
+\[
+ \int|Y|\,dP=\sum_{i\in I_+}|\E[X\1_{B_i}]|
+ \le\sum_{i\in I}\E[|X|\1_{B_i}]=\E|X|.
+\]
+任意の $G\in\G$ は分割片の和である．各正の確率の分割片上での $Y$ の積分は $X$ の積分に一致し，零事象上の積分はいずれも0である．可積分性により和を取れるから\eqref{ce-def}が従う．
+\end{proof}
+\begin{example}
+$P(B),P(B^c)>0$ なら命題\ref{part}を $X=\1_A$ に適用して
+\[
+ \E[\1_A\mid\sigma(B)]
+ =P(A\mid B)\1_B+P(A\mid B^c)\1_{B^c}
+\]
+を得る．従って通常の条件付き確率は部分 $\sigma$-加法族に関する条件付き期待値の特別な場合である．
+\end{example}
+
+\section{条件付き期待値の基本性質}
+\begin{proposition}\label{basic}
+$X,Z\in L^1(P)$，$a,b\in\R$ とする．次が成り立つ．
+\begin{enumerate}
+\item $\E[aX+bZ\mid\G]=a\E[X\mid\G]+b\E[Z\mid\G]$．
+\item $X\le Z$ a.s.なら $\E[X\mid\G]\le\E[Z\mid\G]$ a.s.．
+\item $X$ が $\G$-可測なら $\E[X\mid\G]=X$．
+\item $\E(\E[X\mid\G])=\E X$．
+\item $|\E[X\mid\G]|\le\E[|X|\mid\G]$，特に $\norm{\E[X\mid\G]}_1\le\norm X_1$．
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+(1)は右辺が $\G$-可測可積分であり，\eqref{ce-def}を満たすことを確認して一意性を用いる．(2)について $X\ge0$ の場合を示せば，線形性により一般の場合が従う．$Y=\E[X\mid\G]$ とし，$G_n=\{Y\le-1/n\}\in\G$ とする．$0\le\int_{G_n} X\,dP=\int_{G_n}Y\,dP\le-P(G_n)/n$ より $P(G_n)=0$ である．よって $Y\ge0$ a.s.となる．(3)は $X$ 自身が定義を満たす．(4)は $G=\Omega$ を代入する．(5)は $-|X|\le X\le|X|$ に(2)を適用し(1)を用いて得る．期待値を取れば(4)によってノルムの不等式が従う．
+\end{proof}
+\begin{theorem}[既知の因子の取り出し]\label{pull}
+$X\in L^1(P)$，$H$ は有界な $\G$-可測関数とする．このとき
+\[
+ \E[HX\mid\G]=H\E[X\mid\G].
+\]
+\end{theorem}
+\begin{proof}
+$Y=\E[X\mid\G]$ とおく．$H=\1_D$（$D\in\G$）の場合，各 $G\in\G$ に対して
+\[
+ \int_G HY\,dP=\int_{G\cap D}Y\,dP
+ =\int_{G\cap D}X\,dP=\int_G HX\,dP
+\]
+となる．線形性によって単関数 $H$ の場合を得る．一般の有界 $H$ は一様有界な $\G$-可測単関数列 $(H_n)$ の点ごとの極限として表せる．$H_nX,H_nY$ はそれぞれ可積分な関数によって支配されるので，優収束定理を用いて上の積分等式を極限へ移す．$HY$ は $\G$-可測可積分であるから一意性により結論が従う．
+\end{proof}
+\begin{theorem}[反復期待値の法則]\label{tower}
+$\mathcal H\subset\G\subset\F$ を部分 $\sigma$-加法族とし，$X\in L^1(P)$ とする．このとき
+\begin{align*}
+ \E[\E[X\mid\G]\mid\mathcal H]&=\E[X\mid\mathcal H],\\
+ \E[\E[X\mid\mathcal H]\mid\G]&=\E[X\mid\mathcal H].
+\end{align*}
+\end{theorem}
+\begin{proof}
+第一式の左辺は $\mathcal H$-可測可積分であり，$H\in\mathcal H$ に対してその積分は $\int_H\E[X\mid\G]dP$ に等しい．$H\in\G$ でもあるから，これは $\int_H XdP$ に等しい．一意性から第一式を得る．第二式は $\E[X\mid\mathcal H]$ が $\G$-可測であることと命題\ref{basic}(3)による．
+\end{proof}
+\begin{proposition}[独立な情報]\label{ind}
+$X\in L^1(P)$ が $\G$ と独立，すなわち $\sigma(X)$ と $\G$ が独立なら $\E[X\mid\G]=\E X$ a.s.である．
+\end{proposition}
+\begin{proof}
+任意の $G\in\G$ について $X$ と $\1_G$ は独立である．独立な変数の期待値の因数分解から $\E[X\1_G]=\E X P(G)$ となる．定数関数 $\E X$ は条件付き期待値の定義を満たす．
+\end{proof}
+逆に，期待値が定数というだけでは独立性は従わない．例えば $\Omega=\{-2,-1,1,2\}$ を一様確率空間とし $X(\omega)=\omega$，$\G=\sigma(|X|)$ とすれば，各分割片で平均は0であるから $\E[X\mid\G]=0$ である．しかし事象 $\{|X|=1\}$ は両方の $\sigma$-加法族に属し確率 $1/2$ を持つため独立でない．
+\begin{proposition}
+$X$ と $\G$ が独立であるための必要十分条件は，全てのBorel集合 $B\subset\R$ に対して $\E[\1_{\{X\in B\}}\mid\G]=P(X\in B)$ a.s.となることである．
+\end{proposition}
+\begin{proof}
+必要性は命題\ref{ind}による．十分性は定義の積分等式により $P(\{X\in B\}\cap G)=P(X\in B)P(G)$ が任意の $B$ と $G\in\G$ について成立することから従う．
+\end{proof}
+
+\section{条件付きJensenの不等式}
+\begin{lemma}[可算個の支持直線]\label{lines}
+有限値凸関数 $\varphi:\R\to\R$ は可算個の一次関数 $\ell_j(x)=a_jx+b_j$ の上限として表せる．各 $j$ について $\ell_j\le\varphi$ である．
+\end{lemma}
+\begin{proof}
+各有理数 $r$ に対し，凸性による支持直線の存在（60.001）から $\ell_r(x)=\varphi(r)+a_r(x-r)$ で $\ell_r\le\varphi$ となるものを一つ選ぶ．任意の $x\in\R$ を固定し，$r\in\mathbb Q\cap[x-1,x+1]$ を考える．支持直線の不等式を $x-2$ および $x+2$ に適用すると
+\[
+ \frac{\varphi(r)-\varphi(x-2)}{r-(x-2)}
+ \le a_r\le
+ \frac{\varphi(x+2)-\varphi(r)}{x+2-r}.
+\]
+凸関数は連続であるから $[x-1,x+1]$ 上で有界であり，分母は1以上である．従って $a_r$ はこの範囲で有界である．有理数列 $r_k\to x$ を選べば $\ell_{r_k}(x)=\varphi(r_k)+a_{r_k}(x-r_k)\to\varphi(x)$ となる．一方，全ての直線は $\varphi$ 以下だから $\sup_{r\in\mathbb Q}\ell_r(x)=\varphi(x)$ である．
+\end{proof}
+\begin{theorem}[条件付きJensenの不等式]\label{jensen}
+$X\in L^1(P)$，$\varphi$ は有限値凸関数，$\varphi(X)\in L^1(P)$ とする．このとき
+\[
+ \varphi(\E[X\mid\G])\le\E[\varphi(X)\mid\G]
+ \quad\text{a.s.}
+\]
+\end{theorem}
+\begin{proof}
+補題\ref{lines}の各 $j$ について $a_jX+b_j\le\varphi(X)$ である．命題\ref{basic}の単調性・線形性により
+\[
+ a_j\E[X\mid\G]+b_j\le\E[\varphi(X)\mid\G]
+\]
+がa.s.成立する．$j$ は可算個であるから全ての不等式が成立する共通の確率1の事象を取れる．その事象上で $j$ に関する上限を取れば結論が従う．
+\end{proof}
+\begin{corollary}[$L^p$ における縮小性]\label{contract}
+$1\le p\le\infty$ に対し $X\in L^p(P)$ なら $\E[X\mid\G]\in L^p(P)$ であり
+\[
+ \norm{\E[X\mid\G]}_p\le\norm X_p.
+\]
+\end{corollary}
+\begin{proof}
+$1\le p<\infty$ のとき $X\in L^1(P)$ である．$\varphi(x)=|x|^p$ に定理\ref{jensen}を適用し期待値を取ると $\E|\E[X\mid\G]|^p\le\E|X|^p$ となる．$p=\infty$ の場合は $-\norm X_\infty\le X\le\norm X_\infty$ a.s.に単調性を適用する．
+\end{proof}
+\begin{remark}
+条件付きJensenの証明では支持直線を可算族にしたことが重要である．各不等式が個別にa.s.成立しても，非可算個の例外零集合を一つにまとめられるとは限らない．
+\end{remark}
+
+\section{直交射影としての条件付き期待値}
+$L^2(P)$ を実Hilbert空間とし，内積を $\langle X,Z\rangle=\E XZ$ とする．$L^2(\G)$ は $\G$-可測な版を持つ同値類全体とする．ここで同値関係はa.s.の等号である．
+\begin{theorem}[射影と最適予測]\label{projection}
+$L^2(\G)$ は $L^2(P)$ の閉部分空間である．任意の $X\in L^2(P)$ に対し $Y=\E[X\mid\G]$ は $L^2(\G)$ への直交射影であり，任意の $Z\in L^2(\G)$ について
+\[
+ \E(X-Z)^2=\E(X-Y)^2+\E(Y-Z)^2
+\]
+が成り立つ．特に $Y$ は二乗誤差を最小にする唯一の同値類である．
+\end{theorem}
+\begin{proof}
+系\ref{contract}と命題\ref{basic}により $T:X\mapsto\E[X\mid\G]$ は $L^2(P)$ 上の有界線形作用素である．一意性により同値類上で良定義である．また $T^2=T$ であり，$\operatorname{im}T=L^2(\G)$ である．実際，像は $\G$-可測な版を持ち，$\G$-可測な版を持つ元は $T$ によって固定される．従って $L^2(\G)=\ker(I-T)$ は閉部分空間である．
+
+$Z\in L^2(\G)$ の $\G$-可測な版を選ぶ．有界切断 $Z_n=\max(-n,\min(Z,n))$ は $\G$-可測であり，定理\ref{pull}と命題\ref{basic}(4)により $\E[Z_n(X-Y)]=0$ である．$Z_n\to Z$ in $L^2$ であることは優収束定理による．Cauchy--Schwarz不等式から $\E[Z(X-Y)]=0$ を得る．従って $X-Y\perp L^2(\G)$ である．$X-Z=(X-Y)+(Y-Z)$ の平方ノルムを展開すれば所望の等式が得られる．右辺の第二項が0となるのは $Y=Z$ a.s.の場合に限る．
+\end{proof}
+この定理によって，Radon--Nikodym微分として構成された条件付き期待値が，Hilbert空間における直交射影と一致することが分かる．$\G$ の情報だけを用いる二乗可積分な予測量の中で，条件付き期待値が平均二乗誤差を最小にする．
+\begin{definition}
+$X\in L^2(P)$ とし，$Y=\E[X\mid\G]$ とおく．条件付き分散を
+\[
+ \Var(X\mid\G)=\E[(X-Y)^2\mid\G]
+\]
+と定める．これは非負可積分な $\G$-可測関数の同値類である．
+\end{definition}
+\begin{proposition}[全分散の公式]\label{totalvar}
+$X\in L^2(P)$ について
+\begin{align*}
+ \Var(X\mid\G)&=\E[X^2\mid\G]-(\E[X\mid\G])^2,\\
+ \Var(X)&=\E[\Var(X\mid\G)]
+              +\Var(\E[X\mid\G]).
+\end{align*}
+\end{proposition}
+\begin{proof}
+$Y=\E[X\mid\G]$，$Y_n=\max(-n,\min(Y,n))$ とする．定理\ref{pull}より $\E[XY_n\mid\G]=YY_n$．$Y_n\to Y$ in $L^2$ であるから $XY_n\to XY$，$YY_n\to Y^2$ in $L^1$ がCauchy--Schwarz不等式から従う．$L^1$ における縮小性を用いて $\E[XY\mid\G]=Y^2$ を得る．$(X-Y)^2$ を展開し線形性と $\G$-可測性を使えば第一式が従う．
+
+第二式は定理\ref{projection}を $Z=\E X$ に適用して得られる．$\E Y=\E X$ だから $\E(Y-\E X)^2=\Var(Y)$ であり，$\E(X-Y)^2=\E\Var(X\mid\G)$ である．
+\end{proof}
+
+\section{確率変数による条件付け}
+\begin{lemma}[Doob--Dynkinの補題]\label{dd}
+$V:\Omega\to S$ は可測写像（$(S,\mathcal S)$ は可測空間）とし，$Y$ は実数値 $\sigma(V)$-可測関数とする．このとき $\mathcal S$-可測関数 $g:S\to\R$ が存在して $Y=g\circ V$ が点ごとに成立する．
+\end{lemma}
+\begin{proof}
+まず $Y$ が有限個の値を取る場合，$Y=\sum_{i=1}^m a_i\1_{A_i}$ と書ける．$A_i\in\sigma(V)$ なので $A_i=V^{-1}(B_i)$（$B_i\in\mathcal S$）と書ける．$g=\sum_i a_i\1_{B_i}$ とすれば $g\circ V=Y$ である．$B_i$ が値域の外で交わっていてもこの等式に影響しない．
+
+一般の場合，$\sigma(V)$ に関して可測な単関数列 $(Y_n)$ で $Y_n\to Y$ が点ごとに成立するものを取る．上の結果により $Y_n=g_n\circ V$ と表せる．$(g_n(s))$ が有限実数に収束する点 $s$ の集合を $D$ とおく．実数の完備性により
+\[
+ D=\bigcap_{k\ge1}\bigcup_{m\ge1}\bigcap_{i,j\ge m}
+ \{|g_i-g_j|\le1/k\}\in\mathcal S.
+\]
+$g(s)=\lim_n g_n(s)$（$s\in D$），$g(s)=0$（$s\notin D$）と定める．$g$ は可測関数列 $g_n\1_D$ の各点収束極限であるから可測である．$V(\omega)\in D$ は全ての $\omega$ について成立し，$g(V(\omega))=Y(\omega)$ である．
+\end{proof}
+\begin{corollary}\label{givenv}
+$X\in L^1(P)$，$V:\Omega\to S$ は可測とする．$\E[X\mid\sigma(V)]=g(V)$ と表せる．このとき $g$ は $\mu_V$-可積分であり，$\mu_V$-a.e.に一意である．また全ての $B\in\mathcal S$ に対して
+\[
+ \int_Bg\,d\mu_V=\E[X\1_{\{V\in B\}}].
+\]
+\end{corollary}
+\begin{proof}
+定理\ref{exist}の $\sigma(V)$-可測な版に補題\ref{dd}を適用する．可積分性と等式は押し出し測度の積分公式および条件付き期待値の定義による．二つの関数が条件を満たせば，対応する合成関数はa.s.で一致するから，$\mu_V(\{g\ne h\})=P(g(V)\ne h(V))=0$ である．
+\end{proof}
+$\E[X\mid V]$ は $\E[X\mid\sigma(V)]$ の略記である．$g(v)$ を $\E[X\mid V=v]$ と書くこともあるが，これは関数 $g$ の版の選択を含む記法であり，各 $v$ における値が一意に決定されることを意味しない．
+\begin{example}[離散的観測]
+$V$ が高々可算な値域を持ち $P(V=v)>0$ のとき，系\ref{givenv}で $B=\{v\}$ とすれば
+\[
+ g(v)=\frac{\E[X\1_{\{V=v\}}]}{P(V=v)}.
+\]
+従ってこの点での値は一意である．$P(V=v)=0$ の点に同じ商の公式を適用することはできない．
+\end{example}
+
+\section{同時密度からの条件付け}
+\begin{theorem}[条件付き密度]\label{density}
+実数値確率変数 $U,V$ の同時分布が非負Borel可測な密度 $f(u,v)$ を持つとする．$h(v)=\int_\R f(u,v)\,du$ とおく．$0<h(v)<\infty$ である $v$ に対し
+\[
+ k(v,u)=\frac{f(u,v)}{h(v)}
+\]
+と定め，その他の $v$ では例えば $k(v,u)=\1_{(0,1)}(u)$ と定める．このとき $h$ は $V$ の密度であり，$k$ は非負可測で各 $v$ における $u$ の積分は1である．任意のBorel集合 $A\subset\R$ に対して
+\[
+ g_A(v)=\int_A k(v,u)\,du
+\]
+とおけば $g_A(V)$ は $\E[\1_{\{U\in A\}}\mid V]$ の版である．
+\end{theorem}
+\begin{proof}
+Tonelliの定理により $h$ は可測であり $\int h(v)dv=1$ である．任意のBorel集合 $B$ に対して
+\[
+ P(V\in B)=\int_B\int_\R f(u,v)\,du\,dv
+ =\int_Bh(v)\,dv.
+\]
+従って $h$ は密度である（有限値を要求する場合は $\{h=\infty\}$ 上で0に変更する）．集合 $D=\{v:0<h(v)<\infty\}$ の補集合は $\mu_V$-零集合である．実際 $\{h=0\}$ 上の積分は0であり，$\{h=\infty\}$ はLebesgue-零集合である．$k$ の可測性および各 $v$ での正規化は定義から従う．さらに $g_A$ はTonelliの定理により可測で $0\le g_A\le1$ である．任意のBorel集合 $B$ に対し
+\begin{align*}
+ \int_B g_A(v)\,\mu_V(dv)
+ &=\int_{B\cap D}\int_A f(u,v)\,du\,dv\\
+ &=P(U\in A,V\in B).
+\end{align*}
+最後の等式は $V\notin D$ の確率が0であることによる．$\sigma(V)$ の全ての元は $\{V\in B\}$ と書けるので，条件付き期待値の定義と一意性から結論を得る．
+\end{proof}
+\begin{remark}
+定理\ref{density}では $K(v,A)=\int_A k(v,u)du$ とおくと，各 $v$ について確率測度，各 $A$ について可測関数になる．このような関数を確率核と呼ぶ．これは正則条件付き分布の具体例である．しかし一般の可測空間で条件付き期待値の版を各 $A$ ごとに選んでも，全ての $A$ について同時に可算加法的な版が得られるとは限らない．本稿では一般の正則条件付き分布の存在定理は扱わない．
+\end{remark}
+\begin{example}[三角形上の一様分布]\label{triangle}
+$(U,V)$ の同時密度を $f(u,v)=2\1_{\{0<u<v<1\}}$ とする．全積分は $\int_0^1 2v\,dv=1$ である．$V$ の密度は $h(v)=2v\1_{(0,1)}(v)$ であり，$0<v<1$ では $k(v,u)=v^{-1}\1_{(0,v)}(u)$ となる．このとき
+\[
+ \E[U\mid V]=V/2,
+ \qquad \E[U^2\mid V]=V^2/3
+\]
+である．実際，任意のBorel集合 $B$ についてFubiniの定理から
+\begin{align*}
+ \E[U\1_{\{V\in B\}}]
+ &=\int_{B\cap(0,1)}2\int_0^v u\,du\,dv\\
+ &=\int_{B\cap(0,1)}(v/2)2v\,dv,
+\end{align*}
+となる．二乗の場合も $\int_0^v u^2du=v^3/3$ により同様に求められる．系\ref{givenv}によって上の等式を得る．従って条件付き分散は $V^2/12$ である．$V=v$ は各 $v$ について確率0の事象であるが，条件付き密度を通じて意味のある条件付き分布を得ている．
+\end{example}
+\begin{example}[版の非一意性]
+前例で $v_0\in(0,1)$ を固定する．$g(v)=v/2$ と $\widetilde g(v)=v/2+\1_{\{v_0\}}(v)$ は $\mu_V$-a.e.に一致するので，$g(V)$ と $\widetilde g(V)$ は共に $\E[U\mid V]$ の版である．両者の $v_0$ での値は異なる．従って条件付き期待値の定義だけから零確率の点における値を一意に決めることはできない．特定の点での値を要求するには連続性など別の条件が必要となることがある．
+\end{example}
+
+\section{確認問題と後続理論}
+\begin{example}[全分散の具体的計算]
+例\ref{triangle}で $\E V=\int_0^1 2v^2dv=2/3$，$\E V^2=1/2$ である．従って $\Var(V)=1/2-4/9=1/18$．命題\ref{totalvar}により
+\[
+ \Var(U)=\frac{\E V^2}{12}+\frac{\Var(V)}4
+ =\frac1{24}+\frac1{72}=\frac1{18}.
+\]
+直接計算では $U$ の密度が $2(1-u)\1_{(0,1)}(u)$ であり，$\E U=1/3$，$\E U^2=1/6$ であるから同じ結果を得る．また $V/2$ による予測の平均二乗誤差は $1/24$ であり，定数による最適予測の誤差 $1/18$ より小さい．
+\end{example}
+\begin{example}[二回の条件付け]
+$X_1,X_2$ が独立Bernoulli変数で平均 $p$ を持つとする．$\G=\sigma(X_1)$，$\mathcal H=\{\varnothing,\Omega\}$ とする．線形性，既知の情報，独立性によって $\E[X_1+X_2\mid\G]=X_1+p$ となる．さらに $\mathcal H$ に関して条件付けると $2p$ である．これは反復期待値の法則の具体例である．
+\end{example}
+条件付き期待値を時間と共に増大する部分 $\sigma$-加法族に関して取ることによってマルチンゲールが定義される．また確率測度の変更においてもRadon--Nikodym微分が基本的役割を果たす．それらの理論は60.010および60.070の主題である．
+\begin{thebibliography}{9}
+\bibitem{durrett} R. Durrett, \textit{Probability: Theory and Examples}, Version 5, 2019, \S4.1, Appendix A.4.
+\bibitem{bog} V. I. Bogachev, \textit{Measure Theory}, Vol. I, Springer, 2007, \S\S3.2, 3.4, 4.1, 4.3.
+\bibitem{ess} R. Durrett, \textit{Essentials of Stochastic Processes}, 3rd ed., Springer, 2016, \S5.1, Appendix A.1.1.
+\end{thebibliography}
+
+\end{document}

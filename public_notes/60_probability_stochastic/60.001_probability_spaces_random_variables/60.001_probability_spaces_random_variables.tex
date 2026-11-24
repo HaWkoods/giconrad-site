@@ -1,0 +1,491 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{確率空間と確率変数}
+\newcommand{\NoteSeries}{擬コンラット 60.001}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathcal F}
+\newcommand{\G}{\mathcal G}
+\newcommand{\B}{\mathcal B}
+\newcommand{\E}{\mathbb E}
+\newcommand{\1}{\mathbf{1}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+
+\begin{document}
+\section{本稿の目的と前提}
+本稿は確率論の基礎を測度論の立場から構成する．確率論の予備知識は仮定しない．集合と写像，実数の性質，Euclid空間の位相，Lebesgue測度と積分，単調収束定理，Fatouの補題，優収束定理，Tonelliの定理，H\"olderおよびCauchy--Schwarzの不等式を既知とする．測度の拡張定理およびRadon--Nikodymの定理は使用する形を明示して引用する．自然数は $\N=\{1,2,\ldots\}$ とし，$\mathcal B(S)$ は位相空間 $S$ のBorel集合族を表す．積分において $0\cdot\infty=0$ と約束する．集合 $A$ の指示関数を $\1_A$，すなわち $A$ 上で1，その外で0となる関数とする．$X\sim\mu$ は $X$ の分布が $\mu$ であることを表す．$1\le p<\infty$ に対して $L^p(P)$ は $p$ 乗可積分な関数のa.s.同値類の空間を表す（第\ref{sec:lp}節）．
+
+\section{有限・可算確率空間と公理}
+\begin{definition}
+空でない集合 $\Omega$ の部分集合族 $\F$ が $\sigma$-加法族であるとは，$\Omega\in\F$ であり，補集合および可算和に関して閉じていることをいう．$(\Omega,\F)$ を可測空間という．
+\end{definition}
+De Morganの法則から，$\F$ は空集合を含み，可算共通部分および差集合に関しても閉じている．
+\begin{definition}[確率空間]
+可測空間 $(\Omega,\F)$ 上の写像 $P:\F\to[0,1]$ が確率測度であるとは，$P(\Omega)=1$ であり，互いに素な任意の列 $(A_n)$ に対し
+\[
+ P\left(\bigcup_{n=1}^\infty A_n\right)=\sum_{n=1}^\infty P(A_n)
+\]
+が成り立つことをいう．三つ組 $(\Omega,\F,P)$ を確率空間といい，$\Omega$ を標本空間，$\F$ の元を事象という．
+\end{definition}
+この定義はKolmogorovの公理系である．確率は実数値の関数であって，任意の事象に値を与える物理的機構を公理から導くものではない．対象に適した確率測度を選択することはモデル化の問題である．
+\begin{proposition}[可算集合上の確率]
+空でない高々可算な集合 $\Omega$ に冪集合 $2^\Omega$ を入れる．非負の数の族 $(p_\omega)_{\omega\in\Omega}$ で $\sum_\omega p_\omega=1$ なるものと確率測度とは一対一に対応する．対応は
+\[
+ P(A)=\sum_{\omega\in A}p_\omega,\qquad
+ p_\omega=P(\{\omega\})
+\]
+によって与えられる．
+\end{proposition}
+\begin{proof}
+非負級数の和は順序によらず，互いに素な集合族について和を分割できるから，右辺は確率測度となる．逆に任意の集合 $A$ は高々可算個の単元集合の互いに素な和であり，可算加法性を適用すれば上式を得る．$A=\Omega$ とすれば正規化条件が従う．
+\end{proof}
+\begin{example}
+$\Omega=\{1,\ldots,6\}$ で $p_i=1/6$ とすれば，偶数の目が出る事象の確率は $1/2$ である．一般の有限集合では $p_\omega=1/|\Omega|$ のときに限って全ての事象に対する公式 $P(A)=|A|/|\Omega|$ が成り立つ．必要性は単元集合を代入すれば従う．
+\end{example}
+\begin{example}
+$\Omega=\{1,2,\ldots\}$ 上に $p_n=2^{-n}$ を与えると確率測度が定まる．可算無限集合上の一様な確率測度は存在しない．実際，共通の単点の確率が $c>0$ なら総和は無限大となり，$c=0$ なら総和は $0$ となる．
+\end{example}
+\begin{proposition}[基本性質]\label{basic}
+確率空間において次が成り立つ．
+\begin{enumerate}
+\item $P(\varnothing)=0$，$P(A^c)=1-P(A)$．
+\item $A\subset B$ なら $P(A)\le P(B)$ かつ $P(B\setminus A)=P(B)-P(A)$．
+\item $P(A\cup B)=P(A)+P(B)-P(A\cap B)$．
+\item $P(\bigcup_n A_n)\le\sum_nP(A_n)$．
+\item $A_n\uparrow A$ なら $P(A_n)\uparrow P(A)$，$A_n\downarrow A$ なら $P(A_n)\downarrow P(A)$．
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+$\Omega,\varnothing,\varnothing,\ldots$ に可算加法性を適用して $P(\varnothing)=0$ を得る．有限加法性が従うので，$\Omega=A\sqcup A^c$ および $B=A\sqcup(B\setminus A)$ から(1),(2)を得る．$A\cup B=A\sqcup(B\setminus A)$ を用いれば(3)を得る．
+
+$D_1=A_1$，$D_n=A_n\setminus\bigcup_{k<n}A_k$ とおくと $(D_n)$ は互いに素であり，その和は $\bigcup_nA_n$ である．(2)より $P(D_n)\le P(A_n)$ であるから(4)が従う．増大列に対しては $D_n=A_n\setminus A_{n-1}$（$A_0=\varnothing$）とおけば
+\[
+ P(A)=\sum_{n\ge1}P(D_n)=\lim_{m\to\infty}P(A_m).
+\]
+減少列に対しては補集合の増大列に適用し(1)を用いる．
+\end{proof}
+\begin{example}[有限加法性では不十分である]
+$\N$ の有限集合および余有限集合からなる集合代数において，有限集合の値を $0$，余有限集合の値を $1$ と定める．互いに素な二集合が共に余有限となることはないので，この集合関数は有限加法的である．しかし $\N=\bigsqcup_{n\ge1}\{n\}$ に対して可算加法性を満たさない．したがって確率測度への拡張は存在しない．
+\end{example}
+\begin{definition}
+事象 $N$ が零事象であるとは $P(N)=0$ であることをいう．ある性質がほとんど確実に（a.s.）成り立つとは，その性質がある零事象の外で成り立つことをいう．
+\end{definition}
+零事象の可算和は零事象である．従って可算個のa.s.の主張は共通の確率1の事象上で成り立つ．これに対し非可算個の場合は一般に成立しない．実際，$[0,1]$ のLebesgue確率測度では各単点は零事象であるが，その全ての和は標本空間である．
+
+\section{測度の構成と一意性}
+\begin{definition}
+部分集合族 $\mathcal C\subset 2^\Omega$ に対し，これを含む全ての $\sigma$-加法族の共通部分を $\sigma(\mathcal C)$ と記す．これを $\mathcal C$ の生成する $\sigma$-加法族という．
+\end{definition}
+共通部分は $\sigma$-加法族となることが定義から従う．従って $\sigma(\mathcal C)$ は $\mathcal C$ を含む最小の $\sigma$-加法族である．Borel集合族 $\B(S)$ は開集合族の生成する $\sigma$-加法族である．
+\begin{lemma}\label{borel}
+$\B(\R)=\sigma(\{(-\infty,t]:t\in\R\})$ である．また $\R^d$ のBorel集合族はBorel矩形の生成する $\sigma$-加法族である．
+\end{lemma}
+\begin{proof}
+半直線 $(-\infty,t]$ は閉集合である．逆に $(-\infty,b)=\bigcup_n(-\infty,b-1/n]$ であり，$(a,b)=(-\infty,b)\setminus(-\infty,a]$ である．任意の開集合は有理数を両端とする開区間のうちその開集合に含まれるものの和である．この和は可算である．よって第一の等式を得る．$\R^d$ では座標射影は連続であるからBorel矩形はBorel集合であり，有理数端点の開矩形は可算基底をなすので第二の等式を得る．
+\end{proof}
+\begin{definition}
+有限和および補集合に関して閉じ，$\Omega$ を含む集合族を集合代数という．集合代数 $\mathcal A$ 上の非負有限値集合関数 $p$ が $p(\varnothing)=0$ を満たし，互いに素な列 $(A_n)$ の和が $\mathcal A$ に属するとき可算加法的であれば，$p$ を有限前測度という．
+\end{definition}
+\begin{theorem}[Carath\'eodoryの拡張定理（引用）]\label{cara}
+集合代数 $\mathcal A$ 上の有限前測度 $p$ は $\sigma(\mathcal A)$ 上の有限測度に一意に拡張される．特に $p(\Omega)=1$ なら拡張は確率測度である．
+\end{theorem}
+この定理は一般の測度論に属する（\cite[Appendix A.1]{durrett}，\cite[\S1.5]{bog}）．ここでは有限の場合を用いる．有限加法的な集合関数が前測度であることを判定するために次を用いる．
+\begin{lemma}\label{pre}
+集合代数上の非負有限加法的な集合関数 $p$ で $p(\Omega)<\infty$ なるものについて，前測度であることと，$A_n\downarrow\varnothing$ なら $p(A_n)\to0$ であることは同値である．
+\end{lemma}
+\begin{proof}
+前測度なら $A_1\setminus A_n\uparrow A_1$ に互いに素な差集合を用いて可算加法性を適用すると $p(A_1\setminus A_n)\to p(A_1)$ となる．有限加法性から必要性が従う．逆に $A=\bigsqcup_nA_n\in\mathcal A$ とする．$R_m=A\setminus\bigcup_{n\le m}A_n$ は空集合へ減少し，$p(A)=\sum_{n\le m}p(A_n)+p(R_m)$ である．極限を取れば可算加法性を得る．
+\end{proof}
+\begin{example}[区間上の確率測度の一意性]
+$\Omega=(0,1]$ とし，半開区間 $(a,b]$（$0\le a\le b\le1$）の有限個の和からなる集合代数を $\mathcal A$ とする．長さを有限和で与えると，これはLebesgue測度の $\mathcal A$ への制限であるから有限前測度である．定理\ref{cara}によって $\sigma(\mathcal A)=\B((0,1])$ 上の確率測度が一意に定まる．ここで集合代数上の値を有限加法的に指定しただけでは足りず，前測度性が必要であることに注意する．
+\end{example}
+\begin{definition}
+空でない集合族 $\mathcal C$ が有限共通部分に関して閉じているとき，$\pi$ 系という（ここで有限共通部分は二個以上のものを含み，空個の場合は要求しない）．集合族 $\mathcal D$ が $\Omega$ を含み，包含関係にある二集合の差および互いに素な可算和に関して閉じるとき，$\lambda$ 系という．
+\end{definition}
+\begin{theorem}[Dynkinの $\pi$--$\lambda$ 定理]\label{pilambda}
+$\pi$ 系 $\mathcal C$ を含む $\lambda$ 系 $\mathcal D$ は $\sigma(\mathcal C)$ を含む．
+\end{theorem}
+\begin{proof}
+$\mathcal L$ を $\mathcal C$ を含む全ての $\lambda$ 系の共通部分とする．$\mathcal L$ は最小のそのような $\lambda$ 系であり，$\mathcal L\subset\sigma(\mathcal C)$ である．固定した $A\in\mathcal C$ に対し
+\[
+ \mathcal L_A=\{B\in\mathcal L:A\cap B\in\mathcal L\}
+\]
+とおく．$A\cap\Omega=A\in\mathcal L$ である．$B\subset D$ が $\mathcal L_A$ に属するとき $A\cap(D\setminus B)=(A\cap D)\setminus(A\cap B)$ であり，互いに素な和についても共通部分を分配できる．従って $\mathcal L_A$ は $\lambda$ 系である．$\mathcal C$ の共通部分閉性から $\mathcal C\subset\mathcal L_A$ なので最小性より $\mathcal L_A=\mathcal L$ である．
+
+次に任意の $B\in\mathcal L$ に対して $\mathcal L_B=\{A\in\mathcal L:A\cap B\in\mathcal L\}$ とおく．同じ議論で $\lambda$ 系であり，直前の結果から $\mathcal C\subset\mathcal L_B$ となる．最小性により $\mathcal L_B=\mathcal L$ である．ゆえに $\mathcal L$ は共通部分に関して閉じる．補集合は $\Omega$ との差であるから，有限和も属する．任意の可算和は差集合を取って互いに素な和に直せるので $\mathcal L$ は $\sigma$-加法族である．したがって $\sigma(\mathcal C)\subset\mathcal L\subset\mathcal D$．
+\end{proof}
+\begin{corollary}[測度の一致]\label{unique}
+有限測度 $\mu,\nu$ が $\F=\sigma(\mathcal C)$ 上にあり，$\mathcal C$ が $\pi$ 系で，$\mu(\Omega)=\nu(\Omega)$ かつ $\mu(A)=\nu(A)$（$A\in\mathcal C$）なら $\mu=\nu$．
+\end{corollary}
+\begin{proof}
+$\mathcal D=\{A\in\F:\mu(A)=\nu(A)\}$ とおく．有限性および全測度の一致から $\Omega\in\mathcal D$ であり，包含関係にある集合の差に関して閉じる．可算加法性から互いに素な可算和にも閉じる．定理\ref{pilambda}を適用する．
+\end{proof}
+\begin{proposition}[確率空間の完備化]\label{completion}
+$\F$ の零事象の部分集合全体を $\mathcal N$ とする．
+\[
+ \overline{\F}=\{A\triangle N:A\in\F,\ N\in\mathcal N\}
+\]
+は $\sigma$-加法族であり，$\overline P(A\triangle N)=P(A)$ は良定義な確率測度である．$(\Omega,\overline\F,\overline P)$ は完備である（零事象の任意の部分集合が可測である）．
+\end{proposition}
+\begin{proof}
+$\mathcal N$ は部分集合と可算和に関して閉じる．$A\triangle N=B\triangle M$ なら $A\triangle B\subset N\cup M$ であり，$A\triangle B$ は可測な零事象に含まれる．従って $P(A)=P(B)$．また $(A\triangle N)^c\triangle A^c=N$ であり，$(\bigcup_i(A_i\triangle N_i))\triangle(\bigcup_iA_i)\subset\bigcup_iN_i$ である．よって $\overline\F$ は $\sigma$-加法族である．
+
+$E_i=A_i\triangle N_i$ が互いに素なら，$A_i\cap A_j\subset N_i\cup N_j$（$i\ne j$）であり，$P(A_i\cap A_j)=0$．$D_i=A_i\setminus\bigcup_{j<i}A_j$ とすれば $P(D_i)=P(A_i)$ かつ $\bigcup_iD_i=\bigcup_iA_i$ となるので $\overline P(\bigcup_iE_i)=\sum_i\overline P(E_i)$．全測度は1である．最後に $\overline P(E)=0$ なら $E=A\triangle N\subset A\cup Z$（$Z$ は $N$ を含む零事象）で $P(A\cup Z)=0$ となり，$E$ の任意の部分集合は $\mathcal N$ に属する．
+\end{proof}
+
+\section{確率変数と分布}
+\begin{definition}
+可測空間 $(S,\mathcal S)$ への写像 $X:\Omega\to S$ が可測であるとは，任意の $B\in\mathcal S$ に対して $X^{-1}(B)\in\F$ であることをいう．特に $S=\R$，$\mathcal S=\B(\R)$ の場合を実数値確率変数という．
+\end{definition}
+任意の $B$ の逆像を考える必要は必ずしもない．
+\begin{lemma}\label{meas}
+$\mathcal S=\sigma(\mathcal C)$ のとき，$X$ が可測であるための必要十分条件は全ての $C\in\mathcal C$ について $X^{-1}(C)\in\F$ となることである．
+\end{lemma}
+\begin{proof}
+$\{B\in\mathcal S:X^{-1}(B)\in\F\}$ は逆像が補集合と可算和を保つことから $\sigma$-加法族である．従って条件のもとで $\mathcal S$ 全体となる．必要性は定義から従う．
+\end{proof}
+\begin{corollary}
+実数値写像 $X$ が確率変数であるための必要十分条件は，各 $t\in\R$ について $\{X\le t\}\in\F$ となることである．
+\end{corollary}
+\begin{proof}
+補題\ref{borel}および補題\ref{meas}による．
+\end{proof}
+$\{X\in B\}$ は $\{\omega:X(\omega)\in B\}$ の略記である．$X$ が可測ならば $\sigma(X)=\{X^{-1}(B):B\in\mathcal S\}$ は $\F$ の部分 $\sigma$-加法族であり，$X$ を可測にする最小のものである．確率変数 $X_1,\ldots,X_d$ に対して $(X_1,\ldots,X_d)$ はBorel矩形の逆像が可測であることから可測である．従って連続関数 $g:\R^d\to\R$ との合成 $g(X_1,\ldots,X_d)$ も可測である．特に和，積，絶対値は可測である．
+\begin{definition}[分布]
+可測写像 $X:\Omega\to S$ に対して
+\[
+ \mu_X(B)=P(X^{-1}(B))\quad(B\in\mathcal S)
+\]
+を $X$ の分布（押し出し測度）という．
+\end{definition}
+\begin{proof}[確率測度であることの証明]
+$X^{-1}(S)=\Omega$ であり，逆像は互いに素な可算和を互いに素な可算和に移す．従って正規化および可算加法性が従う．
+\end{proof}
+確率変数 $X,Y$ の分布が一致することを $X\overset{d}=Y$ と記す．この記号は写像の一致を意味しない．
+\begin{example}
+$\Omega=\{0,1\}$ に一様確率測度を入れる．$X(\omega)=\omega$，$Y(\omega)=1-\omega$ とすれば $X\overset{d}=Y$ であるが，$P(X=Y)=0$ である．また，$(X,Y)$ の分布と $(X,X)$ の分布は異なる．各成分の分布だけでは同時分布を決定できない．
+\end{example}
+複数の確率変数の同時分布とは写像 $(X_1,\ldots,X_d)$ の分布をいう．各座標射影による押し出しは各成分の分布に一致し，周辺分布と呼ばれる．実際，$\mu_{(X,Y)}(B\times\R)=P(X\in B)$ である．
+
+\section{分布関数による特徴づけ}
+\begin{definition}
+実数値確率変数 $X$ の分布関数を $F_X(t)=P(X\le t)$ と定める．
+\end{definition}
+\begin{theorem}[分布関数の特徴づけ]\label{cdf}
+関数 $F:\R\to[0,1]$ がある実数値確率変数の分布関数となるための必要十分条件は，次の三条件である．
+\begin{enumerate}
+\item $F$ は単調非減少である．
+\item $F$ は右連続である．
+\item $\lim_{t\to-\infty}F(t)=0$，$\lim_{t\to\infty}F(t)=1$．
+\end{enumerate}
+このとき対応するBorel確率測度は一意である．
+\end{theorem}
+\begin{proof}
+必要性について，$s\le t$ なら $\{X\le s\}\subset\{X\le t\}$ である．$t_n\downarrow t$ なら $\{X\le t_n\}\downarrow\{X\le t\}$ であり，$\{X\le n\}\uparrow\Omega$，$\{X\le -n\}\downarrow\varnothing$ である．命題\ref{basic}より三条件が従う．
+
+十分性を示す．$((0,1),\B((0,1)),\lambda)$ をLebesgue確率空間とし，$0<u<1$ に対して
+\[
+ Q(u)=\inf\{x\in\R:F(x)\ge u\}
+\]
+と定める．両端の極限から右辺の集合は空でなく下に有界であるから $Q(u)\in\R$ である．$u\le F(t)$ なら $Q(u)\le t$ である．逆に $Q(u)\le t$ なら，任意の $\varepsilon>0$ に対し $x<t+\varepsilon$ で $F(x)\ge u$ なるものが存在する．従って $F(t+\varepsilon)\ge u$ であり，右連続性から $F(t)\ge u$ である．よって
+\[
+ \{u:Q(u)\le t\}=\{u:u\le F(t)\}.
+\]
+右辺はBorel集合で，そのLebesgue測度は $F(t)$ である．ゆえに $Q$ は可測であり，その分布関数は $F$ となる．一意性は半直線が $\pi$ 系をなし，補題\ref{borel}と系\ref{unique}が適用できることによる．
+\end{proof}
+\begin{corollary}[確率変数の実現]
+任意の$\R$ 上のBorel確率測度 $\mu$ は $((0,1),\B((0,1)),\lambda)$ 上の実数値確率変数の分布となる．
+\end{corollary}
+\begin{proof}
+$F(t)=\mu(( -\infty,t])$ は恒等写像の分布関数であるから定理\ref{cdf}の三条件を満たす．同定理の $Q$ の分布は一意性により $\mu$ に一致する．
+\end{proof}
+\begin{proposition}
+$F=F_X$ とおくと，$a<b$ に対して
+\begin{align*}
+ P(a<X\le b)&=F(b)-F(a),\\
+ P(X=t)&=F(t)-F(t-)
+\end{align*}
+である．ここで $F(t-)=\lim_{s\uparrow t}F(s)$ とする．
+\end{proposition}
+\begin{proof}
+第一式は差集合の公式である．$\{X\le t-1/n\}\uparrow\{X<t\}$ だから $P(X<t)=F(t-)$ であり，差集合を取れば第二式を得る．
+\end{proof}
+\begin{remark}
+分布関数は常に右連続であるが，左連続とは限らない．不連続点は原子（正の単点確率を持つ点）に対応する．各 $n$ に対し $\mu(\{t\})\ge 1/n$ となる点は高々 $n$ 個であり，全ての原子はそれらの可算和に含まれる．従って分布関数の不連続点は高々可算である．
+\end{remark}
+
+\section{基本的な分布}
+\begin{definition}
+Borel確率測度 $\mu$ が離散分布であるとは，高々可算な集合 $D\subset\R$ が存在し $\mu(D)=1$ となることをいう．Lebesgue測度 $\lambda$ に対して $\mu\ll\lambda$ であるとき絶対連続分布という．すなわち $\lambda(B)=0$ なら $\mu(B)=0$ である．また $\mu$ が $\lambda$ に関して特異であるとは，あるBorel集合 $N$ が $\lambda(N)=0$ かつ $\mu(N)=1$ を満たすことをいう．
+\end{definition}
+Radon--Nikodymの定理（$\mu$ は有限，$\lambda$ は $\sigma$-有限）によって，絶対連続分布は非負Borel可測関数 $f$ を用いて
+\[
+ \mu(B)=\int_B f\,d\lambda,\qquad \int_\R f\,d\lambda=1
+\]
+と表せる．$f$ を確率密度という．逆にこの条件を満たす $f$ は積分によって絶対連続確率測度を定める．その分布関数は $F(t)=\int_{-\infty}^t f(x)\,dx$ である．密度はLebesgue-a.e.に一意であり，各点での密度の値は確率ではない．
+\begin{example}[Bernoulli分布]
+$0\le p\le1$ とする．$\{0,1\}$ に確率 $P(\{1\})=p$，$P(\{0\})=1-p$ を与える．恒等写像の分布を $\operatorname{Bern}(p)$ と書く．$p=0,1$ も含む．
+\end{example}
+\begin{example}[二項分布]
+$n\in\N$ とし，$0<p<1$ とする．$\{0,1\}^n$ の点 $\omega$ の重みを $p^{\sum_i\omega_i}(1-p)^{n-\sum_i\omega_i}$ とする．全重みの和は二項定理から1である．$S(\omega)=\sum_i\omega_i$ の分布は
+\[
+ P(S=k)=\binom nk p^k(1-p)^{n-k}
+ \quad(0\le k\le n).
+\]
+これを $\operatorname{Bin}(n,p)$ と書く．$p=0,1$ はそれぞれ $0,n$ での点質量とする．
+\end{example}
+\begin{example}[Poisson分布]
+$\theta>0$ とする．$k=0,1,\ldots$ に重み $e^{-\theta}\theta^k/k!$ を与える．指数関数の級数展開から総和は1となる．これを $\operatorname{Pois}(\theta)$ と記す．$\theta=0$ の場合は0での点質量とする．
+\end{example}
+\begin{example}[一様分布と指数分布]
+$a<b$ のとき $f(x)=(b-a)^{-1}\1_{(a,b)}(x)$ を密度とする分布を $\operatorname{Unif}(a,b)$ という．\par $r>0$ とし，$f(x)=re^{-rx}\1_{(0,\infty)}(x)$ を密度とする分布を $\operatorname{Exp}(r)$ という．後者の積分は $[-e^{-rx}]_0^\infty=1$ であり，$t\ge0$ に対して $P(X>t)=e^{-rt}$ となる．
+\end{example}
+\begin{example}[正規分布]
+$m\in\R$，$s>0$ に対して
+\[
+ f(x)=\frac1{\sqrt{2\pi}s}\exp\left(-\frac{(x-m)^2}{2s^2}\right)
+\]
+を密度とする分布を $N(m,s^2)$ と記す．正規化には既知のGauss積分 $\int_\R e^{-x^2/2}\,dx=\sqrt{2\pi}$ を用いる（通常の極座標による積分公式）．$s=0$ では $m$ での点質量と定める．
+\end{example}
+\begin{example}[Cauchy分布]
+$f(x)=1/(\pi(1+x^2))$ は，逆正接関数を用いて積分すると全積分が1である．この分布を標準Cauchy分布という．
+\end{example}
+\begin{example}[Cantor分布]\label{cantor}
+$\Omega=[0,1)$ にLebesgue確率測度を入れ，$b_n(u)=\lfloor2^nu\rfloor-2\lfloor2^{n-1}u\rfloor\in\{0,1\}$ とする．可測関数
+\[
+ X(u)=\sum_{n\ge1}\frac{2b_n(u)}{3^n}
+\]
+は一様収束する級数の和として可測である．値域は三進Cantor集合 $C$ に含まれる．$C$ は第 $n$ 段階の長さ $3^{-n}$ の $2^n$ 個の閉区間の共通部分だから $\lambda(C)\le(2/3)^n\to0$．従って $X$ の分布は特異である．
+
+一方，最初に異なる桁が $n$ 番目なら，$X$ の値の差の絶対値は少なくとも $2/3^n-\sum_{j>n}2/3^j=1/3^n$ である．従って $X(u)=x$ を満たす $u$ は，存在するなら任意の $n$ について同じ最初の $n$ 個の二進桁を持つ．そのような $u$ は長さ $2^{-n}$ の半開区間に含まれるから $P(X=x)\le2^{-n}$．$n\to\infty$ より全ての単点の確率は0である．よってこの分布は離散分布でも絶対連続分布でもない．
+\end{example}
+\begin{remark}
+特異分布には離散分布も含まれる．例\ref{cantor}は特異連続分布（原子を持たない特異分布）である．離散，絶対連続，特異連続の成分を混合した分布も存在する．例えば $\mu=\tfrac12\delta_0+\tfrac12\lambda|_{[0,1]}$ は離散でも絶対連続でも特異でもない．
+\end{remark}
+
+\section{期待値と積分公式}
+\begin{definition}
+非負確率変数 $X$ の期待値を $\E X=\int_\Omega X\,dP\in[0,\infty]$ と定める．実数値確率変数については $X^+=\max(X,0)$，$X^-=\max(-X,0)$ とし，$\E X^+$ と $\E X^-$ が共に無限大でない場合に $\E X=\E X^+-\E X^-$ とする．$\E|X|<\infty$ のとき $X$ を可積分という．
+\end{definition}
+両方の積分が無限大の場合，期待値は定義されない．有限の期待値を持つことは可積分性と同値である．特に事象 $A$ の指示関数 $\1_A$ は $\E\1_A=P(A)$ を満たす．積分の単調性，線形性から期待値の対応する性質が従う（線形性は可積分な変数に対して述べる）．
+\begin{theorem}[押し出し測度の積分公式]\label{lotus}
+$X:\Omega\to S$ は可測であり，$g:S\to[0,\infty]$ は可測とする．このとき
+\[
+ \int_\Omega g\circ X\,dP=\int_S g\,d\mu_X.
+\]
+実数値 $g$ についても $g$ が $\mu_X$ に関して可積分なら $g\circ X$ は可積分であり同式が成り立つ．逆も成り立つ．
+\end{theorem}
+\begin{proof}
+$g=\1_B$ のときは分布の定義そのものである．非負単関数の場合は有限和の線形性から成り立つ．一般の非負可測関数 $g$ に対し $g_n\uparrow g$ なる非負単関数列を取ると $g_n\circ X\uparrow g\circ X$ である．両側に単調収束定理を適用して結論を得る．実数値の場合は $|g|,g^+,g^-$ にそれぞれ適用する．
+\end{proof}
+\begin{corollary}
+離散分布をもつ $X$ に対して，非負または可積分な $g(X)$ の期待値は
+\[
+ \E g(X)=\sum_{x\in D}g(x)P(X=x)
+\]
+である．絶対連続分布で密度が $f$ なら
+\[
+ \E g(X)=\int_\R g(x)f(x)\,dx
+\]
+である．
+\end{corollary}
+\begin{proof}
+分布の積分をそれぞれ単関数から単調収束で計算する．符号がある場合は正負部分に分解する．定理\ref{lotus}を用いればよい．
+\end{proof}
+\begin{proposition}[裾確率による期待値]\label{tail}
+$X\ge0$ なら $\E X=\int_0^\infty P(X>t)\,dt$ である．
+\end{proposition}
+\begin{proof}
+$X(\omega)=\int_0^\infty\1_{\{t<X(\omega)\}}\,dt$ である．$(\omega,t)\mapsto X(\omega)-t$ は積可測であるから被積分関数は非負可測であり，Tonelliの定理を適用して積分順序を交換する．
+\end{proof}
+\begin{example}
+$X\sim\operatorname{Exp}(r)$ なら命題\ref{tail}より $\E X=\int_0^\infty e^{-rt}\,dt=1/r$．標準Cauchy分布では
+\[
+ \int_0^M\frac{x}{\pi(1+x^2)}\,dx
+ =\frac{\log(1+M^2)}{2\pi}\longrightarrow\infty.
+\]
+対称性によって負部分の積分も無限大となる．従って期待値は存在しない．対称な区間上での積分が0となることと期待値が0となることは異なる．
+\end{example}
+
+\section{積率・分散・共分散}
+\begin{definition}
+$k\in\N$ に対し $\E|X|^k<\infty$ であるとき $\E X^k$ を $k$ 次積率という．二乗可積分な $X$ に対して
+\[
+ \Var(X)=\E[(X-\E X)^2]
+\]
+を分散という．$\sqrt{\Var(X)}$ を標準偏差という．
+\end{definition}
+二乗可積分性はCauchy--Schwarz不等式によって可積分性を含意する．
+\begin{proposition}
+二乗可積分な $X$ と $a,b,c\in\R$ に対して次が成り立つ．
+\begin{align*}
+ \Var(X)&=\E X^2-(\E X)^2,\\
+ \Var(aX+b)&=a^2\Var(X),\\
+ \E[(X-c)^2]&=\Var(X)+(\E X-c)^2.
+\end{align*}
+特に分散が0であることは $X=\E X$ a.s.と同値であり，$c=\E X$ は平均二乗誤差を最小とする唯一の定数である．
+\end{proposition}
+\begin{proof}
+平方を展開し，$\E(X-\E X)=0$ と $\E1=1$ を用いれば全ての等式を得る．非負可測関数 $Z$ の積分が0なら，各 $n$ に対して $\E Z\ge P(Z\ge1/n)/n$ であるので $P(Z>0)=0$ となる．これを $Z=(X-\E X)^2$ に適用する．最後の主張は第三式から従う．
+\end{proof}
+\begin{definition}
+$X,Y\in L^2(P)$ に対して $\Cov(X,Y)=\E[(X-\E X)(Y-\E Y)]$ と定める．分散が共に正のとき，相関係数を
+\[
+ \rho(X,Y)=\frac{\Cov(X,Y)}{\sqrt{\Var(X)\Var(Y)}}
+\]
+と定める．$\Cov(X,Y)=0$ のとき無相関という．
+\end{definition}
+\begin{proposition}
+$X,Y\in L^2(P)$ について $\Cov(X,Y)=\E XY-\E X\E Y$，$|\Cov(X,Y)|^2\le\Var(X)\Var(Y)$ である．また $X_1,\ldots,X_n\in L^2(P)$ に対し
+\[
+ \Var\left(\sum_iX_i\right)=\sum_i\Var(X_i)+2\sum_{i<j}\Cov(X_i,X_j).
+\]
+\end{proposition}
+\begin{proof}
+積の可積分性はCauchy--Schwarz不等式による．定義を展開すれば第一式を得る．中心化した二変数に同不等式を適用すれば第二式を得る．最後は $\bigl(\sum_i(X_i-\E X_i)\bigr)^2$ を展開し線形性を用いる．
+\end{proof}
+\begin{example}
+Bernoulli変数では $X^2=X$ であるから $\E X=p$，$\Var(X)=p(1-p)$．Poisson分布では非負級数の添字をずらすことによって
+\begin{align*}
+ \E X&=e^{-\theta}\sum_{k\ge1}\frac{\theta^k}{(k-1)!}=\theta e^{-\theta}e^\theta=\theta,\\
+ \E[X(X-1)]&=e^{-\theta}\sum_{k\ge2}\frac{\theta^k}{(k-2)!}=\theta^2.
+\end{align*}
+従って $\Var(X)=\theta$ である（$\theta=0$ の場合も成り立つ）．
+\end{example}
+\begin{example}
+$X\sim\operatorname{Unif}(a,b)$ について積分から $\E X=(a+b)/2$，$\E X^2=(a^2+ab+b^2)/3$ を得る．従って $\Var(X)=(b-a)^2/12$．$Z\sim N(0,1)$ では奇関数の積分により $\E Z=0$，部分積分により $\E Z^2=1$ である．実際 $\int x^2 e^{-x^2/2}dx$ の全実数上の積分は，境界項 $-xe^{-x^2/2}$ が両端で0となるので $\int e^{-x^2/2}dx$ に等しい．一般の正規分布は $m+sZ$ の分布であるから平均 $m$，分散 $s^2$ を持つ．
+\end{example}
+
+\section{基本不等式と関数空間}\label{sec:lp}
+\begin{theorem}[Markovの不等式]\label{markov}
+$Z\ge0$ と $a>0$ に対して $P(Z\ge a)\le a^{-1}\E Z$．
+\end{theorem}
+\begin{proof}
+各点で $a\1_{\{Z\ge a\}}\le Z$ が成立する．両辺を積分する．
+\end{proof}
+\begin{corollary}[Chebyshevの不等式]
+$X\in L^2(P)$，$a>0$ なら
+\[
+ P(|X-\E X|\ge a)\le\frac{\Var(X)}{a^2}.
+\]
+\end{corollary}
+\begin{proof}
+定理\ref{markov}を $Z=(X-\E X)^2$ と閾値 $a^2$ に適用する．
+\end{proof}
+\begin{lemma}[凸関数の支持直線]\label{support}
+有限値凸関数 $\varphi:\R\to\R$ と $m\in\R$ に対し，ある $a\in\R$ が存在して全ての $x\in\R$ について
+\[
+ \varphi(x)\ge\varphi(m)+a(x-m)
+\]
+となる．
+\end{lemma}
+\begin{proof}
+凸性から $x<m<y$ に対し $(\varphi(m)-\varphi(x))/(m-x)\le(\varphi(y)-\varphi(m))/(y-m)$．従って左側の全ての割線勾配の上限 $a_-$ と右側の全ての割線勾配の下限 $a_+$ は有限で $a_-\le a_+$ である（固定した両側の点によって評価できる）．$a\in[a_-,a_+]$ を取って各不等式を書き直す．
+\end{proof}
+\begin{theorem}[Jensenの不等式]
+$X\in L^1(P)$，$\varphi$ は有限値凸関数とする．このとき $\varphi(X)$ の負部分は可積分であり
+\[
+ \varphi(\E X)\le\E\varphi(X)
+\]
+が成り立つ（右辺は $+\infty$ でもよい）．
+\end{theorem}
+\begin{proof}
+有限値凸関数は実直線上で連続である．実際 $a<b$ に対し $a\le x<y\le b$ なら割線勾配 $(\varphi(y)-\varphi(x))/(y-x)$ は $(\varphi(a)-\varphi(a-1))$ と $(\varphi(b+1)-\varphi(b))$ の間にある（凸性による割線勾配の単調性）．従って $[a,b]$ 上でLipschitz連続である．従って $\varphi(X)$ は可測である．補題\ref{support}を $m=\E X$ に適用する．右辺の支持直線を $X$ に代入したものは可積分であり，$\varphi(X)^-$ はその負部分で上から抑えられる．不等式を積分すれば $\E(X-m)=0$ より結論が従う．
+\end{proof}
+\begin{definition}
+$1\le p<\infty$ とする．$L^p(P)$ は $\E|X|^p<\infty$ なる実数値確率変数をa.s.の等号で同一視した空間とし，$\norm{X}_p=(\E|X|^p)^{1/p}$ とする．$L^\infty(P)$ はある有限定数 $M$ について $|X|\le M$ a.s.となる確率変数の同値類の空間とし，$\norm{X}_\infty$ をそのような $M\ge0$ の下限とする．
+\end{definition}
+通常の $L^p$ 空間論（H\"older，Minkowski，完備性）を引用する．特に $L^2$ は内積 $\langle X,Y\rangle=\E XY$ を持つHilbert空間である．
+\begin{proposition}
+$1\le p\le q\le\infty$ なら $L^q(P)\subset L^p(P)$ かつ $\norm{X}_p\le\norm{X}_q$．
+\end{proposition}
+\begin{proof}
+$p=q$ は自明．$p<q<\infty$ ならH\"olderの不等式を $|X|^p$ と1に指数 $q/p$ および $q/(q-p)$ で適用する．$\E1=1$ から $\E|X|^p\le(\E|X|^q)^{p/q}$．$q=\infty$ のとき $|X|\le\norm X_\infty$ a.s.である（下限に近づく可算個の定数について確率1の事象を共通に取る）から直ちに従う．
+\end{proof}
+\begin{remark}
+この包含関係には全測度が1であることが本質的である．無限測度空間では一般に成立しない．また確率変数をa.s.で同一視することによって，ノルムが0であることと零元であることが同値になる．
+\end{remark}
+
+\section{確認問題}
+\begin{example}[同じ分布と異なる結合]
+$[0,1]$ のLebesgue確率空間で $X(u)=u$，$Y(u)=1-u$ とする．両者は一様分布であるが，$\E XY=\int_0^1u(1-u)du=1/6$，$\Cov(X,Y)=1/6-1/4=-1/12$ である．$Y'=X$ とすれば $\Cov(X,Y')=1/12$ である．周辺分布を固定しても共分散は変わり得る．
+\end{example}
+\begin{example}[期待値の存在と二乗可積分性]
+$[1,\infty)$ 上の密度 $2x^{-3}$ を持つ分布を考える．全積分は1であり，$\E X=2\int_1^\infty x^{-2}dx=2$ であるが $\E X^2=2\int_1^\infty x^{-1}dx=\infty$．従って $L^2(P)\subset L^1(P)$ は一般には真の包含である．
+\end{example}
+\begin{example}[分布からの確率変数の構成]
+$U$ が $(0,1)$ 上の一様分布に従うとき，$r>0$ に対して $X=-r^{-1}\log U$ とおく．$t\ge0$ なら $P(X\le t)=P(U\ge e^{-rt})=1-e^{-rt}$，$t<0$ なら0である．従って $X\sim\operatorname{Exp}(r)$．この例は定理\ref{cdf}の一般化逆関数の構成を具体化したものである（$1-U$ も一様分布を持つ）．
+\end{example}
+以上により確率測度，確率変数，分布，期待値の意味が定まった．独立な確率変数の存在は，これらの定義だけから自明には従わない．その構成は60.002で扱う．収束および条件付けはそれぞれ60.003，60.004の主題である．
+\begin{thebibliography}{9}
+\bibitem{durrett} R. Durrett, \textit{Probability: Theory and Examples}, Version 5, 2019, \S\S1.1--1.6, Appendix A.1.
+\bibitem{bog} V. I. Bogachev, \textit{Measure Theory}, Vol. I, Springer, 2007, Chs. 1--2, \S\S3.2, 3.4, 3.6, 4.1, 4.3.
+\end{thebibliography}
+
+\end{document}

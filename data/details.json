@@ -117,7 +117,9 @@
         "05.030"
       ],
       "successors": [],
-      "related": []
+      "related": [
+        "60.001"
+      ]
     },
     {
       "id": "11.010",
@@ -465,9 +467,12 @@
       "prerequisites": [],
       "successors": [
         "60.005",
-        "60.010"
+        "60.010",
+        "60.004"
       ],
-      "related": []
+      "related": [
+        "60.001"
+      ]
     },
     {
       "id": "28.020",
@@ -476,7 +481,8 @@
       "prerequisites": [],
       "successors": [],
       "related": [
-        "28.010"
+        "28.010",
+        "60.001"
       ]
     },
     {
@@ -584,6 +590,18 @@
       "related": [
         "58.040"
       ]
+    },
+    {
+      "id": "34.010",
+      "summary": "常微分方程式の初期値問題を積分方程式に帰着し、Grönwallの不等式、Picard–Lindelöfの存在・一意性定理、Peanoの存在定理、初期値への連続依存性を扱う。",
+      "summary_basis": "source_outline",
+      "prerequisites": [
+        "47.010"
+      ],
+      "successors": [
+        "P5.010"
+      ],
+      "related": []
     },
     {
       "id": "35.010",
@@ -786,7 +804,8 @@
         "81.020"
       ],
       "related": [
-        "42.020"
+        "42.020",
+        "60.004"
       ]
     },
     {
@@ -1286,11 +1305,73 @@
       ]
     },
     {
+      "id": "60.001",
+      "summary": "確率測度と可測写像から確率変数・分布・期待値を構成し、基本的な不等式を証明する。",
+      "summary_basis": "direct_source_inspection",
+      "prerequisites": [],
+      "successors": [
+        "60.002",
+        "60.003",
+        "60.004"
+      ],
+      "related": [
+        "28.010",
+        "28.020",
+        "05.060"
+      ]
+    },
+    {
+      "id": "60.002",
+      "summary": "独立性を測度論的に定式化し、有限次元分布の整合性から可算無限積確率空間を構成する。",
+      "summary_basis": "direct_source_inspection",
+      "prerequisites": [
+        "60.001"
+      ],
+      "successors": [
+        "60.003",
+        "60.004",
+        "60.020"
+      ],
+      "related": []
+    },
+    {
+      "id": "60.003",
+      "summary": "四つの収束概念の関係を反例とともに整理し、弱大数の法則および有限分散の場合の強大数の法則を証明する。",
+      "summary_basis": "direct_source_inspection",
+      "prerequisites": [
+        "60.001",
+        "60.002"
+      ],
+      "successors": [
+        "60.005",
+        "62.010"
+      ],
+      "related": []
+    },
+    {
+      "id": "60.004",
+      "summary": "Radon–Nikodymの定理を用いて条件付き期待値を構成し、基本性質とL²直交射影による特徴づけを証明する。",
+      "summary_basis": "direct_source_inspection",
+      "prerequisites": [
+        "60.001",
+        "60.002",
+        "28.010"
+      ],
+      "successors": [
+        "60.010",
+        "62.050"
+      ],
+      "related": [
+        "46.030"
+      ]
+    },
+    {
       "id": "60.005",
       "summary": "「大数の法則と中心極限定理」を主題とする。設計上は、大数の法則・中心極限定理の仮定を確認し、正規近似を評価することを学習目標とする。",
       "summary_basis": "planned_goal",
       "prerequisites": [
-        "28.010"
+        "28.010",
+        "60.003"
       ],
       "successors": [
         "60.010",
@@ -1307,7 +1388,8 @@
       "summary_basis": "topic_guide",
       "prerequisites": [
         "28.010",
-        "60.005"
+        "60.005",
+        "60.004"
       ],
       "successors": [
         "60.030",
@@ -1321,7 +1403,9 @@
       "id": "60.020",
       "summary": "Brown運動の確率過程としての構成と、連続性・独立増分などの基本性質を学ぶ。",
       "summary_basis": "topic_guide",
-      "prerequisites": [],
+      "prerequisites": [
+        "60.002"
+      ],
       "successors": [
         "60.030",
         "60.060"
@@ -1431,7 +1515,8 @@
       "summary": "「統計モデルと推定理論」を主題とする。設計上は、推定量を構成し、偏り・分散・Cramér–Rao下界を比較することを学習目標とする。",
       "summary_basis": "planned_goal",
       "prerequisites": [
-        "60.005"
+        "60.005",
+        "60.003"
       ],
       "successors": [
         "62.020",
@@ -1489,7 +1574,8 @@
       "summary": "「Bayesian統計の数学」を主題とする。設計上は、標本から事後分布・事後予測分布・事後リスクを計算することを学習目標とする。",
       "summary_basis": "planned_goal",
       "prerequisites": [
-        "62.010"
+        "62.010",
+        "60.004"
       ],
       "successors": [],
       "related": []
@@ -2043,18 +2129,6 @@
       "related": [
         "97.170"
       ]
-    },
-    {
-      "id": "34.010",
-      "summary": "常微分方程式の初期値問題を積分方程式に帰着し、Grönwallの不等式、Picard–Lindelöfの存在・一意性定理、Peanoの存在定理、初期値への連続依存性を扱う。",
-      "summary_basis": "source_outline",
-      "prerequisites": [
-        "47.010"
-      ],
-      "successors": [
-        "P5.010"
-      ],
-      "related": []
     },
     {
       "id": "P5.010",

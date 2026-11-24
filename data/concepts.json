@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "notes_count": 160,
+  "notes_count": 165,
   "concepts": [
     {
       "id": "universality",
@@ -206,12 +206,14 @@
         "statistics",
         "numerical-analysis",
         "optimization",
-        "entrance-math"
+        "entrance-math",
+        "measure-theory"
       ],
       "related_note_ids": [
         "34.010",
         "42.010",
         "54.040",
+        "60.003",
         "60.005",
         "65.090",
         "90.030",
@@ -2598,6 +2600,8 @@
         "combinatorics"
       ],
       "related_note_ids": [
+        "60.001",
+        "60.002",
         "62.010",
         "82.010",
         "91.100",
@@ -2615,9 +2619,11 @@
       "fields": [
         "probability-theory",
         "statistics",
-        "fourier-analysis"
+        "fourier-analysis",
+        "measure-theory"
       ],
       "related_note_ids": [
+        "60.003",
         "60.005",
         "60.090"
       ],
@@ -2652,6 +2658,7 @@
         "measure-theory"
       ],
       "related_note_ids": [
+        "60.004",
         "60.010"
       ],
       "related_concept_ids": [],
@@ -3816,6 +3823,7 @@
       ],
       "related_note_ids": [
         "28.010",
+        "60.004",
         "60.070"
       ],
       "related_concept_ids": [
@@ -4121,6 +4129,350 @@
         "combinatorial-inversion"
       ],
       "index_status": "本文の主題に基づく整理"
+    },
+    {
+      "id": "probability-space",
+      "name_ja": "確率空間",
+      "name_en": "probability space",
+      "aliases": [],
+      "description": "全測度が1の測度空間。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.001"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "probability-measure",
+      "name_ja": "確率測度",
+      "name_en": "probability measure",
+      "aliases": [],
+      "description": "全質量1の非負測度。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.001"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "random-variable",
+      "name_ja": "確率変数",
+      "name_en": "random variable",
+      "aliases": [],
+      "description": "確率空間上の可測写像。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.001"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "pushforward-measure",
+      "name_ja": "押し出し測度",
+      "name_en": "pushforward measure",
+      "aliases": [],
+      "description": "可測写像の逆像で定義される測度。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.001"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "expectation",
+      "name_ja": "期待値",
+      "name_en": "expectation",
+      "aliases": [],
+      "description": "確率変数の測度に関する積分。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.001"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "variance",
+      "name_ja": "分散",
+      "name_en": "variance",
+      "aliases": [],
+      "description": "中心化した確率変数の二乗期待値。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.001"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "pi-lambda-theorem",
+      "name_ja": "π–λ定理",
+      "name_en": "pi-lambda theorem",
+      "aliases": [],
+      "description": "π族を含むDynkin族に関する生成定理。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.001"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "independence",
+      "name_ja": "独立性",
+      "name_en": "independence",
+      "aliases": [],
+      "description": "有限個の事象の共通部分の確率が積に分解する性質。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.002",
+        "60.004"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "product-measure",
+      "name_ja": "積測度",
+      "name_en": "product measure",
+      "aliases": [],
+      "description": "長方形上で各成分の測度の積を取る測度。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.002"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "kolmogorov-extension",
+      "name_ja": "Kolmogorov拡張定理",
+      "name_en": "Kolmogorov extension theorem",
+      "aliases": [],
+      "description": "整合的な有限次元分布から確率測度を構成する定理。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.002"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "iid",
+      "name_ja": "独立同分布",
+      "name_en": "independent and identically distributed",
+      "aliases": [],
+      "description": "独立で同一の分布を持つ確率変数族。",
+      "fields": [
+        "probability-theory",
+        "measure-theory",
+        "statistics"
+      ],
+      "related_note_ids": [
+        "60.002",
+        "60.003"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "convolution",
+      "name_ja": "畳み込み",
+      "name_en": "convolution",
+      "aliases": [],
+      "description": "独立な実数値確率変数の和の分布を与える測度演算。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.002"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "convergence-in-probability",
+      "name_ja": "確率収束",
+      "name_en": "convergence in probability",
+      "aliases": [],
+      "description": "偏差が任意の正数を超える確率が0に収束すること。",
+      "fields": [
+        "probability-theory",
+        "measure-theory",
+        "statistics"
+      ],
+      "related_note_ids": [
+        "60.003"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "weak-convergence",
+      "name_ja": "弱収束・分布収束",
+      "name_en": "weak convergence",
+      "aliases": [],
+      "description": "有界連続関数に対する積分の収束。",
+      "fields": [
+        "probability-theory",
+        "measure-theory",
+        "statistics"
+      ],
+      "related_note_ids": [
+        "60.003"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "borel-cantelli",
+      "name_ja": "Borel–Cantelliの補題",
+      "name_en": "Borel–Cantelli lemma",
+      "aliases": [],
+      "description": "無限回起こる事象の確率に関する補題。",
+      "fields": [
+        "probability-theory",
+        "measure-theory",
+        "statistics"
+      ],
+      "related_note_ids": [
+        "60.003"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "zero-one-law",
+      "name_ja": "Kolmogorovの0–1法則",
+      "name_en": "Kolmogorov zero-one law",
+      "aliases": [],
+      "description": "独立列の末尾事象の確率は0または1。",
+      "fields": [
+        "probability-theory",
+        "measure-theory",
+        "statistics"
+      ],
+      "related_note_ids": [
+        "60.003"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "law-of-large-numbers",
+      "name_ja": "大数の法則",
+      "name_en": "law of large numbers",
+      "aliases": [],
+      "description": "標本平均の確率収束またはほとんど確実な収束。",
+      "fields": [
+        "probability-theory",
+        "measure-theory",
+        "statistics"
+      ],
+      "related_note_ids": [
+        "60.003"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "conditional-probability",
+      "name_ja": "条件付き確率",
+      "name_en": "conditional probability",
+      "aliases": [],
+      "description": "条件となる事象または情報に関する確率。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.004"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "bayes-theorem",
+      "name_ja": "Bayesの定理",
+      "name_en": "Bayes theorem",
+      "aliases": [],
+      "description": "条件付き確率を反転して表す公式。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.004"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "orthogonal-projection",
+      "name_ja": "直交射影",
+      "name_en": "orthogonal projection",
+      "aliases": [],
+      "description": "Hilbert空間の閉部分空間への直交射影。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.004"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "doob-dynkin",
+      "name_ja": "Doob–Dynkinの補題",
+      "name_en": "Doob–Dynkin lemma",
+      "aliases": [],
+      "description": "生成σ-加法族に関する可測関数の因子化。",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "related_note_ids": [
+        "60.004"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
     }
   ]
 }

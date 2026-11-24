@@ -1,7 +1,7 @@
 {
   "version": 2,
   "publication": "metadata-index",
-  "source_snapshot": "2026-11-23",
+  "source_snapshot": "2026-11-24",
   "content_review": "not_a_proof_correctness_certification",
   "notes": [
     {
@@ -3429,6 +3429,94 @@
       "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/32_d_modules/32.040_d_module_derham_solutions/32.040_d_module_derham_solutions.tex",
       "publicly_available": true,
       "content_basis": "repository_source_structure_audit_20261122",
+      "mathematical_review_status": "校閲中",
+      "legacy_title": null
+    },
+    {
+      "id": "34.010",
+      "title": "常微分方程式の初期値問題の基本定理",
+      "fields": [
+        "ode"
+      ],
+      "topics": [
+        "ode",
+        "fixed-point",
+        "iteration",
+        "convergence"
+      ],
+      "summary": "常微分方程式の初期値問題を積分方程式に帰着し、Grönwallの不等式、Picard–Lindelöfの存在・一意性定理、Peanoの存在定理、初期値への連続依存性を扱う。",
+      "description": "常微分方程式の初期値問題を積分方程式に帰着し、Grönwallの不等式、Picard–Lindelöfの存在・一意性定理、Peanoの存在定理、初期値への連続依存性を扱う。 原稿は初期値問題と解の概念、Gronwallの不等式、Picard--Lindelofの局所存在・一意性定理、Peanoの存在定理を中心に構成される。定理の条件と具体的な議論を本文で確認できる。",
+      "primary_field": "ode",
+      "secondary_fields": [],
+      "tags": [
+        "ode",
+        "fixed-point",
+        "iteration",
+        "convergence"
+      ],
+      "keywords": [
+        "常微分方程式の初期値問題の基本定理",
+        "34.010",
+        "初期値問題と解の概念",
+        "Gronwallの不等式",
+        "Picard--Lindelofの局所存在・一意性定理",
+        "Peanoの存在定理",
+        "一意性と連続依存性",
+        "仮定の役割を示す例",
+        "常微分方程式",
+        "ode",
+        "不動点",
+        "fixed point",
+        "Banachの不動点定理",
+        "縮小写像原理",
+        "逐次近似",
+        "iteration",
+        "収束",
+        "convergence",
+        "Picard–Lindelöfの定理",
+        "Picard–Lindelöf theorem",
+        "ピカール＝リンデレーフ",
+        "Cauchy–Lipschitz theorem",
+        "Grönwallの不等式",
+        "Grönwall inequality",
+        "グロンウォール",
+        "Gronwall lemma",
+        "Banach fixed-point theorem",
+        "Banach contraction principle"
+      ],
+      "prerequisites": [],
+      "recommended_prior": [
+        "47.010"
+      ],
+      "main_concepts": [
+        "ode",
+        "fixed-point",
+        "iteration",
+        "convergence",
+        "picard-lindelof",
+        "gronwall",
+        "banach-fixed-point"
+      ],
+      "main_results": [
+        "Gronwallの不等式",
+        "Picard--Lindelofの局所存在・一意性定理",
+        "Peanoの存在定理",
+        "一意性と連続依存性"
+      ],
+      "methods": [],
+      "outline_sections": [
+        "初期値問題と解の概念",
+        "Gronwallの不等式",
+        "Picard--Lindelofの局所存在・一意性定理",
+        "Peanoの存在定理",
+        "一意性と連続依存性",
+        "仮定の役割を示す例"
+      ],
+      "github_url": null,
+      "pdf_url": null,
+      "source_url": null,
+      "publicly_available": false,
+      "content_basis": "direct_source_inspection",
       "mathematical_review_status": "校閲中",
       "legacy_title": null
     },
@@ -6876,6 +6964,395 @@
       "legacy_title": null
     },
     {
+      "id": "60.001",
+      "title": "確率空間と確率変数",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "topics": [
+        "probability-space",
+        "probability-measure",
+        "random-variable",
+        "probability-distribution",
+        "pushforward-measure",
+        "expectation",
+        "variance",
+        "pi-lambda-theorem"
+      ],
+      "summary": "確率測度と可測写像から確率変数・分布・期待値を構成し、基本的な不等式を証明する。",
+      "description": "確率測度と可測写像から確率変数・分布・期待値を構成し、基本的な不等式を証明する。 全17頁。数学的自己査読およびpLaTeXコンパイル済みの完成候補版（最終承認前）。",
+      "primary_field": "probability-theory",
+      "secondary_fields": [
+        "measure-theory"
+      ],
+      "tags": [
+        "probability-space",
+        "probability-measure",
+        "random-variable",
+        "probability-distribution",
+        "pushforward-measure",
+        "expectation",
+        "variance",
+        "pi-lambda-theorem"
+      ],
+      "keywords": [
+        "確率空間と確率変数",
+        "60.001",
+        "有限・可算確率空間",
+        "確率測度の公理と基本性質",
+        "測度の構成・拡張",
+        "可測写像と確率分布",
+        "分布関数と実現定理",
+        "期待値・分散・基本不等式",
+        "Dynkinのπ–λ定理",
+        "分布関数の実現定理",
+        "Markov・Chebyshev・Jensenの不等式",
+        "確率空間",
+        "probability space",
+        "確率測度",
+        "probability measure",
+        "確率変数",
+        "random variable",
+        "確率分布",
+        "probability distribution",
+        "押し出し測度",
+        "pushforward measure",
+        "期待値",
+        "expectation",
+        "分散",
+        "variance",
+        "π–λ定理",
+        "pi-lambda theorem"
+      ],
+      "prerequisites": [],
+      "recommended_prior": [],
+      "main_concepts": [
+        "probability-space",
+        "probability-measure",
+        "random-variable",
+        "probability-distribution",
+        "pushforward-measure",
+        "expectation",
+        "variance",
+        "pi-lambda-theorem"
+      ],
+      "main_results": [
+        "Dynkinのπ–λ定理",
+        "分布関数の実現定理",
+        "Markov・Chebyshev・Jensenの不等式"
+      ],
+      "methods": [
+        "測度論",
+        "積分",
+        "証明"
+      ],
+      "outline_sections": [
+        "有限・可算確率空間",
+        "確率測度の公理と基本性質",
+        "測度の構成・拡張",
+        "可測写像と確率分布",
+        "分布関数と実現定理",
+        "期待値・分散・基本不等式"
+      ],
+      "github_url": "https://github.com/HaWkoods/giconrad-site/tree/main/public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables",
+      "pdf_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables/60.001_probability_spaces_random_variables.pdf",
+      "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables/60.001_probability_spaces_random_variables.tex",
+      "publicly_available": true,
+      "content_basis": "direct_source_inspection",
+      "mathematical_review_status": "校閲中",
+      "legacy_title": null
+    },
+    {
+      "id": "60.002",
+      "title": "独立性と無限積確率空間",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "topics": [
+        "independence",
+        "product-measure",
+        "kolmogorov-extension",
+        "iid",
+        "convolution",
+        "probability-distribution"
+      ],
+      "summary": "独立性を測度論的に定式化し、有限次元分布の整合性から可算無限積確率空間を構成する。",
+      "description": "独立性を測度論的に定式化し、有限次元分布の整合性から可算無限積確率空間を構成する。 全12頁。数学的自己査読およびpLaTeXコンパイル済みの完成候補版（最終承認前）。",
+      "primary_field": "probability-theory",
+      "secondary_fields": [
+        "measure-theory"
+      ],
+      "tags": [
+        "independence",
+        "product-measure",
+        "kolmogorov-extension",
+        "iid",
+        "convolution",
+        "probability-distribution"
+      ],
+      "keywords": [
+        "独立性と無限積確率空間",
+        "60.002",
+        "事象・σ-加法族の独立性",
+        "確率変数の独立性と同時分布",
+        "畳み込み",
+        "円柱代数と無限積",
+        "独立確率変数列",
+        "独立性と積測度の同値性",
+        "可算実数値Kolmogorov拡張定理",
+        "独立性",
+        "independence",
+        "積測度",
+        "product measure",
+        "Kolmogorov拡張定理",
+        "Kolmogorov extension theorem",
+        "独立同分布",
+        "independent and identically distributed",
+        "convolution",
+        "確率分布",
+        "probability distribution"
+      ],
+      "prerequisites": [],
+      "recommended_prior": [
+        "60.001"
+      ],
+      "main_concepts": [
+        "independence",
+        "product-measure",
+        "kolmogorov-extension",
+        "iid",
+        "convolution",
+        "probability-distribution"
+      ],
+      "main_results": [
+        "独立性と積測度の同値性",
+        "可算実数値Kolmogorov拡張定理"
+      ],
+      "methods": [
+        "測度論",
+        "積分",
+        "証明"
+      ],
+      "outline_sections": [
+        "事象・σ-加法族の独立性",
+        "確率変数の独立性と同時分布",
+        "畳み込み",
+        "円柱代数と無限積",
+        "独立確率変数列"
+      ],
+      "github_url": "https://github.com/HaWkoods/giconrad-site/tree/main/public_notes/60_probability_stochastic/60.002_independence_infinite_products",
+      "pdf_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/60_probability_stochastic/60.002_independence_infinite_products/60.002_independence_infinite_products.pdf",
+      "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/60_probability_stochastic/60.002_independence_infinite_products/60.002_independence_infinite_products.tex",
+      "publicly_available": true,
+      "content_basis": "direct_source_inspection",
+      "mathematical_review_status": "校閲中",
+      "legacy_title": null
+    },
+    {
+      "id": "60.003",
+      "title": "確率変数列の収束と大数の法則",
+      "fields": [
+        "probability-theory",
+        "measure-theory",
+        "statistics"
+      ],
+      "topics": [
+        "convergence",
+        "convergence-in-probability",
+        "weak-convergence",
+        "borel-cantelli",
+        "zero-one-law",
+        "law-of-large-numbers",
+        "limit-theorem",
+        "iid"
+      ],
+      "summary": "四つの収束概念の関係を反例とともに整理し、弱大数の法則および有限分散の場合の強大数の法則を証明する。",
+      "description": "四つの収束概念の関係を反例とともに整理し、弱大数の法則および有限分散の場合の強大数の法則を証明する。 全13頁。数学的自己査読およびpLaTeXコンパイル済みの完成候補版（最終承認前）。",
+      "primary_field": "probability-theory",
+      "secondary_fields": [
+        "measure-theory",
+        "statistics"
+      ],
+      "tags": [
+        "convergence",
+        "convergence-in-probability",
+        "weak-convergence",
+        "borel-cantelli",
+        "zero-one-law",
+        "law-of-large-numbers",
+        "limit-theorem",
+        "iid"
+      ],
+      "keywords": [
+        "確率変数列の収束と大数の法則",
+        "60.003",
+        "四つの収束概念と反例",
+        "Borel–Cantelliの補題",
+        "Kolmogorovの0–1法則",
+        "最大不等式",
+        "弱・強大数の法則",
+        "Monte Carlo積分",
+        "可積分i.i.d.の弱大数の法則",
+        "有限分散i.i.d.の強大数の法則",
+        "収束",
+        "convergence",
+        "確率収束",
+        "convergence in probability",
+        "弱収束・分布収束",
+        "weak convergence",
+        "Borel–Cantelli lemma",
+        "Kolmogorov zero-one law",
+        "大数の法則",
+        "law of large numbers",
+        "極限定理",
+        "limit theorem",
+        "独立同分布",
+        "independent and identically distributed"
+      ],
+      "prerequisites": [],
+      "recommended_prior": [
+        "60.001",
+        "60.002"
+      ],
+      "main_concepts": [
+        "convergence",
+        "convergence-in-probability",
+        "weak-convergence",
+        "borel-cantelli",
+        "zero-one-law",
+        "law-of-large-numbers",
+        "limit-theorem",
+        "iid"
+      ],
+      "main_results": [
+        "Borel–Cantelliの補題",
+        "Kolmogorovの0–1法則",
+        "可積分i.i.d.の弱大数の法則",
+        "有限分散i.i.d.の強大数の法則"
+      ],
+      "methods": [
+        "測度論",
+        "積分",
+        "証明"
+      ],
+      "outline_sections": [
+        "四つの収束概念と反例",
+        "Borel–Cantelliの補題",
+        "Kolmogorovの0–1法則",
+        "最大不等式",
+        "弱・強大数の法則",
+        "Monte Carlo積分"
+      ],
+      "github_url": "https://github.com/HaWkoods/giconrad-site/tree/main/public_notes/60_probability_stochastic/60.003_convergence_laws_large_numbers",
+      "pdf_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/60_probability_stochastic/60.003_convergence_laws_large_numbers/60.003_convergence_laws_large_numbers.pdf",
+      "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/60_probability_stochastic/60.003_convergence_laws_large_numbers/60.003_convergence_laws_large_numbers.tex",
+      "publicly_available": true,
+      "content_basis": "direct_source_inspection",
+      "mathematical_review_status": "校閲中",
+      "legacy_title": null
+    },
+    {
+      "id": "60.004",
+      "title": "条件付き確率と条件付き期待値",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ],
+      "topics": [
+        "conditional-probability",
+        "conditional-expectation",
+        "bayes-theorem",
+        "radon-nikodym",
+        "orthogonal-projection",
+        "doob-dynkin",
+        "independence"
+      ],
+      "summary": "Radon–Nikodymの定理を用いて条件付き期待値を構成し、基本性質とL²直交射影による特徴づけを証明する。",
+      "description": "Radon–Nikodymの定理を用いて条件付き期待値を構成し、基本性質とL²直交射影による特徴づけを証明する。 全13頁。数学的自己査読およびpLaTeXコンパイル済みの完成候補版（最終承認前）。",
+      "primary_field": "probability-theory",
+      "secondary_fields": [
+        "measure-theory"
+      ],
+      "tags": [
+        "conditional-probability",
+        "conditional-expectation",
+        "bayes-theorem",
+        "radon-nikodym",
+        "orthogonal-projection",
+        "doob-dynkin",
+        "independence"
+      ],
+      "keywords": [
+        "条件付き確率と条件付き期待値",
+        "60.004",
+        "条件付き確率とBayesの定理",
+        "条件付き期待値の存在・一意性",
+        "基本性質と反復期待値",
+        "Jensenの不等式",
+        "直交射影とDoob–Dynkin",
+        "条件付き密度",
+        "反復期待値の法則",
+        "条件付きJensenの不等式",
+        "Doob–Dynkinの補題",
+        "条件付き確率",
+        "conditional probability",
+        "条件付き期待値",
+        "conditional expectation",
+        "Bayesの定理",
+        "Bayes theorem",
+        "Radon–Nikodymの定理",
+        "Radon–Nikodym theorem",
+        "直交射影",
+        "orthogonal projection",
+        "Doob–Dynkin lemma",
+        "独立性",
+        "independence"
+      ],
+      "prerequisites": [],
+      "recommended_prior": [
+        "60.001",
+        "60.002",
+        "28.010"
+      ],
+      "main_concepts": [
+        "conditional-probability",
+        "conditional-expectation",
+        "bayes-theorem",
+        "radon-nikodym",
+        "orthogonal-projection",
+        "doob-dynkin",
+        "independence"
+      ],
+      "main_results": [
+        "条件付き期待値の存在・一意性",
+        "反復期待値の法則",
+        "条件付きJensenの不等式",
+        "Doob–Dynkinの補題"
+      ],
+      "methods": [
+        "測度論",
+        "積分",
+        "証明"
+      ],
+      "outline_sections": [
+        "条件付き確率とBayesの定理",
+        "条件付き期待値の存在・一意性",
+        "基本性質と反復期待値",
+        "Jensenの不等式",
+        "直交射影とDoob–Dynkin",
+        "条件付き密度"
+      ],
+      "github_url": "https://github.com/HaWkoods/giconrad-site/tree/main/public_notes/60_probability_stochastic/60.004_conditional_probability_expectation",
+      "pdf_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/60_probability_stochastic/60.004_conditional_probability_expectation/60.004_conditional_probability_expectation.pdf",
+      "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/60_probability_stochastic/60.004_conditional_probability_expectation/60.004_conditional_probability_expectation.tex",
+      "publicly_available": true,
+      "content_basis": "direct_source_inspection",
+      "mathematical_review_status": "校閲中",
+      "legacy_title": null
+    },
+    {
       "id": "60.005",
       "title": "大数の法則と中心極限定理",
       "fields": [
@@ -6919,7 +7396,8 @@
       ],
       "prerequisites": [],
       "recommended_prior": [
-        "28.010"
+        "28.010",
+        "60.003"
       ],
       "main_concepts": [
         "limit-theorem",
@@ -6999,7 +7477,8 @@
       "prerequisites": [],
       "recommended_prior": [
         "28.010",
-        "60.005"
+        "60.005",
+        "60.004"
       ],
       "main_concepts": [
         "conditional-expectation",
@@ -7069,7 +7548,9 @@
         "measure"
       ],
       "prerequisites": [],
-      "recommended_prior": [],
+      "recommended_prior": [
+        "60.002"
+      ],
       "main_concepts": [
         "brownian-motion",
         "measure"
@@ -7655,7 +8136,8 @@
       ],
       "prerequisites": [],
       "recommended_prior": [
-        "60.005"
+        "60.005",
+        "60.003"
       ],
       "main_concepts": [
         "statistical-inference",
@@ -7930,7 +8412,8 @@
       ],
       "prerequisites": [],
       "recommended_prior": [
-        "62.010"
+        "62.010",
+        "60.004"
       ],
       "main_concepts": [
         "bayesian",
@@ -11173,94 +11656,6 @@
       "pdf_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/97_entrance_math/97.200_hecke_sorting/97.200_hecke_sorting.pdf",
       "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/97_entrance_math/97.200_hecke_sorting/97.200_hecke_sorting.tex",
       "publicly_available": true,
-      "content_basis": "direct_source_inspection",
-      "mathematical_review_status": "校閲中",
-      "legacy_title": null
-    },
-    {
-      "id": "34.010",
-      "title": "常微分方程式の初期値問題の基本定理",
-      "fields": [
-        "ode"
-      ],
-      "topics": [
-        "ode",
-        "fixed-point",
-        "iteration",
-        "convergence"
-      ],
-      "summary": "常微分方程式の初期値問題を積分方程式に帰着し、Grönwallの不等式、Picard–Lindelöfの存在・一意性定理、Peanoの存在定理、初期値への連続依存性を扱う。",
-      "description": "常微分方程式の初期値問題を積分方程式に帰着し、Grönwallの不等式、Picard–Lindelöfの存在・一意性定理、Peanoの存在定理、初期値への連続依存性を扱う。 原稿は初期値問題と解の概念、Gronwallの不等式、Picard--Lindelofの局所存在・一意性定理、Peanoの存在定理を中心に構成される。定理の条件と具体的な議論を本文で確認できる。",
-      "primary_field": "ode",
-      "secondary_fields": [],
-      "tags": [
-        "ode",
-        "fixed-point",
-        "iteration",
-        "convergence"
-      ],
-      "keywords": [
-        "常微分方程式の初期値問題の基本定理",
-        "34.010",
-        "初期値問題と解の概念",
-        "Gronwallの不等式",
-        "Picard--Lindelofの局所存在・一意性定理",
-        "Peanoの存在定理",
-        "一意性と連続依存性",
-        "仮定の役割を示す例",
-        "常微分方程式",
-        "ode",
-        "不動点",
-        "fixed point",
-        "Banachの不動点定理",
-        "縮小写像原理",
-        "逐次近似",
-        "iteration",
-        "収束",
-        "convergence",
-        "Picard–Lindelöfの定理",
-        "Picard–Lindelöf theorem",
-        "ピカール＝リンデレーフ",
-        "Cauchy–Lipschitz theorem",
-        "Grönwallの不等式",
-        "Grönwall inequality",
-        "グロンウォール",
-        "Gronwall lemma",
-        "Banach fixed-point theorem",
-        "Banach contraction principle"
-      ],
-      "prerequisites": [],
-      "recommended_prior": [
-        "47.010"
-      ],
-      "main_concepts": [
-        "ode",
-        "fixed-point",
-        "iteration",
-        "convergence",
-        "picard-lindelof",
-        "gronwall",
-        "banach-fixed-point"
-      ],
-      "main_results": [
-        "Gronwallの不等式",
-        "Picard--Lindelofの局所存在・一意性定理",
-        "Peanoの存在定理",
-        "一意性と連続依存性"
-      ],
-      "methods": [],
-      "outline_sections": [
-        "初期値問題と解の概念",
-        "Gronwallの不等式",
-        "Picard--Lindelofの局所存在・一意性定理",
-        "Peanoの存在定理",
-        "一意性と連続依存性",
-        "仮定の役割を示す例"
-      ],
-      "github_url": null,
-      "pdf_url": null,
-      "source_url": null,
-      "publicly_available": false,
       "content_basis": "direct_source_inspection",
       "mathematical_review_status": "校閲中",
       "legacy_title": null

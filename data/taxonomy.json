@@ -915,6 +915,34 @@
         {
           "id": "ruin-probability",
           "label": "破産確率"
+        },
+        {
+          "id": "probability-space",
+          "label": "確率空間"
+        },
+        {
+          "id": "random-variable",
+          "label": "確率変数"
+        },
+        {
+          "id": "independence",
+          "label": "独立性"
+        },
+        {
+          "id": "kolmogorov-extension",
+          "label": "Kolmogorov拡張定理"
+        },
+        {
+          "id": "weak-convergence",
+          "label": "弱収束・分布収束"
+        },
+        {
+          "id": "law-of-large-numbers",
+          "label": "大数の法則"
+        },
+        {
+          "id": "conditional-probability",
+          "label": "条件付き確率"
         }
       ]
     },

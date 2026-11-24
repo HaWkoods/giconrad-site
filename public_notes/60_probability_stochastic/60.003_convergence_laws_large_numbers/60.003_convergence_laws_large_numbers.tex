@@ -1,0 +1,430 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{確率変数列の収束と大数の法則}
+\newcommand{\NoteSeries}{擬コンラット 60.003}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathcal F}
+\newcommand{\G}{\mathcal G}
+\newcommand{\B}{\mathcal B}
+\newcommand{\E}{\mathbb E}
+\newcommand{\1}{\mathbf{1}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+
+\begin{document}
+\section{目的と前提}
+確率変数列の収束にはいくつかの異なる定義がある．本稿ではそれらの相互関係を示し，独立な確率変数列に関する基本的な極限定理を導く．確率空間，確率変数，分布，期待値，分散，MarkovおよびChebyshevの不等式（60.001），独立性と独立な確率変数列の構成（60.002）を既知とする．Lebesgue積分の収束定理を用いる．$\N=\{1,2,\ldots\}$ とする．$\1_A$ は集合 $A$ の指示関数を表す．
+
+\section{四つの収束概念}
+\begin{definition}
+同一確率空間 $(\Omega,\F,P)$ 上の実数値確率変数列 $(X_n)$ と確率変数 $X$ に対して，次を定義する．
+\begin{enumerate}
+\item $P(\{\omega:X_n(\omega)\to X(\omega)\})=1$ のとき，$X_n$ は $X$ にほとんど確実に収束するという（$X_n\to X$ a.s.）．
+\item 任意の $\varepsilon>0$ について
+\[
+ P(|X_n-X|>\varepsilon)\longrightarrow0
+\]
+となるとき，確率収束するという（$X_n\xrightarrow{P}X$）．
+\item $1\le p<\infty$ とし，$X_n,X\in L^p(P)$ とする．$\norm{X_n-X}_p\to0$ のとき，$L^p$ 収束するという．
+\end{enumerate}
+\end{definition}
+a.s.収束を定義する事象は可測である．実際，これを
+\[
+ \bigcap_{k=1}^\infty\bigcup_{m=1}^\infty
+ \bigcap_{n\ge m}\{|X_n-X|\le 1/k\}
+\]
+と書ける．確率収束では $X_n$ と $X$ を同じ確率空間上で比較することが必要である．これに対し分布収束は各変数の分布だけを用いる．
+\begin{definition}[分布収束]\label{weakdef}
+$X_n,X$ は実数値確率変数とし，必ずしも同一確率空間上にあるとは限らない．$F_{X_n},F_X$ をそれぞれの分布関数とする．$F_X$ の任意の連続点 $t$ において $F_{X_n}(t)\to F_X(t)$ となるとき，$X_n$ は $X$ に分布収束するという（$X_n\xrightarrow{d}X$）．
+\end{definition}
+\begin{proposition}[a.s.収束と確率収束]\label{asprob}
+$X_n\to X$ a.s.ならば $X_n\xrightarrow{P}X$．
+\end{proposition}
+\begin{proof}
+任意の $\varepsilon>0$ に対し $\1_{\{|X_n-X|>\varepsilon\}}\to0$ a.s.であり，絶対値は1以下である．優収束定理によりその期待値は0に収束する．
+\end{proof}
+\begin{proposition}\label{lpprob}
+$X_n\to X$ in $L^p$ ならば $X_n\xrightarrow{P}X$．
+\end{proposition}
+\begin{proof}
+Markovの不等式により $P(|X_n-X|>\varepsilon)\le\varepsilon^{-p}\E|X_n-X|^p\to0$ である．
+\end{proof}
+\begin{proposition}[確率収束の極限の一意性]
+$X_n\xrightarrow{P}X$ かつ $X_n\xrightarrow{P}Y$ なら $X=Y$ a.s.である．
+\end{proposition}
+\begin{proof}
+三角不等式により $\{|X-Y|>\varepsilon\}\subset\{|X-X_n|>\varepsilon/2\}\cup\{|X_n-Y|>\varepsilon/2\}$ だから，確率を取り $n\to\infty$ とすると $P(|X-Y|>\varepsilon)=0$．$\varepsilon=1/k$ として可算和を取る．
+\end{proof}
+\begin{proposition}\label{probd}
+$X_n\xrightarrow{P}X$ ならば $X_n\xrightarrow{d}X$．
+\end{proposition}
+\begin{proof}
+$t\in\R$，$\delta>0$ とする．$|X_n-X|\le\delta$ のもとでは $X\le t-\delta$ なら $X_n\le t$，$X_n\le t$ なら $X\le t+\delta$ である．従って
+\begin{align*}
+ F_X(t-\delta)-P(|X_n-X|>\delta)&\le F_{X_n}(t),\\
+ F_{X_n}(t)&\le F_X(t+\delta)+P(|X_n-X|>\delta).
+\end{align*}
+$n\to\infty$ における下極限・上極限を取り，次いで $\delta\downarrow0$ とすれば，$t$ が $F_X$ の連続点であるとき両極限は $F_X(t)$ に等しい．
+\end{proof}
+\begin{remark}
+分布収束における極限の一意性は分布としての一意性である．二つの極限の分布関数は両者の共通連続点で一致する．分布関数の不連続点は高々可算であり，共通連続点は稠密である．各点に上から近づく共通連続点列を取り右連続性を用いれば，全点での一致を得る．
+\end{remark}
+\begin{proposition}[定数への分布収束]
+$X_n$ が定数 $c\in\R$ に分布収束するとする．$X_n$ が共通の確率空間にあるなら $X_n\xrightarrow{P}c$ である．
+\end{proposition}
+\begin{proof}
+定数 $c$ の分布関数の不連続点は $c$ のみである．従って $F_{X_n}(c-\varepsilon)\to0$，$F_{X_n}(c+\varepsilon)\to1$．
+\[
+ P(|X_n-c|>\varepsilon)\le F_{X_n}(c-\varepsilon)
+ +1-F_{X_n}(c+\varepsilon)\to0.
+\]
+\end{proof}
+
+\section{分布収束と測度の弱収束}
+\begin{theorem}[有界連続関数による特徴づけ]\label{weak}
+実数上のBorel確率測度 $\mu_n,\mu$ の分布関数をそれぞれ $F_n,F$ とする．次は同値である．
+\begin{enumerate}
+\item $F$ の全ての連続点 $t$ において $F_n(t)\to F(t)$．
+\item 任意の有界連続関数 $f:\R\to\R$ に対して
+\[
+ \int f\,d\mu_n\longrightarrow\int f\,d\mu.
+\]
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1)から(2)を示す．$M=\sup_x|f(x)|$ とし，$\eta>0$ を任意に取る．$F$ の不連続点は高々可算であるから，$F$ の連続点 $a<b$ で $F(a)<\eta$，$1-F(b)<\eta$ なるものが存在する．$F_n(a)\to F(a)$，$F_n(b)\to F(b)$ なので，十分大きい $n$ に対して $\mu_n(\R\setminus(a,b])<4\eta$ であり，$\mu(\R\setminus(a,b])<2\eta$ である．
+
+$f$ は $[a,b]$ 上で一様連続である．従って連続点からなる分割 $a=t_0<t_1<\cdots<t_m=b$ を十分細かく取り，各 $[t_{j-1},t_j]$ 内の関数値の振動を $\eta$ 未満とできる．$g=\sum_{j=1}^m f(t_j)\1_{(t_{j-1},t_j]}$ とおくと
+\[
+ \int g\,d\mu_n=\sum_{j=1}^m f(t_j)(F_n(t_j)-F_n(t_{j-1}))
+\]
+は $\int g\,d\mu$ に収束する．また $(a,b]$ 上の近似誤差は $\eta$ 未満であり，外では $|f-g|\le M$ だから
+\begin{align*}
+ \left|\int (f-g)\,d\mu_n\right|&\le\eta+4M\eta,\\
+ \left|\int (f-g)\,d\mu\right|&\le\eta+2M\eta.
+\end{align*}
+三角不等式を用い $n\to\infty$ とすると，所望の差の上極限は $(2+6M)\eta$ 以下となる．$\eta$ は任意であるから(2)が従う．
+
+逆に(2)を仮定する．$t$ を $F$ の連続点，$\delta>0$ とする．$f_-$ を $(-\infty,t-\delta]$ で1，$[t,\infty)$ で0，間で線形な関数とし，$f_+$ を $(-\infty,t]$ で1，$[t+\delta,\infty)$ で0，間で線形な関数とする．このとき
+\[
+ \1_{(-\infty,t-\delta]}\le f_-\le\1_{(-\infty,t]}
+ \le f_+\le\1_{(-\infty,t+\delta]}.
+\]
+(2)を適用すれば
+\begin{align*}
+ F(t-\delta)&\le\liminf_n F_n(t),\\
+ \limsup_n F_n(t)&\le F(t+\delta)
+\end{align*}
+となる．$\delta\downarrow0$ として(1)を得る．
+\end{proof}
+\begin{corollary}
+$X_n\xrightarrow{d}X$ であることと，任意の有界連続関数 $f$ について $\E f(X_n)\to\E f(X)$ となることは同値である．また連続関数 $g:\R\to\R$ に対し $g(X_n)\xrightarrow{d}g(X)$ である．
+\end{corollary}
+\begin{proof}
+第一の主張は押し出し測度の積分公式と定理\ref{weak}による．第二は任意の有界連続関数 $f$ に対し $f\circ g$ が有界連続であることから第一の主張を適用すればよい．
+\end{proof}
+\begin{remark}
+分布収束から期待値そのものの収束を結論してはならない．関数 $f(x)=x$ は有界でないためである．次節の反例を参照せよ．
+\end{remark}
+
+\section{収束の反例}
+\begin{example}[確率収束はa.s.収束を含意しない]\label{typewriter}
+$\Omega=[0,1)$ にLebesgue確率測度を入れる．各 $k\ge0$ と $0\le j<2^k$ に対し
+\[
+ X_{2^k+j}=\1_{[j2^{-k},(j+1)2^{-k})}
+\]
+と定める．$n=2^k+j$ のとき $P(X_n=1)=2^{-k}$ であるから $X_n\xrightarrow{P}0$ であり，全ての有限 $p\ge1$ に対し $\norm{X_n}_p=2^{-k/p}\to0$ である．一方，各 $u\in[0,1)$ は各段階 $k$ の区間のうちちょうど一つに属する．従って $X_n(u)=1$ となる $n$ が無限個あり，$X_n(u)=0$ となる $n$ も無限個ある．従ってどの点においても収束しない．
+\end{example}
+\begin{example}[a.s.収束は $L^p$ 収束を含意しない]
+$\Omega=(0,1)$ 上にLebesgue確率測度を入れ，$X_n(u)=n\1_{(0,1/n)}(u)$ とする．各 $u>0$ に対し十分大きい $n$ で $X_n(u)=0$ だから点ごとに0へ収束する．しかし $\E X_n=1$ であり，$\norm{X_n}_p^p=n^{p-1}$ だからどの $p\ge1$ についても $L^p$ 収束しない．分布収束しても期待値が収束しない例でもある．
+\end{example}
+\begin{example}[分布収束は確率収束を含意しない]
+$\{0,1\}$ の一様確率空間上で $X(\omega)=\omega$，$X_n(\omega)=1-\omega$ とおく．全ての $n$ で $X_n$ の分布は $X$ と同じであり，$X_n\xrightarrow{d}X$ である．しかし $P(|X_n-X|>1/2)=1$ である．
+\end{example}
+\begin{example}[$L^p$ と $L^q$ の相違]
+$1\le p<q<\infty$ を固定する．$(0,1)$ 上で $X_n(u)=n^{1/q}\1_{(0,1/n)}(u)$ とおくと $\E|X_n|^q=1$ であるが $\E|X_n|^p=n^{p/q-1}\to0$ である．従って $L^p$ 収束から $L^q$ 収束は従わない．
+\end{example}
+\begin{proposition}[優収束による強化]
+$X_n\to X$ a.s.かつ $|X_n|\le Y$ a.s.で $Y\in L^p(P)$（$Y\ge0$）なら $X_n\to X$ in $L^p$ である．
+\end{proposition}
+\begin{proof}
+共通の確率1の事象上で $|X|\le Y$ も成り立つ．従って $|X_n-X|^p\le 2^pY^p$ a.s.であり優収束定理を適用する．
+\end{proof}
+以上により，a.s.収束および $L^p$ 収束は確率収束を含意し，確率収束は分布収束を含意するが，逆向きの含意はいずれも一般には成り立たない．
+
+\section{Borel--Cantelliの補題}
+\begin{definition}
+事象列 $(A_n)$ に対し，無限個の $A_n$ が起こる事象を
+\[
+ \limsup_n A_n=\bigcap_{m\ge1}\bigcup_{n\ge m}A_n
+\]
+と書く．この事象は可測である．
+\end{definition}
+\begin{theorem}[Borel--Cantelliの第一補題]\label{bc1}
+$\sum_{n\ge1}P(A_n)<\infty$ ならば $P(\limsup_n A_n)=0$ である．独立性は不要である．
+\end{theorem}
+\begin{proof}
+各 $m$ に対して
+\[
+ P(\limsup_n A_n)\le P\left(\bigcup_{n\ge m}A_n\right)
+ \le\sum_{n\ge m}P(A_n).
+\]
+収束級数の剰余は0に収束する．
+\end{proof}
+\begin{theorem}[Borel--Cantelliの第二補題]\label{bc2}
+独立な事象列 $(A_n)$ に対し $\sum_{n\ge1}P(A_n)=\infty$ ならば $P(\limsup_n A_n)=1$．
+\end{theorem}
+\begin{proof}
+任意の $m\le N$ に対し補事象の独立性から
+\begin{align*}
+ P\left(\bigcap_{n=m}^N A_n^c\right)
+ &=\prod_{n=m}^N(1-P(A_n))\\
+ &\le\exp\left(-\sum_{n=m}^N P(A_n)\right).
+\end{align*}
+ここで $1-x\le e^{-x}$ を用いた．$N\to\infty$ とすると右辺は0となり，上からの連続性によって $P(\bigcap_{n\ge m}A_n^c)=0$ となる．$\limsup_nA_n$ の補集合はこの集合の $m$ に関する可算和であるから確率0である．
+\end{proof}
+\begin{example}
+第二補題の独立性を単に除くことはできない．$0<P(A)<1$ なる事象を取り $A_n=A$ とすると級数は発散するが $\limsup A_n=A$ である．一方，独立な事象列で $P(A_n)=1/(n+1)$ とすると，第二補題によりa.s.無限回起こる．指示関数は0へ確率収束するがa.s.収束しない．実際，補事象も独立で確率の級数が発散するから，a.s.無限回0にもなる．このような独立な事象列の存在は60.002の積測度の構成から従う．
+\end{example}
+\begin{corollary}\label{completeconv}
+任意の $\varepsilon>0$ について $\sum_nP(|X_n-X|>\varepsilon)<\infty$ なら $X_n\to X$ a.s.である．
+\end{corollary}
+\begin{proof}
+$\varepsilon=1/k$ ごとに定理\ref{bc1}を適用する．対応する確率1の事象の可算共通部分上で収束の定義が満たされる．
+\end{proof}
+\begin{theorem}[確率収束の部分列による特徴づけ]\label{subseq}
+$X_n\xrightarrow{P}X$ であるための必要十分条件は，任意の部分列が $X$ にa.s.収束する更なる部分列を持つことである．
+\end{theorem}
+\begin{proof}
+必要性について，確率収束する任意の部分列 $(X_{n_j})$ に対し，$j_k>j_{k-1}$ で
+\[
+ P(|X_{n_{j_k}}-X|>1/k)\le 2^{-k}
+\]
+となるものを順次取れる．第一補題によりa.s.有限個を除いて $|X_{n_{j_k}}-X|\le1/k$ となるのでa.s.収束する．
+
+十分性について，確率収束しないならある $\varepsilon,\delta>0$ と部分列が存在し，全ての $j$ で $P(|X_{n_j}-X|>\varepsilon)\ge\delta$ となる．仮定から更なるa.s.収束部分列が存在するが，命題\ref{asprob}によってその部分列は確率収束することになり矛盾する．
+\end{proof}
+\begin{corollary}
+$X_n\xrightarrow{P}X$ かつ $|X_n|\le Y$ a.s.で $Y\in L^p$（$Y\ge0$）なら $X_n\to X$ in $L^p$ である．
+\end{corollary}
+\begin{proof}
+定理\ref{subseq}により一つのa.s.収束部分列を取れば $|X|\le Y$ a.s.が従う．$L^p$ 収束しないなら $\norm{X_{n_j}-X}_p\ge\delta>0$ なる部分列が存在する．その更なるa.s.収束部分列に優収束定理を適用すると矛盾する．
+\end{proof}
+
+\section{裾事象と0--1法則}
+\begin{definition}
+確率変数列 $(X_n)$ の裾 $\sigma$-加法族を
+\[
+ \mathcal T=\bigcap_{m\ge1}\sigma(X_m,X_{m+1},\ldots)
+\]
+と定める．$\mathcal T$ の元を裾事象という．
+\end{definition}
+\begin{theorem}[Kolmogorovの0--1法則]\label{zeroone}
+$(X_n)$ が独立ならば，任意の $A\in\mathcal T$ に対して $P(A)\in\{0,1\}$ である．
+\end{theorem}
+\begin{proof}
+$\mathcal H_m=\sigma(X_1,\ldots,X_m)$ とおく．独立性のブロックへの拡張（60.002）により $\mathcal H_m$ と $\sigma(X_{m+1},X_{m+2},\ldots)$ は独立である．後者は $A$ を含むから $P(A\cap B)=P(A)P(B)$（$B\in\mathcal H_m$）である．
+
+$\bigcup_m\mathcal H_m$ は増大する $\sigma$-加法族の和であり，$\pi$ 系である．有限測度 $B\mapsto P(A\cap B)$ と $B\mapsto P(A)P(B)$ はこの $\pi$ 系上で一致し，全測度も一致する．Dynkinの定理によって $\sigma(X_1,X_2,\ldots)$ 上で一致する．特に $A$ 自身がこの族に属するから $P(A)=P(A)^2$．結論を得る．
+\end{proof}
+\begin{example}
+$S_n=\sum_{i=1}^nX_i$ とし，$c\in\R$ とする．事象 $\{S_n/n\to c\}$ は裾事象である．実際，任意の固定した $m$ について
+\[
+ \frac{S_n}{n}-\frac1n\sum_{i=m}^n X_i
+ =\frac1n\sum_{i<m}X_i\longrightarrow0
+\]
+が全ての点で成立する．従って収束事象は $m$ 番目以後の変数だけで表せる．独立性のもとではこの事象の確率は0または1であるが，どちらであるかは0--1法則だけでは決定できない．
+\end{example}
+
+\section{弱大数の法則}
+\begin{theorem}[有限分散の場合]\label{weaklln2}
+$X_1,X_2,\ldots$ が対ごとに独立で同分布，$\E X_1^2<\infty$ とする．$m=\E X_1$，$s^2=\Var(X_1)$，$S_n=\sum_{i=1}^nX_i$ とおけば
+\[
+ \E\left|\frac{S_n}{n}-m\right|^2=\frac{s^2}{n}.
+\]
+従って $S_n/n\to m$ in $L^2$ および確率収束が成立する．
+\end{theorem}
+\begin{proof}
+期待値の線形性から $\E S_n=nm$．対ごとの独立性から共分散は全て0であるから $\Var(S_n)=ns^2$．両者を代入して等式を得る．命題\ref{lpprob}より確率収束も従う．
+\end{proof}
+\begin{corollary}[Chebyshevの誤差評価]
+同定理の仮定のもとで，任意の $\varepsilon>0$ について
+\[
+ P\left(\left|\frac{S_n}{n}-m\right|\ge\varepsilon\right)
+ \le\frac{s^2}{n\varepsilon^2}.
+\]
+\end{corollary}
+\begin{proof}
+Chebyshevの不等式を $S_n/n$ に適用する．
+\end{proof}
+\begin{theorem}[可積分の場合]\label{weaklln1}
+$(X_n)$ が対ごとに独立で同分布かつ $\E|X_1|<\infty$ なら $S_n/n\to\E X_1$ in $L^1$．特に確率収束する．
+\end{theorem}
+\begin{proof}
+$K>0$ を固定し，$Y_i=X_i\1_{\{|X_i|\le K\}}$，$R_i=X_i-Y_i$ とおく．可測変換により $Y_i$ は対ごとに独立で同分布であり，有界だから定理\ref{weaklln2}を適用できる．Cauchy--Schwarz不等式より
+\[
+ \E\left|\frac1n\sum_{i=1}^nY_i-\E Y_1\right|
+ \le\sqrt{\frac{\Var(Y_1)}n}.
+\]
+また $m=\E X_1$ とすると $m=\E Y_1+\E R_1$ であり，三角不等式から
+\begin{align*}
+ \E|S_n/n-m|&\le\sqrt{\Var(Y_1)/n}
+ +\frac1n\sum_{i=1}^n\E|R_i|+|\E R_1|\\
+ &\le\sqrt{\Var(Y_1)/n}+2\E|R_1|.
+\end{align*}
+まず $n\to\infty$ として上極限を取り，次いで $K\to\infty$ とする．$\E|R_1|\to0$ は $|X_1|$ を支配関数とする優収束定理による．従って $L^1$ 収束を得る．
+\end{proof}
+\begin{remark}
+同分布性だけでは大数の法則は成立しない．非定数で二乗可積分な $X$ を取り全ての $n$ に対し $X_n=X$ とすれば $S_n/n=X$ であり，$\E X$ には確率収束しない．実際 $P(|X-\E X|>0)>0$ であるから，ある $\varepsilon>0$ で $P(|X-\E X|>\varepsilon)>0$ となる．
+\end{remark}
+
+\section{Kolmogorovの最大不等式}
+弱大数の法則だけではa.s.収束は従わない．全ての十分大きい添字を同時に制御するため，最大値の確率を評価する．
+\begin{theorem}[Kolmogorovの最大不等式]\label{maxineq}
+独立な確率変数 $Z_1,\ldots,Z_n\in L^2$ が $\E Z_i=0$ を満たすとする．$T_k=\sum_{i=1}^k Z_i$ とおく．任意の $a>0$ に対し
+\[
+ P\left(\max_{1\le k\le n}|T_k|\ge a\right)
+ \le\frac{\sum_{i=1}^n\Var(Z_i)}{a^2}.
+\]
+\end{theorem}
+\begin{proof}
+$A_k=\{|T_j|<a\ (j<k),\ |T_k|\ge a\}$ とおく．これらは互いに素で，和は左辺の事象に一致する．$A_k$ および $T_k$ は $Z_1,\ldots,Z_k$ によって決まり，$T_n-T_k$ は残りの変数によって決まる．ブロックの独立性および積の期待値の公式から
+\[
+ \E[\1_{A_k}T_k(T_n-T_k)]=0
+\]
+である．ここで $\1_{A_k}T_k$ は可積分，$T_n-T_k$ は平均0であり，積の可積分性は二乗可積分性からも従う．従って
+\begin{align*}
+ \E[\1_{A_k}T_n^2]
+ &=\E[\1_{A_k}T_k^2]+\E[\1_{A_k}(T_n-T_k)^2]\\
+ &\ge a^2P(A_k).
+\end{align*}
+互いに素な $A_k$ について和を取ると $a^2\sum_kP(A_k)\le\E T_n^2$ である．最後の量は独立性と中心化によって $\sum_i\Var(Z_i)$ に等しい．
+\end{proof}
+\begin{remark}
+この証明は，初めて閾値を超える時点に応じて事象を分割するものである．停止時刻の理論を前提としないが，後のマルチンゲールの最大不等式の考え方に通じる．
+\end{remark}
+
+\section{強大数の法則}
+\begin{theorem}[有限分散の場合の強大数の法則]\label{stronglln}
+$(X_n)$ が独立同分布で $\E X_1^2<\infty$ とする．このとき
+\[
+ \frac1n\sum_{i=1}^nX_i\longrightarrow\E X_1
+ \qquad\text{a.s.}
+\]
+\end{theorem}
+\begin{proof}
+$m=\E X_1$，$s^2=\Var(X_1)$ とし，$Z_i=X_i-m$，$T_n=\sum_{i=1}^nZ_i$ とおく．独立性は可測変換によって保たれ，$\E Z_i=0$，$\Var(Z_i)=s^2$ である．任意の $\varepsilon>0$ と $k\ge0$ に対して最大不等式より
+\begin{align*}
+ P\left(\max_{j\le 2^{k+1}}|T_j|\ge\varepsilon2^k\right)
+ &\le\frac{2^{k+1}s^2}{\varepsilon^2 2^{2k}}\\
+ &=\frac{2s^2}{\varepsilon^2}\,2^{-k}.
+\end{align*}
+右辺は $k$ について可算和が有限である．第一Borel--Cantelli補題から，確率1で十分大きい $k$ に対し $\max_{j\le2^{k+1}}|T_j|<\varepsilon2^k$ となる．$2^k\le n<2^{k+1}$ とすれば $|T_n|/n<\varepsilon$ である．$\varepsilon=1/r$（$r\in\N$）に対する確率1の事象の共通部分上で $T_n/n\to0$ が従う．
+\end{proof}
+\begin{remark}
+弱大数の法則のChebyshev評価を全ての $n$ についてそのまま足すと調和級数が現れるため，第一補題は直ちには適用できない．上の証明では二進区間内の最大値を一度に評価し，可算和を収束させた．一般の可積分i.i.d.列に対する強大数の法則にはさらに切断等の議論が必要である（60.005）．本稿では有限分散の場合を証明した．
+\end{remark}
+\begin{corollary}[相対度数]
+$p\in[0,1]$ に対し，無限回の独立Bernoulli試行 $(X_i)$（$P(X_i=1)=p$）を取る．このとき成功の相対度数 $n^{-1}\sum_{i=1}^nX_i$ は $p$ にa.s.収束する．
+\end{corollary}
+\begin{proof}
+60.002によってこの試行列が存在する．$\E X_i=p$，$\Var(X_i)=p(1-p)$ は有限だから定理\ref{stronglln}を適用する．$p=0,1$ も含まれる．
+\end{proof}
+この定理は頻度による確率の解釈に数学的根拠を与える．ただし独立性および同分布性はモデルの仮定であり，現実の試行がこれらを満たすことを公理から導くものではない．
+
+\section{Monte Carlo積分}
+\begin{proposition}
+$f:[0,1]^d\to\R$ はBorel可測かつ $\int_{[0,1]^d} f(x)^2\,dx<\infty$ とする．$U_i$ を独立同分布な $[0,1]^d$ 上の一様確率ベクトルとし
+\[
+ I=\int_{[0,1]^d}f(x)\,dx,\qquad M_n=\frac1n\sum_{i=1}^n f(U_i)
+\]
+とおく．このとき $M_n\to I$ a.s.かつ $L^2$ 収束する．さらに
+\[
+ \E(M_n-I)^2=\frac1n\left(\int f^2\,dx-I^2\right).
+\]
+\end{proposition}
+\begin{proof}
+60.002によって可算個の独立な一様実数値確率変数を構成し，互いに素な $d$ 個ずつのブロックを $U_i$ とすれば存在が従う．$f(U_i)$ はi.i.d.であり，分布の積分公式によって平均は $I$，分散は $\int f^2-I^2$ である．定理\ref{weaklln2}および\ref{stronglln}を適用する．
+\end{proof}
+\begin{example}
+$d=2$，$f(u,v)=\1_{\{u^2+v^2\le1\}}$ とする．$I=\pi/4$ であり，$4M_n$ は $\pi$ の推定量となる．$\E f^2=I$ だから二乗平均誤差は $16I(1-I)/n\le4/n$．従って $\varepsilon>0$ に対して $P(|4M_n-\pi|\ge\varepsilon)\le4/(n\varepsilon^2)$ である．ここでの確率評価は理想化された独立一様標本を前提とする．
+\end{example}
+\section{確認問題}
+\begin{example}[分布関数の不連続点]
+$X_n=1/n$，$X=0$ は定数とする．全ての点で収束するので分布収束するが，$F_{X_n}(0)=0$，$F_X(0)=1$ である．従って分布収束の定義において連続点の条件は必要である．
+\end{example}
+\begin{example}[確率収束からの部分列の選択]
+$\E|X_n-X|^2\le C/n$ を仮定する．Markovの不等式から任意の $\varepsilon>0$ について $\sum_{k\ge1}P(|X_{2^k}-X|>\varepsilon)\le C\varepsilon^{-2}\sum_k2^{-k}<\infty$．従って系\ref{completeconv}より $X_{2^k}\to X$ a.s.である．元の全列についてはこの評価のみからa.s.収束を結論できない（例\ref{typewriter}は $n\E|X_n|^2<2$ を満たす）．
+\end{example}
+\begin{thebibliography}{9}
+\bibitem{durrett} R. Durrett, \textit{Probability: Theory and Examples}, Version 5, 2019, \S\S2.2--2.4, 3.2.
+\bibitem{bog} V. I. Bogachev, \textit{Measure Theory}, Vol. I, Springer, 2007, \S\S2.2, 2.8, 4.1.
+\end{thebibliography}
+
+\end{document}

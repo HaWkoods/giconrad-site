@@ -1,0 +1,365 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{独立性と無限積確率空間}
+\newcommand{\NoteSeries}{擬コンラット 60.002}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathcal F}
+\newcommand{\G}{\mathcal G}
+\newcommand{\B}{\mathcal B}
+\newcommand{\E}{\mathbb E}
+\newcommand{\1}{\mathbf{1}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+
+\begin{document}
+\section{本稿の目的と前提}
+確率変数を一つ構成することと，指定された分布を持つ独立な確率変数列を同一の確率空間上に構成することとは異なる問題である．本稿では独立性の定義と同時分布による特徴づけを与え，有限次元分布の整合性から可算個の実数値確率変数を実現する定理を証明する．この存在は，予め与えられた任意の確率空間上で実現可能であるという主張ではない．例えば一点のみからなる確率空間では全ての実数値確率変数は定数である．
+
+確率空間 $(\Omega,\F,P)$，実数値確率変数 $X$，分布 $\mu_X=P\circ X^{-1}$，期待値 $\E X=\int X\,dP$ および $L^p$ 空間については60.001に相当する知識を仮定する．一般の測度論に属する有限積測度の存在，Fubini--Tonelliの定理，有限前測度のCarath\'eodory拡張定理および有限Borel測度の内部正則性を使用する．必要な一致定理は再掲する．$\N=\{1,2,\ldots\}$，$\B(S)$ は位相空間 $S$ のBorel集合族，$\1_A$ は集合 $A$ の指示関数を表す．
+
+\section{事象の独立性}
+\begin{definition}
+二事象 $A,B\in\F$ が独立であるとは $P(A\cap B)=P(A)P(B)$ となることをいう．添字集合 $I$ を持つ事象族 $(A_i)_{i\in I}$ が独立であるとは，任意の空でない有限部分集合 $J\subset I$ に対して
+\[
+ P\left(\bigcap_{j\in J}A_j\right)=\prod_{j\in J}P(A_j)
+\]
+が成り立つことをいう．異なる任意の二添字の事象が独立であるとき対ごとに独立という．
+\end{definition}
+独立性は確率測度に関する性質であり，集合の非交性とは異なる．正の確率を持つ互いに素な二事象は独立でない．零事象および確率1の事象は任意の事象と独立である．実際，$P(A)=0$ なら $P(A\cap B)=0$，$P(A)=1$ なら $P(B\setminus A)=0$ より $P(A\cap B)=P(B)$ となる．特に事象が自身と独立であることと，その確率が0または1であることは同値である．
+\begin{proposition}[補事象との独立性]\label{comp}
+独立な事象族 $(A_i)_{i\in I}$ において，任意の部分族の各元を補集合で置き換えても独立性は保たれる．
+\end{proposition}
+\begin{proof}
+有限添字集合 $J$ について，補集合に置き換える添字の集合を $K\subset J$ とする．$K=\varnothing$ の場合は仮定である．$K$ の元 $k$ を取り，残りの事象の共通部分を $D$ とする．帰納法の仮定から
+\[
+ P(D\cap A_k^c)=P(D)-P(D\cap A_k)
+ =P(D)(1-P(A_k)).
+\]
+右辺は必要な積である．$|K|$ に関する帰納法で主張が従う．空の共通部分は $\Omega$，空積は1とする．
+\end{proof}
+\begin{example}[対ごとの独立性は十分でない]\label{pair}
+$\Omega=\{0,1\}^2$ を一様確率空間とする．$A=\{(a,b):a=0\}$，$B=\{(a,b):b=0\}$，$C=\{(a,b):a=b\}$ とおく．各事象の確率は $1/2$，任意の二事象の共通部分の確率は $1/4$ である．よって対ごとに独立である．しかし $A\cap B\cap C=\{(0,0)\}$ であるから，三事象の共通部分の確率は $1/4\ne1/8$ である．
+\end{example}
+
+\section{集合族および確率変数の独立性}
+\begin{definition}
+$\F$ の部分集合族 $(\mathcal C_i)_{i\in I}$ が独立であるとは，任意の有限部分集合 $J\subset I$ および任意の選択 $A_j\in\mathcal C_j$（$j\in J$）に対して
+\[
+ P\left(\bigcap_{j\in J}A_j\right)=\prod_{j\in J}P(A_j)
+\]
+が成り立つことをいう．特に各 $\mathcal C_i$ が $\sigma$-加法族である場合を考える．
+\end{definition}
+二事象の独立性とそれぞれの生成する $\sigma$-加法族の独立性は同値である．これは命題\ref{comp}と，$\sigma(A)=\{\varnothing,A,A^c,\Omega\}$ から従う．
+\begin{lemma}[Dynkinの定理（60.001）]\label{dynkin}
+$\pi$ 系（空でなく二集合の共通部分に関して閉じる族）を含む $\lambda$ 系（全体集合を含み，包含関係にある差および互いに素な可算和に関して閉じる族）は，その $\pi$ 系の生成する $\sigma$-加法族を含む．従って全測度が等しい二つの有限測度が生成 $\pi$ 系上で一致すれば，生成された $\sigma$-加法族全体で一致する．
+\end{lemma}
+\begin{theorem}[独立性の拡張]\label{extendind}
+$(\mathcal C_i)_{i\in I}$ を $\Omega$ を含む $\pi$ 系の族とする．この族が独立であるなら $(\sigma(\mathcal C_i))_{i\in I}$ も独立である．
+\end{theorem}
+\begin{proof}
+任意の有限添字集合を固定し，番号を $1,\ldots,n$ とする．$k=0,\ldots,n$ について，最初の $k$ 個を $\sigma(\mathcal C_j)$，残りを $\mathcal C_j$ から選んでも積の公式が成立することを帰納的に示す．$k=0$ は仮定である．$k$ 番目以外の事象 $A_j$ を固定し，$D=\bigcap_{j\ne k}A_j$，$c=\prod_{j\ne k}P(A_j)$ とおく．前段階で $A_k=\Omega$ を選べることから $P(D)=c$ である．
+
+$\F$ 上の有限測度 $\nu(B)=P(D\cap B)$，$\eta(B)=cP(B)$ は，前段階により $\mathcal C_k$ 上で一致し，全測度も一致する．補題\ref{dynkin}により $\sigma(\mathcal C_k)$ 上で一致する．これが帰納段階を与える．任意の有限添字集合について成り立つので結論を得る．
+\end{proof}
+\begin{corollary}[独立な族の分割]\label{group}
+$(\F_i)_{i\in I}$ は独立な $\sigma$-加法族の族とする．$(I_j)_{j\in J}$ が互いに素な添字部分集合の族であるとき，
+\[
+ \mathcal G_j=\sigma\left(\bigcup_{i\in I_j}\F_i\right)
+\]
+は独立である．空の $I_j$ については $\mathcal G_j=\{\varnothing,\Omega\}$ とする．
+\end{corollary}
+\begin{proof}
+各 $j$ について $I_j$ の有限個の異なる添字から一つずつ事象を取り，その共通部分を作る．空共通部分 $\Omega$ も許す．このような集合全体は $\pi$ 系をなし，$\mathcal G_j$ を生成する．互いに素な添字ブロックであることおよび元の族の独立性から，これらの $\pi$ 系は独立である．定理\ref{extendind}を適用する．
+\end{proof}
+\begin{definition}
+可測写像の族 $(X_i:\Omega\to S_i)_{i\in I}$ が独立であるとは，$\sigma(X_i)=\{X_i^{-1}(B):B\in\mathcal S_i\}$ の族が独立であることをいう．更に全ての $S_i$ が共通の可測空間 $S$ で，全ての分布が一致するとき，独立同分布（i.i.d.）という．
+\end{definition}
+\begin{corollary}[実数値変数の独立性の判定]
+実数値確率変数族が独立であることと，任意の空でない有限 $J\subset I$ および $t_j\in\R$ に対して
+\[
+ P(X_j\le t_j\ (j\in J))=\prod_{j\in J}P(X_j\le t_j)
+\]
+となることは同値である．
+\end{corollary}
+\begin{proof}
+必要性は定義による．十分性について $\mathcal C_i=\{\{X_i\le t\}:t\in\R\}\cup\{\Omega\}$ とすれば生成 $\pi$ 系であり，仮定から族は独立である．$\Omega$ が選ばれた添字は除いてよい．定理\ref{extendind}より結論を得る．
+\end{proof}
+\begin{proposition}[独立性と可測変換]
+独立な可測写像 $X_i$ に対し，それぞれの値域上で可測な $g_i$ を取れば $(g_i(X_i))$ も独立である．さらに，互いに素な有限添字ブロックごとの可測関数を適用した結果も独立である．
+\end{proposition}
+\begin{proof}
+$\sigma(g_i(X_i))\subset\sigma(X_i)$ であるから第一の主張が従う．ブロックの可測関数の生成する $\sigma$-加法族はブロックの座標の生成する $\sigma$-加法族に含まれる．系\ref{group}を用いればよい．
+\end{proof}
+
+\section{同時分布と積測度}
+\begin{theorem}[独立性の測度論的特徴づけ]\label{prod}
+同一の確率空間上の実数値確率変数 $X_1,\ldots,X_n$ の分布を $\mu_1,\ldots,\mu_n$ とする．次は同値である．
+\begin{enumerate}
+\item $X_1,\ldots,X_n$ は独立である．
+\item $(X_1,\ldots,X_n)$ の同時分布は $\mu_1\otimes\cdots\otimes\mu_n$ に等しい．
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+独立性により任意のBorel矩形 $B_1\times\cdots\times B_n$ について
+\begin{align*}
+ \mu_{(X_1,\ldots,X_n)}(B_1\times\cdots\times B_n)
+ &=P(X_1\in B_1,\ldots,X_n\in B_n)\\
+ &=\prod_{i=1}^n\mu_i(B_i).
+\end{align*}
+有限積測度は右辺を矩形の測度とする．Borel矩形は $\B(\R^n)$ を生成する $\pi$ 系であるから，補題\ref{dynkin}の一致定理を適用して(2)を得る．逆は矩形の測度の公式による．一部の添字だけを選ぶ条件は，残りの $B_i$ を $\R$ とすれば従う．
+\end{proof}
+\begin{theorem}[期待値の因数分解]\label{factor}
+独立な実数値確率変数 $X_1,\ldots,X_n$ とBorel可測関数 $f_i:\R\to\R$ を与える．全ての $f_i(X_i)$ が可積分であるなら積も可積分であり，
+\[
+ \E\left[\prod_{i=1}^nf_i(X_i)\right]=\prod_{i=1}^n\E f_i(X_i).
+\]
+非負関数についても拡張実数の積として同式が成り立つ．ただし $0\cdot\infty=0$ と約束する．
+\end{theorem}
+\begin{proof}
+非負関数について定理\ref{prod}と押し出し測度の積分公式を適用する．Tonelliの定理により積測度に関する非負積分を逐次積分で計算できる．まず全ての関数が有界なら積分は各積分の積となる．一般には $f_i\wedge m$ を用い，単調収束定理で極限を取る．いずれかの積分が0ならその関数はほとんど至る所0であるから積分も0である．残りの場合は積の極限が拡張実数の積と一致する．
+
+符号がある場合は絶対値に非負の場合の公式を適用して積の可積分性を得る．Fubiniの定理による逐次積分で所望の等式を得る．
+\end{proof}
+\begin{corollary}
+独立な二乗可積分確率変数は無相関である．従って対ごとに独立な $X_1,\ldots,X_n\in L^2(P)$ について
+\[
+ \Var(X_1+\cdots+X_n)=\sum_{i=1}^n\Var(X_i).
+\]
+\end{corollary}
+\begin{proof}
+$\E X_iX_j=\E X_i\E X_j$ より $\Cov(X_i,X_j)=0$．分散の展開公式による．
+\end{proof}
+\begin{example}[無相関だが独立でない例]
+$\Omega=\{-1,0,1\}$ を一様確率空間とし，$X(\omega)=\omega$，$Y=X^2$ とする．$\E X=\E X^3=0$ より $\Cov(X,Y)=0$ である．しかし $\{X=0\}=\{Y=0\}$ であり，その確率は $1/3$ であるから独立でない．
+\end{example}
+\begin{remark}
+二乗可積分性のもとで独立性は無相関性より強い．また期待値の積の公式を $f_i(x)=x$ だけについて確認しても独立性は従わない．全てのBorel集合の指示関数について確認すれば，定義により独立性が従う．
+\end{remark}
+
+\section{独立な和の分布}
+\begin{definition}
+Borel確率測度 $\mu,\nu$ の畳み込み $\mu*\nu$ を，加法写像 $s(x,y)=x+y$ による $\mu\otimes\nu$ の押し出し測度と定める．
+\end{definition}
+\begin{proposition}\label{conv}
+独立な $X,Y$ について $\mu_{X+Y}=\mu_X*\mu_Y$ である．またBorel集合 $B\subset\R$ に対し
+\[
+ (\mu*\nu)(B)=\int_\R\nu(B-x)\,\mu(dx).
+\]
+$\mu(dx)$ は $d\mu(x)$ の別記法である．
+\end{proposition}
+\begin{proof}
+同時分布が積測度であるから，和の分布は加法写像によるその押し出しである．$\1_B(x+y)$ は積可測であり，Tonelliの定理から内側の積分 $\int\1_B(x+y)\nu(dy)=\nu(B-x)$ は可測で，その積分は畳み込みの値になる．
+\end{proof}
+\begin{corollary}[密度の畳み込み]
+$\mu,\nu$ の密度をそれぞれ $f,g$ とする．$\mu*\nu$ の密度は
+\[
+ h(z)=\int_\R f(x)g(z-x)\,dx
+\]
+である（無限大になる零集合では任意に非負有限値を定め直せる）．
+\end{corollary}
+\begin{proof}
+命題\ref{conv}を用い，内側の積分で $z=x+y$ と変数変換してTonelliの定理を適用すれば
+\[
+ (\mu*\nu)(B)=\int_B\left(\int_\R f(x)g(z-x)\,dx\right)dz.
+\]
+$B=\R$ で全積分は1となる．
+\end{proof}
+\begin{example}[Poisson分布の加法性]
+独立な $X\sim\operatorname{Pois}(a)$，$Y\sim\operatorname{Pois}(b)$（$a,b>0$）について，整数 $k\ge0$ に対し
+\begin{align*}
+ P(X+Y=k)&=\sum_{j=0}^kP(X=j)P(Y=k-j)\\
+ &=e^{-(a+b)}\frac1{k!}\sum_{j=0}^k\binom kj a^jb^{k-j}\\
+ &=e^{-(a+b)}\frac{(a+b)^k}{k!}.
+\end{align*}
+従って $X+Y\sim\operatorname{Pois}(a+b)$．$a=0$ または $b=0$ では定数0を足すので同じ結果を得る．
+\end{example}
+\begin{example}[一様分布の畳み込み]
+独立な $X,Y\sim\operatorname{Unif}(0,1)$ なら，$X+Y$ の密度は区間 $(0,1)\cap(z-1,z)$ の長さであり，$0<z<1$ では $z$，$1\le z<2$ では $2-z$，その他では0である．同じ周辺分布でも $Y=X$ のときは $2X$ の一様分布となり，独立な場合と異なる．
+\end{example}
+
+\section{有限積確率空間}
+\begin{proposition}[有限個の独立変数の実現]
+$\R$ 上の任意のBorel確率測度 $\mu_1,\ldots,\mu_n$ に対して，それぞれを分布とする独立な確率変数が同一の確率空間上に存在する．
+\end{proposition}
+\begin{proof}
+$\Omega=\R^n$，$\F=\B(\R^n)$，$P=\mu_1\otimes\cdots\otimes\mu_n$ とし，$X_i(\omega)=\omega_i$ と定める．座標射影は可測であり，積測度の矩形に対する公式から各分布と独立性が従う．
+\end{proof}
+同様の構成を可算個の変数について行うには，無限直積上の積測度の存在を示す必要がある．ここでは独立な場合に限らず，一般の整合的な有限次元分布を扱う．
+
+\section{円柱代数と整合性}
+$\Omega=\R^\N$ とし，$\pi_n:\Omega\to\R^n$ を最初の $n$ 座標への射影とする．$\pi_{m,n}:\R^m\to\R^n$（$m\ge n$）も同様に定める．
+\begin{definition}
+集合 $\pi_n^{-1}(B)$（$B\in\B(\R^n)$）を円柱集合という．全ての円柱集合からなる族を $\mathcal A$ とし，$\F_\infty=\sigma(\mathcal A)$ を積 $\sigma$-加法族という．
+\end{definition}
+\begin{lemma}\label{cyl}
+$\mathcal A$ は集合代数であり，$\F_\infty$ は各座標写像を可測にする最小の $\sigma$-加法族である．
+\end{lemma}
+\begin{proof}
+二つの円柱集合を共通の段階 $m$ に移すには $\pi_n^{-1}(B)=\pi_m^{-1}(\pi_{m,n}^{-1}(B))$ を用いる．同じ段階なら和，差，補集合はそれぞれBorel集合の逆像となるから $\mathcal A$ は集合代数である．各座標の逆像は円柱集合である．逆に各座標を可測にする $\sigma$-加法族に関し $\pi_n$ はBorel矩形の生成性から可測であるので，円柱集合は全てその族に属する．
+\end{proof}
+\begin{remark}
+$\R^\N$ に直積位相を入れた場合，積 $\sigma$-加法族はそのBorel集合族に一致する．実際，有限個の座標に有理数端点の開区間を指定した集合は可算基底をなし，円柱集合はBorel集合である．この事実は非可算直積にそのまま一般化できない．
+\end{remark}
+\begin{definition}
+$\R^n$ 上のBorel確率測度の列 $(\mu_n)$ が整合的であるとは，任意の $m\ge n$ および $B\in\B(\R^n)$ について
+\[
+ \mu_m(\pi_{m,n}^{-1}(B))=\mu_n(B)
+\]
+となることをいう．$m=n+1$ の場合だけを仮定すれば，射影の合成を用いて一般の場合が従う．
+\end{definition}
+\begin{lemma}[円柱代数上の集合関数]\label{content}
+$(\mu_n)$ が整合的なら，$p(\pi_n^{-1}(B))=\mu_n(B)$ によって $\mathcal A$ 上に全体の値1の非負有限加法的集合関数が定まる．
+\end{lemma}
+\begin{proof}
+$\pi_n^{-1}(B)=\pi_k^{-1}(D)$ のとき，$m=\max(n,k)$ とすれば，$\pi_m$ が全射であることから $\pi_{m,n}^{-1}(B)=\pi_{m,k}^{-1}(D)$ である．整合性から対応する測度の値は一致する．よって良定義である．有限個の互いに素な円柱集合を同じ段階に移すと，$\pi_m$ の全射性により有限次元の集合も互いに素である．そこで $\mu_m$ の有限加法性を用いる．正規化は各 $\mu_n$ の正規化から従う．
+\end{proof}
+
+\section{Kolmogorovの拡張定理}
+次の一般測度論の二定理を引用する．第一は有限Borel測度の内部正則性，すなわち $\R^n$ 上の有限Borel測度 $\mu$ に対し
+\[
+ \mu(B)=\sup\{\mu(K):K\subset B,\ K\text{ はコンパクト}\}
+\]
+が任意のBorel集合 $B$ について成り立つことである．第二は，集合代数上の有限前測度が生成 $\sigma$-加法族に一意に拡張されることである．有限加法的な $p$ に対し，前測度性は空集合への減少列に対する $p$ の連続性と同値である（60.001）．これらの結果を可算実数値の場合に適用する．
+\begin{theorem}[Kolmogorovの拡張定理：可算実数値]\label{kolm}
+$\R^n$ 上のBorel確率測度の整合的な列 $(\mu_n)_{n\ge1}$ に対し，$(\R^\N,\F_\infty)$ 上の確率測度 $P$ で
+\[
+ P(\pi_n^{-1}(B))=\mu_n(B)
+ \quad(n\ge1,\ B\in\B(\R^n))
+\]
+を満たすものがただ一つ存在する．
+\end{theorem}
+\begin{proof}
+補題\ref{content}の $p$ が前測度となることを示せばよい．$A_j\in\mathcal A$，$A_j\downarrow\varnothing$ とする．$p(A_j)\not\to0$ と仮定する．単調性から，ある $\varepsilon>0$ が存在して $p(A_j)\ge\varepsilon$ が全ての $j$ で成り立つ．
+
+各 $A_j=\pi_{n_j}^{-1}(B_j)$ を，$n_j\ge j$ で $n_j$ が狭義増大するように表示し直す．内部正則性によりコンパクト集合 $K_j\subset B_j$ で
+\[
+ \mu_{n_j}(B_j\setminus K_j)<\varepsilon 2^{-j-1}
+\]
+となるものを取る．$C_j=\pi_{n_j}^{-1}(K_j)$，$D_j=\bigcap_{i=1}^j C_i$ とおく．$A_j\subset A_i$（$i\le j$）だから
+\[
+ A_j\setminus D_j\subset\bigcup_{i=1}^j(A_i\setminus C_i).
+\]
+$p$ の有限劣加法性を用いると
+\begin{align*}
+ p(A_j\cap D_j)&\ge p(A_j)-\sum_{i=1}^jp(A_i\setminus C_i)\\
+ &>\varepsilon-\varepsilon/2=\varepsilon/2.
+\end{align*}
+従って各 $D_j$ は空でない．
+
+$D_j$ は円柱集合であるが，$\R^\N$ においてコンパクトとは限らない．そこで各 $j$ について $\omega^{(j)}\in D_j$ を取る．任意の固定した $k$ について，$n_i\ge k$ を満たす $i$ を取れば，$j\ge i$ のとき $\pi_{n_i}(\omega^{(j)})\in K_i$ であり，特に第 $k$ 座標は $K_i$ の座標射影というコンパクト集合内にある．従って，各座標の列は有限個の初項を除いて有界である．Bolzano--Weierstrassの定理を各座標に順次適用し，対角部分列を取れば，ある狭義増大列 $(j_\ell)$ と $\omega\in\R^\N$ が存在して全ての $k$ について $\omega^{(j_\ell)}_k\to\omega_k$ となる．
+
+任意の $i$ を固定する．十分大きい $\ell$ について $j_\ell\ge i$ だから $\pi_{n_i}(\omega^{(j_\ell)})\in K_i$ であり，有限次元の座標ごとの収束はEuclid位相での収束である．$K_i$ は閉集合なので $\pi_{n_i}(\omega)\in K_i$ となる．従って $\omega\in C_i\subset A_i$ が全ての $i$ について成り立ち，$\bigcap_i A_i=\varnothing$ に矛盾する．
+
+以上より $p(A_j)\to0$ であり，$p$ は有限前測度である．Carath\'eodoryの拡張定理により $\F_\infty$ 上の測度に一意に拡張される．$p(\Omega)=1$ から確率測度である．
+\end{proof}
+\begin{remark}
+有限加法性を示しただけでは拡張定理を適用できない．上の証明の核心は，有限次元の内部正則性によって円柱集合を内側から近似し，コンパクト性を用いて空集合への減少列に関する連続性を示したことにある．本稿では非可算添字の場合および一般の可測空間への拡張は主張しない．
+\end{remark}
+\begin{corollary}[独立な列の存在]\label{iid}
+$\R$ 上のBorel確率測度の任意の列 $(\nu_i)_{i\ge1}$ に対し，同一確率空間上に独立な実数値確率変数列 $(X_i)$ で $\mu_{X_i}=\nu_i$ となるものが存在する．特に任意の一つのBorel確率測度を共通分布とするi.i.d.列が存在する．
+\end{corollary}
+\begin{proof}
+$\mu_n=\nu_1\otimes\cdots\otimes\nu_n$ とおく．矩形上で整合性が成立することは積測度の公式から従い，補題\ref{dynkin}により全Borel集合に拡張される．定理\ref{kolm}の $P$ を取り，$X_i(\omega)=\omega_i$ とおく．$\mu_n$ が最初の $n$ 個の同時分布であることから，定理\ref{prod}により任意の初期有限部分族は独立であり，任意の有限部分族についても独立性が従う．
+\end{proof}
+
+\section{無限回のBernoulli試行}
+$0\le p\le1$ とし，$\nu=(1-p)\delta_0+p\delta_1$ とする．系\ref{iid}により $X_i$ がi.i.d.で $\nu$ に従う確率空間を構成できる．各 $X_i\in\{0,1\}$ となる事象の共通部分は可算共通部分であり確率1である．従って $\Omega_0=\{0,1\}^\N$ に制限しても確率空間が得られる．積 $\sigma$-加法族はこの制限に一致する（両者は座標の逆像から生成される）．
+\begin{proposition}
+$0<p<1$ なら，任意の $a_i\in\{0,1\}$（$1\le i\le n$）について
+\[
+ P(X_1=a_1,\ldots,X_n=a_n)=p^k(1-p)^{n-k},
+ \quad k=\sum_{i=1}^na_i.
+\]
+また任意の固定された無限列 $a=(a_i)$ に対して $P((X_i)=a)=0$ である．
+\end{proposition}
+\begin{proof}
+第一式は独立性による．右辺は $q^n$ 以下である（$q=\max(p,1-p)<1$）．事象 $\{(X_i)=a\}$ は初めの $n$ 座標を指定する事象の減少列の共通部分であるから，測度の上からの連続性によって確率は0となる．
+\end{proof}
+$p=0$ または $1$ ならそれぞれ全ての座標が0または1となる列に確率1が集中する．確率0の単点が非可算個存在しても，その和の確率が0とは限らない．
+\begin{proposition}[最初の成功までの待ち時間]
+$0<p\le1$ とし，$T=\inf\{n\ge1:X_n=1\}$ とする（空集合の下限は $\infty$）．このとき $T$ はa.s.有限であり，$n\ge1$ に対し
+\[
+ P(T=n)=(1-p)^{n-1}p,
+ \qquad \E T=1/p.
+\]
+ここで $p=1,n=1$ のとき空積を1とする．
+\end{proposition}
+\begin{proof}
+$\{T>n\}=\bigcap_{i=1}^n\{X_i=0\}$ だから可測であり，その確率は $(1-p)^n$ である．減少列の連続性から $P(T=\infty)=0$ である．$\{T=n\}$ は $\{T>n-1\}\setminus\{T>n\}$ なので第一式を得る．さらに点ごとに $T=\sum_{k\ge0}\1_{\{T>k\}}$ であり，単調収束定理から
+\[
+ \E T=\sum_{k\ge0}(1-p)^k=1/p.
+\]
+\end{proof}
+この構成は60.003における相対度数の収束の出発点である．また整合的な有限次元分布の考え方は確率過程の構成に用いられる．
+\begin{thebibliography}{9}
+\bibitem{durrett} R. Durrett, \textit{Probability: Theory and Examples}, Version 5, 2019, \S\S1.7, 2.1, Appendix A.1, A.3.
+\bibitem{bog} V. I. Bogachev, \textit{Measure Theory}, Vol. I, Springer, 2007, \S\S1.4--1.5, 3.3--3.6, 3.9.
+\end{thebibliography}
+
+\end{document}

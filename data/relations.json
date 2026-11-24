@@ -4751,6 +4751,379 @@
       ],
       "verification_status": "確認済み",
       "relevance": "高"
+    },
+    {
+      "source_id": "60.001",
+      "target_id": "60.002",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "可測性・分布・π–λ定理を独立性の議論に用いる。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "random-variable",
+        "pi-lambda-theorem",
+        "independence"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.001",
+          "source_path": "public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables/60.001_probability_spaces_random_variables.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        },
+        {
+          "note_id": "60.002",
+          "source_path": "public_notes/60_probability_stochastic/60.002_independence_infinite_products/60.002_independence_infinite_products.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "60.001",
+      "target_id": "60.003",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "期待値・分散・Chebyshev不等式を収束の証明に用いる。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "expectation",
+        "variance",
+        "convergence"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.001",
+          "source_path": "public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables/60.001_probability_spaces_random_variables.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        },
+        {
+          "note_id": "60.003",
+          "source_path": "public_notes/60_probability_stochastic/60.003_convergence_laws_large_numbers/60.003_convergence_laws_large_numbers.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "60.002",
+      "target_id": "60.003",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "独立性と独立列を大数の法則に用いる。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "independence",
+        "iid",
+        "law-of-large-numbers"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.002",
+          "source_path": "public_notes/60_probability_stochastic/60.002_independence_infinite_products/60.002_independence_infinite_products.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        },
+        {
+          "note_id": "60.003",
+          "source_path": "public_notes/60_probability_stochastic/60.003_convergence_laws_large_numbers/60.003_convergence_laws_large_numbers.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "60.001",
+      "target_id": "60.004",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "可測性・期待値・積分が条件付き期待値の基礎となる。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "expectation",
+        "conditional-expectation"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.001",
+          "source_path": "public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables/60.001_probability_spaces_random_variables.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        },
+        {
+          "note_id": "60.004",
+          "source_path": "public_notes/60_probability_stochastic/60.004_conditional_probability_expectation/60.004_conditional_probability_expectation.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "60.002",
+      "target_id": "60.004",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "独立性を用いる性質の箇所に限った前提。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "independence",
+        "conditional-expectation"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.002",
+          "source_path": "public_notes/60_probability_stochastic/60.002_independence_infinite_products/60.002_independence_infinite_products.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        },
+        {
+          "note_id": "60.004",
+          "source_path": "public_notes/60_probability_stochastic/60.004_conditional_probability_expectation/60.004_conditional_probability_expectation.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "確認済み",
+      "relevance": "高"
+    },
+    {
+      "source_id": "28.010",
+      "target_id": "60.004",
+      "relation_type": "prerequisite",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "core_concept",
+      "explanation": "Radon–Nikodym定理による条件付き期待値の存在。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "radon-nikodym",
+        "conditional-expectation"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.004",
+          "source_path": "public_notes/60_probability_stochastic/60.004_conditional_probability_expectation/60.004_conditional_probability_expectation.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "28.010",
+      "target_id": "60.001",
+      "relation_type": "theoretical_connection",
+      "direction": "source_to_target",
+      "symmetric": true,
+      "subtype": "supporting_only",
+      "explanation": "絶対連続分布と測度の密度。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "probability-distribution",
+        "radon-nikodym"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.001",
+          "source_path": "public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables/60.001_probability_spaces_random_variables.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "28.020",
+      "target_id": "60.001",
+      "relation_type": "theoretical_connection",
+      "direction": "source_to_target",
+      "symmetric": true,
+      "subtype": "supporting_only",
+      "explanation": "押し出し測度と変数変換。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "pushforward-measure"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.001",
+          "source_path": "public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables/60.001_probability_spaces_random_variables.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "46.030",
+      "target_id": "60.004",
+      "relation_type": "theoretical_connection",
+      "direction": "source_to_target",
+      "symmetric": true,
+      "subtype": "supporting_only",
+      "explanation": "L²における条件付き期待値と直交射影。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "orthogonal-projection",
+        "conditional-expectation"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.004",
+          "source_path": "public_notes/60_probability_stochastic/60.004_conditional_probability_expectation/60.004_conditional_probability_expectation.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.003",
+      "target_id": "60.005",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "大数の法則から中心極限定理への発展。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "law-of-large-numbers",
+        "limit-theorem"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.003",
+          "source_path": "public_notes/60_probability_stochastic/60.003_convergence_laws_large_numbers/60.003_convergence_laws_large_numbers.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.004",
+      "target_id": "60.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "条件付き期待値からマルチンゲールへの発展。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "conditional-expectation"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.004",
+          "source_path": "public_notes/60_probability_stochastic/60.004_conditional_probability_expectation/60.004_conditional_probability_expectation.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.002",
+      "target_id": "60.020",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "無限積と整合的な有限次元分布から確率過程の構成への発展。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "kolmogorov-extension"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.002",
+          "source_path": "public_notes/60_probability_stochastic/60.002_independence_infinite_products/60.002_independence_infinite_products.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.001",
+      "target_id": "05.060",
+      "relation_type": "theoretical_connection",
+      "direction": "source_to_target",
+      "symmetric": true,
+      "subtype": "supporting_only",
+      "explanation": "確率的方法で用いる確率空間・期待値。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "probability-space",
+        "expectation"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.001",
+          "source_path": "public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables/60.001_probability_spaces_random_variables.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.003",
+      "target_id": "62.010",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "収束と大数の法則を統計的推定の学習に利用。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "law-of-large-numbers"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.003",
+          "source_path": "public_notes/60_probability_stochastic/60.003_convergence_laws_large_numbers/60.003_convergence_laws_large_numbers.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
+    },
+    {
+      "source_id": "60.004",
+      "target_id": "62.050",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "条件付き確率とBayesの定理からBayesian統計へ。 当該ノート自体の既読ではなく同等の知識で足りる。",
+      "related_concepts": [
+        "bayes-theorem"
+      ],
+      "evidence": [
+        {
+          "note_id": "60.004",
+          "source_path": "public_notes/60_probability_stochastic/60.004_conditional_probability_expectation/60.004_conditional_probability_expectation.tex",
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "中"
     }
   ]
 }

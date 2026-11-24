@@ -1,7 +1,7 @@
 {
   "version": 1,
   "metadata": {
-    "source": "data/notes.json and data/details.json (160 entries; source proof correctness not certified)",
+    "source": "data/notes.json and data/details.json (165 entries; source proof correctness not certified)",
     "purpose": "Prerequisite graph data; not a proof correctness certification",
     "strength_values": [
       "strong",
@@ -17,7 +17,7 @@
       "concept_prerequisite"
     ],
     "direction": "from prerequisite to learning target",
-    "edge_count_note": 205,
+    "edge_count_note": 216,
     "edge_count_curated": 17
   },
   "nodes": [
@@ -1637,6 +1637,43 @@
       "label": "線形代数演習 I",
       "fields": [
         "linear-algebra"
+      ]
+    },
+    {
+      "id": "note:60.001",
+      "kind": "note",
+      "label": "確率空間と確率変数",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "note:60.002",
+      "kind": "note",
+      "label": "独立性と無限積確率空間",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
+      ]
+    },
+    {
+      "id": "note:60.003",
+      "kind": "note",
+      "label": "確率変数列の収束と大数の法則",
+      "fields": [
+        "probability-theory",
+        "measure-theory",
+        "statistics"
+      ]
+    },
+    {
+      "id": "note:60.004",
+      "kind": "note",
+      "label": "条件付き確率と条件付き期待値",
+      "fields": [
+        "probability-theory",
+        "measure-theory"
       ]
     }
   ],
@@ -4100,6 +4137,127 @@
       "evidence": {
         "path": "data/details.json",
         "item": "P5.010"
+      }
+    },
+    {
+      "from": "note:60.001",
+      "to": "note:60.002",
+      "relation": "recommended_reading",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.002"
+      }
+    },
+    {
+      "from": "note:60.001",
+      "to": "note:60.003",
+      "relation": "recommended_reading",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.003"
+      }
+    },
+    {
+      "from": "note:60.002",
+      "to": "note:60.003",
+      "relation": "recommended_reading",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.003"
+      }
+    },
+    {
+      "from": "note:60.001",
+      "to": "note:60.004",
+      "relation": "recommended_reading",
+      "strength": "strong",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.004"
+      }
+    },
+    {
+      "from": "note:60.002",
+      "to": "note:60.004",
+      "relation": "recommended_reading",
+      "strength": "weak",
+      "review": "source_inspected",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.004"
+      }
+    },
+    {
+      "from": "note:28.010",
+      "to": "note:60.004",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.004"
+      }
+    },
+    {
+      "from": "note:60.003",
+      "to": "note:60.005",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.005"
+      }
+    },
+    {
+      "from": "note:60.004",
+      "to": "note:60.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.010"
+      }
+    },
+    {
+      "from": "note:60.002",
+      "to": "note:60.020",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "60.020"
+      }
+    },
+    {
+      "from": "note:60.003",
+      "to": "note:62.010",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.010"
+      }
+    },
+    {
+      "from": "note:60.004",
+      "to": "note:62.050",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "62.050"
       }
     }
   ]

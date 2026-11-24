@@ -491,6 +491,26 @@
       "pdf": "./public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.pdf",
       "tex": "./public_notes/58_analysis_on_manifolds/58.100_morse_theory/58.100_morse_theory.tex"
     },
+    "60.001": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables/60.001_probability_spaces_random_variables.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.001_probability_spaces_random_variables/60.001_probability_spaces_random_variables.tex"
+    },
+    "60.002": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.002_independence_infinite_products/60.002_independence_infinite_products.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.002_independence_infinite_products/60.002_independence_infinite_products.tex"
+    },
+    "60.003": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.003_convergence_laws_large_numbers/60.003_convergence_laws_large_numbers.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.003_convergence_laws_large_numbers/60.003_convergence_laws_large_numbers.tex"
+    },
+    "60.004": {
+      "status": "draft-review",
+      "pdf": "./public_notes/60_probability_stochastic/60.004_conditional_probability_expectation/60.004_conditional_probability_expectation.pdf",
+      "tex": "./public_notes/60_probability_stochastic/60.004_conditional_probability_expectation/60.004_conditional_probability_expectation.tex"
+    },
     "60.005": {
       "status": "draft-review",
       "pdf": "./public_notes/60_probability_stochastic/60.005_laws_large_numbers_clt/60.005_laws_large_numbers_clt.pdf",
