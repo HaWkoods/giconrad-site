@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "notes_count": 165,
+  "notes_count": 168,
   "concepts": [
     {
       "id": "universality",
@@ -64,10 +64,15 @@
         "manifold-topology",
         "differential-geometry",
         "entrance-math",
-        "elementary-number-theory"
+        "elementary-number-theory",
+        "functional-analysis",
+        "probability-theory",
+        "optimization",
+        "harmonic-analysis"
       ],
       "related_note_ids": [
         "05.050",
+        "05.070",
         "12.020",
         "22.010",
         "55.020",
@@ -263,7 +268,12 @@
         "probability-theory",
         "manifold-analysis",
         "differential-geometry",
-        "entrance-math"
+        "entrance-math",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "pde",
+        "classical-mechanics"
       ],
       "related_note_ids": [
         "12.070",
@@ -271,6 +281,7 @@
         "28.010",
         "28.020",
         "58.050",
+        "58.070",
         "97.030"
       ],
       "related_concept_ids": [],
@@ -421,9 +432,14 @@
         "manifold-analysis",
         "dynamical-systems",
         "optimization",
-        "functional-analysis"
+        "functional-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "pde"
       ],
       "related_note_ids": [
+        "58.070",
         "70.010",
         "90.010"
       ],
@@ -1778,11 +1794,18 @@
         "differential-geometry",
         "manifold-analysis",
         "algebraic-topology",
-        "measure-theory"
+        "measure-theory",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "functional-analysis",
+        "pde",
+        "classical-mechanics"
       ],
       "related_note_ids": [
         "53.070",
-        "58.050"
+        "58.050",
+        "58.070"
       ],
       "related_concept_ids": [],
       "index_status": "既存タグから移行"
@@ -2099,11 +2122,15 @@
         "integral-transforms",
         "linear-algebra",
         "quantum-mechanics",
-        "operator-theory"
+        "operator-theory",
+        "probability-theory",
+        "statistics",
+        "numerical-analysis"
       ],
       "related_note_ids": [
         "42.020",
         "46.030",
+        "46.070",
         "81.010"
       ],
       "related_concept_ids": [],
@@ -2266,10 +2293,16 @@
       "description": "既存の分類語「分布」に対応する概念・方法の検索項目。",
       "fields": [
         "functional-analysis",
-        "pde"
+        "pde",
+        "manifold-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "classical-mechanics"
       ],
       "related_note_ids": [
-        "46.100"
+        "46.100",
+        "58.070"
       ],
       "related_concept_ids": [],
       "index_status": "既存タグから移行"
@@ -2282,11 +2315,17 @@
       "description": "既存の分類語「弱微分」に対応する概念・方法の検索項目。",
       "fields": [
         "pde",
-        "functional-analysis"
+        "functional-analysis",
+        "manifold-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "classical-mechanics"
       ],
       "related_note_ids": [
         "35.020",
-        "46.100"
+        "46.100",
+        "58.070"
       ],
       "related_concept_ids": [],
       "index_status": "既存タグから移行"
@@ -2322,10 +2361,21 @@
       "fields": [
         "fourier-analysis",
         "approximation",
-        "functional-analysis"
+        "functional-analysis",
+        "linear-algebra",
+        "probability-theory",
+        "statistics",
+        "numerical-analysis",
+        "manifold-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "pde",
+        "classical-mechanics"
       ],
       "related_note_ids": [
-        "42.010"
+        "42.010",
+        "46.070",
+        "58.070"
       ],
       "related_concept_ids": [],
       "index_status": "既存タグから移行"
@@ -2655,9 +2705,20 @@
       "description": "既存の分類語「条件付き期待値」に対応する概念・方法の検索項目。",
       "fields": [
         "probability-theory",
-        "measure-theory"
+        "measure-theory",
+        "functional-analysis",
+        "linear-algebra",
+        "fourier-analysis",
+        "statistics",
+        "numerical-analysis",
+        "combinatorics",
+        "algebra",
+        "optimization",
+        "harmonic-analysis"
       ],
       "related_note_ids": [
+        "05.070",
+        "46.070",
         "60.004",
         "60.010"
       ],
@@ -3121,10 +3182,15 @@
         "algebra",
         "entrance-math",
         "elementary-number-theory",
-        "enumeration"
+        "enumeration",
+        "functional-analysis",
+        "probability-theory",
+        "optimization",
+        "harmonic-analysis"
       ],
       "related_note_ids": [
         "05.050",
+        "05.070",
         "97.120"
       ],
       "related_concept_ids": [
@@ -3272,9 +3338,14 @@
       "fields": [
         "numerical-analysis",
         "pde",
-        "functional-analysis"
+        "functional-analysis",
+        "linear-algebra",
+        "fourier-analysis",
+        "probability-theory",
+        "statistics"
       ],
       "related_note_ids": [
+        "46.070",
         "65.070",
         "65.080"
       ],
@@ -3310,9 +3381,14 @@
         "optimization",
         "entrance-math",
         "analysis",
-        "linear-algebra"
+        "linear-algebra",
+        "combinatorics",
+        "algebra",
+        "probability-theory",
+        "harmonic-analysis"
       ],
       "related_note_ids": [
+        "05.070",
         "46.040",
         "90.010",
         "90.020",
@@ -4450,9 +4526,20 @@
       "description": "Hilbert空間の閉部分空間への直交射影。",
       "fields": [
         "probability-theory",
-        "measure-theory"
+        "measure-theory",
+        "functional-analysis",
+        "linear-algebra",
+        "fourier-analysis",
+        "statistics",
+        "numerical-analysis",
+        "combinatorics",
+        "algebra",
+        "optimization",
+        "harmonic-analysis"
       ],
       "related_note_ids": [
+        "05.070",
+        "46.070",
         "60.004"
       ],
       "related_concept_ids": [],
@@ -4470,6 +4557,251 @@
       ],
       "related_note_ids": [
         "60.004"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "best-approximation",
+      "name_ja": "最良近似",
+      "name_en": "best approximation",
+      "aliases": [],
+      "description": "最良近似を用いる数学的手法・定理。",
+      "fields": [
+        "functional-analysis",
+        "linear-algebra",
+        "fourier-analysis",
+        "probability-theory",
+        "statistics",
+        "numerical-analysis"
+      ],
+      "related_note_ids": [
+        "46.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "least-squares",
+      "name_ja": "最小二乗法",
+      "name_en": "least squares",
+      "aliases": [],
+      "description": "最小二乗法を用いる数学的手法・定理。",
+      "fields": [
+        "functional-analysis",
+        "linear-algebra",
+        "fourier-analysis",
+        "probability-theory",
+        "statistics",
+        "numerical-analysis"
+      ],
+      "related_note_ids": [
+        "46.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "parseval-identity",
+      "name_ja": "Parsevalの等式",
+      "name_en": "Parseval identity",
+      "aliases": [],
+      "description": "Parsevalの等式を用いる数学的手法・定理。",
+      "fields": [
+        "functional-analysis",
+        "linear-algebra",
+        "fourier-analysis",
+        "probability-theory",
+        "statistics",
+        "numerical-analysis"
+      ],
+      "related_note_ids": [
+        "46.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "galerkin-method",
+      "name_ja": "Galerkin法",
+      "name_en": "Galerkin method",
+      "aliases": [],
+      "description": "Galerkin法を用いる数学的手法・定理。",
+      "fields": [
+        "functional-analysis",
+        "linear-algebra",
+        "fourier-analysis",
+        "probability-theory",
+        "statistics",
+        "numerical-analysis"
+      ],
+      "related_note_ids": [
+        "46.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "group-averaging",
+      "name_ja": "群作用の平均化",
+      "name_en": "group averaging",
+      "aliases": [],
+      "description": "群作用の平均化を用いる数学的手法・定理。",
+      "fields": [
+        "combinatorics",
+        "algebra",
+        "functional-analysis",
+        "probability-theory",
+        "optimization",
+        "harmonic-analysis"
+      ],
+      "related_note_ids": [
+        "05.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "maschke-theorem",
+      "name_ja": "Maschkeの定理",
+      "name_en": "Maschke theorem",
+      "aliases": [],
+      "description": "Maschkeの定理を用いる数学的手法・定理。",
+      "fields": [
+        "combinatorics",
+        "algebra",
+        "functional-analysis",
+        "probability-theory",
+        "optimization",
+        "harmonic-analysis"
+      ],
+      "related_note_ids": [
+        "05.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "character-orthogonality",
+      "name_ja": "指標の直交性",
+      "name_en": "character orthogonality",
+      "aliases": [],
+      "description": "指標の直交性を用いる数学的手法・定理。",
+      "fields": [
+        "combinatorics",
+        "algebra",
+        "functional-analysis",
+        "probability-theory",
+        "optimization",
+        "harmonic-analysis"
+      ],
+      "related_note_ids": [
+        "05.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "integration-by-parts",
+      "name_ja": "部分積分",
+      "name_en": "integration by parts",
+      "aliases": [],
+      "description": "部分積分を用いる数学的手法・定理。",
+      "fields": [
+        "manifold-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "functional-analysis",
+        "pde",
+        "classical-mechanics"
+      ],
+      "related_note_ids": [
+        "58.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "abel-summation",
+      "name_ja": "Abelの総和公式",
+      "name_en": "Abel summation",
+      "aliases": [],
+      "description": "Abelの総和公式を用いる数学的手法・定理。",
+      "fields": [
+        "manifold-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "functional-analysis",
+        "pde",
+        "classical-mechanics"
+      ],
+      "related_note_ids": [
+        "58.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "boundary-term",
+      "name_ja": "境界項",
+      "name_en": "boundary term",
+      "aliases": [],
+      "description": "境界項を用いる数学的手法・定理。",
+      "fields": [
+        "manifold-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "functional-analysis",
+        "pde",
+        "classical-mechanics"
+      ],
+      "related_note_ids": [
+        "58.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "green-identity",
+      "name_ja": "Greenの公式",
+      "name_en": "Green identity",
+      "aliases": [],
+      "description": "Greenの公式を用いる数学的手法・定理。",
+      "fields": [
+        "manifold-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "functional-analysis",
+        "pde",
+        "classical-mechanics"
+      ],
+      "related_note_ids": [
+        "58.070"
+      ],
+      "related_concept_ids": [],
+      "index_status": "原稿に基づく追加"
+    },
+    {
+      "id": "euler-lagrange-equation",
+      "name_ja": "Euler–Lagrange方程式",
+      "name_en": "Euler–Lagrange equation",
+      "aliases": [],
+      "description": "Euler–Lagrange方程式を用いる数学的手法・定理。",
+      "fields": [
+        "manifold-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "functional-analysis",
+        "pde",
+        "classical-mechanics"
+      ],
+      "related_note_ids": [
+        "58.070"
       ],
       "related_concept_ids": [],
       "index_status": "原稿に基づく追加"

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "metadata": {
-    "source": "data/notes.json and data/details.json (165 entries; source proof correctness not certified)",
+    "source": "data/notes.json and data/details.json (168 entries; source proof correctness not certified)",
     "purpose": "Prerequisite graph data; not a proof correctness certification",
     "strength_values": [
       "strong",
@@ -1674,6 +1674,46 @@
       "fields": [
         "probability-theory",
         "measure-theory"
+      ]
+    },
+    {
+      "id": "note:46.070",
+      "kind": "note",
+      "label": "直交射影と最良近似",
+      "fields": [
+        "functional-analysis",
+        "linear-algebra",
+        "fourier-analysis",
+        "probability-theory",
+        "statistics",
+        "numerical-analysis"
+      ]
+    },
+    {
+      "id": "note:05.070",
+      "kind": "note",
+      "label": "平均化の原理と対称性",
+      "fields": [
+        "combinatorics",
+        "algebra",
+        "functional-analysis",
+        "probability-theory",
+        "optimization",
+        "harmonic-analysis"
+      ]
+    },
+    {
+      "id": "note:58.070",
+      "kind": "note",
+      "label": "部分積分と境界項",
+      "fields": [
+        "manifold-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "functional-analysis",
+        "pde",
+        "classical-mechanics"
       ]
     }
   ],
@@ -4258,6 +4298,28 @@
       "evidence": {
         "path": "data/details.json",
         "item": "62.050"
+      }
+    },
+    {
+      "from": "note:46.030",
+      "to": "note:46.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "46.070"
+      }
+    },
+    {
+      "from": "note:05.050",
+      "to": "note:05.070",
+      "relation": "recommended_reading",
+      "strength": "unassessed",
+      "review": "catalogue_only",
+      "evidence": {
+        "path": "data/details.json",
+        "item": "05.070"
       }
     }
   ]

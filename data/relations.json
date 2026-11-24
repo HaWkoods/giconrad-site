@@ -5124,6 +5124,486 @@
       ],
       "verification_status": "数学的に推論可能",
       "relevance": "中"
+    },
+    {
+      "source_id": "46.030",
+      "target_id": "46.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "同等の基礎知識を既習として利用できる推奨読書順。個別ノート自体は必読ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": "最良近似の原理"
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "46.070",
+      "target_id": "42.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "Fourier部分和は三角多項式空間へのL²直交射影となる。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "46.070",
+      "target_id": "60.004",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "二乗可積分な条件付き期待値は可測部分空間への直交射影である。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "46.070",
+      "target_id": "60.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "条件付き期待値の射影性と全分散公式を結び付ける。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "46.070",
+      "target_id": "62.060",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "最小二乗推定を列空間への射影として捉える。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "46.070",
+      "target_id": "35.020",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "対称強圧的な双線形形式のエネルギー内積と弱解の近似。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "46.070",
+      "target_id": "65.070",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "Galerkin直交性から最良近似性を導く。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "46.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "05.050",
+      "target_id": "05.070",
+      "relation_type": "recommended_next",
+      "direction": "source_to_target",
+      "symmetric": false,
+      "subtype": "supporting_only",
+      "explanation": "同等の基礎知識を既習として利用できる推奨読書順。個別ノート自体は必読ではない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": "平均化と不変部分空間"
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "05.070",
+      "target_id": "46.070",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "ユニタリな群作用の平均は不変部分空間への直交射影となる。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "05.070",
+      "target_id": "22.030",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "有限群の平均をコンパクト群の正規化Haar測度による積分に拡張する視点。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "05.070",
+      "target_id": "60.004",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "測度保存有限群作用における軌道平均と不変σ加法族への条件付き期待値。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "05.070",
+      "target_id": "60.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "軌道平均の条件付き期待値としての解釈。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "05.070",
+      "target_id": "90.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "凸かつ群不変な目的関数では平均化が目的値を増加させない。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "05.070",
+      "target_id": "43.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "有限群における指標の直交性と調和解析の接続。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "05.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.070",
+      "target_id": "11.040",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "部分和とAbelの総和公式によるDirichlet級数の収束評価を理解するための補助。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.070",
+      "target_id": "11.050",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "総和公式による算術関数の部分和と積分の接続。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.070",
+      "target_id": "42.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "周期境界項の消滅とFourier係数の減衰。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.070",
+      "target_id": "42.020",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "微分を振動核に移す操作とFourier解析の関係。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.070",
+      "target_id": "46.100",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "試験関数への微分の移動が分布微分を定める。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.070",
+      "target_id": "58.040",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "外微分の積法則と微分形式の計算。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.070",
+      "target_id": "58.050",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "Stokesの定理による部分積分の幾何学的統一。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.070",
+      "target_id": "70.010",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "変分の微分項を移しEuler–Lagrange方程式を導く。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.070",
+      "target_id": "35.020",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "Greenの公式から弱形式と境界条件を理解する。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
+    },
+    {
+      "source_id": "58.070",
+      "target_id": "46.070",
+      "relation_type": "theoretical_connection",
+      "direction": "symmetric",
+      "symmetric": true,
+      "subtype": "shared_method",
+      "explanation": "弱形式の導出とGalerkin直交性による近似を接続する。",
+      "related_concepts": [],
+      "evidence": [
+        {
+          "note_id": "58.070",
+          "source_path": null,
+          "review_basis": "direct_source_inspection",
+          "source_section": null
+        }
+      ],
+      "verification_status": "数学的に推論可能",
+      "relevance": "高"
     }
   ]
 }

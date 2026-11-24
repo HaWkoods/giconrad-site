@@ -811,6 +811,115 @@
       "legacy_title": null
     },
     {
+      "id": "05.070",
+      "title": "平均化の原理と対称性",
+      "fields": [
+        "combinatorics",
+        "algebra",
+        "functional-analysis",
+        "probability-theory",
+        "optimization",
+        "harmonic-analysis"
+      ],
+      "topics": [
+        "group-action",
+        "burnside-lemma",
+        "convexity",
+        "conditional-expectation"
+      ],
+      "summary": "有限群の平均作用素を起点にBurnsideの補題、Maschkeの定理、指標の直交性、凸最適化の対称化、軌道平均による条件付き期待値を導く。",
+      "description": "有限群の平均作用素を起点にBurnsideの補題、Maschkeの定理、指標の直交性、凸最適化の対称化、軌道平均による条件付き期待値を導く。 原稿は「平均化と不変部分空間」「群作用と数え上げ」「射影の平均化とMaschkeの定理」「不変内積と表現の分解」「対称な最適化問題」「確率論における軌道平均」を中心に構成される。数学的校閲中の原稿である。",
+      "primary_field": "combinatorics",
+      "secondary_fields": [
+        "algebra",
+        "functional-analysis",
+        "probability-theory",
+        "optimization",
+        "harmonic-analysis"
+      ],
+      "tags": [
+        "group-action",
+        "burnside-lemma",
+        "convexity",
+        "conditional-expectation"
+      ],
+      "keywords": [
+        "05.070",
+        "平均化の原理と対称性",
+        "平均化と不変部分空間",
+        "群作用と数え上げ",
+        "射影の平均化とMaschkeの定理",
+        "不変内積と表現の分解",
+        "対称な最適化問題",
+        "確率論における軌道平均",
+        "結び",
+        "平均作用素の冪等性",
+        "Burnsideの補題",
+        "Maschkeの定理",
+        "既約指標の直交性",
+        "軌道平均の条件付き期待値表示",
+        "群作用の平均",
+        "共役平均",
+        "凸性",
+        "対称性",
+        "表現論",
+        "不変部分空間",
+        "Haar測度",
+        "軌道平均",
+        "Reynolds operator",
+        "群作用の平均化",
+        "group averaging",
+        "Maschke theorem",
+        "指標の直交性",
+        "character orthogonality",
+        "直交射影",
+        "orthogonal projection"
+      ],
+      "prerequisites": [],
+      "recommended_prior": [
+        "05.050"
+      ],
+      "main_concepts": [
+        "group-action",
+        "burnside-lemma",
+        "convexity",
+        "conditional-expectation",
+        "group-averaging",
+        "maschke-theorem",
+        "character-orthogonality",
+        "orthogonal-projection"
+      ],
+      "main_results": [
+        "平均作用素の冪等性",
+        "Burnsideの補題",
+        "Maschkeの定理",
+        "既約指標の直交性",
+        "対称な最適化問題",
+        "軌道平均の条件付き期待値表示"
+      ],
+      "methods": [
+        "群作用の平均",
+        "共役平均",
+        "凸性"
+      ],
+      "outline_sections": [
+        "平均化と不変部分空間",
+        "群作用と数え上げ",
+        "射影の平均化とMaschkeの定理",
+        "不変内積と表現の分解",
+        "対称な最適化問題",
+        "確率論における軌道平均",
+        "結び"
+      ],
+      "github_url": null,
+      "pdf_url": null,
+      "source_url": null,
+      "publicly_available": false,
+      "content_basis": "direct_source_inspection",
+      "mathematical_review_status": "校閲中",
+      "legacy_title": null
+    },
+    {
       "id": "11.010",
       "title": "算術関数・Dirichlet畳み込みとゼータ関数",
       "fields": [
@@ -4892,6 +5001,115 @@
       "legacy_title": null
     },
     {
+      "id": "46.070",
+      "title": "直交射影と最良近似",
+      "fields": [
+        "functional-analysis",
+        "linear-algebra",
+        "fourier-analysis",
+        "probability-theory",
+        "statistics",
+        "numerical-analysis"
+      ],
+      "topics": [
+        "hilbert-space",
+        "fourier-series",
+        "conditional-expectation",
+        "finite-element"
+      ],
+      "summary": "直交射影とPythagorasの等式から最小二乗法、Fourier展開とバーゼル問題、条件付き期待値・全分散公式、Galerkin近似を統一的に導く。",
+      "description": "直交射影とPythagorasの等式から最小二乗法、Fourier展開とバーゼル問題、条件付き期待値・全分散公式、Galerkin近似を統一的に導く。 原稿は「最良近似の原理」「連立方程式と最小二乗法」「Fourier級数と直交展開」「条件付き期待値と予測」「変分問題とGalerkin近似」を中心に構成される。数学的校閲中の原稿である。",
+      "primary_field": "functional-analysis",
+      "secondary_fields": [
+        "linear-algebra",
+        "fourier-analysis",
+        "probability-theory",
+        "statistics",
+        "numerical-analysis"
+      ],
+      "tags": [
+        "hilbert-space",
+        "fourier-series",
+        "conditional-expectation",
+        "finite-element"
+      ],
+      "keywords": [
+        "46.070",
+        "直交射影と最良近似",
+        "最良近似の原理",
+        "連立方程式と最小二乗法",
+        "Fourier級数と直交展開",
+        "条件付き期待値と予測",
+        "変分問題とGalerkin近似",
+        "結び",
+        "直交射影定理",
+        "正規方程式",
+        "Besselの不等式・Parsevalの等式",
+        "バーゼル問題",
+        "全分散公式",
+        "Galerkin直交性",
+        "直交分解",
+        "誤差の平方分解",
+        "エネルギー内積",
+        "ピタゴラス",
+        "最小二乗",
+        "有限要素法",
+        "直交射影",
+        "orthogonal projection",
+        "最良近似",
+        "best approximation",
+        "最小二乗法",
+        "least squares",
+        "Parsevalの等式",
+        "Parseval identity",
+        "Galerkin法",
+        "Galerkin method"
+      ],
+      "prerequisites": [],
+      "recommended_prior": [
+        "46.030"
+      ],
+      "main_concepts": [
+        "hilbert-space",
+        "fourier-series",
+        "conditional-expectation",
+        "finite-element",
+        "orthogonal-projection",
+        "best-approximation",
+        "least-squares",
+        "parseval-identity",
+        "galerkin-method"
+      ],
+      "main_results": [
+        "直交射影定理",
+        "正規方程式",
+        "Besselの不等式・Parsevalの等式",
+        "バーゼル問題",
+        "全分散公式",
+        "Galerkin直交性"
+      ],
+      "methods": [
+        "直交分解",
+        "誤差の平方分解",
+        "エネルギー内積"
+      ],
+      "outline_sections": [
+        "最良近似の原理",
+        "連立方程式と最小二乗法",
+        "Fourier級数と直交展開",
+        "条件付き期待値と予測",
+        "変分問題とGalerkin近似",
+        "結び"
+      ],
+      "github_url": null,
+      "pdf_url": null,
+      "source_url": null,
+      "publicly_available": false,
+      "content_basis": "direct_source_inspection",
+      "mathematical_review_status": "校閲中",
+      "legacy_title": null
+    },
+    {
       "id": "46.100",
       "title": "分布と弱微分",
       "fields": [
@@ -6888,6 +7106,128 @@
       "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/58_analysis_on_manifolds/58.060_de_rham_cohomology/58.060_de_rham_cohomology.tex",
       "publicly_available": true,
       "content_basis": "repository_source_structure_audit_20261122",
+      "mathematical_review_status": "校閲中",
+      "legacy_title": null
+    },
+    {
+      "id": "58.070",
+      "title": "部分積分と境界項",
+      "fields": [
+        "manifold-analysis",
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "functional-analysis",
+        "pde",
+        "classical-mechanics"
+      ],
+      "topics": [
+        "integration",
+        "fourier-series",
+        "weak-derivative",
+        "distribution",
+        "variational",
+        "stokes-theorem"
+      ],
+      "summary": "積の微分法則と境界項を起点にAbelの総和公式、Dirichletの判定法、Fourier係数の減衰、分布微分、Euler–Lagrange方程式、Greenの公式、Stokesの定理を関連づける。",
+      "description": "積の微分法則と境界項を起点にAbelの総和公式、Dirichletの判定法、Fourier係数の減衰、分布微分、Euler–Lagrange方程式、Greenの公式、Stokesの定理を関連づける。 原稿は「積の微分と境界項」「離散的な部分積分」「Fourier解析における微分の移動」「弱微分と分布」「変分法とEuler–Lagrange方程式」「Greenの公式と境界値問題」「微分形式による統一」を中心に構成される。数学的校閲中の原稿である。",
+      "primary_field": "manifold-analysis",
+      "secondary_fields": [
+        "analysis",
+        "analytic-number-theory",
+        "fourier-analysis",
+        "functional-analysis",
+        "pde",
+        "classical-mechanics"
+      ],
+      "tags": [
+        "integration",
+        "fourier-series",
+        "weak-derivative",
+        "distribution",
+        "variational",
+        "stokes-theorem"
+      ],
+      "keywords": [
+        "58.070",
+        "部分積分と境界項",
+        "積の微分と境界項",
+        "離散的な部分積分",
+        "Fourier解析における微分の移動",
+        "弱微分と分布",
+        "変分法とEuler–Lagrange方程式",
+        "Greenの公式と境界値問題",
+        "微分形式による統一",
+        "結び",
+        "Abelの総和公式",
+        "Dirichletの収束判定法",
+        "Fourier係数の減衰",
+        "分布微分",
+        "Euler–Lagrange方程式",
+        "Greenの公式",
+        "Stokesの定理",
+        "部分積分",
+        "総和法",
+        "境界項の消去",
+        "変分",
+        "アーベル",
+        "ディリクレ",
+        "弱形式",
+        "境界値問題",
+        "超関数",
+        "微分形式",
+        "integration by parts",
+        "Abel summation",
+        "境界項",
+        "boundary term",
+        "Green identity",
+        "Euler–Lagrange equation"
+      ],
+      "prerequisites": [],
+      "recommended_prior": [],
+      "main_concepts": [
+        "integration",
+        "fourier-series",
+        "weak-derivative",
+        "distribution",
+        "variational",
+        "stokes-theorem",
+        "integration-by-parts",
+        "abel-summation",
+        "boundary-term",
+        "green-identity",
+        "euler-lagrange-equation"
+      ],
+      "main_results": [
+        "Abelの総和公式",
+        "Dirichletの収束判定法",
+        "Fourier係数の減衰",
+        "分布微分",
+        "Euler–Lagrange方程式",
+        "Greenの公式",
+        "Stokesの定理"
+      ],
+      "methods": [
+        "部分積分",
+        "総和法",
+        "境界項の消去",
+        "変分"
+      ],
+      "outline_sections": [
+        "積の微分と境界項",
+        "離散的な部分積分",
+        "Fourier解析における微分の移動",
+        "弱微分と分布",
+        "変分法とEuler–Lagrange方程式",
+        "Greenの公式と境界値問題",
+        "微分形式による統一",
+        "結び"
+      ],
+      "github_url": null,
+      "pdf_url": null,
+      "source_url": null,
+      "publicly_available": false,
+      "content_basis": "direct_source_inspection",
       "mathematical_review_status": "校閲中",
       "legacy_title": null
     },
