@@ -9924,6 +9924,93 @@
       "legacy_title": null
     },
     {
+      "id": "91.005",
+      "title": "金融数学・保険数理の基礎概念",
+      "fields": [
+        "financial-math",
+        "probability-theory",
+        "statistics"
+      ],
+      "topics": [
+        "arbitrage",
+        "asset-pricing",
+        "actuarial",
+        "probability-distribution"
+      ],
+      "summary": "金融商品・保険契約の用語を定義し、キャッシュフローと現在価値から無裁定価格付け、保険料、リスク評価へ進む。",
+      "description": "金融・保険用語の経済的意味と数学的定式化を対応させる導入ノート。キャッシュフロー、金利、株式・債券、派生金融商品、無裁定と二項市場、保険契約、生命保険の死亡モデル、損害保険の集合的危険モデルを扱う。A5判37ページ。ユーザーの最終確認前の完成候補版。",
+      "primary_field": "financial-math",
+      "secondary_fields": [
+        "probability-theory",
+        "statistics"
+      ],
+      "tags": [
+        "arbitrage",
+        "asset-pricing",
+        "actuarial",
+        "probability-distribution"
+      ],
+      "keywords": [
+        "金融数学・保険数理の基礎概念",
+        "91.005",
+        "金融用語",
+        "保険用語",
+        "キャッシュフロー",
+        "金利",
+        "債券",
+        "オプション",
+        "金融商品",
+        "デリバティブ",
+        "無裁定",
+        "arbitrage",
+        "複製",
+        "hedging",
+        "保険契約",
+        "保険料",
+        "生命保険",
+        "死亡強度",
+        "生存関数",
+        "損害保険",
+        "複合Poisson",
+        "compound Poisson",
+        "保険数理",
+        "actuarial",
+        "asset pricing"
+      ],
+      "prerequisites": [],
+      "recommended_prior": [],
+      "main_concepts": [
+        "arbitrage",
+        "asset-pricing",
+        "actuarial",
+        "probability-distribution"
+      ],
+      "main_results": [
+        "二項市場の無裁定条件",
+        "生存関数と死亡強度",
+        "集合的危険モデルの平均・分散"
+      ],
+      "methods": [],
+      "outline_sections": [
+        "金融契約とキャッシュフロー",
+        "貨幣の時間価値と金利",
+        "金融市場と金融資産",
+        "派生金融商品と契約上の権利",
+        "無裁定・複製・ヘッジ",
+        "保険契約と保険数理の基本概念",
+        "生命保険と生存時間の数学",
+        "損害保険と集合的危険モデル",
+        "金融数学と保険数理における評価の比較"
+      ],
+      "github_url": "https://github.com/HaWkoods/giconrad-site/tree/main/public_notes/91_financial_actuarial/91.005_financial_insurance_foundations",
+      "pdf_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/91_financial_actuarial/91.005_financial_insurance_foundations/91.005_financial_insurance_foundations.pdf",
+      "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/91_financial_actuarial/91.005_financial_insurance_foundations/91.005_financial_insurance_foundations.tex",
+      "publicly_available": true,
+      "content_basis": "authored_and_compiled_pLaTeX_20261124",
+      "mathematical_review_status": "校閲中（完成候補）",
+      "legacy_title": null
+    },
+    {
       "id": "91.010",
       "title": "離散時間金融市場と無裁定価格理論",
       "fields": [

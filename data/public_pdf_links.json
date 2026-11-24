@@ -701,6 +701,11 @@
       "pdf": "./public_notes/90_optimization/90.030_numerical_optimization/90.030_numerical_optimization.pdf",
       "tex": "./public_notes/90_optimization/90.030_numerical_optimization/90.030_numerical_optimization.tex"
     },
+    "91.005": {
+      "status": "draft-review",
+      "pdf": "./public_notes/91_financial_actuarial/91.005_financial_insurance_foundations/91.005_financial_insurance_foundations.pdf",
+      "tex": "./public_notes/91_financial_actuarial/91.005_financial_insurance_foundations/91.005_financial_insurance_foundations.tex"
+    },
     "91.010": {
       "status": "draft-review",
       "pdf": "./public_notes/91_financial_actuarial/91.010_discrete_asset_pricing/91.010_discrete_asset_pricing.pdf",
