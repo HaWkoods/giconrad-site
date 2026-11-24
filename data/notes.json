@@ -911,10 +911,10 @@
         "確率論における軌道平均",
         "結び"
       ],
-      "github_url": null,
-      "pdf_url": null,
-      "source_url": null,
-      "publicly_available": false,
+      "github_url": "https://github.com/HaWkoods/giconrad-site/tree/main/public_notes/05_combinatorics/05.070_averaging_symmetry",
+      "pdf_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/05_combinatorics/05.070_averaging_symmetry/05.070_averaging_symmetry.pdf",
+      "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/05_combinatorics/05.070_averaging_symmetry/05.070_averaging_symmetry.tex",
+      "publicly_available": true,
       "content_basis": "direct_source_inspection",
       "mathematical_review_status": "校閲中",
       "legacy_title": null
@@ -5101,10 +5101,10 @@
         "変分問題とGalerkin近似",
         "結び"
       ],
-      "github_url": null,
-      "pdf_url": null,
-      "source_url": null,
-      "publicly_available": false,
+      "github_url": "https://github.com/HaWkoods/giconrad-site/tree/main/public_notes/46_functional_analysis/46.070_orthogonal_projection_best_approximation",
+      "pdf_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/46_functional_analysis/46.070_orthogonal_projection_best_approximation/46.070_orthogonal_projection_best_approximation.pdf",
+      "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/46_functional_analysis/46.070_orthogonal_projection_best_approximation/46.070_orthogonal_projection_best_approximation.tex",
+      "publicly_available": true,
       "content_basis": "direct_source_inspection",
       "mathematical_review_status": "校閲中",
       "legacy_title": null
@@ -7223,10 +7223,10 @@
         "微分形式による統一",
         "結び"
       ],
-      "github_url": null,
-      "pdf_url": null,
-      "source_url": null,
-      "publicly_available": false,
+      "github_url": "https://github.com/HaWkoods/giconrad-site/tree/main/public_notes/58_analysis_on_manifolds/58.070_integration_by_parts_boundary_terms",
+      "pdf_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/58_analysis_on_manifolds/58.070_integration_by_parts_boundary_terms/58.070_integration_by_parts_boundary_terms.pdf",
+      "source_url": "https://github.com/HaWkoods/giconrad-site/blob/main/public_notes/58_analysis_on_manifolds/58.070_integration_by_parts_boundary_terms/58.070_integration_by_parts_boundary_terms.tex",
+      "publicly_available": true,
       "content_basis": "direct_source_inspection",
       "mathematical_review_status": "校閲中",
       "legacy_title": null

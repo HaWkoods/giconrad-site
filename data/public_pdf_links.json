@@ -810,6 +810,21 @@
       "status": "draft-review",
       "pdf": "./public_notes/97_entrance_math/97.200_hecke_sorting/97.200_hecke_sorting.pdf",
       "tex": "./public_notes/97_entrance_math/97.200_hecke_sorting/97.200_hecke_sorting.tex"
+    },
+    "05.070": {
+      "status": "draft-review",
+      "pdf": "./public_notes/05_combinatorics/05.070_averaging_symmetry/05.070_averaging_symmetry.pdf",
+      "tex": "./public_notes/05_combinatorics/05.070_averaging_symmetry/05.070_averaging_symmetry.tex"
+    },
+    "46.070": {
+      "status": "draft-review",
+      "pdf": "./public_notes/46_functional_analysis/46.070_orthogonal_projection_best_approximation/46.070_orthogonal_projection_best_approximation.pdf",
+      "tex": "./public_notes/46_functional_analysis/46.070_orthogonal_projection_best_approximation/46.070_orthogonal_projection_best_approximation.tex"
+    },
+    "58.070": {
+      "status": "draft-review",
+      "pdf": "./public_notes/58_analysis_on_manifolds/58.070_integration_by_parts_boundary_terms/58.070_integration_by_parts_boundary_terms.pdf",
+      "tex": "./public_notes/58_analysis_on_manifolds/58.070_integration_by_parts_boundary_terms/58.070_integration_by_parts_boundary_terms.tex"
     }
   }
 }

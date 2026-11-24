@@ -1,0 +1,268 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{平均化の原理と対称性}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section{平均化と不変部分空間}
+本稿では，有限個の対称性をすべて平均するという操作から，組合せ論，表現論，最適化の結果を導く．群，線形空間，行列の跡および凸関数の基本事項を既知とする．$G$ は有限群，$n=|G|$ とする．
+
+\begin{definition}
+体 $k$ 上の線形空間 $V$ への $G$ の線形作用とは群準同型 $\rho:G\to\operatorname{GL}(V)$ をいう．以下 $\rho(g)v$ を $gv$ と略記する．不変部分空間とは
+\[
+ V^G=\{v\in V:gv=v\ (g\in G)\}
+\]
+をいう．また，$G$ の作用で安定な部分空間 $W$ を $G$ 部分加群という．$V^G$ と $G$ 部分加群の概念を区別する．
+\end{definition}
+\begin{theorem}[平均化作用素]\label{thm:average}
+$k$ の標数が $n$ を割らないと仮定する（標数 $0$ を含む）．このとき
+\begin{equation}\label{eq:avg}
+ Pv=\frac1n\sum_{g\in G}gv
+\end{equation}
+は線形作用素であり，$P^2=P$，$\operatorname{im}P=V^G$ を満たす．また $hP=Ph=P$ ($h\in G$) である．特に $V=V^G\oplus\ker P$ である．
+\end{theorem}
+\begin{proof}
+任意の $h\in G$ に対し，左乗法 $g\mapsto hg$ と右乗法 $g\mapsto gh$ は $G$ の置換である．従って
+\[
+ hPv=\frac1n\sum_g(hg)v=Pv,
+ \quad Phv=\frac1n\sum_g(gh)v=Pv.
+\]
+よって $Pv\in V^G$．逆に $v\in V^G$ ならば $Pv=v$ である．従って $\operatorname{im}P=V^G$ かつ $P^2=P$．任意の $v$ に対し $v=Pv+(v-Pv)$ と書け，$P(v-Pv)=0$．さらに $V^G\cap\ker P=\{0\}$ である．
+\end{proof}
+\begin{corollary}[平均化は直交射影になる]\label{cor:orth}
+$V$ が実または複素内積空間であり，$G$ の作用が内積を保つならば，$P$ は $V^G$ への直交射影である．
+\end{corollary}
+\begin{proof}
+$w\in V^G$ に対し
+\[
+ \langle Pv,w\rangle=\frac1n\sum_g\langle gv,w\rangle
+ =\frac1n\sum_g\langle v,g^{-1}w\rangle=\langle v,w\rangle.
+\]
+従って $v-Pv\perp V^G$ であり，定理\ref{thm:average}と合わせると直交射影の特徴づけを得る．完備性はこの明示的な構成には不要である．
+\end{proof}
+\begin{example}
+$G=\{1,s\}$，$s(x,y)=(y,x)$ とする．このとき $P(x,y)=((x+y)/2,(x+y)/2)$ は直線 $x=y$ への直交射影である．$v-Pv$ は直線 $x=-y$ 上にある．偶関数と奇関数への分解も，作用 $(sf)(t)=f(-t)$ に関する同じ平均化であり，$Pf=(f(t)+f(-t))/2$ となる．
+\end{example}
+
+\section{群作用と数え上げ}
+有限集合 $X$ に $G$ が作用するとする．各 $x\in X$ の軌道を $Gx$，固定点集合を $X^g=\{x\in X:gx=x\}$ と書く．
+\begin{theorem}[Burnsideの補題]\label{thm:burnside}
+軌道の個数は
+\begin{equation}\label{eq:burn}
+ |X/G|=\frac1n\sum_{g\in G}|X^g|
+\end{equation}
+である．
+\end{theorem}
+\begin{proof}
+$V=\R^X$ を $X$ 上の実関数の空間とし，$(gf)(x)=f(g^{-1}x)$ と定める．不変関数とは各軌道上で定数となる関数にほかならない．軌道の指示関数は $V^G$ の基底だから $\dim V^G=|X/G|$．定理\ref{thm:average}による直和分解で $P$ は恒等写像と零写像の直和であるため $\operatorname{tr}P=\dim V^G$．一方，点の指示関数 $\delta_x$ を基底に取ると $g\delta_x=\delta_{gx}$ であり，$g$ の表現行列の対角成分の和は $|X^g|$ である．跡の線形性から\eqref{eq:burn}が従う．
+\end{proof}
+\begin{remark}
+Burnsideの補題を二重計数でも示せる．$\{(g,x):gx=x\}$ の個数は $\sum_g|X^g|=\sum_x|G_x|$．各軌道 $O$ の寄与は軌道安定化群定理により $|O|(n/|O|)=n$ である．この証明では体や線形空間を使わない．直前の証明はこの個数を射影の階数に読み替えたものである．
+\end{remark}
+\begin{example}[正方形の頂点の彩色]
+正方形の4頂点を $q$ 色で彩色し，回転によって一致するものを同一視する（$q\ge1$）．回転の角度 $0,\pi/2,\pi,3\pi/2$ に対し固定彩色の個数は順に $q^4,q,q^2,q$ となる．従って異なる彩色の個数は
+\[
+ \frac{q^4+q^2+2q}{4}.
+\]
+$q=2$ のとき6個である．黒頂点数で分類すれば，0個と4個で各1，1個と3個で各1，2個の場合は隣接する場合と対角の場合の2種類であり，6個という計算を直接確かめられる．
+\end{example}
+\begin{corollary}[巡回彩色の公式]
+$m\ge1$ 個の位置を $q$ 色で彩色し，巡回移動で同一視すると，彩色の個数は
+\[
+ \frac1m\sum_{d\mid m}\varphi(d)q^{m/d}.
+\]
+ここで $\varphi$ はEulerの函数であり $\varphi(1)=1$ とする．
+\end{corollary}
+\begin{proof}
+$r$ 個分の巡回移動の巡回置換の個数は $\gcd(m,r)$ である．固定彩色は各巡回置換の軌道で一定となるから $q^{\gcd(m,r)}$ 個存在する．$\gcd(m,r)=m/d$ となる $0\le r<m$ の個数は $\varphi(d)$ である．実際 $r=(m/d)s$ と書くと $0\le s<d$ かつ $\gcd(s,d)=1$ となる．Burnsideの補題を適用する．
+\end{proof}
+
+\section{射影の平均化とMaschkeの定理}
+$V$ を有限次元 $k$ 線形空間とし，$\operatorname{char}k$ は $n$ を割らないとする．一般の射影は $G$ と可換とは限らない．しかし，射影そのものを平均することでこの問題を解消できる．
+\begin{lemma}[写像の平均化]\label{lem:hom}
+$V,W$ を $G$ の線形作用を持つ空間とし，$T:V\to W$ を線形写像とする．
+\[
+ \overline T=\frac1n\sum_{g\in G}\rho_W(g)T\rho_V(g)^{-1}
+\]
+とおけば $\rho_W(h)\overline T=\overline T\rho_V(h)$ ($h\in G$) である．また，$T$ が既にこの条件を満たすならば $\overline T=T$ である．
+\end{lemma}
+\begin{proof}
+$\operatorname{Hom}_k(V,W)$ に $gT=\rho_W(g)T\rho_V(g)^{-1}$ と定めると線形作用になる．実際，$h(gT)=(hg)T$ であり単位元は恒等作用をする．不変元は $G$ と可換な写像であるから，定理\ref{thm:average}を適用すればよい．
+\end{proof}
+\begin{theorem}[Maschke]\label{thm:maschke}
+有限次元の $G$ 表現 $V$ の任意の $G$ 部分加群 $U$ に対し，ある $G$ 部分加群 $W$ が存在して $V=U\oplus W$ となる．従って $V$ は既約表現の直和である．
+\end{theorem}
+\begin{proof}
+線形空間として $V=U\oplus U'$ と分解し，$U$ への射影 $p:V\to U$ を取る．$U$ は $G$ の作用で安定だから，補題\ref{lem:hom}により $G$ と可換な $\overline p:V\to U$ を得る．$u\in U$ に対して $g^{-1}u\in U$，$p(g^{-1}u)=g^{-1}u$ なので $\overline p(u)=u$．従って任意の $v\in V$ は
+\[
+ v=\overline p(v)+(v-\overline p(v))\in U+\ker\overline p
+\]
+と書け，交わりは $0$ である．$W=\ker\overline p$ は可換性により安定である．後半は次元についての帰納法による．$V=0$ の場合は空の直和，$V$ が既約ならば主張は明らかであり，それ以外では真の非零部分加群とその補空間に分解して帰納法を適用する．
+\end{proof}
+\begin{example}[標数の条件]
+$k=\mathbb F_p$，$G=\mathbb Z/p\mathbb Z$ とし，生成元が
+\[
+ \begin{pmatrix}1&1\\0&1\end{pmatrix}
+\]
+で作用する2次元表現を考える．この行列の $p$ 乗は単位行列である．$U=ke_1$ は安定であるが，補空間となる安定な1次元部分空間は存在しない．実際，安定な直線の生成ベクトル $(a,b)$ ($b\ne0$) は固有ベクトルであり，第2成分から固有値は $1$，第1成分から $b=0$ が従い矛盾する．従って標数の仮定は単なる計算上の便宜ではない．
+\end{example}
+
+\section{不変内積と表現の分解}
+\begin{theorem}[内積の平均化]\label{thm:metric}
+実または複素有限次元表現 $V$ に対し，$G$ の作用を内積保存にする内積が存在する．
+\end{theorem}
+\begin{proof}
+任意の内積 $\langle\cdot,\cdot\rangle_0$ を取り
+\[
+ \langle v,w\rangle_G=\frac1n\sum_g\langle gv,gw\rangle_0
+\]
+と定める．内積の線形性，対称性（複素の場合はHermite対称性）は各項の性質から従う．$v\ne0$ ならば各 $gv\ne0$ であるから正定値である．$h\in G$ に対して $g\mapsto gh$ により和を置換すると $\langle hv,hw\rangle_G=\langle v,w\rangle_G$ となる．
+\end{proof}
+\begin{corollary}
+実または複素有限次元表現の $G$ 部分加群 $U$ に対し，定理\ref{thm:metric}の内積に関する $U^\perp$ は $G$ 部分加群である．
+\end{corollary}
+\begin{proof}
+$v\in U^\perp$，$u\in U$ ならば $\langle gv,u\rangle_G=\langle v,g^{-1}u\rangle_G=0$ である．よって $gv\in U^\perp$．
+\end{proof}
+これは実数体・複素数体におけるMaschkeの定理の別証明である．射影を平均する代わりに，直交性を測る内積を平均している．
+
+\begin{proposition}[指標と不変写像の次元]
+$V,W$ を有限次元複素表現とし，$\chi_V(g)=\operatorname{tr}\rho_V(g)$ とする．$G$ と可換な線形写像の空間 $\operatorname{Hom}_G(V,W)$ について
+\[
+ \dim\operatorname{Hom}_G(V,W)
+ =\frac1n\sum_g\overline{\chi_V(g)}\chi_W(g).
+\]
+\end{proposition}
+\begin{proof}
+補題\ref{lem:hom}の平均化作用素は $\operatorname{Hom}_G(V,W)$ への射影だから，その跡は次元に等しい．行列 $B=\rho_W(g)$，$A=\rho_V(g)^{-1}$ に対し，写像 $T\mapsto BTA$ の跡は $\operatorname{tr}B\operatorname{tr}A$ である．実際，行列単位 $E_{ij}$ における $E_{ij}$ の係数は $B_{ii}A_{jj}$ であり，これらを足せばよい．定理\ref{thm:metric}で不変内積を選ぶと $\rho_V(g)$ はユニタリだから $\operatorname{tr}A=\overline{\chi_V(g)}$．跡の線形性により結論を得る．
+\end{proof}
+\begin{corollary}[既約指標の直交性]
+$V,W$ が非零既約複素表現ならば，上の和は $V,W$ が同型のとき $1$，そうでないとき $0$ である．
+\end{corollary}
+\begin{proof}
+$G$ と可換な非零写像の核と像は安定なので，既約性からそれは同型である．従って非同型の場合に空間の次元は $0$．同型の場合は $\operatorname{End}_G(V)$ の次元を求めればよい．$T\in\operatorname{End}_G(V)$ は複素有限次元空間上で固有値 $\lambda$ を持つ．$T-\lambda I$ は可換な写像で核が非零だから既約性により零写像である．従って $\operatorname{End}_G(V)=\mathbb C I$ であり次元は $1$ となる．
+\end{proof}
+
+\section{対称な最適化問題}
+ここからは実線形空間 $V$ とその凸部分集合 $C\ne\varnothing$ を考える．$G$ が線形に作用し $gC=C$ とする．$f:C\to\R$ は凸かつ不変，すなわち $f(gx)=f(x)$ とする．
+\begin{theorem}[対称化による最小化]\label{thm:convex}
+任意の $x\in C$ に対し $Px\in C\cap V^G$，$f(Px)\le f(x)$ が成り立つ．従って
+\[
+ \inf_{x\in C}f(x)=\inf_{x\in C\cap V^G}f(x).
+\]
+最小点が存在するならば，不変な最小点が存在する．$f$ が狭義凸であれば，最小点は存在するときただ一つであり，不変である．
+\end{theorem}
+\begin{proof}
+$gx\in C$ なのでその有限平均 $Px\in C$．定理\ref{thm:average}により $Px\in V^G$．凸性の定義を有限個の点に帰納的に適用すると
+\[
+ f(Px)\le\frac1n\sum_g f(gx)=f(x).
+\]
+包含による反対向きの不等式と合わせて下限が等しい．最小点 $x_*$ に対し $Px_*$ も最小点である．狭義凸性のもとで相異なる最小点が二つあればその中点の値が厳密に小さくなり矛盾する．
+\end{proof}
+\begin{example}[対称な配分]
+$m\ge1$，$c>0$ とし，$x_i\ge0$，$\sum_{i=1}^m x_i=c$ のもとで $\sum_i x_i^2$ を最小にする．対称群 $S_m$ の作用について平均すると各座標は $c/m$ になる．従って定理\ref{thm:convex}から最小点は $(c/m,\ldots,c/m)$，最小値は $c^2/m$ となる．同じ議論は任意の凸関数 $\phi:[0,c]\to\R$ に対する $\sum_i\phi(x_i)$ にも適用できる．
+\end{example}
+\begin{example}[凸性を欠く場合]
+$C=[-1,1]$，$G=\{1,-1\}$ が符号反転によって作用し，$f(x)=-x^2$ とする．最小点は $\pm1$ だが唯一の不変点 $0$ は最小点ではない．対称性のみから不変な最小点を求めることはできない．
+\end{example}
+\begin{remark}
+下限が等しいことと最小点の存在は別の主張である．例えば $C=\{(x,y):x>0\}$，符号反転 $(x,y)\mapsto(x,-y)$，$f(x,y)=x+y^2$ ならば下限は $0$ だが最小点は存在しない．
+\end{remark}
+
+\section{確率論における軌道平均}
+\begin{proposition}[有限集合上の条件付き期待値]
+$X$ を空でない有限集合とし一様確率測度を入れる．$G$ が $X$ に作用し，$\mathcal G$ を軌道の合併からなる $\sigma$ 代数とする．$f:X\to\R$ に対し
+\[
+ \mathbb E[f\mid\mathcal G](x)=Pf(x)
+ =\frac1{|Gx|}\sum_{y\in Gx}f(y).
+\]
+\end{proposition}
+\begin{proof}
+$g^{-1}x=y$ となる $g$ の個数は安定化群の位数 $|G_x|$ に等しい．従って群についての平均は軌道についての平均となる．この値は軌道上一定であり，任意の軌道 $O$ について $\sum_{x\in O}Pf(x)=\sum_{x\in O}f(x)$．軌道の合併でも等式が成立し，条件付き期待値の定義を満たす．一意性は各軌道上の値がその平均に等しくなければならないことから従う．
+\end{proof}
+\begin{corollary}
+任意の $G$ 不変関数 $h:X\to\R$ に対し
+\[
+ \sum_{x\in X}(f(x)-Pf(x))^2
+ \le\sum_{x\in X}(f(x)-h(x))^2.
+\]
+\end{corollary}
+\begin{proof}
+一様測度による $L^2$ 内積は作用で保存されるから，系\ref{cor:orth}によって $Pf$ は直交射影である．Pythagorasの等式を適用する．
+\end{proof}
+
+\section{結び}
+平均化の効果は，全ての群元を掛けても和が変わらないことに尽きる．ベクトルを平均すれば不変元が得られ，写像を平均すれば作用と可換な写像が得られ，内積を平均すれば作用を保存する幾何学が得られる．有限集合ではその射影の跡が軌道数となり，凸最適化では目的関数を増加させない対称化となった．
+
+以上の論証は有限群を対象とする．コンパクト群で同様の議論を行うには正規化されたHaar測度と積分の存在が必要であり，本稿ではその理論を仮定しない．
+
+\begin{thebibliography}{9}
+\bibitem{lang} S. Lang, \textit{Algebra}, revised 3rd ed., Springer, 2002, Ch. XVIII, \S\S1--2.
+\bibitem{conway} J. B. Conway, \textit{A Course in Functional Analysis}, 2nd ed., Springer, 1990, Ch. I, \S2.
+\end{thebibliography}
+\end{document}

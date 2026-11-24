@@ -1,0 +1,336 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{部分積分と境界項}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section{積の微分と境界項}
+部分積分は原始関数を求めるための計算技巧にとどまらない．微分を一つの因子から他方へ移し，境界の寄与を分離する手段である．本稿では実解析，数列と級数，Fourier解析，弱微分，変分法および微分形式におけるこの原理を扱う．通常の微積分，Lebesgue積分および線形代数を前提とする．
+\begin{theorem}[部分積分]\label{thm:ibp}
+$f,g\in C^1([a,b];\mathbb C)$ ならば
+\begin{equation}\label{eq:ibp}
+ \int_a^b f'g=[fg]_a^b-\int_a^b fg'.
+\end{equation}
+ここで $[h]_a^b=h(b)-h(a)$ と書く．
+\end{theorem}
+\begin{proof}
+積の微分法則 $(fg)'=f'g+fg'$ を積分し，微積分学の基本定理を適用する．
+\end{proof}
+\begin{remark}
+右辺の境界項が $0$ になるのは，例えば $f(a)=f(b)=0$，$g(a)=g(b)=0$，または両関数が周期境界条件を満たす場合である．境界項を取り除くために何を仮定するかは，後の各応用に共通する問題である．
+\end{remark}
+\begin{corollary}[微分の反復移動]
+$f,g\in C^m([a,b])$，$m\ge1$ ならば
+\[
+ \int_a^b f^{(m)}g
+ =\sum_{j=0}^{m-1}(-1)^j[f^{(m-1-j)}g^{(j)}]_a^b
+ +(-1)^m\int_a^b fg^{(m)}.
+\]
+\end{corollary}
+\begin{proof}
+$m=1$ は定理\ref{thm:ibp}である．一般の $m$ に対し，最初に $f^{(m-1)}$ と $g$ について部分積分し，残る積分に $m-1$ 回の公式を適用すれば帰納法が完結する．
+\end{proof}
+
+\section{離散的な部分積分}
+数列の差分を $\Delta b_k=b_{k+1}-b_k$ とする．積の差分には
+\[
+ \Delta(A_k b_k)=(\Delta A_k)b_{k+1}+A_k\Delta b_k
+\]
+という積の微分法則に対応する等式がある．
+\begin{theorem}[Abelの部分和公式]\label{thm:abel}
+$a_1,\ldots,a_N,b_1,\ldots,b_N\in\mathbb C$，$N\ge1$ とし，$A_0=0$，$A_k=\sum_{j=1}^k a_j$ とおく．このとき
+\begin{equation}\label{eq:abel}
+ \sum_{k=1}^N a_k b_k=A_Nb_N-\sum_{k=1}^{N-1} A_k(b_{k+1}-b_k).
+\end{equation}
+\end{theorem}
+\begin{proof}
+$a_k=A_k-A_{k-1}$ を代入し，第2項の添字を変えると
+\begin{align*}
+ \sum_{k=1}^N a_k b_k&=\sum_{k=1}^N A_kb_k-\sum_{k=1}^N A_{k-1}b_k\\
+ &=A_Nb_N+\sum_{k=1}^{N-1} A_k(b_k-b_{k+1}),
+\end{align*}
+となる．
+\end{proof}
+\begin{corollary}[Dirichletの収束判定法]
+複素数列 $(a_k)$ の部分和 $A_k$ が有界であり，実数列 $b_k\ge0$ が単調減少して $0$ に収束するならば，$\sum_{k\ge1}a_kb_k$ は収束する．
+\end{corollary}
+\begin{proof}
+$\sup_k|A_k|=M<\infty$ とおくと $A_Nb_N\to0$．また
+\[
+ \sum_{k=1}^{N-1}|A_k(b_{k+1}-b_k)|
+ \le M\sum_{k=1}^{N-1}(b_k-b_{k+1})\le Mb_1.
+\]
+従って右辺の級数は絶対収束し，\eqref{eq:abel}により結論を得る．
+\end{proof}
+\begin{example}
+$\theta\notin2\pi\mathbb Z$ ならば $\sum_{k=1}^Ne^{ik\theta}=e^{i\theta}(1-e^{iN\theta})/(1-e^{i\theta})$ は $N$ に関して有界である．従って $\sum_{k\ge1}\sin(k\theta)/k$ は収束する．ここで振動する因子を足し上げて有界量とし，減少する因子へ差分を移したことが本質である．
+\end{example}
+\begin{theorem}[Abelの総和公式]\label{thm:asum}
+$x\ge1$，$f\in C^1([1,x])$ とし，$A(t)=\sum_{1\le n\le t}a_n$ とおく．このとき
+\[
+ \sum_{1\le n\le x}a_nf(n)
+ =A(x)f(x)-\int_1^x A(t)f'(t)\,dt.
+\]
+\end{theorem}
+\begin{proof}
+$N=\lfloor x\rfloor$ とする．\eqref{eq:abel}に $b_k=f(k)$ を入れる．各 $k\le N-1$ について $f(k+1)-f(k)=\int_k^{k+1}f'(t)\,dt$ であり，$A(t)=A_k$ a.e. on $[k,k+1]$ だから
+\[
+ \sum_{n=1}^Na_nf(n)=A(N)f(N)-\int_1^N A(t)f'(t)\,dt.
+\]
+$[N,x]$ 上では $A(t)=A(N)=A(x)$ なので，$A(N)(f(x)-f(N))=\int_N^x A(t)f'(t)\,dt$ を加減して所期の等式を得る．$x=1$ の場合も成立する．
+\end{proof}
+\begin{example}[調和級数の精密な評価]
+$a_n=1$，$f(t)=1/t$ とすれば $A(t)=\lfloor t\rfloor=t-\{t\}$ であり，定理\ref{thm:asum}から
+\begin{align*}
+ \sum_{n\le x}\frac1n&=\frac{\lfloor x\rfloor}x+\int_1^x\frac{\lfloor t\rfloor}{t^2}\,dt\\
+ &=1+\log x-\frac{\{x\}}x-\int_1^x\frac{\{t\}}{t^2}\,dt.
+\end{align*}
+$0\le\{t\}<1$ なので $\gamma=1-\int_1^\infty\{t\}t^{-2}\,dt$ が定義でき，
+\[
+ \sum_{n\le x}\frac1n=\log x+\gamma+O(x^{-1}).
+\]
+実際，誤差は $-\{x\}/x+\int_x^\infty\{t\}t^{-2}\,dt$ であり絶対値は $1/x$ 以下である．$x$ を整数として極限を取れば $\gamma$ はEuler定数に一致する．
+\end{example}
+
+\section{Fourier解析における微分の移動}
+\begin{theorem}[周期関数のFourier係数]
+$f\in C^m(\R;\mathbb C)$ が $2\pi$ 周期，$m\ge1$ とする．$\widehat f(k)=(2\pi)^{-1}\int_{-\pi}^\pi f(t)e^{-ikt}\,dt$ とおくと
+\[
+ \widehat{f^{(m)}}(k)=(ik)^m\widehat f(k)\quad(k\in\mathbb Z).
+\]
+特に $k\ne0$ に対し
+\[
+ |\widehat f(k)|\le \frac{\norm{f^{(m)}}_{L^1(-\pi,\pi)}}{2\pi |k|^m}.
+\]
+\end{theorem}
+\begin{proof}
+$f$ の各導関数も周期的である．整数 $k$ について $e^{-ik\pi}=e^{ik\pi}$ だから部分積分における各境界項は $0$ となる．よって $\widehat{f'}(k)=ik\widehat f(k)$ となり，反復して第1式を得る．第2式は積分の絶対値評価による．
+\end{proof}
+\begin{corollary}
+$f$ が $C^2$ 級かつ $2\pi$ 周期ならば，Fourier級数は絶対かつ一様に収束して $f$ に一致する．
+\end{corollary}
+\begin{proof}
+前定理により係数の絶対値は $k\ne0$ に対し定数倍の $k^{-2}$ 以下であり，Weierstrassの判定法から絶対一様収束する．その連続な和を $s$ とする．一様収束によって項別積分が可能であり，$\widehat s(k)=\widehat f(k)$ となる．三角多項式の $L^2$ 稠密性（Fourier級数の標準定理）から $f-s=0$ in $L^2$．両者は連続なので区間のすべての点で一致する．
+\end{proof}
+\begin{remark}
+周期性を欠くと境界項が現れる．例えば $f(t)=t$ on $[-\pi,\pi]$ の周期延長は端点で不連続であり，$k\ne0$ に対して $\widehat f(k)=i(-1)^k/k$ となる．実際，部分積分すると $\int e^{-ikt}$ の項は消え，端点からこの係数が得られる．滑らかさを区間の内部でいくら高めても，接合点での不連続は係数の減衰を妨げる．
+\end{remark}
+\begin{proposition}[Fourier変換と微分]
+$f\in C_c^1(\R)$ とし，$\widehat f(\xi)=\int_\R f(t)e^{-it\xi}\,dt$ と定める．このとき $\widehat{f'}(\xi)=i\xi\widehat f(\xi)$ である．
+\end{proposition}
+\begin{proof}
+台を含む有限区間で部分積分する．区間の両端を台の外に取れば境界項は $0$ であり，$-\frac{d}{dt}e^{-it\xi}=i\xi e^{-it\xi}$ から結論が従う．
+\end{proof}
+
+\section{弱微分と分布}
+$\Omega\subset\R^d$ を開集合とし，$\mathcal D(\Omega)=C_c^\infty(\Omega)$ とする．$u\in L^1_{\mathrm{loc}}(\Omega)$ は $T_u(\phi)=\int_\Omega u\phi$ によって分布を定める．分布とは試験関数の標準的な位相に関する連続線形汎関数である．その一般論は仮定せず，ここでは局所可積分関数の分布とその導関数を中心に扱う．
+\begin{definition}[分布微分と弱微分]
+分布 $T$ の第 $j$ 方向の微分は
+\[
+ (\partial_jT)(\phi)=-T(\partial_j\phi)
+ \quad(\phi\in\mathcal D(\Omega))
+\]
+で定める．$u,v\in L^1_{\mathrm{loc}}(\Omega)$ について $\partial_jT_u=T_v$ ならば $v$ を $u$ の第 $j$ 弱微分という．
+\end{definition}
+この定義は，試験関数の台がコンパクトであるため境界項を生じず，微分が試験関数へ移ることを利用したものである．$T_u$ の連続性は固定コンパクト集合 $K$ に台を持つ $\phi$ に対し $|T_u(\phi)|\le\norm u_{L^1(K)}\norm\phi_\infty$ から従う．分布微分の連続性は試験関数の微分写像の連続性から従う．
+\begin{proposition}[古典的微分との整合性]
+$u\in C^1(\Omega)$ ならば $\partial_jT_u=T_{\partial_j u}$ である．
+\end{proposition}
+\begin{proof}
+$\phi\in\mathcal D(\Omega)$ に対して $u\phi$ を $\Omega$ の外で $0$ と延長すれば，$\R^d$ 上の $C_c^1$ 関数になる．各座標方向について微積分学の基本定理を用い，Fubiniの定理によって $\int_\Omega\partial_j(u\phi)=0$ を得る．積の微分法則から $\int(\partial_j u)\phi=-\int u\partial_j\phi$ となる．
+\end{proof}
+\begin{proposition}[跳躍が生む点質量]\label{prop:jump}
+$u:\R\to\R$ が $c\in\R$ の両側で $C^1$ 級，$c$ において両側の有限な極限 $u(c-),u(c+)$ を持つとする．さらに両側の古典的導関数 $u'_{\mathrm{cl}}$ は局所可積分であると仮定する．このとき
+\[
+ T_u'=T_{u'_{\mathrm{cl}}}+(u(c+)-u(c-))\delta_c,
+\]
+ここで $\delta_c(\phi)=\phi(c)$ とする．
+\end{proposition}
+\begin{proof}
+試験関数 $\phi$ の台を含む $[a,b]$ を $a<c<b$ となるように取る．$[a,c-\varepsilon]$ と $[c+\varepsilon,b]$ 上で部分積分する．両端 $a,b$ の寄与は $0$．$\varepsilon\downarrow0$ とすると，局所可積分性から積分項が収束し，境界項は
+$-u(c-)\phi(c)+u(c+)\phi(c)$ に収束する．従って定義より所期の等式を得る．
+\end{proof}
+\begin{example}[Heaviside関数と絶対値]
+$H(t)=1_{(0,\infty)}(t)$ とすれば命題\ref{prop:jump}より $T_H'=\delta_0$．また $u(t)=|t|$ は連続だから $T_u'=T_{\operatorname{sgn}}$，$\operatorname{sgn}$ の跳躍は $2$ なので $T_u''=2\delta_0$．このように関数の折れ曲がりが二階微分における点質量として記録される．
+\end{example}
+\begin{lemma}
+$\delta_0$ は局所可積分関数によって表される分布ではない．
+\end{lemma}
+\begin{proof}
+もし $\delta_0=T_v$，$v\in L^1_{\mathrm{loc}}(\R)$ ならば，$\phi\in C_c^\infty(-1,1)$ を $0\le\phi\le1$，$\phi(0)=1$ と選び，$\phi_n(t)=\phi(nt)$ とおくと
+\[
+ 1=\delta_0(\phi_n)=\int v\phi_n,
+ \quad \left|\int v\phi_n\right|\le\int_{-1/n}^{1/n}|v|\to0.
+\]
+最後の極限は優収束定理による．これは矛盾である．
+\end{proof}
+従って $|t|$ は局所可積分な一階弱微分を持つが，二階弱微分を局所可積分関数として持たない．境界項を捨てずに残すことによって，古典的微分だけでは記述できない現象が現れる．
+
+\section{変分法とEuler--Lagrange方程式}
+$L:[a,b]\times\R\times\R\to\R$ を $C^2$ 級（端点では近傍への延長を仮定）とし，$u\in C^2([a,b])$ に対して
+\[
+ J(u)=\int_a^b L(t,u(t),u'(t))\,dt
+\]
+と定める．第2，第3変数に関する偏微分を $L_y,L_p$ と書く．
+\begin{lemma}[変分法の基本補題]\label{lem:fund}
+$F\in C([a,b])$ が任意の $h\in C_c^\infty((a,b))$ に対して $\int_a^b Fh=0$ を満たすならば $F=0$ である．
+\end{lemma}
+\begin{proof}
+$F(t_0)>0$ となる内部の点が存在すれば，連続性によって $F>0$ となる小区間を取れる．そこに台を持つ非負かつ零でない滑らかな関数を $h$ に取ると積分は正であり矛盾する．$F(t_0)<0$ の場合は $-F$ に同じ議論を適用する．内部で $0$ であり連続性により端点でも $0$ である．
+\end{proof}
+\begin{theorem}[Euler--Lagrange方程式]\label{thm:el}
+$u$ が両端の値を固定した変分について $J$ の局所最小点ならば，内部で
+\begin{equation}\label{eq:el}
+ L_y(t,u,u')-\frac{d}{dt}L_p(t,u,u')=0
+\end{equation}
+が成立する．
+\end{theorem}
+\begin{proof}
+$h\in C_c^\infty((a,b))$ として $J(u+\varepsilon h)$ を考える．$\varepsilon$ を小さな閉区間内に取れば，$L$ の引数が動く範囲はコンパクトである．偏微分の連続性によって差商を一様有界に評価できるため，優収束定理で積分の下の微分を正当化できる．極小条件から
+\[
+ 0=\left.\frac{d}{d\varepsilon}J(u+\varepsilon h)\right|_{\varepsilon=0}
+ =\int_a^b (L_y h+L_p h')\,dt.
+\]
+部分積分により第2項の微分を $L_p$ に移す．$h$ は端点で消えるので境界項は $0$ となり，$\int_a^b(L_y-(d/dt)L_p)h=0$ を得る．$u\in C^2$，$L\in C^2$ より被積分関数の係数は連続であり，補題\ref{lem:fund}を適用する．
+\end{proof}
+\begin{corollary}[自然境界条件]
+両端の値を固定せず，任意の $C^2$ 級変分に対して $u$ が局所最小点ならば，\eqref{eq:el}に加えて $L_p(a,u(a),u'(a))=L_p(b,u(b),u'(b))=0$ が成立する．
+\end{corollary}
+\begin{proof}
+コンパクト台を持つ変分を用いて\eqref{eq:el}を得る．一般の変分 $h$ について同じ計算を行えば，内部の項は消え，$[L_p h]_a^b=0$ となる．$h(a),h(b)$ を独立に任意の値に選べる（例えば一次関数）から両端で $L_p=0$ である．
+\end{proof}
+\begin{example}[直線がエネルギーを最小にする]
+$a<b$，$u(a)=A$，$u(b)=B$ とし $J(u)=\frac12\int_a^b (u')^2$ とする．Euler--Lagrange方程式は $u''=0$ であり，候補は $u_*(t)=A+(B-A)(t-a)/(b-a)$ である．$u=u_*+h$，$h(a)=h(b)=0$ と書けば
+\[
+ J(u)-J(u_*)=\int_a^b u_*'h'+\tfrac12\int_a^b(h')^2
+ =\tfrac12\int_a^b(h')^2\ge0.
+\]
+等号ならば $h'=0$ であり，端点条件から $h=0$．従って候補は唯一の大域的最小点である．Euler--Lagrange方程式が一般には必要条件にすぎないことに注意する．この例では二次形式を用いて十分性まで確認できた．
+\end{example}
+
+\section{Greenの公式と境界値問題}
+$\Omega$ を有界な $C^1$ 境界を持つ領域とし，外向き単位法線を $\nu$ と書く．以下 $u,v$ は $\overline\Omega$ の近傍で $C^2$ 級とする．発散定理を既知とする．
+\begin{theorem}[Greenの公式]\label{thm:green}
+\begin{align*}
+ \int_\Omega v\Delta u+\int_\Omega\nabla u\cdot\nabla v
+ &=\int_{\partial\Omega}v\partial_\nu u\,dS,\\
+ \int_\Omega(v\Delta u-u\Delta v)
+ &=\int_{\partial\Omega}(v\partial_\nu u-u\partial_\nu v)\,dS.
+\end{align*}
+\end{theorem}
+\begin{proof}
+$\operatorname{div}(v\nabla u)=\nabla v\cdot\nabla u+v\Delta u$ に発散定理を適用すれば第1式となる．$u,v$ を交換した等式を引けば第2式となる．
+\end{proof}
+\begin{corollary}[Dirichlet問題の一意性]
+$\Omega$ が連結とする．$-\Delta u=f$ in $\Omega$，$u=g$ on $\partial\Omega$ を満たす $C^2(\overline\Omega)$ 解は，上の正則性の範囲で高々一つである．
+\end{corollary}
+\begin{proof}
+二つの解の差 $w$ は $\Delta w=0$，$w|_{\partial\Omega}=0$ を満たす．定理\ref{thm:green}で $u=v=w$ とすれば $\int_\Omega|\nabla w|^2=0$．連続性により $\nabla w=0$，連結性より $w$ は定数である．境界値が $0$ なので $w=0$．
+\end{proof}
+\begin{corollary}[熱方程式のエネルギー散逸]
+$u=u(t,x)$ が $C^1$ 級の時間微分と連続な空間二階微分を持ち，$\partial_tu=\Delta u$，$u|_{\partial\Omega}=0$ を満たす実数値関数とする．このとき
+\[
+ \frac{d}{dt}\frac12\int_\Omega u(t,x)^2\,dx
+ =-\int_\Omega|\nabla u(t,x)|^2\,dx\le0.
+\]
+\end{corollary}
+\begin{proof}
+時間に関する微分を積分内に入れることは，任意のコンパクト時間区間と $\overline\Omega$ 上での連続性から正当化される．熱方程式を代入し，Greenの第1公式を $u=v=u(t,\cdot)$ に適用する．境界項は $0$ である．
+\end{proof}
+\begin{remark}
+Neumann条件 $\partial_\nu u=0$ の場合にも同じ散逸公式が成立する．ただしPoisson方程式の一意性については定数の任意性が残る．また非零の境界値や非零の法線微分があれば，境界からの流入・流出がGreenの公式の右辺に現れる．
+\end{remark}
+
+\section{微分形式による統一}
+$M$ をコンパクトな向きづけられた滑らかな $d$ 次元多様体（境界を許す）とする．$\alpha$ を $p$ 次微分形式，$\beta$ を $(d-p-1)$ 次微分形式とし，$0\le p\le d-1$ とする．外微分の積の法則およびStokesの定理を既知とする．境界への制限は引き戻しによる．
+\begin{proposition}[微分形式の部分積分]\label{prop:stokes}
+\[
+ \int_M d\alpha\wedge\beta
+ =\int_{\partial M}\alpha\wedge\beta
+ -(-1)^p\int_M\alpha\wedge d\beta.
+\]
+\end{proposition}
+\begin{proof}
+$d(\alpha\wedge\beta)=d\alpha\wedge\beta+(-1)^p\alpha\wedge d\beta$ を積分し，左辺にStokesの定理を適用する．
+\end{proof}
+\begin{example}
+$M=[a,b]$ に正の向きを入れ，$\alpha=f$，$\beta=g$ を0次形式とする．$p=0$ であり境界の向きは $\{b\}-\{a\}$ だから，命題\ref{prop:stokes}は通常の部分積分公式に一致する．\
+また $\Omega\subset\R^d$ を滑らかな境界を持つ有界領域とし，体積形式を $\omega=dx_1\wedge\cdots\wedge dx_d$ とする．$\alpha=v$，$\beta=\iota_{\nabla u}\omega$ と取ると，座標計算で $d\beta=\Delta u\,\omega$，$dv\wedge\beta=(\nabla v\cdot\nabla u)\omega$ となる．境界への $\beta$ の引き戻しは $\partial_\nu u\,dS$ である．実際，正に向きづけられた接ベクトルの組に $\omega(\nabla u,\cdot)$ を評価すると，接成分は一次従属のため消え，法線成分のみが残る．従って命題\ref{prop:stokes}はGreenの第1公式を与える．
+\end{example}
+
+\section{結び}
+Abelの公式では差分，Fourier解析では微分，分布論では試験関数への微分の移動，変分法では変分関数からの微分の除去，偏微分方程式ではエネルギー評価が得られた．微分形式の公式はこれらのうち連続的な部分積分の共通の構造を明示する．
+
+重要なのは，境界項が消える条件を明示することである．周期性，コンパクト台，固定端点，Dirichlet条件，Neumann条件は異なる仮定だが，いずれも適切な境界項を制御する役割を担う．逆に跳躍の例では，境界項を残すことで点質量が現れた．
+
+\begin{thebibliography}{9}
+\bibitem{osa} 大佐，『解析的整数論に関するノート』，2019年9月17日，\S3（Abelの総和法）．
+\bibitem{conway} J. B. Conway, \textit{A Course in Functional Analysis}, 2nd ed., Springer, 1990, 分布に関する演習．
+\bibitem{brezis} H. Brezis, \textit{Functional Analysis, Sobolev Spaces and Partial Differential Equations}, Springer, 2011, Chs. 8--9.
+\end{thebibliography}
+\end{document}

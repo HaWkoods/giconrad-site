@@ -1,0 +1,296 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{直交射影と最良近似}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+\begin{document}
+\section{最良近似の原理}
+本稿の目的は，最小二乗法，Fourier級数，条件付き期待値およびGalerkin法が，同一の幾何学的操作であることを明らかにすることである．内積は第1変数について線形とする．実Hilbert空間と複素Hilbert空間のいずれにも通用する議論から始める．前提は線形代数，Hilbert空間およびLebesgue積分の基本事項である．
+
+\begin{theorem}[直交射影]\label{thm:proj}
+$H$ をHilbert空間，$M$ をその閉線形部分空間とする．任意の $x\in H$ に対し，ただ一つの $p\in M$ が存在して
+\[
+ \norm{x-p}=\inf_{y\in M}\norm{x-y}
+\]
+となる．この点は $x-p\in M^\perp$ によって特徴づけられる．
+\end{theorem}
+\begin{proof}
+右辺を $d$ とし，$y_n\in M$ を $\norm{x-y_n}\to d$ となるように取る．平行四辺形恒等式より
+\begin{align*}
+ \norm{y_n-y_m}^2&=2\norm{x-y_n}^2+2\norm{x-y_m}^2\\
+ &\quad-4\norm{x-(y_n+y_m)/2}^2\\
+ &\le 2\norm{x-y_n}^2+2\norm{x-y_m}^2-4d^2.
+\end{align*}
+よって $(y_n)$ はCauchy列であり，閉性と完備性から $p\in M$ に収束する．ノルムの連続性により $\norm{x-p}=d$ である．任意の $v\in M$ と実数 $t$ に対し
+\[
+ 0\le\norm{x-p-tv}^2-\norm{x-p}^2
+ =t^2\norm v^2-2t\operatorname{Re}\langle x-p,v\rangle.
+\]
+$t$ を正負から $0$ に近づければ実部が $0$ となる．複素の場合は $iv$ に対しても同じ議論を適用し，虚部も $0$ となる．従って $x-p\perp M$ である．逆にこの直交性を満たす $p\in M$ については，任意の $y\in M$ に対し
+\begin{equation}\label{eq:pyth}
+ \norm{x-y}^2=\norm{x-p}^2+\norm{p-y}^2
+\end{equation}
+である．従って $p$ はただ一つの最小点である．
+\end{proof}
+
+\begin{corollary}[射影の性質]\label{cor:proj}
+$P_Mx=p$ とおくと，$P_M$ は線形作用素であり，$P_M^2=P_M$，$P_M^*=P_M$，$\norm{P_Mx}\le\norm{x}$ が成り立つ．また $H=M\oplus M^\perp$ である．
+\end{corollary}
+\begin{proof}
+定理の直交分解 $x=p+(x-p)$ は一意である．分解の両成分について加法およびスカラー倍を行っても各部分空間に属するので線形性を得る．$M$ 上で $P_M$ は恒等写像であり冪等である．直交性から
+$\langle P_Mx,y\rangle=\langle P_Mx,P_My\rangle=\langle x,P_My\rangle$．また $\norm{x}^2=\norm{P_Mx}^2+\norm{x-P_Mx}^2$ である．
+\end{proof}
+
+\begin{proposition}[入れ子になった近似空間]\label{prop:nested}
+閉線形部分空間 $M\subset N\subset H$ について
+\[
+ P_MP_N=P_NP_M=P_M,
+\]
+\[
+ \norm{x-P_Mx}^2=\norm{x-P_Nx}^2+\norm{P_Nx-P_Mx}^2.
+\]
+\end{proposition}
+\begin{proof}
+$x-P_Nx\in N^\perp\subset M^\perp$ だから $P_M(x-P_Nx)=0$．また $P_Mx\in N$ なので $P_NP_Mx=P_Mx$．最後の等式は $x-P_Nx\perp P_Nx-P_Mx$ による．
+\end{proof}
+この等式は，利用できる近似空間が広くなったときの誤差の減少量を厳密に与える．以下では，何を $H$，何を $M$ とするかだけが変化する．
+
+\section{連立方程式と最小二乗法}
+$A$ を実 $m\times n$ 行列，$b\in\R^m$ とする．$Ax=b$ が可解とは限らないが，$A$ の像は有限次元部分空間ゆえ閉じている．従って $b$ に最も近い像の点が存在する．
+\begin{theorem}[正規方程式]
+$\norm{Ax-b}_2$ を最小にする $x$ は必ず存在し，その全体は
+\begin{equation}\label{eq:normal}
+ A^{\mathsf T}Ax=A^{\mathsf T}b
+\end{equation}
+の解集合に等しい．解が一意であるための必要十分条件は $\ker A=\{0\}$ である．
+\end{theorem}
+\begin{proof}
+$M=\operatorname{im}A$ とすると定理\ref{thm:proj}によって最良近似点 $p=P_Mb$ が存在する．$p\in M$ なので $Ax=p$ を満たす $x$ が存在する．この条件は $b-Ax\perp M$ と同値であり，任意の $z\in\R^n$ に対して
+$\langle b-Ax,Az\rangle=\langle A^{\mathsf T}(b-Ax),z\rangle=0$
+となること，すなわち\eqref{eq:normal}と同値である．解 $x_0$ を一つ取れば解集合は $x_0+\ker A$ である．
+\end{proof}
+\begin{corollary}
+$A$ の列が線形独立ならば
+\[
+ x=(A^{\mathsf T}A)^{-1}A^{\mathsf T}b,
+ \qquad P_M=A(A^{\mathsf T}A)^{-1}A^{\mathsf T}.
+\]
+\end{corollary}
+\begin{proof}
+$A^{\mathsf T}Az=0$ ならば $\norm{Az}^2=0$ だから $z=0$．従って $A^{\mathsf T}A$ は可逆であり，正規方程式から第1式，第1式に $A$ を掛けると第2式を得る．
+\end{proof}
+\begin{example}[直線への当てはめ]
+観測値 $(t_i,b_i)$ ($1\le i\le m$, $m\ge 1$) に直線 $b=\alpha+\beta t$ を当てはめる．$\bar t=m^{-1}\sum_i t_i$，$\bar b=m^{-1}\sum_i b_i$ とおく．$t_i$ がすべて等しいのでなければ，定数ベクトルと $(t_i-\bar t)_i$ は互いに直交し，
+\[
+ \beta=\frac{\sum_i(t_i-\bar t)(b_i-\bar b)}{\sum_i(t_i-\bar t)^2},
+ \qquad \alpha=\bar b-\beta\bar t.
+\]
+実際，直交基底の各方向への射影係数は内積を基底ベクトルのノルムの二乗で割ったものである．これが回帰直線の公式の幾何学的意味である．例えば $(0,1),(1,2),(2,2)$ では $\beta=1/2$，$\alpha=7/6$ であり，残差ベクトルは $(-1/6,1/3,-1/6)$ となる．残差は $(1,1,1)$ と $(0,1,2)$ の双方に直交する．
+\end{example}
+\begin{remark}
+列が従属するときも近似値 $Ax$ 自体は一意である．係数の非一意性は近似対象ではなくパラメータ表示に由来する．$\ker A$ に直交する解を選べば，解集合の中でノルム最小の解がただ一つ得られる．
+\end{remark}
+
+\section{Fourier級数と直交展開}
+\begin{proposition}[有限直交系による近似]\label{prop:finite}
+$e_1,\ldots,e_n$ を $H$ の正規直交系，$M_n$ をその張る空間とする．このとき
+\[
+ P_{M_n}x=\sum_{j=1}^n\langle x,e_j\rangle e_j,
+\]
+\[
+ \norm{x-P_{M_n}x}^2=\norm x^2-\sum_{j=1}^n\abs{\langle x,e_j\rangle}^2.
+\]
+\end{proposition}
+\begin{proof}
+右辺の有限和を $p$ とすれば各 $e_j$ に対して $\langle x-p,e_j\rangle=0$ である．従って $p=P_{M_n}x$．第2式は直交分解と正規直交性による．
+\end{proof}
+\begin{corollary}[Besselの不等式とParsevalの等式]
+$(e_j)_{j\ge1}$ が正規直交系ならば
+$\sum_{j=1}^\infty\abs{\langle x,e_j\rangle}^2\le\norm x^2$．さらにその線形包が稠密ならば等号が成り立ち，部分和は $x$ にノルム収束する．
+\end{corollary}
+\begin{proof}
+有限和の不等式は命題\ref{prop:finite}から従い，$n\to\infty$ とする．稠密な場合は任意の $\varepsilon>0$ に対し有限線形結合 $y$ が存在して $\norm{x-y}<\varepsilon$ となる．ある $N$ 以降 $y\in M_n$ なので $\norm{x-P_{M_n}x}\le\norm{x-y}<\varepsilon$．誤差公式の極限を取れば等号を得る．
+\end{proof}
+
+$H=L^2([ -\pi,\pi],dt/(2\pi);\mathbb C)$ とし，$e_k(t)=e^{ikt}$ ($k\in\mathbb Z$) とする．直接積分して $\langle e_k,e_l\rangle=\delta_{kl}$ を得る．従って
+\[
+ S_N f=\sum_{k=-N}^N\widehat f(k)e^{ikt},\quad
+ \widehat f(k)=\frac1{2\pi}\int_{-\pi}^\pi f(t)e^{-ikt}\,dt
+\]
+は次数 $N$ 以下の三角多項式の中で $f$ に最も近いものである．稠密性を既知とすれば $S_N f\to f$ が $L^2$ で成り立つ．ここで各点収束や一様収束は主張していない．
+\begin{example}[鋸歯状関数と級数]
+$f(t)=t$ ($-\pi<t<\pi$) とする．奇関数なので余弦係数と定数係数は $0$．正弦係数は部分積分により
+\[
+ b_k=\frac1\pi\int_{-\pi}^\pi t\sin(kt)\,dt
+ =\frac{2(-1)^{k+1}}k\quad(k\ge1).
+\]
+正弦関数のノルムの二乗は $1/2$ である．Parsevalの等式を適用すると
+\[
+ \frac{\pi^2}{3}=\frac1{2\pi}\int_{-\pi}^\pi t^2\,dt
+ =2\sum_{k=1}^\infty\frac1{k^2}.
+\]
+従って $\sum_{k=1}^\infty k^{-2}=\pi^2/6$．この計算は無限級数の値が関数空間における長さの計算に還元される例である．
+\end{example}
+
+\section{条件付き期待値と予測}
+$(\Omega,\mathcal F,\mathbb P)$ を確率空間，$\mathcal G\subset\mathcal F$ を部分 $\sigma$ 代数とする．$H=L^2(\mathcal F)$ は実Hilbert空間であり，$M=L^2(\mathcal G)$ を $H$ の部分空間と見なす．各空間の元はほとんど確実に一致する関数の同値類である．
+\begin{lemma}
+$M$ は $H$ の閉部分空間である．
+\end{lemma}
+\begin{proof}
+$X_n\in M$，$X_n\to X$ in $L^2$ とする．部分列 $X_{n_j}$ を $\mathbb E\abs{X_{n_j}-X}^2\le2^{-3j}$ となるように取る．Markovの不等式より
+$\mathbb P(\abs{X_{n_j}-X}>2^{-j})\le2^{-j}$．可算劣加法性を用いればこれらの事象が無限回生じる確率は $0$ であり，$X_{n_j}\to X$ a.s. である．各 $X_{n_j}$ の $\mathcal G$ 可測な代表元を取り，有限の極限が存在する点でその極限，その他で $0$ とした関数は $\mathcal G$ 可測であり $X$ と a.s. 一致する．従って $X\in M$．
+\end{proof}
+\begin{theorem}[条件付き期待値の射影表示]\label{thm:cond}
+$X\in L^2(\mathcal F)$ に対し，$P_MX$ は $\mathbb E[X\mid\mathcal G]$ である．任意の $Y\in L^2(\mathcal G)$ について
+\begin{align*}
+ \mathbb E[(X-Y)^2]&=\mathbb E[(X-P_MX)^2]\\
+ &\quad+\mathbb E[(P_MX-Y)^2].
+\end{align*}
+\end{theorem}
+\begin{proof}
+$Z=P_MX$ とおく．$\mathbb P(\Omega)=1$ とCauchy--Schwarzの不等式により $X,Z$ は可積分である．$A\in\mathcal G$ に対し $1_A\in M$ だから $\mathbb E[(X-Z)1_A]=0$．これは条件付き期待値の定義そのものである．一意性は，可積分な $\mathcal G$ 可測関数 $Z,Z'$ がこの積分条件を満たすとき，$\{Z>Z'\}$ および $\{Z<Z'\}$ 上で差の積分が $0$ となることから従う．誤差公式は\eqref{eq:pyth}である．
+\end{proof}
+\begin{corollary}[塔の性質と全分散公式]
+$\mathcal G\subset\mathcal H\subset\mathcal F$，$X\in L^2$ とすると
+\[
+ \mathbb E[\mathbb E[X\mid\mathcal H]\mid\mathcal G]
+ =\mathbb E[X\mid\mathcal G].
+\]
+また $Z=\mathbb E[X\mid\mathcal G]$ とおくと
+\[
+ \operatorname{Var}(X)=\mathbb E[(X-Z)^2]+\operatorname{Var}(Z).
+\]
+\end{corollary}
+\begin{proof}
+第1式は命題\ref{prop:nested}と定理\ref{thm:cond}による．定数関数の空間への直交射影は平均 $\mathbb E[X]$ である．この空間と $L^2(\mathcal G)$ に命題\ref{prop:nested}を適用すれば第2式を得る．
+\end{proof}
+\begin{example}[情報を一つの事象に制限する]
+$A\in\mathcal F$，$0<\mathbb P(A)<1$ とし，$\mathcal G=\sigma(A)$ とする．$1_A$ と $1_{A^c}$ は直交するから
+\[
+ P_MX=\frac{\mathbb E[X1_A]}{\mathbb P(A)}1_A
+ +\frac{\mathbb E[X1_{A^c}]}{\mathbb P(A^c)}1_{A^c}.
+\]
+例えば等確率の4点上で $X$ が順に $0,2,4,8$ を取り，$A$ が最初の2点からなるとき，$P_MX$ は $1,1,6,6$ を取る．平均のみの予測は $7/2$ である．二乗誤差はそれぞれ $5/2$ と $35/4$ であり，情報を増やすことによる減少量は $25/4$ となる．
+\end{example}
+\begin{remark}
+一般の $L^1$ 確率変数については直交射影による定義は使えず，Radon--Nikodymの定理に基づく構成が必要である．ここでは $L^2$ に限ることで予測の意味が幾何学的に明瞭になる．
+\end{remark}
+
+\section{変分問題とGalerkin近似}
+$H$ を実Hilbert空間とし，$a:H\times H\to\R$ を対称双線形形式とする．ある $0<\alpha\le C$ について
+\[
+ a(v,v)\ge\alpha\norm v^2,\quad
+ |a(v,w)|\le C\norm v\norm w
+\]
+が成り立つと仮定する．$\ell:H\to\R$ は有界線形汎関数とする．
+\begin{theorem}[エネルギー内積と最小化]
+$a$ は $H$ 上の完備な内積を定める．方程式
+\begin{equation}\label{eq:weak}
+ a(u,v)=\ell(v)\quad(v\in H)
+\end{equation}
+はただ一つの解 $u\in H$ を持ち，この解は $J(w)=a(w,w)/2-\ell(w)$ のただ一つの最小点である．
+\end{theorem}
+\begin{proof}
+内積の公理は対称性，双線形性および強圧性から従う．ノルム $\norm v_a=a(v,v)^{1/2}$ は $\sqrt\alpha\norm v\le\norm v_a\le\sqrt C\norm v$ を満たすから完備である．$\ell$ はこのノルムに関しても有界なのでRiesz表現定理より\eqref{eq:weak}を満たす $u$ が一意に存在する．双線形性と\eqref{eq:weak}から
+\[
+ J(w)-J(u)=\tfrac12 a(w-u,w-u)
+\]
+となり，強圧性より最小点が一意である．
+\end{proof}
+\begin{theorem}[Galerkin法と最良近似]
+$M\subset H$ を有限次元部分空間とする．$u_M\in M$ を $a(u_M,v)=\ell(v)$ ($v\in M$) によって定めると，$u_M$ はエネルギー内積に関する $u$ の直交射影であり
+\[
+ \norm{u-u_M}_a=\min_{v\in M}\norm{u-v}_a,
+\]
+\[
+ \norm{u-u_M}\le\sqrt{C/\alpha}\inf_{v\in M}\norm{u-v}.
+\]
+\end{theorem}
+\begin{proof}
+エネルギー内積に関する直交射影の特徴づけは $a(u-u_M,v)=0$ ($v\in M$) である．\eqref{eq:weak}によってGalerkin方程式と同値になる．従って存在，一意性，最良近似性が得られる．ノルムの同値性から第2式が従う．
+\end{proof}
+\begin{example}[境界値問題を1自由度で近似する]
+$H=H^1_0(0,1)$，$a(v,w)=\int_0^1 v'w'\,dt$，$\ell(v)=\int_0^1v\,dt$ とする．この空間では $\norm v_{L^2}\le\norm{v'}_{L^2}$ が成り立つ．実際，滑らかなコンパクト台の関数について $v(t)=\int_0^t v'(s)\,ds$ とCauchy--Schwarzの不等式を適用し，定義による稠密性で一般の場合に移る．よって強圧性を得る．$u(t)=t(1-t)/2$ は $H^1_0$ に属し，部分積分と稠密性により $-u''=1$ の弱解である．
+
+$t=1/2$ で値 $1$，両端点で $0$ となる区分線形関数 $\phi$ を取り，$M=\R\phi$ とする．$\phi$ は $H^1_0$ に属し，$a(\phi,\phi)=4$，$\ell(\phi)=1/2$ だから $u_M=\phi/8$ となる．さらに $a(u,u)=\int_0^1u\,dt=1/12$，$a(u_M,u_M)=1/16$ であり，直交分解より $\norm{u-u_M}_a^2=1/48$．この誤差は微分方程式を再び解くことなく計算された．
+\end{example}
+\begin{remark}
+非対称な強圧双線形形式に対するGalerkin法でも直交性に似た残差条件はあるが，その形式は内積ではなく，ここでのPythagorasの等式は一般に成立しない．
+\end{remark}
+
+\section{結び}
+連立方程式では $\operatorname{im} A$，Fourier解析では有限次元三角多項式空間，確率論では利用可能な情報に関する可測関数の空間，変分法では近似関数の空間を選んだ．いずれも最良近似を得るために必要な条件は，残差が近似空間のすべての方向に直交することであった．
+
+この方法を新しい問題に適用する際には，近似する対象，許容される近似空間，誤差を測る内積，部分空間の閉性の4点を確認すればよい．閉性を欠けば射影の存在が保証されず，内積を欠けばPythagorasの等式を用いることができない．
+
+\begin{thebibliography}{9}
+\bibitem{conway} J. B. Conway, \textit{A Course in Functional Analysis}, 2nd ed., Springer, 1990, Ch. I, \S2.
+\bibitem{brezis} H. Brezis, \textit{Functional Analysis, Sobolev Spaces and Partial Differential Equations}, Springer, 2011, Ch. 5, \S\S5.1--5.4; Ch. 8.
+\end{thebibliography}
+\end{document}
