@@ -1,0 +1,1616 @@
+% !TEX program = platex
+% 数学ノート集・共通テンプレート v2（積分論2026年度第1部の版面を参考）
+% A5判。章内で定義・定理・例・注意等の番号を共通化。
+% コンパイル： platex -interaction=nonstopmode math_note_template_v2.tex (2回)
+%              dvipdfmx math_note_template_v2.dvi
+\documentclass[a5paper,10pt,onecolumn]{jsarticle}
+\usepackage[dvipdfmx,top=22mm,bottom=20mm,inner=19mm,outer=18mm,headheight=13pt,headsep=6mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,fancyhdr,titlesec}
+\usepackage[dvipdfmx,bookmarks=true,colorlinks=false]{hyperref}
+\usepackage{pxjahyper}
+% 内部参照のPDFリンク枠を非表示にする（本文の版面は不変）
+\hypersetup{pdfborder={0 0 0}}
+
+% ----- 差し替える文書情報 -----
+\newcommand{\NoteTitle}{金融数学・保険数理の基礎概念}
+\newcommand{\NoteSeries}{数学ノート集}
+
+% ----- 文字・組版 -----
+% 参考PDFの質素な明朝＋Computer Modernの印象を引き継ぎながら，
+% A5判で窮屈にならないよう本文の行間を少し確保する．
+\linespread{1.13}
+\setlength{\parindent}{1zw}
+\setlength{\parskip}{0pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt plus 2pt minus 1pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 1pt}
+\setlist[enumerate]{topsep=3pt,itemsep=1pt,parsep=0pt,leftmargin=2.4zw}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{\thesection}{0.8zw}{}
+\titlespacing*{\section}{0pt}{2.0ex plus .4ex}{.9ex}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.7zw}{}
+\titlespacing*{\subsection}{0pt}{1.5ex plus .3ex}{.6ex}
+\raggedbottom
+
+% ----- 柱とページ番号：ページ上部、罫線なし -----
+\fancypagestyle{mathnote}{%
+  \fancyhf{}%
+  \fancyhead[L]{\footnotesize \NoteSeries\ （\NoteTitle）}%
+  \fancyhead[R]{\footnotesize \thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\pagestyle{mathnote}
+
+% ----- 節内通し番号の定義・定理群 -----
+\newtheoremstyle{mathnotetheorem}
+ {4.5pt}{4.5pt}{\normalfont}{}%
+ {\bfseries}{}{0.65zw}%
+ {\thmname{#1}\thmnumber{ #2}\thmnote{（#3）}}
+\theoremstyle{mathnotetheorem}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{example}[theorem]{例}
+\newtheorem{remark}[theorem]{注意}
+\renewcommand{\proofname}{証明}
+\renewcommand{\qedsymbol}{$\square$}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{%
+  \par\pushQED{\qed}\normalfont\topsep4\p@\@plus2\p@\relax
+  \trivlist\item[\hskip\labelsep\bfseries #1]\ignorespaces
+}{\popQED\endtrivlist\@endpefalse}
+\makeatother
+
+% ----- 使うノートで適宜拡張する記号 -----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+
+
+% ----- 本稿固有の記号（版面設定は変更しない） -----
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\begin{document}
+\section{金融契約とキャッシュフロー}
+
+金融数学の対象は，単なる数値の列ではなく，契約に基づいて生じる金銭授受である．
+本稿では，貨幣単位を一つ固定し，特に断らない限り税，取引費用，信用不履行を考えない．
+経済的な意味をもつ用語と，数学モデルの中で採用する仮定とを区別する．
+
+\begin{definition}[資産，負債，債権，債務]
+主体が保有する経済的価値をもつ権利等を\emph{資産}といい，
+他の主体に対する支払その他の履行義務を\emph{負債}という．
+特定の主体に一定の給付を請求する権利を\emph{債権}，
+それに対応する履行義務を\emph{債務}という．
+これらは会計・法制度上の意味を伴う語であり，以下の数学的モデルでは
+将来の支払額と受取額を主として扱う．
+\end{definition}
+
+例えば，銀行への預金は預金者からみれば銀行に対する債権であり，
+銀行からみれば預金者に対する債務である．同一の契約が，観察する主体により
+資産とも負債ともなることに注意する．
+
+\begin{definition}[契約と符号付きキャッシュフロー]
+時刻集合を $\mathcal T=\{t_0,t_1,\ldots,t_m\}$，
+$0=t_0<t_1<\cdots<t_m$ とする．一つの主体を固定したとき，
+その主体の\emph{キャッシュフロー}とは写像
+\[
+ C:\mathcal T\longrightarrow\R
+\]
+であり，$C(t_j)>0$ を受取，$C(t_j)<0$ を支払とする．
+$C(t_j)=0$ は金銭授受がないことを表す．
+契約が定める支払日，支払金額，支払条件を，この符号の規約に従い記述する．
+\end{definition}
+
+契約条件が不確実な事象に依存するときは，確率空間
+$(\Omega,\mathcal F,P)$ を与え，$C(t_j)$ を実数値確率変数とする．
+このとき，$C$ を\emph{確率的キャッシュフロー}という．
+一般のランダムな支払時刻は後の生命保険モデルで扱う．
+
+\begin{definition}[満期，元本，利息，収益率]
+契約上の最終支払時刻を\emph{満期}という．貸付け又は預金の基礎となる金額を
+\emph{元本}といい，元本の使用に対する対価として定められる金銭を\emph{利息}という．
+初期価値 $V_0>0$ の投資が，途中の支払を含めて満期に相当する金額
+$V_1$ を生む場合，この期間の\emph{単純収益率}を $(V_1-V_0)/V_0$ と定める．
+ここで $V_1$ は配当等を再投資又は合算した総受取額であり，
+定義する期間と算入する支払を明示しなければならない．
+\end{definition}
+
+\begin{proposition}[キャッシュフローの加法性]\label{prop:cfadd}
+同一の時刻集合上で表された契約 $C_1,\ldots,C_n$ を，一つの主体が同時に
+保有するものとする．相殺や手数料等を別途考えなければ，総キャッシュフローは
+\[
+ C(t)=\sum_{i=1}^n C_i(t)\qquad(t\in\mathcal T)
+\]
+となる．また，支払額の正負を逆転した契約のキャッシュフローは $-C$ である．
+\end{proposition}
+\begin{proof}
+時刻 $t$ における受取額と支払額の符号付き合計が $C_i(t)$ である．
+各契約から生じた金銭授受を同時刻ごとに集計すれば，
+実数の加法により上式を得る．主体を受取側から支払側に替えれば，
+同一の金銭授受の符号が反転する．\end{proof}
+
+\begin{example}[預金と貸付け]
+時刻 $0$ に $100$ を預け，時刻 $1$ に $105$ を受け取る契約の預金者側の
+キャッシュフローは $(-100,105)$ である．同じ契約の銀行側は $(100,-105)$ である．
+$5$ は利息であり，この期間の単純利率は $0.05$ である．
+\end{example}
+
+\begin{remark}[損益と現金収支]
+ある時点の現金収入は，その時点の利益と同義ではない．
+借入金の受取は正のキャッシュフローであるが，同時に返済義務を生む．
+金融数学で用いるキャッシュフローと，会計上の収益・費用を同一視しない．
+\end{remark}
+
+\section{貨幣の時間価値と金利}
+
+異なる時点の同額の貨幣を比較するため，資金を時間の経過に沿って
+増加又は減少させる規則を与える．以下の割引操作は，まず確定的なものであり，
+市場における価格決定一般と同一ではない．
+
+\begin{definition}[蓄積関数と割引係数]
+$0\le s\le t\le T$ に対し $A(s,t)>0$ を与え，時刻 $s$ の金額 $x$ が時刻 $t$ に
+$xA(s,t)$ となるとする．$A$ を\emph{蓄積関数}といい，
+\[
+ A(t,t)=1,\qquad A(s,u)=A(s,t)A(t,u)\quad(s\le t\le u)
+\]
+を仮定する．$D(s,t)=A(s,t)^{-1}$ を\emph{割引係数}という．
+\end{definition}
+
+後者の乗法性は資金の運用規則に課す整合条件である．
+例えば各区間の運用利率が任意に変動する契約では，この条件を満たすように
+蓄積関数を定義する．
+
+\begin{lemma}[基準時点への還元]\label{lem:bank}
+蓄積関数 $A$ が上の条件を満たすとき，$B(t)=A(0,t)$ とおけば
+\[
+ A(s,t)=\frac{B(t)}{B(s)},\qquad D(s,t)=\frac{B(s)}{B(t)}.
+\]
+逆に，正値関数 $B$ で $B(0)=1$ を満たすものから，上式によって
+蓄積関数が定まる．
+\end{lemma}
+\begin{proof}
+$A(0,t)=A(0,s)A(s,t)$ から前半が従う．逆向きは
+$A(t,t)=B(t)/B(t)=1$ および
+$A(s,t)A(t,u)=B(u)/B(s)=A(s,u)$ により確認される．\end{proof}
+
+\begin{definition}[単利と複利]
+期間を整数で測る．元本 $x$ と一期間の利率 $i$ に対し，
+$n$ 期後に $x(1+ni)$ を与える規則を\emph{単利}，
+$x(1+i)^n$ を与える規則を\emph{複利}という．
+複利の一期間の実効利率は $i>-1$ とし，$1+i>0$ を要求する．
+単利は考える満期まで $1+ni>0$ となる範囲で用いる．
+\end{definition}
+
+単利の式は特定の開始時点からの計算規則であり，一定の単利率を
+任意の中間時点に再適用しても蓄積関数の乗法性を一般には満たさない．
+これに対し，複利は $A(m,n)=(1+i)^{n-m}$ により一貫した蓄積関数を与える．
+
+\begin{definition}[名目利率と実効利率]
+年 $m$ 回複利で計算する，年率表示の\emph{名目利率}を $j^{(m)}$ といい，
+各計算期間の実効利率を $j^{(m)}/m$ とする．
+これと等価な一年の\emph{実効利率} $i$ は
+\[
+ 1+i=\left(1+\frac{j^{(m)}}m\right)^m
+\]
+によって定まる．括弧の内部は正と仮定する．
+\end{definition}
+
+\begin{definition}[連続複利]
+$\delta\in\R$ とし $B(t)=e^{\delta t}$ と定める．
+この蓄積規則を\emph{連続複利}，$\delta$ を連続複利率という．
+一年の実効利率 $i>-1$ との関係は $\delta=\log(1+i)$ である．
+\end{definition}
+
+\begin{proposition}[連続複利への極限]\label{prop:contlimit}
+任意の $\delta\in\R$ に対し，十分大きな整数 $m$ について
+$1+\delta/m>0$ であり，
+\[
+ \lim_{m\to\infty}\left(1+\frac{\delta}{m}\right)^m=e^\delta.
+\]
+\end{proposition}
+\begin{proof}
+$\log(1+x)/x\to1$（$x\to0$）から，$\delta\ne0$ のとき
+$m\log(1+\delta/m)\to\delta$ となる．指数関数の連続性により結論を得る．
+$\delta=0$ の場合は両辺とも $1$ である．\end{proof}
+
+\begin{definition}[現在価値と将来価値]
+時刻 $t$ に確定的な金額 $x$ を受け取る権利の，時刻 $s\le t$ における
+\emph{現在価値}を，指定された割引係数 $D$ のもとで $xD(s,t)$ と定める．
+時刻 $s$ の金額 $x$ の時刻 $t$ における\emph{将来価値}は $xA(s,t)$ である．
+複数時刻の確定的な金銭授受の現在価値は，各支払の割引値の和と定める．
+\end{definition}
+
+\begin{proposition}[現在価値の整合性]\label{prop:pvconsistent}
+$0\le s\le t\le u$ とする．時刻 $u$ に支払われる金額 $x$ を
+時刻 $t$ に割り引き，さらに時刻 $s$ に割り引いた値は，直接時刻 $s$ に
+割り引いた値に等しい．
+\end{proposition}
+\begin{proof}
+$xD(t,u)D(s,t)=xA(t,u)^{-1}A(s,t)^{-1}
+=xA(s,u)^{-1}=xD(s,u)$ である．\end{proof}
+
+\begin{definition}[確定年金]
+$n\in\mathbb N$，$i>-1$ とし，時刻 $1,\ldots,n$ にそれぞれ $c$ を受け取る
+確定的な支払列を\emph{期末払確定年金}という．
+その時刻 $0$ の現在価値を $a_{\overline{n}|i}(c)$ と書く．
+\end{definition}
+
+\begin{proposition}[確定年金現価公式]\label{prop:annuity}
+$n\ge1$，$i>-1$ に対して
+\[
+ a_{\overline{n}|i}(c)=
+ \begin{cases}
+ \displaystyle c\frac{1-(1+i)^{-n}}{i},&i\ne0,\\[4pt]
+ cn,&i=0
+ \end{cases}
+\]
+である．
+\end{proposition}
+\begin{proof}
+$v=(1+i)^{-1}$ とおけば，
+$a_{\overline{n}|i}(c)=c\sum_{k=1}^n v^k$ である．
+$i\ne0$ なら $v\ne1$ であり，等比級数の公式から
+$\sum_{k=1}^n v^k=v(1-v^n)/(1-v)=(1-v^n)/i$ である．
+$i=0$ のとき $v=1$ なので和は $n$ となる．\end{proof}
+
+\begin{example}[分割返済]
+時刻 $0$ に $L>0$ を借り，時刻 $1,\ldots,n$ に等額 $c$ を返済する．
+年実効利率を $i\ge0$ とし，貸付金の現在価値と返済列の現在価値が等しいとすれば，
+$L=a_{\overline{n}|i}(c)$ である．$i>0$ では
+\[
+ c=\frac{Li}{1-(1+i)^{-n}},
+\]
+$i=0$ では $c=L/n$ である．返済回数が増えるときの総支払額 $nc$ と
+現在価値 $L$ は異なる．
+\end{example}
+
+\begin{definition}[債券と利回り]
+額面金額 $F>0$，満期 $n$，各期の利払額 $c_k\ge0$，
+満期の元本償還をもつ\emph{利付債}を考える．
+$X_k=c_k$（$k<n$），$X_n=c_n+F$ とする．
+一定の一期間利回り $y>-1$ に基づく価格を
+\[
+ P(y)=\sum_{k=1}^n\frac{X_k}{(1+y)^k}
+\]
+と定める．市場価格 $p$ に対して $p=P(y)$ を満たす $y$ を
+この金銭授受列の\emph{満期利回り}という．
+利払がない債券を\emph{割引債}という．
+\end{definition}
+
+\begin{proposition}[債券価格と利回り]\label{prop:bondmon}
+$X_k\ge0$ であり，少なくとも一つの $X_k>0$ とする．
+このとき $P:(-1,\infty)\to(0,\infty)$ は連続かつ狭義単調減少で，
+\[
+ \lim_{y\downarrow-1}P(y)=\infty,\qquad
+ \lim_{y\to\infty}P(y)=0
+\]
+を満たす．したがって任意の $p>0$ に対して満期利回りがただ一つ存在する．
+\end{proposition}
+\begin{proof}
+有限和であるから連続であり，項別微分により
+\[
+ P'(y)=-\sum_{k=1}^n\frac{kX_k}{(1+y)^{k+1}}<0
+\]
+を得る．少なくとも一項が正なので不等号は厳密である．$y\downarrow-1$ では
+正の支払額に対応する項が発散し，他の項は非負である．
+$y\to\infty$ では各項が $0$ に収束する．中間値の定理と狭義単調性によって
+存在と一意性が従う．\end{proof}
+
+\begin{remark}[価格と利回りの区別]
+利回りは，支払額と価格から逆算される数値である．実際の利息の支払規約，
+再投資における実現収益率，信用リスクを反映した期待収益率とは必ずしも一致しない．
+また，割引に市場価格を用いる際にはどの金利曲線を採用するかという問題が残る．
+\end{remark}
+
+\section{金融市場と金融資産}
+
+金銭授受の評価に加え，資産を時刻ごとに売買できると仮定すると金融市場の
+モデルが得られる．その基本的な対象は価格と保有数量である．
+
+\begin{definition}[金融市場と金融資産]
+\emph{金融市場}とは，所定の取引規則のもとで金融資産の売買が行われる場をいう．
+株式は会社に対する持分を表す金融商品であり，債券は一般に発行体に対する
+所定の金銭支払請求権を表す．金融資産の\emph{市場価格}とは，ある時点における
+取引価格又は提示価格をいう．モデルでは買値と売値を同一とし，任意の数量を
+その価格で取引できると仮定する場合がある．
+\end{definition}
+
+\begin{definition}[無リスク資産とリスク資産]
+有限時刻 $t=0,1,\ldots,T$ の市場を考える．
+時刻 $t$ の価格 $B_t>0$ があらかじめ定まっている資産を
+本モデルの\emph{無リスク資産}といい，$B_0=1$ と規格化する．
+時刻 $t$ の価格 $S_t$ が確率変数となる資産を\emph{リスク資産}という．
+無リスクという語は，このモデルにおいて価格が確定していることを指し，
+現実の発行体が信用不履行を起こさないことまで保証しない．
+\end{definition}
+
+\begin{definition}[ポートフォリオ]
+時刻 $t$ における $d+1$ 種類の金融資産の価格を
+$p_t=(p_t^0,\ldots,p_t^d)\in\R^{d+1}$，保有数量を
+$h_t=(h_t^0,\ldots,h_t^d)\in\R^{d+1}$ とする．
+\emph{ポートフォリオ}とは保有数量ベクトル $h_t$ であり，その時価を
+\[
+ V_t=\sum_{j=0}^d h_t^jp_t^j
+\]
+と定める．$h_t^j>0$ をその資産の\emph{ロング・ポジション}，
+$h_t^j<0$ を\emph{ショート・ポジション}という．
+\end{definition}
+
+\begin{proposition}[ポートフォリオ価値の線形性]
+同一の価格ベクトル $p$ に対して，任意の $h,k\in\R^{d+1}$ と
+$\alpha,\beta\in\R$ について
+\[
+ V(\alpha h+\beta k)=\alpha V(h)+\beta V(k)
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+$V(h)=\langle h,p\rangle$ であるから，内積の第1変数に関する線形性による．
+\end{proof}
+
+\begin{definition}[配当と総収益]
+保有期間 $[t,t+1]$ において一単位当たり $D_{t+1}$ の金銭支払がある資産の
+$S_t$ を，その期間末の支払を含まない価格（\emph{配当落ち価格}）とする．
+一単位の\emph{総収益額}は $S_{t+1}-S_t+D_{t+1}$ である．
+$S_t>0$ の場合の\emph{総収益率}は
+\[
+ \frac{S_{t+1}-S_t+D_{t+1}}{S_t}
+\]
+と定める．支払を無視した $(S_{t+1}-S_t)/S_t$ は価格変化率である．
+\end{definition}
+
+\begin{definition}[収益率の期待値とボラティリティ]
+初期価格 $S_0>0$，期末価格 $S_1$，期中配当 $D_1$ を考える．
+単純総収益率 $R_S=(S_1+D_1-S_0)/S_0$ が二乗可積分であるとき，
+$E_P[R_S]$ を\emph{期待収益率}，
+\[
+ \sigma_S=\sqrt{\operatorname{Var}_P(R_S)}
+\]
+をこの期間の\emph{ボラティリティ}（収益率の標準偏差）と呼ぶ．
+$S_0,S_1>0$ で配当を無視する場合には，
+$\log(S_1/S_0)$ を\emph{対数収益率}という．
+期間を変えたボラティリティの換算には確率モデル上の仮定が必要である．
+\end{definition}
+
+\begin{proposition}[ポートフォリオ収益率の平均と分散]
+二つの資産の一期間総収益率 $R_1,R_2$ が二乗可積分であるとする．
+時刻 $0$ の投資資金の割合を $w$ と $1-w$ とし，途中で取引せず，
+価格が正で，資産の保有数量を調整してこの割合を実現するとする．
+借入れ・空売りも許す．このポートフォリオの収益率は
+$R_V=wR_1+(1-w)R_2$ であり，
+\[
+ E_P[R_V]=wE_P[R_1]+(1-w)E_P[R_2],
+\]
+\[
+ \begin{split}
+ \operatorname{Var}_P(R_V)
+ ={}&w^2\operatorname{Var}_P(R_1)
+ +(1-w)^2\operatorname{Var}_P(R_2)\\
+ &+2w(1-w)\operatorname{Cov}_P(R_1,R_2).
+ \end{split}
+\]
+\end{proposition}
+\begin{proof}
+各資産への初期配分額を $wV_0$，$(1-w)V_0$ とする．
+期間末の総受取額は
+$V_0\{w(1+R_1)+(1-w)(1+R_2)\}$ であるから，
+収益率は $R_V=wR_1+(1-w)R_2$ となる．
+期待値の式は線形性による．分散は各確率変数からその平均を引き，
+二乗を展開して期待値を取ると得られる．\end{proof}
+
+\begin{remark}[リスクの尺度]
+収益率の標準偏差は価格変動リスクの一つの尺度である．
+信用リスク，市場流動性リスク，保険引受リスク等を含む全ての危険を
+標準偏差だけで表せるわけではない．
+二つの資産を組み合わせることによる分散低減の程度は，
+それらの共分散に依存する．
+\end{remark}
+
+\begin{definition}[空売り，借入れ，レバレッジ]
+保有していない資産を借りて売却し，後に買い戻して返却する取引を
+\emph{空売り}という．理想化したモデルでは，負の保有数量によって表す．
+借入資金を用いて資産の保有額を自己資金に比べて大きくすることを
+\emph{レバレッジ}の利用という．ここでは売買・借入れの制約を別途明示する．
+\end{definition}
+
+\begin{example}[空売りの損益]
+時刻 $0$ に価格 $S_0$ の株式一単位を空売りして代金を受け取り，
+時刻 $1$ に $S_1$ で買い戻す．配当・借株費用・運用利息を無視すれば，
+正味の損益は $S_0-S_1$ である．株価が上昇した場合には負となり，
+損失の大きさは一般にあらかじめ上から有界ではない．
+\end{example}
+
+\begin{definition}[自己金融戦略]
+配当のない離散時間市場を考える．$h_t$ は時刻 $t$ の売買後に確定し，
+次の時刻まで保有する数量とする．時刻 $t=1,\ldots,T-1$ における
+ポートフォリオの組替えが外部資金の流入出なしに行われるとき，戦略を
+\emph{自己金融}という．すなわち
+\[
+ \langle h_{t-1},p_t\rangle=\langle h_t,p_t\rangle
+ \qquad(t=1,\ldots,T-1)
+\]
+を要求する．時刻 $t$ の売買後価値を $V_t=\langle h_t,p_t\rangle$ とする．
+\end{definition}
+
+\begin{proposition}[自己金融戦略の価値変化]\label{prop:sf}
+自己金融戦略について $1\le t\le T-1$ なら
+\[
+ V_t-V_{t-1}=\langle h_{t-1},p_t-p_{t-1}\rangle
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+自己金融条件から
+$V_t=\langle h_{t-1},p_t\rangle$ であり，
+$V_{t-1}=\langle h_{t-1},p_{t-1}\rangle$ なので，差を取ればよい．\end{proof}
+
+\begin{remark}[流動性と取引制約]
+資産が直ちに大きな価格変化を伴わず売買できる程度を\emph{流動性}という．
+上の模型では取引数量に制約がなく，売買スプレッドもない．
+現実には，流動性，空売り制限，信用制約，税，取引費用によって
+可能な戦略が制限される．
+\end{remark}
+
+\section{派生金融商品と契約上の権利}
+
+金融商品には，あらかじめ確定した額を支払うものだけでなく，株価，金利，
+為替レート等の将来の値によって支払額が変わるものがある．
+この節では価格を計算する前に，何が契約上の権利であり，
+どのような支払が生じるのかを明確にする．
+
+\begin{definition}[原資産と派生金融商品]
+価値や支払額が他の資産価格，金利，指数等に依存する契約を
+\emph{派生金融商品}（デリバティブ）という．
+支払額を規定する基礎となる対象を\emph{原資産}又は\emph{参照対象}という．
+時刻 $t$ に即時受渡しを前提として取引される価格を\emph{スポット価格}という．
+\end{definition}
+
+\begin{definition}[ペイオフと価格]
+契約が時刻 $T$ に支払う金額 $H$ を\emph{満期ペイオフ}という．
+$H$ が確率変数である場合，この契約を\emph{条件付請求権}という．
+契約を時刻 $0$ に取得するための価格を $\pi_0(H)$ と書く．
+$H$ と $\pi_0(H)$ は異なる時点の異なる量である．
+\end{definition}
+
+\begin{definition}[ヨーロピアン・オプション]
+原資産の満期価格を $S_T\ge0$，\emph{権利行使価格}を $K\ge0$ とする．
+\emph{ヨーロピアン・コール}は満期 $T$ に原資産を $K$ で買う権利，
+\emph{ヨーロピアン・プット}は満期 $T$ に原資産を $K$ で売る権利である．
+買い手は権利を行使する義務を負わない．金銭決済型で表せば満期ペイオフは
+\[
+ H_C=(S_T-K)^+ ,\qquad H_P=(K-S_T)^+,
+ \qquad x^+=\max\{x,0\}
+\]
+である．オプション取得時に買い手が支払う価格を
+\emph{オプション・プレミアム}という．
+\end{definition}
+
+\begin{remark}[契約と実現損益]
+コールのペイオフ $(S_T-K)^+$ は非負だが，買い手の最終的な利益が
+必ず非負になるわけではない．取得時のプレミアム $c_0$ を時刻 $T$ の
+資金価値に換算すると，満期時点の正味損益は
+$(S_T-K)^+-c_0A(0,T)$ である．
+売り手にはこれと符号を反転したキャッシュフローが生じる．
+\end{remark}
+
+\begin{lemma}[オプション・ペイオフ恒等式]\label{lem:payoff}
+任意の $s\in\R$ と $K\in\R$ について
+\[
+ (s-K)^+-(K-s)^+=s-K
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$s\ge K$ なら左辺は $(s-K)-0$ であり，
+$s<K$ なら左辺は $0-(K-s)$ である．いずれも $s-K$ に一致する．\end{proof}
+
+\begin{definition}[アメリカン・オプション]
+権利行使の許される時刻が $[0,T]$ 又はその離散的な部分集合にわたる
+オプションを\emph{アメリカン型}という．
+行使時刻 $\tau$ におけるコールの支払を $(S_\tau-K)^+$ と表す．
+$\tau$ は契約の情報に基づいて決定される\emph{停止時刻}に制限される．
+これに対し，ヨーロピアン型では行使可能時刻は満期のみである．
+\end{definition}
+
+\begin{remark}
+「アメリカン型の価格は各経路上で得られる最大ペイオフの割引期待値である」
+という説明は，通常正しくない．将来の情報を事前に知ってから行使時刻を
+決めることはできないためである．適切な情報に関して許される停止時刻の
+範囲で最適化する必要がある．
+\end{remark}
+
+\begin{definition}[先渡契約]
+時刻 $0$ に，将来の時刻 $T$ に原資産一単位を価格 $K$ で受け渡す約束を
+\emph{先渡契約}という．$K$ を\emph{先渡受渡価格}という．
+買い手側の満期ペイオフは，現金決済として
+\[
+ H_F=S_T-K
+\]
+である．新規の公正な先渡契約は，通常，締結時の契約価値を $0$ にする
+受渡価格 $K$ を選ぶが，これは取引条件に依存する．
+\end{definition}
+
+\begin{definition}[先物契約とスワップ]
+\emph{先物契約}は，標準化された将来の売買契約であり，
+取引所の清算制度等を通じて通常は日々の値洗いが行われる．
+\emph{スワップ}は所定の時刻列において二系列の金銭授受を交換する契約である．
+金利スワップでは，例えば固定利率に基づく支払と変動利率に基づく支払を交換する．
+\end{definition}
+
+\begin{example}[金利スワップの一回の差額決済]
+元本相当額 $N>0$，利息計算期間 $\Delta>0$，固定利率 $k$，
+期間に適用される変動利率 $L$ とする．固定払い・変動受取り側の
+一回の差額決済額は $N\Delta(L-k)$ である．通常，元本相当額 $N$ 自体は
+交換しない．単位と支払日を揃えるため $\Delta$ が必要である．
+\end{example}
+
+\begin{proposition}[ペイオフの線形合成]
+同一の満期に決済される条件付請求権 $H_1,H_2$ の
+$\alpha,\beta$ 単位を保有したとき，満期支払額は
+$\alpha H_1+\beta H_2$ である．
+\end{proposition}
+\begin{proof}
+命題~\ref{prop:cfadd} を満期時刻 $T$ に適用すればよい．
+\end{proof}
+
+\begin{remark}[先渡と先物の相違]
+先渡契約は一般に相対契約であり，先物契約では値洗いと証拠金制度が
+用いられる．両者は類似した参照価格をもち得るが，金利が変動する市場では
+資金授受の時刻の相違が価格関係に影響することがある．
+\end{remark}
+
+\section{無裁定・複製・ヘッジ}
+
+この節では，証券の価格が現実にどのように形成されるかという経済学的問題と，
+同一の支払を生む取引の価格に矛盾がないかという数学的問題を区別する．
+後者を調べる際の中心概念が裁定機会である．
+
+\begin{definition}[裁定機会]
+有限確率空間 $(\Omega,\mathcal F,P)$ 上の一期間市場において，
+初期費用 $V_0=0$ で実行できる自己金融取引で，満期価値 $V_1$ が
+\[
+ P(V_1\ge0)=1,\qquad P(V_1>0)>0
+\]
+を満たすものを\emph{裁定機会}という．裁定機会が存在しない市場を
+\emph{無裁定市場}という．ここでは負の保有数量と借入れを許し，
+取引費用を課さない．
+\end{definition}
+
+\begin{definition}[複製とヘッジ]
+満期ペイオフ $H$ とほとんど確実に一致する満期価値をもつ
+自己金融ポートフォリオを $H$ の\emph{複製ポートフォリオ}という．
+別の契約又は保有資産が引き起こす損益を減少させる取引を\emph{ヘッジ}という．
+複製は満期支払額を正確に一致させる特別なヘッジである．
+考える請求権のすべてが複製可能であるとき，市場を\emph{完備}という．
+\end{definition}
+
+\begin{lemma}[一物一価]\label{lem:oneprice}
+無裁定市場において，二つの実行可能な取引戦略が満期にほとんど確実に
+同じ金額を生むならば，その初期費用は等しい．
+\end{lemma}
+\begin{proof}
+二つの戦略の初期費用を $a,b$ とし，満期価値を $X,Y$ とする．
+$X=Y$ がほとんど確実に成り立つ．仮に $a<b$ なら，
+価格 $a$ の戦略を保有して価格 $b$ の戦略を空売りし，差額 $b-a>0$ を
+無リスク資産に投資する．この取引の初期純費用は $0$ で，満期には
+$X-Y+(b-a)B_1/B_0=(b-a)B_1/B_0>0$ を得る．
+これは裁定である．$a>b$ の場合も戦略を交換すれば同様である．
+ゆえに $a=b$ でなければならない．\end{proof}
+
+\begin{remark}
+補題~\ref{lem:oneprice} では，両戦略の購入・空売り，
+差額の借入れ・運用を同時に実行できることを仮定する．
+取引制約や資金調達金利の違いがある場合には，同じ形での結論が
+成立するとは限らない．
+\end{remark}
+
+\subsection{一期間二項市場}
+
+$(\Omega,P)$ を二点集合 $\Omega=\{\omega_u,\omega_d\}$ 上の確率空間とし，
+両点の確率は正とする．株価は $S_0=s>0$，
+\[
+ S_1(\omega_u)=su,\qquad S_1(\omega_d)=sd,
+ \qquad u>d>0
+\]
+であり，無リスク資産の価格は $B_0=1$，$B_1=R>0$ である．
+株式の保有数量 $\Delta\in\R$ と無リスク資産の保有数量
+$\beta\in\R$ からなる戦略の価値を
+\[
+ V_0=\Delta s+\beta,\qquad
+ V_1(\omega)=\Delta S_1(\omega)+\beta R
+\]
+とする．$P$ を表す記号と無リスク増加率 $R$ を混同しない．
+
+\begin{theorem}[二項市場の無裁定条件]\label{thm:noarb}
+上の市場が無裁定であるための必要十分条件は
+\[
+ d<R<u
+\]
+である．
+\end{theorem}
+\begin{proof}
+まず $d\ge R$ とする．$\Delta=1$，$\beta=-s$ とすれば，
+$V_0=0$ であり，
+\[
+ V_1(\omega_u)=s(u-R)>0,\qquad
+ V_1(\omega_d)=s(d-R)\ge0.
+\]
+各状態の確率が正であるから裁定となる．
+次に $u\le R$ ならば，$\Delta=-1$，$\beta=s$ とすると
+$V_0=0$ かつ
+\[
+ V_1(\omega_u)=s(R-u)\ge0,\qquad
+ V_1(\omega_d)=s(R-d)>0
+\]
+となり，やはり裁定が存在する．したがって無裁定なら $d<R<u$ である．
+
+逆に $d<R<u$ とし，初期費用 $0$ の任意の戦略を取る．
+$\beta=-\Delta s$ なので，二状態の満期価値は
+\[
+ V_1(\omega_u)=\Delta s(u-R),\qquad
+ V_1(\omega_d)=\Delta s(d-R)
+\]
+となる．$u-R>0>d-R$ であるから，$\Delta>0$ なら下方状態で負，
+$\Delta<0$ なら上方状態で負である．
+$\Delta=0$ なら両状態で $V_1=0$ である．
+従って裁定機会はない．\end{proof}
+
+\begin{theorem}[二項市場の複製と価格]\label{thm:binomial}
+$d<R<u$ とする．任意の二値ペイオフ $H$ を
+$H_u=H(\omega_u)$，$H_d=H(\omega_d)$ と表す．
+$H$ を複製するポートフォリオは一意で，その数量は
+\[
+ \Delta=\frac{H_u-H_d}{s(u-d)},\qquad
+ \beta=\frac{uH_d-dH_u}{R(u-d)}
+\]
+である．また
+\[
+ q=\frac{R-d}{u-d}\in(0,1)
+\]
+とおけば，唯一の無裁定価格は
+\begin{equation}\label{eq:rnprice}
+ \pi_0(H)=\frac{qH_u+(1-q)H_d}{R}
+\end{equation}
+である．
+\end{theorem}
+\begin{proof}
+複製条件は
+\[
+ \Delta su+\beta R=H_u,\qquad
+ \Delta sd+\beta R=H_d
+\]
+である．係数行列の行列式は $sR(u-d)$ の符号を除けば非零であるから，
+連立方程式は一意に解け，上の $\Delta,\beta$ を得る．
+その初期費用は
+\begin{align*}
+ \Delta s+\beta
+ &=\frac{H_u-H_d}{u-d}
+   +\frac{uH_d-dH_u}{R(u-d)}\\
+ &=\frac{(R-d)H_u+(u-R)H_d}{R(u-d)}\\
+ &=\frac{qH_u+(1-q)H_d}{R}.
+\end{align*}
+補題~\ref{lem:oneprice} により，この複製価格と異なる価格で
+$H$ の契約が取引できれば裁定が生じる．逆に複製価格で取引される契約を
+追加しても，その契約の保有数量は複製ポートフォリオに置き換えられる．
+元の市場は定理~\ref{thm:noarb} により無裁定なので，追加市場も無裁定である．
+\end{proof}
+
+\begin{definition}[リスク中立確率]
+定理~\ref{thm:binomial} の $q$ と $1-q$ を二状態に割り当てる
+確率測度を $Q$ と書き，\emph{リスク中立確率測度}という．
+このとき
+\[
+ \pi_0(H)=R^{-1}E_Q[H],\qquad E_Q[S_1]=RS_0
+\]
+である．$Q$ は実際の状態発生確率 $P$ と一般には異なる．
+\end{definition}
+
+\begin{proof}[後者の等式の確認]
+$E_Q[S_1]=s(qu+(1-q)d)=s\{d+q(u-d)\}=sR$ である．\end{proof}
+
+\begin{example}[コールの複製]
+$s=100,u=1.2,d=0.8,R=1.05,K=100$ とする．
+コールの満期支払は $H_u=20,H_d=0$，リスク中立確率は
+$q=(1.05-0.8)/(1.2-0.8)=5/8$ である．したがって
+\[
+ \pi_0(H)=\frac{(5/8)20}{1.05}=\frac{250}{21}\simeq11.9048.
+\]
+複製数量は $\Delta=1/2$，$\beta=-800/21$ である．
+初期費用 $50-800/21=250/21$ が上の価格に等しい．
+\end{example}
+
+\begin{proposition}[プット・コール・パリティ]\label{prop:pcparity}
+配当のない一期間二項市場を $d<R<u$ のもとで考える．
+同一満期 $T=1$，同一権利行使価格 $K$ のヨーロピアン・コールと
+プットの無裁定価格を $c_0,p_0$ とすると
+\[
+ c_0-p_0=s-\frac{K}{R}
+\]
+が成り立つ．
+\end{proposition}
+\begin{proof}
+補題~\ref{lem:payoff} より，両オプションの満期ペイオフの差は
+$S_1-K$ に等しい．これは株式一単位の買い持ちと，
+時刻 $0$ に $K/R$ を借入れて時刻 $1$ に $K$ を返済する戦略の満期価値と一致する．
+補題~\ref{lem:oneprice} を適用すれば，両辺の初期費用は一致する．\end{proof}
+
+\begin{corollary}[無配当資産の先渡受渡価格]
+第5節の無裁定二項市場で，時刻 $1$ に株式一単位を価格 $K$ で
+受け取る先渡契約を考える．締結時の契約価値が $0$ ならば
+\[
+ K=Rs
+\]
+である．
+\end{corollary}
+\begin{proof}
+先渡契約の満期支払は $S_1-K$ であり，
+株式一単位の保有と $K/R$ の借入れからなる取引で複製できる．
+その初期費用は $s-K/R$ だから，補題~\ref{lem:oneprice} により
+$0=s-K/R$ である．\end{proof}
+
+\begin{remark}[ヘッジと市場の完備性]
+二項市場の完備性は，状態が二つで，取引対象として株式と無リスク資産の
+二つがあり，それらの満期価値が線形独立であることに帰着する．
+一方，状態数が資産の数より多い場合には，すべての請求権が複製できるとは
+限らない．無裁定性だけから一般の請求権の価格が一意に決まるとはいえない．
+\end{remark}
+
+\section{保険契約と保険数理の基本概念}
+
+保険は，不確実な事故に関連する金銭的負担を，契約に従って移転・分担する
+仕組みである．金融商品の評価と同じく，将来の金銭授受を記述するが，
+給付額を生じさせる条件と保険料計算の根拠は別途定義しなければならない．
+
+\begin{definition}[保険契約の当事者]
+\emph{保険者}は所定の保険事故の発生等に応じて保険給付を行う義務を負う主体，
+\emph{保険契約者}は保険者との契約を締結し，通常保険料を支払う主体である．
+\emph{被保険者}はその生死，疾病，身体又は財産等が契約上の保障対象となる者，
+\emph{保険金受取人}は契約に基づき給付を受ける者である．
+これらの主体が同一である場合も異なる場合もある．
+\end{definition}
+
+\begin{definition}[保険事故，保険金，保険料]
+保険者の給付義務に関係する契約所定の事由を\emph{保険事故}という．
+その発生等により支払われる金銭を\emph{保険金}，
+契約に基づいて保険契約者等が保険者に支払う対価を\emph{保険料}という．
+\emph{保険金額}は契約に定めた保障額や給付の基準額を指すが，
+実際の支払額は契約条件によって異なり得る．
+保障が適用される期間を\emph{保険期間}という．
+\end{definition}
+
+\begin{definition}[免責と支払限度額]
+所定の事由に対して保険者が給付を行わない条件を\emph{免責}という．
+損害額から一定額を控除する\emph{免責金額}と，
+一事故又は一定期間に支払う上限として定める\emph{支払限度額}は
+異なる契約条件である．これらを数式で扱う際には控除の順序も定める．
+\end{definition}
+
+\begin{definition}[保険給付の確率変数]
+確率空間 $(\Omega,\mathcal F,P)$ 上の事象 $A$ を保険事故とし，
+その際に支払われる定額保険金を $b\ge0$ とする．
+保険者から受取人への支払額は
+\[
+ Y=b1_A
+\]
+と表される．一般には事象や損害額に依存する非負の可測関数 $Y$ を
+\emph{保険給付額}とする．
+\end{definition}
+
+\begin{proposition}[定額給付の期待値と分散]\label{prop:bernpay}
+$Y=b1_A$ に対し，$p=P(A)$ とすれば
+\[
+ E_P[Y]=bp,\qquad \operatorname{Var}_P(Y)=b^2p(1-p)
+\]
+である．
+\end{proposition}
+\begin{proof}
+$1_A^2=1_A$ より $E_P[Y]=bP(A)=bp$ であり，
+$E_P[Y^2]=b^2p$ である．
+したがって $\operatorname{Var}(Y)=E[Y^2]-(E[Y])^2=b^2p-b^2p^2$ となる．
+\end{proof}
+
+\begin{proposition}[保険ポートフォリオの期待支払額]\label{prop:insadd}
+$Y_1,\ldots,Y_n$ を可積分な保険給付額とする．
+保険者の総支払額 $S=\sum_{i=1}^n Y_i$ について
+\[
+ E_P[S]=\sum_{i=1}^n E_P[Y_i]
+\]
+が成り立つ．この結論に $Y_i$ の独立性は必要ない．
+\end{proposition}
+\begin{proof}
+期待値の線形性による．有限和なので可積分性は仮定から従う．\end{proof}
+
+\begin{proposition}[独立な保険事故の危険分散]\label{prop:pooling}
+$Y_1,\ldots,Y_n$ を独立同分布な一契約の支払額とし，
+$E_P[Y_i]=\mu$，$\operatorname{Var}_P(Y_i)=\sigma^2<\infty$ とする．
+平均支払額 $\overline Y_n=n^{-1}\sum_{i=1}^nY_i$ に対して
+\[
+ E_P[\overline Y_n]=\mu,\qquad
+ \operatorname{Var}_P(\overline Y_n)=\frac{\sigma^2}{n}
+\]
+が成り立つ．従って任意の $\varepsilon>0$ について
+\[
+ P(|\overline Y_n-\mu|\ge\varepsilon)
+ \le\frac{\sigma^2}{n\varepsilon^2}.
+\]
+\end{proposition}
+\begin{proof}
+期待値の線形性から平均は $\mu$ である．
+独立性により $\operatorname{Cov}(Y_i,Y_j)=0$（$i\ne j$）だから
+\[
+ \operatorname{Var}(\overline Y_n)
+ =\frac1{n^2}\sum_{i=1}^n\operatorname{Var}(Y_i)
+ =\frac{\sigma^2}{n}.
+\]
+最後の評価はChebyshevの不等式による．\end{proof}
+
+\begin{remark}[危険の共同化]
+命題~\ref{prop:pooling} は，独立な多数のリスクを共同化することにより
+一契約当たりの平均支払額の変動が小さくなることを示す．
+災害等によって支払額が共通の要因に依存するときは，
+独立性が失われるため，この分散の減少率は一般には成り立たない．
+保険料の期待値原理が会社の損失を確実に防ぐわけでもない．
+\end{remark}
+
+\begin{definition}[純保険料と付加保険料]
+所定の事故確率・損害分布と割引規則を用いて，保険給付の
+\emph{期待現在価値}に対応するように定めた額を，
+本稿では\emph{純保険料}という．
+経費，利益，リスク負担等を考慮して純保険料に追加する部分を
+\emph{付加保険料}という．実際に契約者から受領する額を\emph{営業保険料}
+（又は総保険料）という．実務上の算出方法は契約・商品によって異なる．
+\end{definition}
+
+\begin{definition}[保険引受，準備金，再保険]
+保険者が危険を評価し，契約条件を定めて保険契約を引き受けることを
+\emph{保険引受}という．将来の給付義務に備えて保険者が評価・積立てを行う額を
+広く\emph{準備金}と呼ぶが，具体的な意味は数学モデル・会計・規制により異なる．
+保険者が引き受けた危険の一部を別の保険者に移転する契約を\emph{再保険}という．
+\end{definition}
+
+\begin{example}[保険契約の比較]
+定期死亡保険では被保険者が所定期間内に死亡したことが主たる給付事由である．
+終身死亡保険では死亡保障が生涯にわたる．医療保険では所定の入院・手術等，
+自動車保険や火災保険では所定の事故による損害等が給付に関わる．
+これらは保険事故の種類も，給付額の算出方法も異なる．
+\end{example}
+
+\begin{remark}[契約上の用語と数学的仮定]
+損害額 $X$ の分布を指定することは，契約の保障内容を指定することではない．
+逆に保険金額や免責条件が定められていても，事故確率が分からなければ
+期待給付額を計算できない．本稿では契約条件と確率モデルを別々に与える．
+\end{remark}
+
+\section{生命保険と生存時間の数学}
+
+生命保険数理では，支払額が死亡時刻や生存期間に依存する．
+そのため，最初に生存時間を確率変数として定式化する．
+ここで扱う死亡確率はモデルとして指定するものであり，
+個人の死亡時刻を確定的に予測するものではない．
+
+\begin{definition}[余命と生存関数]
+現在年齢 $x$ の生存者の将来余命を表す確率変数を
+$T_x:\Omega\to[0,\infty]$ とする．
+$T_x$ の分布は，現在年齢 $x$ まで生存したという条件のもとでの
+死亡時間の分布を表すと解釈する．
+\emph{生存関数}と\emph{死亡分布関数}を
+\[
+ {}_tp_x=P(T_x>t),\qquad
+ F_x(t)=P(T_x\le t)\qquad(t\ge0)
+\]
+と定める．$\infty$ は分析期間中に死亡が観測されない場合等を許すために含める．
+\end{definition}
+
+\begin{proposition}[生存関数の基本性質]\label{prop:surv}
+任意の $t\ge0$ に対して $F_x(t)=1-{}_tp_x$ が成り立つ．
+また $t\mapsto{}_tp_x$ は非増加かつ右連続で，$0\le{}_tp_x\le1$ を満たす．
+$P(T_x>0)=1$ と仮定すれば ${}_0p_x=1$ である．
+\end{proposition}
+\begin{proof}
+事象 $\{T_x\le t\}$ と $\{T_x>t\}$ は互いに素で全事象を分割するから
+和は $1$ となる．$s\le t$ なら $\{T_x>t\}\subset\{T_x>s\}$ より
+非増加性が従う．$t_n\downarrow t$ のとき，
+$\{T_x>t_n\}\uparrow\{T_x>t\}$ であるから，確率の下からの連続性より
+${}_{t_n}p_x\to{}_tp_x$ となる．
+他の性質も定義から明らかである．\end{proof}
+
+\begin{definition}[死亡密度と死亡強度]
+$F_x$ が $[0,\infty)$ 上で絶対連続であると仮定し，
+$F_x(t)=\int_0^t f_x(s)\,ds$ を満たす非負可測関数 $f_x$ を
+\emph{死亡密度}という．ただしこの仮定は $P(T_x=0)=0$ を含む．
+${}_tp_x>0$ である点において
+\[
+ \mu_{x+t}=\frac{f_x(t)}{{}_tp_x}
+\]
+を\emph{死亡強度}（死亡ハザード）という．
+密度と死亡強度は，ほとんど至る所で定義されれば十分である．
+\end{definition}
+
+\begin{theorem}[生存関数と死亡強度]\label{thm:hazard}
+$T_x$ の死亡分布が絶対連続で，ある $a>0$ について
+${}_tp_x>0$（$0\le t\le a$）とする．このとき
+\[
+ {}_tp_x=\exp\left(-\int_0^t\mu_{x+s}\,ds\right)
+ \qquad(0\le t\le a)
+\]
+である．逆に，局所可積分な非負関数 $\mu$ から
+$S(t)=\exp(-\int_0^t\mu(s)\,ds)$ と定めると，
+$S$ はこの区間の生存関数としての基本性質をもち，
+$-S'(t)=\mu(t)S(t)$ がほとんど至る所で成り立つ．
+\end{theorem}
+\begin{proof}
+$S(t)={}_tp_x=1-F_x(t)$ と置くと，$S$ は絶対連続で
+$S'(t)=-f_x(t)$ がほとんど至る所で成り立つ．
+$S$ はコンパクト区間 $[0,a]$ で正値かつ連続なので，正の最小値をもつ．
+従って $\log S$ は絶対連続で，連鎖律によって
+\[
+ \frac{d}{dt}\log S(t)=\frac{S'(t)}{S(t)}
+ =-\frac{f_x(t)}{S(t)}=-\mu_{x+t}
+\]
+がほとんど至る所で成り立つ．これを $0$ から $t$ まで積分し，
+$S(0)=1$ を用いれば結論が従う．
+逆向きは積分の絶対連続性と指数関数の連鎖律による．
+$\mu\ge0$ より $S$ は非増加で，$S(0)=1$ かつ $0<S(t)\le1$ である．
+\end{proof}
+
+\begin{remark}[期間死亡確率]
+生存確率が正のとき，時刻 $t$ まで生存した者がさらに $h>0$ の間に
+死亡する条件付き確率は
+\[
+ P(t<T_x\le t+h\mid T_x>t)
+ =1-\frac{{}_{t+h}p_x}{{}_tp_x}.
+\]
+死亡強度は，この期間死亡確率を時間幅 $h$ で除して $h\downarrow0$ とした
+極限に関係するが，それ自体は確率ではない．
+一定の期間の死亡確率を表す生命表の $q_x$ と混同してはならない．
+\end{remark}
+
+\begin{definition}[生命表と死亡確率]
+整数年齢ごとの生存者数を $l_x>0$ とし，
+$0\le l_{x+1}\le l_x$ とする．期間 $[x,x+1)$ の\emph{一年死亡確率}を
+\[
+ q_x=\frac{l_x-l_{x+1}}{l_x},\qquad
+ p_x=1-q_x=\frac{l_{x+1}}{l_x}
+\]
+と定める．$l_x$ を並べた表を\emph{生命表}という．
+この表を確率モデルとして用いる場合，
+$l_{x+n}/l_x$ を年齢 $x$ の者が $n$ 年生存する確率と解釈する．
+\end{definition}
+
+\begin{proposition}[生命表の生存確率]\label{prop:lifetable}
+$l_x,\ldots,l_{x+n}>0$ とする．このとき
+\[
+ \frac{l_{x+n}}{l_x}=\prod_{k=0}^{n-1}p_{x+k}
+\]
+である．
+\end{proposition}
+\begin{proof}
+$p_{x+k}=l_{x+k+1}/l_{x+k}$ を掛け合わせると，
+分子と分母の中間項が約される．\end{proof}
+
+\subsection{生命保険の期待現在価値}
+
+以下では一定の連続複利率 $\delta\in\R$，保険期間 $n>0$ を固定し，
+$e^{-\delta t}$ を時刻 $0$ への割引係数とする．
+時刻の単位は年とする．損害発生の不確実性は確率測度 $P$ で評価する．
+
+\begin{definition}[定期死亡保険]
+死亡時刻 $T_x\le n$ ならその時刻に $b\ge0$ を支払う契約を
+本稿の\emph{連続型定期死亡保険}という．
+その時刻 $0$ における給付の確率的現在価値を
+\[
+ Z_D=b e^{-\delta T_x}1_{\{T_x\le n\}}
+\]
+とする．$T_x=\infty$ のとき $Z_D=0$ と約束する．
+$E_P[Z_D]$ を\emph{給付の期待現在価値}という．
+\end{definition}
+
+\begin{theorem}[定期死亡保険の期待現在価値]\label{thm:deathpv}
+$T_x$ の分布が絶対連続で死亡密度 $f_x$ をもち，
+$P(T_x=\infty)$ を許すものとする．このとき
+\[
+ E_P[Z_D]=b\int_0^n e^{-\delta t}f_x(t)\,dt.
+\]
+特に $f_x(t)=\mu_{x+t}{}_tp_x$ が成り立つ区間では
+\[
+ E_P[Z_D]=b\int_0^n e^{-\delta t}\mu_{x+t}{}_tp_x\,dt.
+\]
+\end{theorem}
+\begin{proof}
+定義より $Z_D=b e^{-\delta T_x}1_{\{T_x\le n\}}$ である．
+$[0,n]$ 上で $e^{-\delta t}$ は有界だから $Z_D$ は可積分である．
+絶対連続分布に関する期待値の積分公式を適用すると
+\[
+ E_P[Z_D]=\int_0^n b e^{-\delta t}f_x(t)\,dt
+\]
+となる．第2式は死亡強度の定義を代入したものである．\end{proof}
+
+\begin{example}[一定死亡強度]
+$\mu_{x+t}=\mu>0$ をすべての $t\ge0$ について仮定すると，
+定理~\ref{thm:hazard} より ${}_tp_x=e^{-\mu t}$ であり，
+$f_x(t)=\mu e^{-\mu t}$ である．よって
+\[
+ E_P[Z_D]=b\mu\int_0^n e^{-(\delta+\mu)t}\,dt.
+\]
+$\delta+\mu\ne0$ なら
+$b\mu\{1-e^{-(\delta+\mu)n}\}/(\delta+\mu)$，
+$\delta+\mu=0$ なら $b\mu n$ である．
+\end{example}
+
+\begin{definition}[連続型生命年金]
+被保険者が生存している間，時刻 $0$ から $n$ まで単位時間当たり
+$c\ge0$ を連続的に支払う契約を\emph{連続型有期生命年金}という．
+給付の確率的現在価値を
+\[
+ Z_A=c\int_0^n e^{-\delta t}1_{\{T_x>t\}}\,dt
+\]
+と定める．満期を設けず $n=\infty$ とする場合には，
+期待現在価値の有限性を別途確認する．
+\end{definition}
+
+\begin{theorem}[生命年金の期待現在価値]\label{thm:annuitylife}
+$n<\infty$，$c\ge0$ とする．このとき $T_x$ の分布に絶対連続性を
+仮定しなくても
+\[
+ E_P[Z_A]=c\int_0^n e^{-\delta t}{}_tp_x\,dt
+\]
+が成り立つ．
+\end{theorem}
+\begin{proof}
+$e^{-\delta t}1_{\{T_x>t\}}$ は $[0,n]\times\Omega$ 上の
+非負可測関数である．Tonelliの定理によって積分と期待値の順序を交換でき，
+\begin{align*}
+ E_P[Z_A]
+ &=c\int_0^n e^{-\delta t}E_P[1_{\{T_x>t\}}]dt\\
+ &=c\int_0^n e^{-\delta t}P(T_x>t)dt
+\end{align*}
+を得る．積分区間は有限で被積分関数は有界なので有限である．\end{proof}
+
+\begin{example}[一定死亡強度の生命年金]
+${}_tp_x=e^{-\mu t}$ であれば
+\[
+ E_P[Z_A]=c\int_0^n e^{-(\delta+\mu)t}\,dt
+\]
+となる．同じ $\delta$ と $\mu$ を用いても，死亡保険の式には
+死亡強度 $\mu$ の因子が付くのに対し，生命年金の式には付かない．
+支払が死亡時に生じるか，生存中に生じるかの違いである．
+\end{example}
+
+\subsection{保険料と準備金}
+
+\begin{definition}[収支相等の原則と一時払純保険料]
+保険契約の給付の確率的現在価値を $Z\ge0$ とする．
+保険料を時刻 $0$ に一括して受領し，費用やリスク付加を考えないとき，
+\[
+ \Pi=E_P[Z]
+\]
+で定める $\Pi$ を\emph{一時払純保険料}という．
+給付の期待現在価値と保険料の期待現在価値を等しくする考え方を
+\emph{収支相等の原則}という．この原則は価格の市場的一意性を主張しない．
+\end{definition}
+
+\begin{definition}[平準純保険料]
+保険期間中，被保険者が生存する間は単位時間当たり
+一定額 $c\ge0$ を連続的に払い込む契約を考える．
+その保険料収入の現在価値を
+\[
+ Z_P(c)=c\int_0^n e^{-\delta t}1_{\{T_x>t\}}\,dt
+\]
+とする．$E_P[Z_P(c)]=E_P[Z_D]$ を満たす $c$ を
+\emph{平準純保険料率}という．ここで $c$ の単位は貨幣額／年である．
+\end{definition}
+
+\begin{theorem}[平準純保険料の一意性]\label{thm:levelprem}
+$n>0$，$P(T_x>0)=1$ とし，$T_x$ の分布が絶対連続であるとする．
+このとき $E_P[Z_D]$ は有限であり，
+上の収支相等の条件を満たす $c$ はただ一つ存在し，
+\[
+ c=\frac{b\int_0^n e^{-\delta t}f_x(t)\,dt}
+ {\int_0^n e^{-\delta t}{}_tp_x\,dt}
+\]
+で与えられる．
+\end{theorem}
+\begin{proof}
+定理~\ref{thm:deathpv} と定理~\ref{thm:annuitylife} から
+収支相等の条件は
+\[
+ c\int_0^n e^{-\delta t}{}_tp_x\,dt
+ =b\int_0^n e^{-\delta t}f_x(t)\,dt
+\]
+である．分母の積分は非負で，生存関数の右連続性と
+${}_0p_x=1$ により，十分小さい正の $t$ で ${}_tp_x>1/2$ となる．
+したがって分母は正である．分子は有限の非負数なので，
+表示された $c$ は一意に定まり，かつ $c\ge0$ である．\end{proof}
+
+\begin{remark}[保険料率と保険料の違い]
+ここでの $c$ は連続的な金銭授受の密度であり，契約者が実際に
+年一回，又は月一回支払う金額ではない．支払期日と支払頻度を指定すれば，
+別の離散型年金現価公式が必要となる．
+\end{remark}
+
+\begin{definition}[将来法による純保険料式責任準備金]
+定理~\ref{thm:levelprem} の保険料率 $c$ を採用し，
+$0\le t<n$ かつ ${}_tp_x>0$ とする．
+時刻 $t$ まで生存したという条件のもとで，
+将来給付の時刻 $t$ における条件付き期待現在価値から
+将来保険料の条件付き期待現在価値を差し引いた
+\[
+ \begin{split}
+ V(t)=E_P\bigg[&b e^{-\delta(T_x-t)}1_{\{t<T_x\le n\}}\\
+ &-c\int_t^n e^{-\delta(s-t)}1_{\{T_x>s\}}\,ds
+ \ \bigg|\ T_x>t\bigg]
+ \end{split}
+\]
+を\emph{将来法による純保険料式責任準備金}という．
+これは数学モデルにおける一契約当たりの評価額であり，
+法定会計上の準備金額と同一とは限らない．
+\end{definition}
+
+\begin{theorem}[責任準備金の積分表示]\label{thm:reserve}
+定理~\ref{thm:levelprem} の仮定のもとで，$0\le t<n$ かつ
+${}_tp_x>0$ とする．このとき
+\[
+ \begin{split}
+ V(t)=\frac{1}{{}_tp_x}\bigg\{&b\int_t^n
+ e^{-\delta(s-t)}f_x(s)\,ds\\
+ &-c\int_t^n e^{-\delta(s-t)}{}_sp_x\,ds\bigg\}.
+ \end{split}
+\]
+特に $V(0)=0$ である．
+\end{theorem}
+\begin{proof}
+死亡時支払部分の条件付き期待値は
+\begin{align*}
+ &E_P[b e^{-\delta(T_x-t)}1_{\{t<T_x\le n\}}\mid T_x>t]\\
+ &\quad=\frac{b}{{}_tp_x}\int_t^n e^{-\delta(s-t)}f_x(s)\,ds
+\end{align*}
+である．保険料の部分については，非負の被積分関数にTonelliの定理を用いると
+\begin{align*}
+ &E_P\!\left[c\int_t^n e^{-\delta(s-t)}1_{\{T_x>s\}}ds
+ \ \middle|\ T_x>t\right]\\
+ &\quad=c\int_t^n e^{-\delta(s-t)}
+ P(T_x>s\mid T_x>t)\,ds\\
+ &\quad=\frac{c}{{}_tp_x}\int_t^n e^{-\delta(s-t)}{}_sp_x\,ds
+\end{align*}
+を得る．ここで $s\ge t$ なら
+$\{T_x>s\}\subset\{T_x>t\}$ を用いた．
+差を取れば表示式となる．$t=0$ では ${}_0p_x=1$ であり，
+定理~\ref{thm:levelprem} の収支相等条件によって $V(0)=0$ となる．\end{proof}
+
+\begin{remark}[準備金の符号]
+純保険料式責任準備金 $V(t)$ の符号は，モデルと時刻によって変わり得る．
+非負であることを定義から仮定していない．保険会社の実際の負債評価には
+費用，解約，予定と実績の差，資本規制等の追加要素が必要である．
+\end{remark}
+
+\section{損害保険と集合的危険モデル}
+
+損害保険では，事故が生じる回数と，一回の事故によって生じる損害額とを
+分けて扱うことが有効である．本節では金額の単位を固定し，
+保険期間内の割引の影響を考えない．金銭授受の時点を厳密に区別する場合には，
+それぞれに割引係数を適用する必要がある．
+
+\begin{definition}[損害額と保険者支払額]
+事故一件による損害額を非負確率変数 $X$ とする．
+契約上の支払額を，損害額の可測関数 $g(X)$ と表す．
+$g$ を\emph{給付関数}という．$g(X)\le X$ は通常の損害填補型の
+一例であるが，すべての保険契約に対して仮定するものではない．
+\end{definition}
+
+\begin{definition}[免責金額と支払限度額]
+$X\ge0$，免責金額 $d\ge0$，免責適用後の支払限度額 $L\ge0$ とする．
+一事故当たりの保険者支払額を
+\[
+ Y=\min\{(X-d)^+,L\}
+\]
+と定める．この規約では，免責金額を控除した残額に上限 $L$ を適用する．
+\end{definition}
+
+\begin{lemma}[免責・限度額の分解]\label{lem:deduct}
+任意の実数 $x$ と $d,L\ge0$ に対して
+\[
+ \min\{(x-d)^+,L\}=(x-d)^+-(x-d-L)^+
+\]
+が成り立つ．
+\end{lemma}
+\begin{proof}
+$x\le d$ なら両辺は $0$ である．
+$d<x\le d+L$ なら両辺は $x-d$ である．
+$x>d+L$ なら右辺は $(x-d)-(x-d-L)=L$ で，左辺も $L$ である．
+$L=0$ の場合も各場合の等式は成立する．\end{proof}
+
+\begin{lemma}[非負確率変数の尾積分公式]\label{lem:tail}
+$X$ を非負の確率変数とする．このとき拡張非負実数の意味で
+\[
+ E_P[X]=\int_0^\infty P(X>t)\,dt
+\]
+である．
+\end{lemma}
+\begin{proof}
+各 $\omega$ に対して
+$X(\omega)=\int_0^\infty 1_{\{X(\omega)>t\}}\,dt$ である．
+被積分関数は非負可測なので，Tonelliの定理によって
+\begin{align*}
+ E_P[X]
+ &=E_P\left[\int_0^\infty1_{\{X>t\}}dt\right]\\
+ &=\int_0^\infty E_P[1_{\{X>t\}}]dt
+ =\int_0^\infty P(X>t)dt
+\end{align*}
+となる．期待値が無限大の場合も交換は正当化される．\end{proof}
+
+\begin{theorem}[免責と限度額をもつ契約の期待支払額]\label{thm:deductpv}
+非負確率変数 $X$ と $d,L\ge0$ について，
+$Y=\min\{(X-d)^+,L\}$ とおく．このとき
+\[
+ E_P[Y]=\int_d^{d+L}P(X>t)\,dt
+\]
+である．特に $L<\infty$ ならば $E_P[Y]\le L$ である．
+\end{theorem}
+\begin{proof}
+任意の実数 $x\ge0$ について
+\[
+ \min\{(x-d)^+,L\}=\int_d^{d+L}1_{\{x>t\}}\,dt
+\]
+である．実際，$x\le d$ なら積分区間に条件を満たす点がなく，
+$d<x<d+L$ なら積分する区間の長さが $x-d$，
+$x\ge d+L$ なら長さが $L$ である．
+ゆえにTonelliの定理で期待値と積分を交換し，
+\[
+ E_P[Y]=\int_d^{d+L}E_P[1_{\{X>t\}}]dt
+ =\int_d^{d+L}P(X>t)dt
+\]
+を得る．$0\le Y\le L$ より上界が従う．\end{proof}
+
+\begin{example}[指数分布損害]
+$P(X>t)=e^{-\alpha t}$（$t\ge0$，$\alpha>0$）とする．
+免責金額 $d\ge0$，有限の限度額 $L\ge0$ に対して
+\[
+ E_P[Y]=\int_d^{d+L}e^{-\alpha t}dt
+ =\frac{e^{-\alpha d}-e^{-\alpha(d+L)}}{\alpha}
+\]
+である．免責金額が増すと期待支払額は減少する．
+\end{example}
+
+\begin{definition}[請求件数と請求額]
+所定期間中の事故又は保険金請求の\emph{件数}を
+$N:\Omega\to\{0,1,2,\ldots\}$ とする．
+その第 $i$ 件の\emph{請求額}を $X_i\ge0$ とする．
+件数の分布を\emph{事故頻度分布}，請求額の分布を
+\emph{損害規模分布}（severity distribution）という．
+\end{definition}
+
+\begin{definition}[集合的危険モデル]
+$N$ が非負整数値確率変数であり，$X_1,X_2,\ldots$ が
+互いに独立同分布の非負確率変数で，列 $(X_i)$ は $N$ と独立とする．
+保険期間中の総支払額を
+\[
+ S=\sum_{i=1}^{N}X_i
+\]
+と定義する．$N=0$ の場合は空和 $S=0$ とする．
+この模型を\emph{集合的危険モデル}（collective risk model）という．
+\end{definition}
+
+\begin{theorem}[集合的危険モデルの平均と分散]\label{thm:aggregate}
+定義の独立性に加え，$E_P[N^2]<\infty$，$E_P[X_1^2]<\infty$ とする．
+$\mu=E_P[X_1]$，$\sigma^2=\operatorname{Var}_P(X_1)$ とおけば
+\[
+ E_P[S]=E_P[N]\mu,
+\]
+\begin{equation}\label{eq:aggregatevar}
+ \operatorname{Var}_P(S)=E_P[N]\sigma^2
+ +\operatorname{Var}_P(N)\mu^2
+\end{equation}
+である．
+\end{theorem}
+\begin{proof}
+$N=n$ という条件のもとで，$S$ は独立同分布な $n$ 個の
+$X_i$ の和と同じ分布をもつ．独立性により
+\[
+ E_P[S\mid N=n]=n\mu,\qquad
+ \operatorname{Var}_P(S\mid N=n)=n\sigma^2
+\]
+である．ここで $n=0$ の場合も両辺は $0$ となる．
+したがって
+\[
+ E_P[S\mid N]=N\mu,
+ \qquad\operatorname{Var}_P(S\mid N)=N\sigma^2.
+\]
+条件付き期待値の反復法則を用いると
+$E_P[S]=E_P[E_P[S\mid N]]=E_P[N]\mu$ を得る．
+
+全分散公式
+\[
+ \operatorname{Var}_P(S)=
+ E_P[\operatorname{Var}_P(S\mid N)]
+ +\operatorname{Var}_P(E_P[S\mid N])
+\]
+によって
+\[
+ \operatorname{Var}_P(S)=E_P[N\sigma^2]
+ +\operatorname{Var}_P(N\mu)
+ =E_P[N]\sigma^2+\operatorname{Var}_P(N)\mu^2
+\]
+である．
+有限二次モーメントの仮定から
+$E_P[S^2]=E_P[N]\sigma^2+E_P[N^2]\mu^2<\infty$
+となり，以上の計算は正当化される．\end{proof}
+
+\begin{definition}[Poisson件数モデル]
+$\lambda\ge0$ とする．件数 $N$ が
+\[
+ P(N=n)=e^{-\lambda}\frac{\lambda^n}{n!}
+ \quad(n=0,1,2,\ldots)
+\]
+に従うとき，$N$ をパラメータ $\lambda$ の\emph{Poisson分布}に従うという．
+このときの集合的危険モデルを\emph{複合Poisson損害モデル}という．
+$\lambda=0$ のとき $N=0$ が確率 $1$ で起こると解釈する．
+\end{definition}
+
+\begin{lemma}[Poisson分布の二つのモーメント]\label{lem:poissonmom}
+$N\sim\operatorname{Poisson}(\lambda)$，$\lambda\ge0$ なら
+\[
+ E_P[N]=\lambda,\qquad
+ \operatorname{Var}_P(N)=\lambda.
+\]
+\end{lemma}
+\begin{proof}
+$\lambda=0$ なら明らかである．$\lambda>0$ のとき
+\begin{align*}
+ E_P[N]
+ &=e^{-\lambda}\sum_{n=1}^\infty
+   n\frac{\lambda^n}{n!}
+ =\lambda e^{-\lambda}\sum_{m=0}^\infty\frac{\lambda^m}{m!}
+ =\lambda,\\
+ E_P[N(N-1)]
+ &=e^{-\lambda}\sum_{n=2}^\infty
+   n(n-1)\frac{\lambda^n}{n!}
+ =\lambda^2.
+\end{align*}
+ゆえに $E_P[N^2]=\lambda^2+\lambda$ となり，
+$\operatorname{Var}_P(N)=E_P[N^2]-(E_P[N])^2=\lambda$ を得る．\end{proof}
+
+\begin{corollary}[複合Poisson損害の平均と分散]\label{cor:compound}
+$N\sim\operatorname{Poisson}(\lambda)$ とし，
+$E_P[X_1^2]<\infty$ とする．このとき
+\[
+ E_P[S]=\lambda E_P[X_1],\qquad
+ \operatorname{Var}_P(S)=\lambda E_P[X_1^2].
+\]
+\end{corollary}
+\begin{proof}
+定理~\ref{thm:aggregate} と補題~\ref{lem:poissonmom} から
+\[
+ \operatorname{Var}_P(S)
+ =\lambda\operatorname{Var}_P(X_1)
+ +\lambda(E_P[X_1])^2
+ =\lambda E_P[X_1^2]
+\]
+となる．期待値の公式も同様である．\end{proof}
+
+\begin{example}[件数変動と損害額変動]
+$N\sim\operatorname{Poisson}(10)$ とし，請求額の平均が $2$，
+分散が $9$ であるとする．総損害額の平均は $20$，
+分散は $10(9+4)=130$ である．
+損害額の分散だけを $10$ 倍した $90$ ではない．
+請求件数自体の変動による分散 $10\cdot2^2=40$ が加わるためである．
+\end{example}
+
+\begin{definition}[期待損失と保険料付加]
+総損害額 $S$ の期待値 $E_P[S]$ を，割引を行わない場合の
+\emph{期待損失}と呼ぶ．$\theta\ge0$ を付加率とし，
+\[
+ \Pi_{\theta}=(1+\theta)E_P[S]
+\]
+と置く方法を\emph{期待値原理による保険料計算}という．
+$\theta E_P[S]$ はこの方法の付加額であり，
+現実の営業保険料が必ずこの形で計算されることを意味しない．
+\end{definition}
+
+\begin{definition}[比例再保険]
+元受保険者が総損害 $S$ の割合 $a\in[0,1]$ を自己保有し，
+残りの割合 $1-a$ を再保険者へ移転するモデルを\emph{比例再保険}という．
+元受保険者の保有損害を $aS$，再保険者の負担損害を $(1-a)S$ とする．
+\end{definition}
+
+\begin{proposition}[比例再保険後の平均と分散]
+$E_P[S^2]<\infty$ とする．比例再保険後の元受保有損害 $aS$ は
+\[
+ E_P[aS]=aE_P[S],\qquad
+ \operatorname{Var}_P(aS)=a^2\operatorname{Var}_P(S)
+\]
+を満たす．
+\end{proposition}
+\begin{proof}
+期待値の線形性と
+$\operatorname{Var}(aS)=E[(aS-aE[S])^2]=a^2\operatorname{Var}(S)$
+による．\end{proof}
+
+\begin{remark}[集合的危険モデルの仮定]
+現実の事故件数と請求額は独立でない場合があり，個別請求額も
+同一分布とは限らない．定理~\ref{thm:aggregate} の式は，
+独立性と同分布性を置いた特定の模型における結論である．
+また，総損失の期待値だけでは，大きな損失が生じる確率や
+破産確率を評価できない．
+\end{remark}
+
+\section{金融数学と保険数理における評価の比較}
+
+両分野は，将来の不確実な金銭授受を扱うという共通の構造をもつ．
+しかし，支払を評価する際の目的と仮定を区別しなければならない．
+
+\begin{definition}[確率的現在価値]
+固定された確定的な割引係数 $D(0,t)$ と，可積分な確率的キャッシュフロー
+$C(t_1),\ldots,C(t_m)$ に対し，確率的現在価値を
+\[
+ Z=\sum_{j=1}^m D(0,t_j)C(t_j)
+\]
+と定める．確率測度 $P$ のもとでの期待現在価値は
+$E_P[Z]$ である．
+\end{definition}
+
+\begin{proposition}[期待現在価値の線形性]
+可積分な現在価値 $Z_1,\ldots,Z_n$ と
+$\alpha_1,\ldots,\alpha_n\in\R$ に対し
+\[
+ E_P\!\left[\sum_{i=1}^n\alpha_iZ_i\right]
+ =\sum_{i=1}^n\alpha_iE_P[Z_i]
+\]
+である．
+\end{proposition}
+\begin{proof}
+$Z_i$ の可積分性と期待値の線形性による．\end{proof}
+
+\begin{remark}[実確率とリスク中立確率]
+保険契約の純保険料計算では，死亡時刻・事故・損害額を記述する実確率測度
+$P$ のもとでの期待値を基礎とする．
+これに対し，第5節の二項市場では，取引可能な資産の価格と無裁定条件から
+定まる確率測度 $Q$ を用いて，複製可能な請求権の価格を
+$R^{-1}E_Q[H]$ と表した．
+$Q$ は事故や価格変動の実際の発生頻度をそのまま表すとは限らない．
+\end{remark}
+
+\begin{proposition}[期待値と複製価格は一般に異なる]\label{prop:different}
+一期間二項市場において $d<R<u$ とし，
+実確率 $P(\omega_u)=p\in(0,1)$，リスク中立確率 $Q(\omega_u)=q$ とする．
+$H=1_{\{\omega_u\}}$ を満期ペイオフとすれば
+\[
+ E_P[H]=p,\qquad R\pi_0(H)=q.
+\]
+従って $p\ne q$ のとき，実確率による満期期待支払額と
+複製価格の満期換算額は異なる．
+\end{proposition}
+\begin{proof}
+$H$ は上昇状態で $1$，下落状態で $0$ なので，
+期待値の定義から $E_P[H]=p$ である．
+式~\eqref{eq:rnprice} から
+$\pi_0(H)=q/R$ となる．\end{proof}
+
+\begin{remark}[市場の欠如と不完備性]
+生命保険や損害保険の支払が，取引可能な資産によって完全に複製されるとは
+一般には限らない．従って，保険料の決定には実際の事故確率に基づく
+給付評価に加え，経費，資本コスト，危険分散などの要因を考える必要がある．
+一方，保険会社が保有する債券，株式，金利派生商品には市場価格付けの
+問題が生じる．保険会社の資産側と負債側を同時に管理することは，
+金融数学と保険数理が交わる代表的な課題である．
+\end{remark}
+
+\begin{remark}[モデルと現実]
+数学的定理は，モデルの仮定のもとで成立する．
+二項市場の無裁定価格が厳密に計算できることは，現実の市場で
+取引費用，信用リスク，流動性制約が消失するという意味ではない．
+同様に保険料の期待値原理が明確に定義できることは，
+事故の実際の発生確率を完全に知っていることを意味しない．
+\end{remark}
+
+\section*{付録　金融・保険用語対照表}
+\addcontentsline{toc}{section}{付録　金融・保険用語対照表}
+
+主要な用語について，本稿で採用した意味を以下にまとめる．
+英語には同形異義の語が多く，翻訳の際には必ず文脈を確認する必要がある．
+
+\begin{description}[leftmargin=3.0zw,labelsep=0.8zw,style=nextline]
+\item[Cash flow（キャッシュフロー）]
+一定の主体に帰属する時刻ごとの正負の金銭授受．第1節．
+\item[Principal（元本）]
+貸付け・預金等の基礎額．第1・2節．
+\item[Interest（利息）]
+元本の利用に対して支払う対価．第1・2節．
+\item[Rate（率）]
+期間と単位を指定した割合．金利，死亡強度，保険料率を混同しない．第2・7節．
+\item[Yield（利回り）]
+債券価格と将来支払額を対応させる収益率表示．第2節．
+\item[Price（価格）]
+資産又は契約の取引・評価に用いられる金額．第3〜5節．
+\item[Value（価値）]
+指定時点における評価額．価格と一致するとは限らない．第2〜5節．
+\item[Spot price（スポット価格）]
+即時受渡しを基準とする価格．第4節．
+\item[Derivative（派生金融商品）]
+原資産等の値に支払が依存する契約．第4節．
+\item[Payoff（ペイオフ）]
+契約条件が指定する支払額，特に満期の支払額．第4節．
+\item[Strike price（権利行使価格）]
+オプションが定める売買価格．オプションの購入価格と異なる．第4節．
+\item[Premium（プレミアム）]
+オプションでは取得の対価，保険では契約者の保険料を指す．
+リスク・プレミアムは別の概念である．第4・6節．
+\item[Forward（先渡）]
+将来の受渡価格をあらかじめ決める相対契約．第4節．
+\item[Futures（先物）]
+標準化され，通常は日々の値洗いを伴う契約．第4節．
+\item[Arbitrage（裁定）]
+初期費用なしに，負の満期支払を回避し，正の満期支払が
+正の確率で得られる取引．第5節．
+\item[Hedge（ヘッジ）]
+保有する危険への損失影響を減らす取引．第5節．
+\item[Replication（複製）]
+契約の満期支払額を取引戦略によって一致させること．第5節．
+\item[Claim（請求権・保険金請求）]
+条件付請求権は金融契約のペイオフを表し，保険金請求は保険給付を求める
+請求又はその件数を表す．第4・8節．
+\item[Insurer（保険者）]
+契約に基づく給付を引き受ける主体．第6節．
+\item[Policyholder（保険契約者）]
+保険者と契約する主体．第6節．
+\item[Insured（被保険者）]
+保険で保障対象となる者．第6節．
+\item[Benefit（給付・保険金）]
+契約が定めた支払．死亡保険と年金では支払条件が異なる．第6・7節．
+\item[Mortality rate（死亡率）]
+一定期間の死亡確率又は死亡強度など，文脈により異なる．
+本稿では $q_x$ と $\mu_{x+t}$ を区別する．第7節．
+\item[Survival function（生存関数）]
+一定期間を超えて生存する確率を表す関数．第7節．
+\item[Net premium（純保険料）]
+期待給付現価との収支相等によって定める保険料．第6・7節．
+\item[Reserve（準備金）]
+将来支払に備える評価・積立ての額．本稿の数理モデルでは
+将来給付と保険料の期待現価の差を用いる．第6・7節．
+\item[Deductible（免責金額）]
+損害額から契約に従い控除する金額．第6・8節．
+\item[Limit（支払限度額）]
+保険者の支払に付される上限．第6・8節．
+\item[Severity（損害規模）]
+一事故の損害又は請求額の大きさ．第8節．
+\item[Frequency（事故頻度）]
+所定期間の事故又は請求件数．第8節．
+\item[Reinsurance（再保険）]
+引き受けた保険リスクの一部を別の保険者に移す契約．第6・8節．
+\end{description}
+
+\section*{参考文献}
+\addcontentsline{toc}{section}{参考文献}
+
+\begin{enumerate}[label={[\arabic*]},leftmargin=3zw]
+\item S. E. Shreve, \emph{Stochastic Calculus for Finance I: The Binomial
+Asset Pricing Model}, Springer, 2004.
+特に第1章1.1--1.2節，第2章2.1--2.4節，第3章3.1--3.2節，第4章，第6章．
+\item I. Karatzas and S. E. Shreve, \emph{Methods of Mathematical Finance},
+Springer, 1998.
+特に第1章1.1--1.6節，第2章2.2--2.5節．
+\item R. Durrett, \emph{Essentials of Stochastic Processes},
+2nd ed., Springer, 2016.
+特に第2章2.1--2.3節，第5章5.1節，第6章6.1--6.5節．
+\item D. C. M. Dickson, M. R. Hardy and H. R. Waters,
+\emph{Actuarial Mathematics for Life Contingent Risks},
+3rd ed., Cambridge University Press, 2019.
+特に第2章（生存モデル），第4章（保険給付），第5章（年金），
+第6章（保険料計算），第7章（契約評価額）の出版社公開目次・紹介情報を確認した．
+本文中の定理を直接転載していない．
+\item H. Cossette, E. W. Frees, B. Hartman and T. Higgins (eds.),
+\emph{Loss Data Analytics}, 2nd ed., 2024, online edition,
+Chapter 7, ``Aggregate Loss Models''.
+集合的危険モデルの平均・分散の公式を照合した．
+\end{enumerate}
+
+\noindent
+本稿の証明は，明示した仮定のもとで独立に記述した．
+各参考文献の扱う市場・契約・確率モデルと本稿の定式化は必ずしも同一でない．
+
+\end{document}
